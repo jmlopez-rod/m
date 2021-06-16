@@ -7,7 +7,7 @@ def add_parser(sub_parser, raw):
     desc = """
         Format a json payload.
 
-            echo '{"a":99}' | m json
+            $ echo '{"a":99}' | m json
             {
               "a": 99
             }

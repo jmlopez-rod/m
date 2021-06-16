@@ -136,7 +136,6 @@ def run_cli(
     """
     mod = get_cli_command_modules(file_path)
     arg = main_parser(mod, main_args)
-    print(arg)
     if arg == 1:
         sys.exit(1)
     if hasattr(arg, 'subcommand_name'):
@@ -144,7 +143,7 @@ def run_cli(
     sys.exit(mod[arg.command_name].run(arg))
 
 
-def call_main(fun, args) -> int:
+def call_main(fun, args, print_raw=False) -> int:
     """The `fun` param should be a function that returns a `OneOf` instance. """
     try:
         res = fun(*args)
@@ -155,10 +154,13 @@ def call_main(fun, args) -> int:
             issue = Issue('non-issue exception', cause=val)
             return error(issue.message, issue)
         if val or isinstance(val, list):
-            try:
-                print(json.dumps(val, separators=(',', ':')))
-            except Exception:
-                print(val, file=sys.stderr)
+            if print_raw:
+                print(val)
+            else:
+                try:
+                    print(json.dumps(val, separators=(',', ':')))
+                except Exception:
+                    print(val, file=sys.stderr)
     except Exception as ex:
         print_problem('unknown caught exception')
         error_block(repr(ex))
