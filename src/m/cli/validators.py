@@ -2,6 +2,7 @@ from pathlib import Path
 from argparse import ArgumentTypeError
 from ..core.io import read_json, parse_json
 
+
 def validate_json_payload(file_path: str):
     """"""
     if file_path == '@-':

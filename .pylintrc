@@ -1,0 +1,13 @@
+[MESSAGES CONTROL]
+init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(f'{os.path.dirname(find_pylintrc())}/src')"
+
+disable=
+  broad-except,
+  missing-module-docstring
+
+no-docstring-rgx=^_|run|add_parser|main
+
+good-names=_,
+  i, j, k,
+  x, y, z,
+  ex, pr, fp

@@ -17,6 +17,7 @@ def add_parser(sub_parser, raw):
     )
 
 
-def run(_arg):
+def run(_):
+    # pylint: disable=import-outside-toplevel
     from m import git
     return call_main(git.get_branch, [], print_raw=True)

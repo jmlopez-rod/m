@@ -4,8 +4,10 @@ from typing import Any
 from .fp import Good, OneOf
 from .issue import Issue, issue
 
+
 def print_problem(msg):
     print(msg)
+
 
 def error_block(msg):
     print(msg)
@@ -19,7 +21,8 @@ def read_json(filename: str, error_if_empty=False) -> OneOf[Issue, Any]:
             return Good(json.loads(sys.stdin.read() or empty))
         return Good(json.loads(open(filename).read() or empty))
     except Exception as ex:
-        return issue('failed to read json file',
+        return issue(
+            'failed to read json file',
             data={'filename': filename or 'SYS.STDIN'},
             cause=ex)
 

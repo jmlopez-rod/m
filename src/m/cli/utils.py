@@ -44,6 +44,7 @@ def get_command_modules(
             mod[tname] = tmod
     return mod
 
+
 def get_cli_command_modules(
     file_path: str
 ) -> Dict[str, Union[ModuleType, Dict[str, ModuleType]]]:
@@ -144,7 +145,9 @@ def run_cli(
 
 
 def call_main(fun, args, print_raw=False) -> int:
-    """The `fun` param should be a function that returns a `OneOf` instance. """
+    """The `fun` param will be called by providing the list of values in
+    `args`. By default, the result of calling `fun` will be JSON stringified
+    but we can avoid this by providing `print_raw` set to True. """
     try:
         res = fun(*args)
         val = res.value
