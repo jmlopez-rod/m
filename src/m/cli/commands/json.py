@@ -1,5 +1,4 @@
 import inspect
-from ..utils import import_mod
 from ..validators import validate_json_payload
 
 
@@ -37,7 +36,8 @@ def add_parser(sub_parser, raw):
 
 
 def run(arg):
-    json = import_mod('json')
-    sys = import_mod('sys')
+     # pylint: disable=import-outside-toplevel
+    import json
+    import sys
     json.dump(arg.payload, sys.stdout, indent=2, sort_keys=arg.sort_keys)
     sys.stdout.write('\n')

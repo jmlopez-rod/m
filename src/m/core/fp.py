@@ -1,7 +1,7 @@
 from typing import TypeVar, Generic, Union
 
-B = TypeVar('B')
-G = TypeVar('G')
+B = TypeVar('B')  # pylint: disable=invalid-name
+G = TypeVar('G')  # pylint: disable=invalid-name
 
 
 class StopBadIteration(Exception):
@@ -24,6 +24,8 @@ class OneOf(Generic[B, G]):
         yield self.value
 
     def iter(self):
+        """Shortcut to transform to a list: list(x.iter()). It will either
+        contain a value or be an empty list."""
         if not self.is_bad:
             yield self.value
 

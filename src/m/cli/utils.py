@@ -77,13 +77,13 @@ def main_parser(
     The `add_args` param may be provided as a function that takes in an
     `argparse.ArgumentParser` instance to be able to take additional actions.
     """
-    h = mod['.meta']
+    main_help = mod['.meta']
     raw = argparse.RawTextHelpFormatter
     # NOTE: In the future we will need to extend from this class to be able to
     #   override the error method to be able to print CI environment messages.
     argp = argparse.ArgumentParser(
         formatter_class=raw,
-        description=h.meta['description'],
+        description=main_help.meta['description'],
     )
     if add_args:
         add_args(argp)
@@ -113,8 +113,8 @@ def main_parser(
                 help='additional help',
                 metavar='<command>')
             sub_mod = mod[name]
-            for n in sorted(sub_mod.keys()):
-                sub_mod[n].add_parser(subsubp, raw)
+            for subname in sorted(sub_mod.keys()):
+                sub_mod[subname].add_parser(subsubp, raw)
         else:
             mod[name].add_parser(subp, raw)
     arg = argp.parse_args()
