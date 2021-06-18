@@ -1,4 +1,3 @@
-import os
 import os.path as pth
 import argparse
 import sys
@@ -6,7 +5,7 @@ import json
 from glob import iglob
 from typing import Type, Dict, Union, MutableMapping as Map, cast
 from ..core.issue import Issue
-from ..core.io import error_block, print_problem
+from ..core.io import error_block, print_problem, env
 from .validators import validate_non_empty_str
 
 
@@ -35,11 +34,6 @@ class CmdModule:
         """This function needs to call a library function and return 0 if
         successful or non-zero if there is a failure."""
         ...
-
-
-def env(name: str, def_val='') -> str:
-    """Access an environment variable. Return empty string if not defined."""
-    return os.environ.get(name, def_val)
 
 
 def import_mod(name: str) -> CmdModule:
