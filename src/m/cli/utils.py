@@ -4,18 +4,45 @@ import argparse
 import sys
 import json
 from glob import iglob
-from types import ModuleType
-from typing import Dict, Union
+from typing import Type, Dict, Union, MutableMapping as Map, cast
 from ..core.issue import Issue
 from ..core.io import error_block, print_problem
 from .validators import validate_non_empty_str
 
 
-def env(name, def_val=''):
+class CmdModule:
+    """Interface for command modules. """
+    meta: Dict[str, str]
+
+    @staticmethod
+    def add_arguments(_parser: argparse.ArgumentParser) -> None:
+        """Should be defined if we want to manipulate the argument parser
+        object. This will allow us to define options that may apply to the
+        subparsers."""
+        ...
+
+    @staticmethod
+    def add_parser(
+        _subparser: argparse._SubParsersAction,  # noqa pylint: disable=protected-access
+        _raw: Type[argparse.RawTextHelpFormatter]
+    ) -> None:
+        """This function is required for commands so that we may be able to
+        define arguments."""
+        ...
+
+    @staticmethod
+    def run(_arg: argparse.Namespace) -> int:
+        """This function needs to call a library function and return 0 if
+        successful or non-zero if there is a failure."""
+        ...
+
+
+def env(name: str, def_val='') -> str:
+    """Access an environment variable. Return empty string if not defined."""
     return os.environ.get(name, def_val)
 
 
-def import_mod(name: str) -> ModuleType:
+def import_mod(name: str) -> CmdModule:
     """Import a module by string"""
     module = __import__(name)
     for part in name.split('.')[1:]:
@@ -26,7 +53,7 @@ def import_mod(name: str) -> ModuleType:
 def get_command_modules(
     root: str,
     commands_module: str,
-) -> Dict[str, ModuleType]:
+) -> Map[str, CmdModule]:
     """Return a dictionary mapping command names to modules that define an
     `add_parser` method.
 
@@ -47,7 +74,7 @@ def get_command_modules(
 
 def get_cli_command_modules(
     file_path: str
-) -> Dict[str, Union[ModuleType, Dict[str, ModuleType]]]:
+) -> Map[str, Union[CmdModule, Map[str, CmdModule]]]:
     """Return a dictionary containing the commands and subcommands for the
     cli. Note that file_path is expected to be the absolute path to the
     __main__.py file. Another restriction is that the __main__.py file must
@@ -56,7 +83,11 @@ def get_cli_command_modules(
     root = pth.split(pth.abspath(file_path))[0]
     main_mod = pth.split(root)[1]
     cli_root = f'{main_mod}.cli'
-    mod = get_command_modules(root, f'{cli_root}.commands')
+    root_cmd = get_command_modules(root, f'{cli_root}.commands')
+    mod: Map[str, Union[CmdModule, Map[str, CmdModule]]] = dict()
+    for key in root_cmd:
+        mod[key] = root_cmd[key]
+
     mod['.meta'] = import_mod(f'{cli_root}.commands')
     subcommands = list(iglob(f'{root}/cli/commands/*'))
     for name in subcommands:
@@ -69,7 +100,7 @@ def get_cli_command_modules(
 
 
 def main_parser(
-    mod: Dict[str, Union[ModuleType, Dict[str, ModuleType]]],
+    mod: Map[str, Union[CmdModule, Map[str, CmdModule]]],
     add_args=None
 ):
     """Creates an argp parser and returns the result calling its parse_arg
@@ -77,13 +108,14 @@ def main_parser(
     The `add_args` param may be provided as a function that takes in an
     `argparse.ArgumentParser` instance to be able to take additional actions.
     """
-    main_help = mod['.meta']
+    meta_mod = cast(CmdModule, mod['.meta'])
+    main_meta = meta_mod.meta  # type: ignore
     raw = argparse.RawTextHelpFormatter
     # NOTE: In the future we will need to extend from this class to be able to
     #   override the error method to be able to print CI environment messages.
     argp = argparse.ArgumentParser(
         formatter_class=raw,
-        description=main_help.meta['description'],
+        description=main_meta['description']
     )
     if add_args:
         add_args(argp)
@@ -98,25 +130,26 @@ def main_parser(
         if name.endswith('.meta'):
             continue
         if isinstance(mod[name], dict):
-            meta = mod[f'{name}.meta']
+            meta_mod = cast(CmdModule, mod[f'{name}.meta'])
+            meta = meta_mod.meta  # type: ignore
             parser = subp.add_parser(
                 name,
-                help=meta.meta['help'],
+                help=meta['help'],
                 formatter_class=raw,
-                description=meta.meta['description'])
-            if hasattr(meta, 'add_arguments'):
-                meta.add_arguments(parser)
+                description=meta['description'])
+            if hasattr(meta_mod, 'add_arguments'):
+                meta_mod.add_arguments(parser)
             subsubp = parser.add_subparsers(
                 title='commands',
                 dest='subcommand_name',
                 required=True,
                 help='additional help',
                 metavar='<command>')
-            sub_mod = mod[name]
+            sub_mod = cast(Dict[str, CmdModule], mod[name])
             for subname in sorted(sub_mod.keys()):
                 sub_mod[subname].add_parser(subsubp, raw)
         else:
-            mod[name].add_parser(subp, raw)
+            cast(CmdModule, mod[name]).add_parser(subp, raw)
     arg = argp.parse_args()
     return arg
 
@@ -140,8 +173,9 @@ def run_cli(
     if arg == 1:
         sys.exit(1)
     if hasattr(arg, 'subcommand_name'):
-        sys.exit(mod[arg.command_name][arg.subcommand_name].run(arg))
-    sys.exit(mod[arg.command_name].run(arg))
+        sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
+        sys.exit(sub_mod[arg.subcommand_name].run(arg))
+    sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg))
 
 
 def call_main(fun, args, print_raw=False) -> int:
@@ -179,7 +213,10 @@ def error(msg: str, issue: Issue = None) -> int:
     return 1
 
 
-def cli_integration_token(integration, env_var):
+def cli_integration_token(integration: str, env_var: str):
+    """Return a function that takes in a parser. This generated function
+    registers a token argument in the parser which looks for its value in the
+    environment variables. """
     return lambda parser: parser.add_argument(
         '-t',
         '--token',

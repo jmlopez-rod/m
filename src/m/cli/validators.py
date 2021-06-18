@@ -4,7 +4,8 @@ from ..core.io import read_json, parse_json
 
 
 def validate_json_payload(file_path: str):
-    """"""
+    """Return a dictionary from the contents of file_path. This is a string
+    that tell us to read from a file, stdin or just plain json data."""
     if file_path == '@-':
         res = read_json(None)
         if res.is_bad:
@@ -26,7 +27,7 @@ def validate_json_payload(file_path: str):
 
 
 def validate_non_empty_str(value):
-    """"""
+    """Return the value as long as its not empty."""
     if not value:
         raise ArgumentTypeError('empty value not allowed')
     return value

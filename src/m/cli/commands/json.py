@@ -36,7 +36,7 @@ def add_parser(sub_parser, raw):
 
 
 def run(arg):
-     # pylint: disable=import-outside-toplevel
+    # pylint: disable=import-outside-toplevel
     import json
     import sys
     json.dump(arg.payload, sys.stdout, indent=2, sort_keys=arg.sort_keys)

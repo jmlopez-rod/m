@@ -1,19 +1,24 @@
 import sys
 import json
-from typing import Any
+from typing import Any, Optional
 from .fp import Good, OneOf
 from .issue import Issue, issue
 
 
 def print_problem(msg):
-    print(msg)
+    """Display an error message."""
+    print(f'error: {msg}')
 
 
 def error_block(msg):
+    """Display an error block."""
     print(msg)
 
 
-def read_json(filename: str, error_if_empty=False) -> OneOf[Issue, Any]:
+def read_json(
+    filename: Optional[str],
+    error_if_empty=False
+) -> OneOf[Issue, Any]:
     """Return a `Good` containing the parsed contents of the json file."""
     try:
         empty = '' if error_if_empty else 'null'
