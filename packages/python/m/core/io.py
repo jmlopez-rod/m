@@ -62,6 +62,19 @@ class CITool(ABC):
         """Define how a block is closed."""
         ...
 
+    @staticmethod
+    def error(
+        description: str,
+        file: Optional[str] = None,
+        line: Optional[str] = None,
+        col: Optional[str] = None
+    ) -> None:
+        """Print an error message."""
+        parts = [x for x in [file, line, col] if x]
+        loc = ':'.join(parts)
+        info = f'[{loc}]' if loc else ''
+        print(f'error{info}: {description}', file=sys.stderr)
+
 
 class GithubActions(CITool):
     """Collection of methods used to communicate with Github."""
@@ -80,6 +93,22 @@ class GithubActions(CITool):
         """Since Github Actions does not support nesting blocks, all this does
         is close the current block."""
         print('::endgroup::')
+
+    @staticmethod
+    def error(
+        description: str,
+        file: Optional[str] = None,
+        line: Optional[str] = None,
+        col: Optional[str] = None
+    ) -> None:
+        """Print an error message.
+
+        https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
+        """
+        loc = f'file={file},line={line},col={col}' if file else ''
+        info = f' {loc}' if loc else ''
+        print(f'::error{info}:: {description}', file=sys.stderr)
+
 
 
 def get_ci_tool() -> Type[CITool]:
