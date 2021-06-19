@@ -8,3 +8,6 @@ checks:
 		-w /checkout \
 		pyenv \
 		/checkout/build/build.sh
+
+bashTest:
+	cd packages/bash/tests && ./run.sh

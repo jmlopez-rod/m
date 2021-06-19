@@ -75,6 +75,19 @@ class CITool(ABC):
         info = f'[{loc}]' if loc else ''
         print(f'error{info}: {description}', file=sys.stderr)
 
+    @staticmethod
+    def warn(
+        description: str,
+        file: Optional[str] = None,
+        line: Optional[str] = None,
+        col: Optional[str] = None
+    ) -> None:
+        """Print an warning message."""
+        parts = [x for x in [file, line, col] if x]
+        loc = ':'.join(parts)
+        info = f'[{loc}]' if loc else ''
+        print(f'warn{info}: {description}', file=sys.stderr)
+
 
 class GithubActions(CITool):
     """Collection of methods used to communicate with Github."""
@@ -107,8 +120,22 @@ class GithubActions(CITool):
         """
         loc = f'file={file},line={line},col={col}' if file else ''
         info = f' {loc}' if loc else ''
-        print(f'::error{info}:: {description}', file=sys.stderr)
+        print(f'::error{info}::{description}', file=sys.stderr)
 
+    @staticmethod
+    def warn(
+        description: str,
+        file: Optional[str] = None,
+        line: Optional[str] = None,
+        col: Optional[str] = None
+    ) -> None:
+        """Print a warning message.
+
+        https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
+        """  # noqa
+        loc = f'file={file},line={line},col={col}' if file else ''
+        info = f' {loc}' if loc else ''
+        print(f'::warning{info}::{description}', file=sys.stderr)
 
 
 def get_ci_tool() -> Type[CITool]:

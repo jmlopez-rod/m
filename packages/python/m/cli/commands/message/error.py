@@ -5,12 +5,6 @@ def add_parser(sub_parser, raw):
     desc = """
         report an error
 
-        Github Actions:
-            https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
-
-        Teamcity:
-            https://www.jetbrains.com/help/teamcity/service-messages.html#Reporting+Build+Problems
-
         example:
 
             ~$ m message error 'this is an error'
@@ -26,10 +20,11 @@ def add_parser(sub_parser, raw):
         formatter_class=raw,
         description=inspect.cleandoc(desc)
     )
-    parser.add_argument('message', type=str, help='error message')
-    parser.add_argument('--file', type=str, help='filename where error occurred')
-    parser.add_argument('--line', type=str, help='line where error occurred')
-    parser.add_argument('--col', type=str, help='column where error occurred')
+    add = parser.add_argument
+    add('message', type=str, help='error message')
+    add('-f', '--file', type=str, help='filename where error occurred')
+    add('-l', '--line', type=str, help='line where error occurred')
+    add('-c', '--col', type=str, help='column where error occurred')
 
 
 def run(arg):
