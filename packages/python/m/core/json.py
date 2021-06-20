@@ -1,8 +1,10 @@
 import json
 import sys
-from typing import Any, Optional
+from typing import Any, Optional, Mapping as Map, List, cast, Union
+from collections.abc import Mapping
 from .fp import Good, OneOf
 from .issue import Issue, issue
+from .io import CITool
 
 
 def read_json(
@@ -29,3 +31,96 @@ def parse_json(data: str, error_if_empty=False) -> OneOf[Issue, Any]:
         return Good(json.loads(data or empty))
     except Exception as ex:
         return issue('failed to parse the json data', cause=ex)
+
+
+def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
+    """Return the value based on the `key_str` specified. The following
+    are equivalent:
+
+    ```
+    obj['a']['b']['c'] <=> get(obj, 'a.b.c').value
+    ```
+
+    provided that the keys `a`, `b` and `c` are valid. Returns a `Good` if
+    the value we want is available, otherwise it returns a `Bad` with the
+    path that returned `None`.
+    """
+    keys = key_str.split('.')
+    current = obj
+    for num, key in enumerate(keys):
+        new_key: Union[str, int] = key
+        try:
+            new_key = int(key)
+        except ValueError:
+            pass
+        try:
+            current = current[new_key]
+        except KeyError:
+            pth = '.'.join(keys[:num+1])
+            return issue(f'`{pth}` path was not found')
+        except Exception as ex:
+            pth = '.'.join(keys[:num])
+            if not isinstance(current, Mapping):
+                return issue(f'`{pth or current}` is not a dict')
+            return issue(f'{pth} resulted in an error', cause=ex)
+    return Good(current)
+
+
+def multi_get(
+    obj: Map[str, Any],
+    *keys: str
+) -> OneOf[Issue, List[Any]]:
+    """Call `get` for every input specified by `keys`. It collects the invalid
+    keys and returns an `Issue`.
+
+    multi_get(obj, 'a', 'a.b', 'a.b.c')
+    """
+    result = []
+    failures = []
+    for key in keys:
+        res = get(obj, key)
+        if res.is_bad:
+            failures.append(Issue(
+                message=f'key lookup failure: `{key}`',
+                cause=res.value,
+                include_traceback=False,
+            ))
+        else:
+            result.append(res.value)
+    if failures:
+        return issue(
+            'multi_get key retrieval failure',
+            data=[x.to_dict() for x in failures],
+            include_traceback=False)
+    return Good(result)
+
+
+def _to_str(obj):
+    if isinstance(obj, bool):
+        return f'{obj}'.lower()
+    if not obj:
+        return 'null'
+    return f'{obj}'
+
+
+def jsonq(
+    obj: Map[str, Any],
+    separator: str,
+    display_warning: bool,
+    *key_str: str
+) -> int:
+    """Print the values obtained from `multi_get` to stdout. Returns
+    0 if all the keys are available. Returns non-zero if there are problems.
+    """
+    result = multi_get(obj, *key_str)
+    if result.is_bad:
+        val = cast(Issue, result.value)
+        if display_warning:
+            CITool.warn(val.message)
+        else:
+            CITool.error(val.message)
+        print(result.value, file=sys.stderr)
+        return 1
+    values = [_to_str(obj) for obj in cast(List[Any], result.value)]
+    print(separator.join(values))
+    return 0
