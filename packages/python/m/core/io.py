@@ -2,11 +2,37 @@ import os
 import sys
 from abc import ABC
 from typing import Optional, Type
+from .fp import OneOf, Good
+from .issue import Issue, issue
 
 
 def env(name: str, def_val='') -> str:
     """Access an environment variable. Return empty string if not defined."""
     return os.environ.get(name, def_val)
+
+
+def read_file(filename: str) -> OneOf[Issue, str]:
+    """Return a `Good` containing the contents of the file."""
+    try:
+        return Good(open(filename).read())
+    except Exception as ex:
+        return issue(
+            'failed to read file',
+            data={'filename': filename},
+            cause=ex)
+
+
+def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
+    """Return a `Good` containing 0 if the file was written."""
+    try:
+        with open(filename, 'w') as fp:
+            fp.write(contents)
+        return Good(0)
+    except Exception as ex:
+        return issue(
+            'failed to write file',
+            data={'filename': filename},
+            cause=ex)
 
 
 def _ver_str(major, minor, patch):

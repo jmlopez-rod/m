@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union
+from typing import TypeVar, Generic, Union, Iterator, cast
 
 B = TypeVar('B')  # pylint: disable=invalid-name
 G = TypeVar('G')  # pylint: disable=invalid-name
@@ -18,10 +18,10 @@ class OneOf(Generic[B, G]):
         self.is_bad = bad
         self.value = val
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[G]:
         if self.is_bad:
             raise StopBadIteration(self)
-        yield self.value
+        yield cast(G, self.value)
 
     def iter(self):
         """Shortcut to transform to a list: list(x.iter()). It will either
