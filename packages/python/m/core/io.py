@@ -9,16 +9,6 @@ def env(name: str, def_val='') -> str:
     return os.environ.get(name, def_val)
 
 
-def print_problem(msg):
-    """Display an error message."""
-    print(f'error: {msg}')
-
-
-def error_block(msg):
-    """Display an error block."""
-    print(msg)
-
-
 def _ver_str(major, minor, patch):
     return f'{major}.{minor}.{patch}'
 
@@ -214,3 +204,17 @@ def get_ci_tool() -> Type[CITool]:
 
 
 CiTool = get_ci_tool()
+
+
+def error_block(issue_: str) -> None:
+    """Print an issue within an error block"""
+    CiTool.open_block('error', '')
+    print(issue_, file=sys.stderr)
+    CiTool.close_block('error')
+
+
+def warn_block(issue_: str) -> None:
+    """Print an issue within a warning block"""
+    CiTool.open_block('warning', '')
+    print(issue_, file=sys.stderr)
+    CiTool.close_block('warning')

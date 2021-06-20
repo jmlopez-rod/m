@@ -5,7 +5,7 @@ import json
 from glob import iglob
 from typing import Type, Dict, Union, MutableMapping as Map, cast
 from ..core.issue import Issue
-from ..core.io import error_block, print_problem, env
+from ..core.io import error_block, CiTool, env
 from .validators import validate_non_empty_str
 
 
@@ -193,7 +193,7 @@ def call_main(fun, args, print_raw=False) -> int:
                 except Exception:
                     print(val, file=sys.stderr)
     except Exception as ex:
-        print_problem('unknown caught exception')
+        CiTool.error('unknown caught exception')
         error_block(repr(ex))
         return 1
     return 0
@@ -201,9 +201,9 @@ def call_main(fun, args, print_raw=False) -> int:
 
 def error(msg: str, issue: Issue = None) -> int:
     """print an error message"""
-    print_problem(msg)
+    CiTool.error(msg)
     if issue:
-        error_block(issue)
+        error_block(str(issue))
     return 1
 
 
