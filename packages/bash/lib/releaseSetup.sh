@@ -13,11 +13,12 @@ gitBranch=$(m git branch)
 
 # Gather info
 git fetch --tags
-firstSha=$(m git first_sha)
-gitSha=$(m git current_sha)
 currentVersion=$(git describe --tags || echo '0.0.0')
 newVersion=$(m bump_version "$currentVersion")
 
 # Swith to release branch
 git checkout -b release \
   || m message error "Unable to switch to release branch"
+
+# Update CHANGELOG and m.json files
+m release_setup './m' "$newVersion"

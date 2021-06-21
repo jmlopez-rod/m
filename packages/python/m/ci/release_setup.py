@@ -5,6 +5,7 @@ from ..core.io import read_file, write_file
 from ..core.fp import OneOf, Good, one_of
 from ..core.issue import Issue, issue
 from ..github import compare_sha_url
+from ..git import get_first_commit_sha
 from ..ci.config import read_config, Config
 
 
@@ -106,13 +107,13 @@ def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
 def release_setup(
     m_dir: str,
     new_ver: str,
-    first_sha: str,
     changelog: str = 'CHANGELOG.md',
 ) -> OneOf[Issue, int]:
     """Modify all the necessary files to create a release."""
     return one_of(lambda: [
         0
         for config in read_config(m_dir)
+        for first_sha in get_first_commit_sha()
         for _ in update_version(m_dir, new_ver)
         for _ in update_changelog_file(
             config.owner,
