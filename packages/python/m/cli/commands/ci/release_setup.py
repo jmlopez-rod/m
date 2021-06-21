@@ -1,4 +1,4 @@
-from ..utils import call_main
+from ...utils import call_main
 
 
 def add_parser(sub_parser, raw):

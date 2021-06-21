@@ -10,7 +10,7 @@ mypy ./packages/python/m/__main__.py
 ./packages/python/tests/run.sh
 
 # pylint
-pylint m --rcfile=.pylintrc
+pylint ./packages/python/m --rcfile=.pylintrc
 
 # pep8
 pycodestyle --format=pylint packages/python
