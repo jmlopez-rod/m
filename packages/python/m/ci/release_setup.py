@@ -45,7 +45,7 @@ def new_changelog(
         link = compare_sha_url(owner, repo, versions[i+1], versions[i])
         links.append(f'[{versions[i]}]: {link}')
 
-    date = datetime.now().strftime('%B %d, %y')
+    date = datetime.now().strftime('%B %d, %Y')
     return Good(''.join([
         header,
         '## [Unreleased]\n\n',
@@ -77,10 +77,10 @@ def _update_config_version(contents: str, ver: str) -> OneOf[Issue, str]:
     lines = contents.split('\n')
 
     def replace(x):
-        x.strip().startswith('"version":')
+        return x.strip().startswith('"version"')
 
     new_lines = [
-        line if replace(line) else f'  "version": "{ver}"'
+        line if not replace(line) else f'  "version": "{ver}",'
         for line in lines
     ]
     return Good('\n'.join(new_lines))
