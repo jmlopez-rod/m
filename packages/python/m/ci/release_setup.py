@@ -5,6 +5,7 @@ from ..core.io import read_file, write_file
 from ..core.fp import OneOf, Good, one_of
 from ..core.issue import Issue, issue
 from ..github import compare_sha_url
+from ..ci.config import read_config, Config
 
 
 def _get_versions(lines: List[str], new_ver: str, first_sha: str) -> List[str]:
@@ -68,4 +69,56 @@ def update_changelog_file(
         for data in read_file(filename)
         for new_data in new_changelog(data, owner, repo, new_ver, first_sha)
         for _ in write_file(filename, new_data)
+    ])
+
+
+def _update_config_version(contents: str, ver: str) -> OneOf[Issue, str]:
+    lines = contents.split('\n')
+
+    def replace(x):
+        x.strip().startswith('"version":')
+
+    new_lines = [
+        line if replace(line) else f'  "version": "{ver}"'
+        for line in lines
+    ]
+    return Good('\n'.join(new_lines))
+
+
+def update_version(root: str, version: str) -> OneOf[Issue, int]:
+    """Update the version property in m.json configuration file."""
+    filename = f'{root}/m.json'
+    return one_of(lambda: [
+        0
+        for data in read_file(filename)
+        for new_data in _update_config_version(data, version)
+        for _ in write_file(filename, new_data)
+    ])
+
+
+def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
+    link = compare_sha_url(config.owner, config.repo, config.version, 'HEAD')
+    print(f'\nSetup for version {new_ver} is complete.')
+    print(f'Unreleased changes: {link}\n')
+    return Good(0)
+
+
+def release_setup(
+    m_dir: str,
+    new_ver: str,
+    first_sha: str,
+    changelog: str = 'CHANGELOG.md',
+) -> OneOf[Issue, int]:
+    """Modify all the necessary files to create a release."""
+    return one_of(lambda: [
+        0
+        for config in read_config(m_dir)
+        for _ in update_version(m_dir, new_ver)
+        for _ in update_changelog_file(
+            config.owner,
+            config.repo,
+            new_ver,
+            first_sha,
+            changelog)
+        for _ in _success_release_setup(config, new_ver)
     ])
