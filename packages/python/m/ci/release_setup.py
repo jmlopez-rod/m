@@ -73,16 +73,17 @@ def update_changelog_file(
     ])
 
 
+def _update_line_version(line: str, ver: str) -> str:
+    content = line.strip()
+    if not content.startswith('"version"'):
+        return line
+    comma = ',' if content.endswith(',') else ''
+    return f'  "version": "{ver}"{comma}'
+
+
 def _update_config_version(contents: str, ver: str) -> OneOf[Issue, str]:
     lines = contents.split('\n')
-
-    def replace(x):
-        return x.strip().startswith('"version"')
-
-    new_lines = [
-        line if not replace(line) else f'  "version": "{ver}",'
-        for line in lines
-    ]
+    new_lines = [_update_line_version(line, ver) for line in lines]
     return Good('\n'.join(new_lines))
 
 

@@ -1,20 +1,26 @@
 from .core import subprocess
-from .core.fp import one_of
+from .core.fp import one_of, OneOf
+from .core.issue import Issue
 
 
-def get_branch():
-    """Returns a `OneOf` object containing the branch name."""
+def get_branch() -> OneOf[Issue, str]:
+    """Return a `OneOf` object containing the branch name."""
     return subprocess.eval_cmd('git rev-parse --abbrev-ref HEAD')
 
 
-def get_first_commit_sha():
-    """Returns a `OneOf` object containing the first commit."""
+def get_first_commit_sha() -> OneOf[Issue, str]:
+    """Return a `OneOf` object containing the first commit."""
     return subprocess.eval_cmd('git rev-list --max-parents=0 HEAD')
 
 
-def get_current_commit_sha():
+def get_current_commit_sha() -> OneOf[Issue, str]:
     """Returns a `OneOf` object containing the current commit."""
     return subprocess.eval_cmd('git rev-parse HEAD')
+
+
+def get_remote_url() -> OneOf[Issue, str]:
+    """Returns a `OneOf` object containing the remote url."""
+    return subprocess.eval_cmd('git config --get remote.origin.url')
 
 
 def _extract_status(msg: str) -> str:
@@ -35,7 +41,7 @@ def _extract_status(msg: str) -> str:
     return '?'
 
 
-def get_status():
+def get_status() -> OneOf[Issue, str]:
     """Return a `OneOf` containing the current git status."""
     res = subprocess.eval_cmd('git status')
     return one_of(lambda: [
