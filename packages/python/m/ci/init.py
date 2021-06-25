@@ -49,7 +49,7 @@ def _changelog_body() -> str:
         > The public API should not be considered stable.
 
         ## [Unreleased]
-    ''') + '\n'
+    ''') + '\n'  # noqa
 
 
 def create_m_config() -> OneOf[Issue, int]:
