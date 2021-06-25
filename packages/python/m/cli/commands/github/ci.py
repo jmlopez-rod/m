@@ -26,7 +26,7 @@ def add_parser(sub_parser, raw):
                         "email": ""
                     },
             ...
-    """
+    """  # noqa
     parser = sub_parser.add_parser(
         'ci',
         help='continous integration information',
