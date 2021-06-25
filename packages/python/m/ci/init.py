@@ -1,3 +1,4 @@
+import os
 import re
 import inspect
 from pathlib import Path
@@ -30,11 +31,11 @@ def m_json_body(owner: str, repo: str) -> str:
     """Create the basic contents of a m configuration file."""
     return inspect.cleandoc(f'''
         {{
-          "owner: "{owner}",
+          "owner": "{owner}",
           "repo": "{repo}",
           "version": "0.0.0"
         }}
-    ''')
+    ''') + '\n'
 
 
 def _changelog_body() -> str:
@@ -48,11 +49,13 @@ def _changelog_body() -> str:
         > The public API should not be considered stable.
 
         ## [Unreleased]
-    ''')
+    ''') + '\n'
 
 
 def create_m_config() -> OneOf[Issue, int]:
     """Create the m configuration file."""
+    if not os.path.exists('m'):
+        os.makedirs('m')
     return one_of(lambda: [
         0
         for owner, repo in get_repo_info()
