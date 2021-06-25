@@ -4,7 +4,7 @@ set -xeuo pipefail
 export PYTHONPATH="${PWD}/packages/python"
 
 # static checks
-mypy ./packages/python/m/__main__.py
+mypy ./packages/python/m
 
 # tests
 ./packages/python/tests/run.sh

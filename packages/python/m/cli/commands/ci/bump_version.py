@@ -10,7 +10,7 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from m.core.io import prompt_next_version
+    from ....core.io import prompt_next_version
     next_ver = prompt_next_version(arg.version)
     print(next_ver)
     return 0

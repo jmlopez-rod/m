@@ -1,14 +1,41 @@
 import os
 import sys
+from dataclasses import dataclass
 from abc import ABC
-from typing import Optional, Type
-from .fp import OneOf, Good
+from typing import Optional, Type, List
+from .. import git
+from .fp import OneOf, Good, one_of
 from .issue import Issue, issue
 
 
 def env(name: str, def_val='') -> str:
     """Access an environment variable. Return empty string if not defined."""
     return os.environ.get(name, def_val)
+
+
+def renv(key: str) -> OneOf[Issue, str]:
+    """Require an environment variable to be defined."""
+    value = os.environ.get(key)
+    # Value may still be an empty string, checking against None
+    if value is not None:
+        return Good(value)
+    return issue(f'missing {key} in env')
+
+
+def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
+    """Require multiple env vars to be defined."""
+    result: List[str] = []
+    missing: List[str] = []
+    for key in keys:
+        value = os.environ.get(key)
+        if value is None:
+            missing.append(key)
+        else:
+            result.append(value)
+    if missing:
+        mstr = ', '.join(missing)
+        return issue(f'missing [{mstr}] in env')
+    return Good(result)
 
 
 def read_file(filename: str) -> OneOf[Issue, str]:
@@ -63,9 +90,36 @@ def prompt_next_version(version: str) -> str:
     return result
 
 
+@dataclass
+class EnvVars:
+    """Class to store the values of the environment variables."""
+    # pylint: disable=too-many-instance-attributes
+    ci_env: bool = False
+    github_token: str = ''
+    server_url: str = ''
+    run_id: str = ''
+    run_number: str = ''
+    run_url: str = ''
+    git_branch: str = ''
+    git_sha: str = ''
+    triggered_by: str = ''
+    triggered_by_email: str = ''
+    triggered_by_user: str = ''
+
+
 class CITool(ABC):
     """Class representing a continuous integration tool. We can use this
     class static methods to display local messages."""
+
+    @staticmethod
+    def env_vars() -> OneOf[Issue, EnvVars]:
+        """Obtain basic environment variables. """
+        res = EnvVars()
+        return one_of(lambda: [
+            res
+            for res.git_branch in git.get_branch()
+            for res.git_sha in git.get_current_commit_sha()
+        ])
 
     @staticmethod
     def open_block(name: str, description: str) -> None:
@@ -106,6 +160,37 @@ class CITool(ABC):
 
 class GithubActions(CITool):
     """Collection of methods used to communicate with Github."""
+
+    @staticmethod
+    def env_vars() -> OneOf[Issue, EnvVars]:
+        """Read the environment variables from Github Actions."""
+        res = EnvVars(
+            ci_env=True,
+            server_url='https://github.com',
+        )
+        return one_of(lambda: [
+            res
+            for [
+                repo,
+                res.run_id,
+                res.run_number,
+                res.github_token,
+                res.git_branch,
+                res.git_sha,
+                res.triggered_by,
+            ] in renv_vars([
+                'GITHUB_REPOSITORY',
+                'GITHUB_RUN_ID',
+                'GITHUB_RUN_NUMBER',
+                'GITHUB_TOKEN',
+                'GITHUB_REF',
+                'GITHUB_SHA',
+                'GITHUB_ACTOR',
+            ])
+            for res.run_url in [
+                f'{res.server_url}/{repo}/actions/runs/{res.run_id}'
+            ]
+        ])
 
     @staticmethod
     def open_block(name: str, _description: str) -> None:
@@ -155,6 +240,12 @@ class GithubActions(CITool):
 
 class Teamcity(CITool):
     """Collection of methods used to communicate with Teamcity."""
+
+    @staticmethod
+    def env_vars() -> OneOf[Issue, EnvVars]:
+        """Read basic environment variables from Teamcity."""
+        # WIP: Need to map the to the object
+        return Good(EnvVars(ci_env=True))
 
     @staticmethod
     def escape_msg(msg):

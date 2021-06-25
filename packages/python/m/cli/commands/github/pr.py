@@ -27,7 +27,7 @@ def add_parser(sub_parser, raw):
     add('--owner',
         type=str,
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_OWNER)')
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
     add('--repo',
         type=str,
         required=True,
@@ -41,7 +41,7 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from m.github import get_pr_info
+    from ....github.cli import get_pr_info
     token = arg.token
     repo = arg.repo
     owner = arg.owner

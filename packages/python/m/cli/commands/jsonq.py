@@ -53,5 +53,5 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from m.core.json import jsonq
+    from ...core.json import jsonq
     return jsonq(arg.payload, arg.separator, arg.warn, *arg.query)

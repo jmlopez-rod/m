@@ -32,5 +32,5 @@ def add_parser(sub_parser, raw):
 
 def run(_):
     # pylint: disable=import-outside-toplevel
-    from m import git
+    from .... import git
     return call_main(git.get_status, [], print_raw=True)

@@ -19,5 +19,5 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from m.ci.release_setup import release_setup
+    from ....ci.release_setup import release_setup
     return call_main(release_setup, [arg.m_dir, arg.new_ver, arg.changelog])

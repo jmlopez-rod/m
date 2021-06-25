@@ -12,5 +12,5 @@ def add_parser(sub_parser, raw):
 
 def run(_arg):
     # pylint: disable=import-outside-toplevel
-    from m.ci.init import init_repo
+    from ....ci.init import init_repo
     return call_main(init_repo, [])
