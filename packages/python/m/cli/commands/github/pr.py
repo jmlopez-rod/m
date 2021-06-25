@@ -26,7 +26,7 @@ def add_parser(sub_parser, raw):
     add = parser.add_argument
     add('--owner',
         type=str,
-        default=env('GITHUB_OWNER'),
+        default=env('GITHUB_REPOSITORY_OWNER'),
         help='repo owner (default: env.GITHUB_OWNER)')
     add('--repo',
         type=str,
