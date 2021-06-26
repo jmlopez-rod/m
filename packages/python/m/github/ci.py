@@ -137,7 +137,7 @@ def _get_commit(owner: str, repo: str, raw: Any) -> OneOf[Issue, Commit]:
             number=pr['number'],
             base_ref_name=pr['baseRefName'],
             base_ref_oid=pr['baseRefOid'],
-            head_ref_name=pr['headRefName'],
+            pr_branch=pr['headRefName'],
             head_ref_oid=pr['headRefOid'],
             title=pr['title'],
             body=pr['body'],

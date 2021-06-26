@@ -19,7 +19,7 @@ class AssociatedPullRequest:
     number: int
     base_ref_name: str
     base_ref_oid: str
-    head_ref_name: str
+    pr_branch: str
     head_ref_oid: str
     title: str
     body: str
@@ -34,6 +34,13 @@ class Commit:
     message: str
     url: str
     associated_pull_request: Optional[AssociatedPullRequest] = None
+
+    def get_pr_branch(self) -> str:
+        """Returns the pr branch if the commit has an associated pr or empty
+        string."""
+        if not self.associated_pull_request:
+            return ''
+        return self.associated_pull_request.pr_branch
 
 
 @dataclass
