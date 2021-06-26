@@ -61,8 +61,8 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....github.ci import get_ci_run_info, CommitInfo
-    return call_main(get_ci_run_info, [
+    from ....github.ci import get_raw_ci_run_info, CommitInfo
+    return call_main(get_raw_ci_run_info, [
         arg.token,
         CommitInfo(arg.owner, arg.repo, arg.sha),
         arg.pr,

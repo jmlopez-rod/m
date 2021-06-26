@@ -1,7 +1,15 @@
-from typing import TypeVar, Generic, Union, Iterator, cast
+from typing import TypeVar, Generic, Union, Iterator, cast, Callable
 
+A = TypeVar('A')  # pylint: disable=invalid-name
 B = TypeVar('B')  # pylint: disable=invalid-name
 G = TypeVar('G')  # pylint: disable=invalid-name
+LazyArg = Union[A, Callable[[], A]]
+
+
+def lazy_arg(param: LazyArg[A]) -> A:
+    """Return the result of evaluating `param` if it is function. Otherwise
+    param is returned."""
+    return param if not callable(param) else param()
 
 
 class StopBadIteration(Exception):
@@ -30,12 +38,16 @@ class OneOf(Generic[B, G]):
             yield self.value
 
     def map(self, fct):
-        """The given function is applied if this is a `Good` value"""
+        """The given function is applied if this is a `Good` value."""
         return self if self.is_bad else Good(fct(self.value))
 
     def map_bad(self, fct):
-        """The given function is applied if this is a `Bad` value"""
+        """The given function is applied if this is a `Bad` value."""
         return Bad(fct(self.value)) if self.is_bad else self
+
+    def get_or_else(self, or_: LazyArg[G]) -> G:
+        """Returns the value if its Good or the given argument if its a Bad."""
+        return lazy_arg(or_) if self.is_bad else cast(G, self.value)
 
 
 class Bad(OneOf[B, G]):
