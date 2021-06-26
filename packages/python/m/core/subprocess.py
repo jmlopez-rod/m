@@ -1,17 +1,18 @@
 from subprocess import Popen, PIPE, STDOUT
-from .fp import Good
-from .issue import issue
+from .fp import Good, OneOf
+from .issue import Issue, issue
 
 
-def eval_cmd(cmd):
+def eval_cmd(cmd: str) -> OneOf[Issue, str]:
     """Evaluate a bash command and return its output in a `Good`."""
-    params = dict(
+    with Popen(
+        cmd,
         shell=True,
         universal_newlines=True,
         executable="/bin/bash",
         stdout=PIPE,
-        stderr=STDOUT)
-    with Popen(cmd, **params) as process:
+        stderr=STDOUT
+    ) as process:
         out, _ = process.communicate()
         if process.returncode == 0:
             return Good(out.strip())

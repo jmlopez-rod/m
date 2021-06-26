@@ -2,8 +2,9 @@ import sys
 import json
 import traceback
 import inspect
+from typing import Any
 from collections import OrderedDict
-from .fp import Bad
+from .fp import Bad, OneOf
 
 
 class Issue(Exception):
@@ -77,6 +78,6 @@ class Issue(Exception):
         return json.dumps(self.to_dict(), indent=2)
 
 
-def issue(message: str, **kwargs):
+def issue(message: str, **kwargs) -> OneOf[Issue, Any]:
     """Shortcut to create a Bad OneOf containing an Issue."""
     return Bad(Issue(message, **kwargs))

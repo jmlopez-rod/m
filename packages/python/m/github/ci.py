@@ -18,7 +18,7 @@ from .ci_graph_queries import commit_query, PULL_REQUEST, LATEST_RELEASE
 
 def create_ci_query(
     pr_number: Optional[int] = None,
-    include_commit: bool = None,
+    include_commit: bool = False,
     include_release: bool = False,
 ) -> str:
     """Create github graphql query."""

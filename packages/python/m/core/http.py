@@ -1,7 +1,7 @@
 import json
 import http.client as httplib
 from urllib.parse import urlparse
-from typing import Mapping, Any
+from typing import Mapping, Any, Optional
 from .fp import OneOf, Good, one_of
 from .issue import Issue, issue
 from .json import parse_json
@@ -18,7 +18,7 @@ def fetch(
     url: str,
     headers: Mapping[str, str],
     method: str = 'GET',
-    body: str = None
+    body: Optional[str] = None
 ) -> OneOf[Issue, str]:
     """Send an http(s) request."""
     parts = urlparse(url)

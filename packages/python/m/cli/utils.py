@@ -3,7 +3,7 @@ import argparse
 import sys
 import json
 from glob import iglob
-from typing import Type, Dict, Union, MutableMapping as Map, cast
+from typing import Type, Dict, Union, MutableMapping as Map, cast, Optional
 from ..core.issue import Issue
 from ..core.io import error_block, CiTool, env
 from .validators import validate_non_empty_str
@@ -41,7 +41,7 @@ def import_mod(name: str) -> CmdModule:
     module = __import__(name)
     for part in name.split('.')[1:]:
         module = getattr(module, part)
-    return module
+    return cast(CmdModule, module)
 
 
 def get_command_modules(
@@ -199,7 +199,7 @@ def call_main(fun, args, print_raw=False) -> int:
     return 0
 
 
-def error(msg: str, issue: Issue = None) -> int:
+def error(msg: str, issue: Optional[Issue] = None) -> int:
     """print an error message"""
     CiTool.error(msg)
     if issue:

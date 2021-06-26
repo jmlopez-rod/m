@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Iterator, cast, Callable
+from typing import TypeVar, Generic, Union, Iterator, cast, Callable, List
 
 A = TypeVar('A')  # pylint: disable=invalid-name
 B = TypeVar('B')  # pylint: disable=invalid-name
@@ -62,7 +62,7 @@ class Good(OneOf[B, G]):
         OneOf.__init__(self, False, val)
 
 
-def one_of(comp):
+def one_of(comp: Callable[[], List[G]]) -> OneOf[B, G]:
     """`comp` should be a lambda function which returns an array with a single
     value. To be used so that we may iterate over OneOf objects that may raise
     the StopBadIteration exception.
@@ -70,6 +70,6 @@ def one_of(comp):
     try:
         return Good(comp()[0])
     except StopBadIteration as ex:
-        return ex.bad
+        return cast(Bad, ex.bad)
     except BaseException as ex:
         return Bad(ex)
