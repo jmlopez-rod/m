@@ -1,4 +1,7 @@
-def compare_values(test_case, items):
+from typing import List, Any
+
+
+def compare_values(test_case, items: List[Any]) -> None:
     """Compare multiple values without callng assertEqual
     on each line.
 
@@ -14,5 +17,5 @@ def compare_values(test_case, items):
 
     """
     for item in items:
-        a, b, *msg = item
-        test_case.assertEqual(a, b, msg and msg[0] or None)
+        x, y, *msg = item
+        test_case.assertEqual(x, y, msg and msg[0] or None)

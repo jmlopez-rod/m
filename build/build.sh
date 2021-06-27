@@ -12,6 +12,7 @@ mypy ./packages/python/tests
 
 # pylint
 pylint ./packages/python/m --rcfile=.pylintrc
+pylint ./packages/python/tests --rcfile=packages/python/tests/.pylintrc
 
 # pep8
 pycodestyle --format=pylint packages/python

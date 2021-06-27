@@ -10,3 +10,4 @@ runTest() {
 # Running manually so that we may select which test to turn off while debugging.
 runTest core.fp.OneOfTest
 runTest core.issue.IssueTest
+runTest ci.config.ConfigTest
