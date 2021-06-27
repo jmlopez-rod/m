@@ -62,7 +62,7 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
         include_release=True,
     )
     if git_env_box.is_bad:
-        return issue('git_env failure', cause=git_env_box.value)
+        return issue('git_env failure', cause=cast(Issue, git_env_box.value))
 
     res = cast(GithubCiRunInfo, git_env_box.value)
     pr = res.pull_request

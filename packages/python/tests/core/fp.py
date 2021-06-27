@@ -1,6 +1,6 @@
 import unittest
 from m.core.fp import Bad, Good, one_of
-from tests.utils import compare_values
+from ..util import compare_values
 
 
 class OneOfTest(unittest.TestCase):

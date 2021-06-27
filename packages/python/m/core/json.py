@@ -9,11 +9,11 @@ from .io import CITool
 
 def read_json(
     filename: Optional[str],
-    error_if_empty=False
+    error_if_empty: bool = False
 ) -> OneOf[Issue, Any]:
     """Return a `Good` containing the parsed contents of the json file."""
     try:
-        empty = '' if error_if_empty else 'null'
+        empty: str = '' if error_if_empty else 'null'
         if filename is None:
             return Good(json.loads(sys.stdin.read() or empty))
         return Good(json.loads(open(filename).read() or empty))
@@ -24,7 +24,10 @@ def read_json(
             cause=ex)
 
 
-def parse_json(data: str, error_if_empty=False) -> OneOf[Issue, Any]:
+def parse_json(
+    data: str,
+    error_if_empty: bool = False
+) -> OneOf[Issue, object]:
     """Return a `Good` containing the parsed contents of the json string."""
     try:
         empty = '' if error_if_empty else 'null'
@@ -67,7 +70,7 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
 
 
 def multi_get(
-    obj: Map[str, Any],
+    obj: object,
     *keys: str
 ) -> OneOf[Issue, List[Any]]:
     """Call `get` for every input specified by `keys`. It collects the invalid

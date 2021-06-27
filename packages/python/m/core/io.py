@@ -62,7 +62,7 @@ def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
             cause=ex)
 
 
-def _ver_str(major, minor, patch):
+def _ver_str(major: int, minor: int, patch: int) -> str:
     return f'{major}.{minor}.{patch}'
 
 

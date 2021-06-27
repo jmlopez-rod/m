@@ -11,3 +11,5 @@ good-names=_,
   i, j, k,
   x, y, z,
   ex, pr, fp
+
+max-args=7

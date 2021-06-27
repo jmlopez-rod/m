@@ -1,6 +1,6 @@
 from distutils.version import StrictVersion
 from dataclasses import dataclass
-from typing import Optional, cast
+from typing import Optional, List, cast
 from .config import ReleaseFrom, Config
 from .git_env import GitEnv
 from ..core.fp import Good, OneOf
@@ -68,7 +68,7 @@ def _verify_pr(
     if git_env.pull_request:
         pr = git_env.pull_request
         if is_release_pr:
-            allowed_files = []
+            allowed_files: List[str] = []
             if release_from:
                 allowed_files = release_from.allowed_files
             if pr.file_count > len(allowed_files):

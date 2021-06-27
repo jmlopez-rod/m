@@ -2,17 +2,44 @@ import sys
 import json
 import traceback
 import inspect
-from typing import Any
 from collections import OrderedDict
-from .fp import Bad, OneOf
+from typing import Optional, List, cast
+from typing_extensions import TypedDict
+from .fp import Bad, OneOf, G
+
+
+IssueDict = TypedDict(
+    'IssueDict',
+    {
+        'message': str,
+        'description': str,
+        'cause': object,
+        'data': object,
+        'traceback': List[str]
+    },
+    total=False,
+)
 
 
 class Issue(Exception):
     """Wrapper to keep track of all exceptions. It provides a 'cause' field
     so that we may know why an issue was triggered."""
+    message: str
+    description: Optional[str]
+    cause: Optional[Exception]
+    data: Optional[object]
+    include_traceback: bool
+    cause_tb: Optional[List[str]]
 
-    def __init__(self, message, **kwargs):
-        """Create an Issue. The available keyword arguments are:
+    def __init__(
+        self,
+        message: str,
+        description: Optional[str] = None,
+        cause: Optional[Exception] = None,
+        data: Optional[object] = None,
+        include_traceback: bool = True
+    ):
+        """Create an Issue.
 
         - description: More in depth detail on the issue
         - cause: The exception that or Issue that is responsible for this
@@ -22,8 +49,7 @@ class Issue(Exception):
         """
         Exception.__init__(self)
         self.message = message
-        self.description = kwargs.get('description')
-        cause = kwargs.get('cause')
+        self.description = description
         self.cause = cause
         if cause and not isinstance(cause, Issue):
             # https://stackoverflow.com/a/12539332/788553
@@ -41,8 +67,8 @@ class Issue(Exception):
                 ]
             finally:
                 pass
-        self.data = kwargs.get('data')
-        self.include_traceback = kwargs.get('include_traceback', True)
+        self.data = data
+        self.include_traceback = include_traceback
         if self.include_traceback:
             frame = inspect.currentframe()
             try:
@@ -54,11 +80,12 @@ class Issue(Exception):
             finally:
                 del frame
 
-    def to_dict(self):
+    def to_dict(self) -> IssueDict:
         """Convert to a ordered dictionary so that each of the properties are
         written in an expected order.
         """
-        obj = OrderedDict([('message', self.message)])
+        obj = cast(IssueDict, OrderedDict())
+        obj['message'] = self.message
         if self.description:
             obj['description'] = self.description
         if self.data:
@@ -74,10 +101,16 @@ class Issue(Exception):
                     traceback=self.cause_tb)
         return obj
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self.to_dict(), indent=2)
 
 
-def issue(message: str, **kwargs) -> OneOf[Issue, Any]:
+def issue(
+    message: str,
+    description: Optional[str] = None,
+    cause: Optional[Exception] = None,
+    data: Optional[object] = None,
+    include_traceback: bool = True
+) -> OneOf[Issue, G]:
     """Shortcut to create a Bad OneOf containing an Issue."""
-    return Bad(Issue(message, **kwargs))
+    return Bad(Issue(message, description, cause, data, include_traceback))

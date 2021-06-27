@@ -5,6 +5,7 @@ export PYTHONPATH="${PWD}/packages/python"
 
 # static checks
 mypy ./packages/python/m
+mypy ./packages/python/tests
 
 # tests
 ./packages/python/tests/run.sh
