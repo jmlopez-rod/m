@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Mapping, Any
 from ..core.fp import OneOf, one_of, Good
-from ..core.json import read_json, multi_get
 from ..core.issue import Issue, issue
+from ..core import json
 
 
 @dataclass
@@ -47,7 +47,8 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """Read an m configuration file."""
     return one_of(lambda: [
         Config(owner, repo, version, m_dir, release_from)
-        for data in read_json(f'{m_dir}/m.json')
-        for owner, repo, version in multi_get(data, 'owner', 'repo', 'version')
+        for data in json.read_json(f'{m_dir}/m.json')
+        for owner, repo, version in json.multi_get(
+            data, 'owner', 'repo', 'version')
         for release_from in read_release_from(data.get('releaseFrom', {}))
     ])
