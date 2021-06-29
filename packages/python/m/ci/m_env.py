@@ -25,7 +25,11 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
         for config in read_config(m_dir)
         for env_vars in CiTool.env_vars()
         for git_env in get_git_env(config, env_vars)
-        for release_env in get_release_env(config, env_vars, git_env)
+        for release_env in get_release_env(
+            config,
+            env_vars,
+            git_env
+        ).flat_map_bad(lambda x: issue('release_env failure', cause=x))
     ]).flat_map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
 
 
