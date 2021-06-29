@@ -26,7 +26,7 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
         for env_vars in CiTool.env_vars()
         for git_env in get_git_env(config, env_vars)
         for release_env in get_release_env(config, env_vars, git_env)
-    ]).map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
+    ]).flat_map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
 
 
 def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
@@ -68,4 +68,5 @@ def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, int]:
         for m_env in get_m_env(m_dir)
         for contents in _m_env_vars(m_env)
         for _ in write_file(f'{m_dir}/.m/env.list', contents)
-    ]).map_bad(lambda x: issue('write_m_env failure', cause=cast(Issue, x)))
+    ]).flat_map_bad(
+        lambda x: issue('write_m_env failure', cause=cast(Issue, x)))

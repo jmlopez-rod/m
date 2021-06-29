@@ -190,7 +190,7 @@ class GithubActions(CITool):
             for res.run_url in [
                 f'{res.server_url}/{repo}/actions/runs/{res.run_id}'
             ]
-        ]).map_bad(lambda x: issue(
+        ]).flat_map_bad(lambda x: issue(
             'GH Actions env_vars failure', cause=cast(Issue, x)))
 
     @staticmethod
