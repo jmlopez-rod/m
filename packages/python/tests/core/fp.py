@@ -20,6 +20,5 @@ class OneOfTest(unittest.TestCase):
         self.assertIsInstance(bad, Bad)
         self.assertIsInstance(left, Bad)
         self.assertIsInstance(right, Good)
-        self.assertIsInstance(bad.value, TypeError)
         self.assertEqual(left.value, 'error')
         self.assertEqual(right.value, 99)

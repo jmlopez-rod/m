@@ -48,7 +48,7 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
     total_files = [
         len(item.allowed_files)
         for _, item in config.release_from.items()]
-    max_files = max(0, 0, *total_files)
+    max_files = max(0, *total_files)
     pr_number = get_pr_number(branch)
     git_env_box = get_ci_run_info(
         token=env_vars.github_token,
