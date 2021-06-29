@@ -25,4 +25,4 @@ jobs:
           pip install typing_extensions
       - name: Publish
         run: |
-          ./build.publish.sh
+          ./build/publish.sh
