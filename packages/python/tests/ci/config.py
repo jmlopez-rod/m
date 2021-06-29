@@ -14,14 +14,14 @@ class ConfigTest(unittest.TestCase):
             result = read_config('m')
             self.assertTrue(result.is_bad)
             err = cast(Issue, result.value)
-            self.assertEqual(err.message, 'made up issue')
+            self.assertEqual(err.message, 'read_config failure')
 
     def test_empty_config(self):
         with patch('m.core.json.read_json') as read_json_mock:
             read_json_mock.return_value = Good({})
             result = read_config('m')
             self.assertTrue(result.is_bad)
-            err = cast(Issue, result.value)
+            err = cast(Issue, cast(Issue, result.value).cause)
             self.assertEqual(err.message, 'multi_get key retrieval failure')
             if isinstance(err.data, list):
                 msgs = {x['cause']['message'] for x in err.data}
@@ -46,7 +46,7 @@ class ConfigTest(unittest.TestCase):
             ))
             result = read_config('m')
             self.assertTrue(result.is_bad)
-            err = cast(Issue, result.value)
+            err = cast(Issue, cast(Issue, result.value).cause)
             missing = ', '.join([
                 'master.prBranch',
                 'master.allowedFiles',

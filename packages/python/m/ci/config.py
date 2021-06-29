@@ -51,4 +51,4 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
         for owner, repo, version in json.multi_get(
             data, 'owner', 'repo', 'version')
         for release_from in read_release_from(data.get('releaseFrom', {}))
-    ])
+    ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))
