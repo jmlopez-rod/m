@@ -16,7 +16,7 @@ class AssociatedPullRequest:
     # pylint: disable=too-many-instance-attributes
     author: Author
     merged: bool
-    number: int
+    pr_number: int
     base_ref_name: str
     base_ref_oid: str
     pr_branch: str
