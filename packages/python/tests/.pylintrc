@@ -6,6 +6,7 @@ disable=
 	missing-function-docstring,
 	missing-module-docstring,
 	import-error,
+  duplicate-code,
 
 good-names=_,
   i, j, k,

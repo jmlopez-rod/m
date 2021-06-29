@@ -3,7 +3,6 @@ from typing import List, Optional, Any
 from ..core.fp import OneOf, one_of, Good
 from ..core.issue import Issue
 from ..core.json import get
-from .api import graphql
 from .ci_dataclasses import (
     Release,
     PullRequest,
@@ -14,6 +13,7 @@ from .ci_dataclasses import (
     GithubCiRunInfo,
 )
 from .ci_graph_queries import commit_query, PULL_REQUEST, LATEST_RELEASE
+from . import api
 
 
 def create_ci_query(
@@ -73,7 +73,7 @@ def get_build_sha(
     )
     return one_of(lambda: [
         _parse_commit_message(data, sha)
-        for res in graphql(token, query, variables)
+        for res in api.graphql(token, query, variables)
         for data in get(res, 'repository.commit.message')
     ])
 
@@ -94,7 +94,7 @@ def get_raw_ci_run_info(
     return one_of(lambda: [
         data
         for variables['sha'] in get_build_sha(token, owner, repo, sha)
-        for res in graphql(token, query, variables)
+        for res in api.graphql(token, query, variables)
         for data in get(res, 'repository')
     ])
 
