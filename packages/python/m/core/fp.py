@@ -70,6 +70,8 @@ def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
     try:
         return Good(comp()[0])
     except StopBadIteration as ex:
+        print('stop-bad-iteration:', ex.bad)
         return cast(Bad, ex.bad)
     except BaseException as ex:
+        print('base-exception:', ex)
         return Bad(ex)
