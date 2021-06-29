@@ -19,4 +19,4 @@ cd .stage && npm pack
 
 # Only publish with the CI tool
 [ "$M_CI" == "True" ] || exit 0
-npm publish *.tgz
+cd .. && npm publish .stage/*.tgz

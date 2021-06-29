@@ -23,7 +23,6 @@ jobs:
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
           pip install typing_extensions
-      - name: M Environment
+      - name: Publish
         run: |
-          m ci env m
-          cat m/.m/env.list
+          ./build.publish.sh
