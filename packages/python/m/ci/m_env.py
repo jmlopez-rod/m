@@ -23,8 +23,13 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
     return fp.one_of(lambda: [
         MEnv(config, env_vars, git_env, release_env)
         for config in read_config(m_dir)
-        for env_vars in CiTool.env_vars()
-        for git_env in get_git_env(config, env_vars)
+        for env_vars in CiTool.env_vars().flat_map_bad(
+            lambda x: issue('env_vars failure', cause=x)
+        )
+        for git_env in get_git_env(
+            config,
+            env_vars
+        ).flat_map_bad(lambda x: issue('git_env failure', cause=x))
         for release_env in get_release_env(
             config,
             env_vars,
