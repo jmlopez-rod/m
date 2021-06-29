@@ -3,7 +3,7 @@ import json
 import traceback
 import inspect
 from collections import OrderedDict
-from typing import Optional, List, Any, cast
+from typing import Optional, List, cast, Any
 from typing_extensions import TypedDict
 from . import fp
 

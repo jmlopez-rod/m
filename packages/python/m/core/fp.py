@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Union, Iterator, cast, Callable, List
+from typing import Any, TypeVar, Generic, Union, Iterator, cast, Callable, List
 
 A = TypeVar('A')  # pylint: disable=invalid-name
 B = TypeVar('B')  # pylint: disable=invalid-name
@@ -41,9 +41,9 @@ class OneOf(Generic[B, G]):
         """The given function is applied if this is a `Good` value."""
         return self if self.is_bad else Good(fct(self.value))
 
-    def map_bad(self, fct):
+    def map_bad(self, fct: Callable[[B], 'OneOf']) -> 'OneOf':
         """The given function is applied if this is a `Bad` value."""
-        return Bad(fct(self.value)) if self.is_bad else self
+        return Bad(fct(cast(B, self.value))) if self.is_bad else self
 
     def get_or_else(self, or_: LazyArg[G]) -> G:
         """Returns the value if its Good or the given argument if its a Bad."""
@@ -62,7 +62,7 @@ class Good(OneOf[B, G]):
         OneOf.__init__(self, False, val)
 
 
-def one_of(comp: Callable[[], List[G]]) -> OneOf[B, G]:
+def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
     """`comp` should be a lambda function which returns an array with a single
     value. To be used so that we may iterate over OneOf objects that may raise
     the StopBadIteration exception.

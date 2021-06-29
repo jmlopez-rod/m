@@ -2,7 +2,7 @@ import os
 import sys
 from dataclasses import dataclass
 from abc import ABC
-from typing import Optional, Type, List
+from typing import Optional, Type, List, cast
 from .. import git
 from .fp import OneOf, Good, one_of
 from .issue import Issue, issue
@@ -190,7 +190,8 @@ class GithubActions(CITool):
             for res.run_url in [
                 f'{res.server_url}/{repo}/actions/runs/{res.run_id}'
             ]
-        ])
+        ]).map_bad(lambda x: issue(
+            'GH Actions env_vars failure', cause=cast(Issue, x)))
 
     @staticmethod
     def open_block(name: str, _description: str) -> None:
