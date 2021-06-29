@@ -21,6 +21,7 @@ jobs:
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
+          pip install typing_extensions
       - name: M Environment
         run: |
           m ci env m
