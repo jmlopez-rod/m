@@ -1,3 +1,4 @@
+import traceback
 from typing import Any, TypeVar, Generic, Union, Iterator, cast, Callable, List
 
 A = TypeVar('A')  # pylint: disable=invalid-name
@@ -74,4 +75,5 @@ def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
         return cast(Bad, ex.bad)
     except BaseException as ex:
         print('base-exception:', ex)
+        traceback.print_exc()
         return Bad(ex)
