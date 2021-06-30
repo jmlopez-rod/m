@@ -3,14 +3,14 @@ from dataclasses import dataclass
 from typing import cast
 from ..core import fp
 from ..core.issue import Issue, issue
-from ..core.io import EnvVars, CiTool, write_file
+from ..core.io import EnvVars, CiTool, write_file, JsonStr
 from .config import Config, read_config
 from .git_env import GitEnv, get_git_env
 from .release_env import ReleaseEnv, get_release_env
 
 
 @dataclass
-class MEnv:
+class MEnv(JsonStr):
     """Contains all the information required for a CI run."""
     config: Config
     env_vars: EnvVars
@@ -64,6 +64,7 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         M_IS_RELEASE=release.is_release,
         M_IS_RELEASE_PR=release.is_release_pr,
     )
+    print(str(m_env))
     return fp.Good('\n'.join([f'{key}={env[key]}' for key in env]))
 
 

@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import Optional, List
+from ..core.io import JsonStr
 
 
 @dataclass
-class Author:
+class Author(JsonStr):
     """An object representing a commiter."""
     login: str
     avatar_url: str
@@ -11,7 +12,7 @@ class Author:
 
 
 @dataclass
-class AssociatedPullRequest:
+class AssociatedPullRequest(JsonStr):
     """Information for commits that are associated with a pull request."""
     # pylint: disable=too-many-instance-attributes
     author: Author
@@ -26,7 +27,7 @@ class AssociatedPullRequest:
 
 
 @dataclass
-class Commit:
+class Commit(JsonStr):
     """The git commit info."""
     author_login: str
     short_sha: str
@@ -44,7 +45,7 @@ class Commit:
 
 
 @dataclass
-class PullRequest:
+class PullRequest(JsonStr):
     """Pull request information."""
     # pylint: disable=too-many-instance-attributes
     author: Author
@@ -61,7 +62,7 @@ class PullRequest:
 
 
 @dataclass
-class Release:
+class Release(JsonStr):
     """Github release <==> Git tag."""
     name: str
     tag_name: str
@@ -69,7 +70,7 @@ class Release:
 
 
 @dataclass
-class GithubCiRunInfo:
+class GithubCiRunInfo(JsonStr):
     """The main information we need for a ci run."""
     commit: Commit
     pull_request: Optional[PullRequest] = None
@@ -77,7 +78,7 @@ class GithubCiRunInfo:
 
 
 @dataclass
-class CommitInfo:
+class CommitInfo(JsonStr):
     """A commit can be tracked with the following properties."""
     owner: str
     repo: str

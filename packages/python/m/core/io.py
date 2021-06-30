@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 from dataclasses import dataclass
 from abc import ABC
 from typing import Optional, Type, List, cast
@@ -90,8 +91,17 @@ def prompt_next_version(version: str) -> str:
     return result
 
 
+class JsonStr:
+    def __str__(self) -> str:
+        return json.dumps(
+            self.__dict__,
+            default=lambda o: o.__dict__,
+            indent=2
+        )
+
+
 @dataclass
-class EnvVars:
+class EnvVars(JsonStr):
     """Class to store the values of the environment variables."""
     # pylint: disable=too-many-instance-attributes
     ci_env: bool = False

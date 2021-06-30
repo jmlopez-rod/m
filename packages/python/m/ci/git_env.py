@@ -6,14 +6,14 @@ from ..github.ci_dataclasses import GithubCiRunInfo
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue, issue
 from .config import Config
-from ..core.io import EnvVars
+from ..core.io import EnvVars, JsonStr
 from ..github.ci import (
     Commit, CommitInfo, PullRequest, Release, get_ci_run_info
 )
 
 
 @dataclass
-class GitEnv:
+class GitEnv(JsonStr):
     """Object to store the git configuration."""
     sha: str
     branch: str
