@@ -83,9 +83,9 @@ def _verify_pr(
                     data=dict(
                         modified_fles=pr.files,
                         allowed_files=allowed_files))
-            pr_num = pr.pr_number
-            result.version = f'0.0.0-pr{pr_num}.b{run_id}'
-            return Good(result)
+        pr_num = pr.pr_number
+        result.version = f'0.0.0-pr{pr_num}.b{run_id}'
+        return Good(result)
     return Good(None)
 
 
