@@ -12,12 +12,13 @@ rm -rf .stage
 cp -r ./packages ./.stage
 cp ./package.json ./.stage/package.json
 
-find .stage | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
+find ./.stage | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" ./.stage/package.json
 
-cd .stage && npm pack
+cd .stage && npm pack && cd ..
 
 # Only publish with the CI tool
 [ "$M_CI" == "True" ] || exit 0
+
 npmTag=$(m ci npm_tag "$M_TAG")
-cd .. && npm publish .stage/*.tgz --tag "$npmTag"
+npm publish .stage/*.tgz --tag "$npmTag"
