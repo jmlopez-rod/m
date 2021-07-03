@@ -92,6 +92,8 @@ def prompt_next_version(version: str) -> str:
 
 
 class JsonStr:
+    """Base class stringify dataclasses."""
+
     def __str__(self) -> str:
         return json.dumps(
             self.__dict__,

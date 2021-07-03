@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 from ..core.io import JsonStr
+from ..ci.config import ReleaseFrom
 
 
 @dataclass
@@ -43,6 +44,12 @@ class Commit(JsonStr):
             return ''
         return self.associated_pull_request.pr_branch
 
+    def is_release(self, release_from: Optional[ReleaseFrom]) -> bool:
+        """Determine if the current commit should create a release."""
+        if not release_from:
+            return False
+        return release_from.pr_branch == self.get_pr_branch()
+
 
 @dataclass
 class PullRequest(JsonStr):
@@ -59,6 +66,12 @@ class PullRequest(JsonStr):
     file_count: int
     files: List[str]
     is_draft: bool
+
+    def is_release_pr(self, release_from: Optional[ReleaseFrom]) -> bool:
+        """Determine if the pull request is a release pull request."""
+        if not release_from:
+            return False
+        return release_from.pr_branch == self.pr_branch
 
 
 @dataclass

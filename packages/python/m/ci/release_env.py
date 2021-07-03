@@ -23,15 +23,14 @@ def _found(ver: str, res: ReleaseEnv) -> OneOf[Issue, ReleaseEnv]:
 
 
 def _verify_version(
-    git_env: GitEnv,
     ver: str,
+    gh_latest: str,
     is_release_pr: bool,
     is_release: bool
 ) -> OneOf[Issue, None]:
     """Helper function to stop the flow in case the version was improperly
     modified."""
-    if git_env.release:
-        gh_latest = git_env.release.tag_name
+    if gh_latest:
         try:
             p_ver = StrictVersion(ver)
             p_latest = StrictVersion(gh_latest)
@@ -71,13 +70,13 @@ def _verify_pr(
             allowed_files: List[str] = []
             if release_from:
                 allowed_files = release_from.allowed_files
-            if pr.file_count > len(allowed_files):
+            if allowed_files and pr.file_count > len(allowed_files):
                 return issue(
                     'max files threshold exceeded in release pr',
                     data=dict(
                         allowed_files=allowed_files,
                         file_count=pr.file_count))
-            if not set(pr.files).issubset(set(allowed_files)):
+            if allowed_files and not set(pr.files).issubset(set(allowed_files)):
                 return issue(
                     'modified files not subset of the allowed files.',
                     data=dict(
@@ -96,14 +95,8 @@ def get_release_env(
 ) -> OneOf[Issue, ReleaseEnv]:
     """Provide the release environment information."""
     release_from = config.release_from.get(git_env.target_branch)
-    is_release = False
-    is_release_pr = False
-    if release_from:
-        pr_branch = release_from.pr_branch
-        if git_env.commit:
-            is_release = pr_branch == git_env.commit.get_pr_branch()
-        if git_env.pull_request:
-            is_release_pr = pr_branch == git_env.pull_request.pr_branch
+    is_release = git_env.is_release(release_from)
+    is_release_pr = git_env.is_release_pr(release_from)
     result = ReleaseEnv(
         version='',
         is_release=is_release,
@@ -115,7 +108,8 @@ def get_release_env(
     ver = config.version
     target_branch = git_env.target_branch
 
-    _g1 = _verify_version(git_env, ver, is_release_pr, is_release)
+    gh_latest = git_env.release.tag_name if git_env.release else ''
+    _g1 = _verify_version(ver, gh_latest, is_release_pr, is_release)
     if _g1.is_bad:
         return cast(OneOf[Issue, ReleaseEnv], _g1)
 

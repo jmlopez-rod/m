@@ -5,7 +5,7 @@ from typing import List, Optional, cast
 from ..github.ci_dataclasses import GithubCiRunInfo
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue, issue
-from .config import Config
+from .config import Config, ReleaseFrom
 from ..core.io import EnvVars, JsonStr
 from ..github.ci import (
     Commit, CommitInfo, PullRequest, Release, get_ci_run_info
@@ -21,6 +21,18 @@ class GitEnv(JsonStr):
     commit: Optional[Commit] = None
     pull_request: Optional[PullRequest] = None
     release: Optional[Release] = None
+
+    def is_release(self, release_from: Optional[ReleaseFrom]) -> bool:
+        """Determine if the current commit should create a release."""
+        if not self.commit:
+            return False
+        return self.commit.is_release(release_from)
+
+    def is_release_pr(self, release_from: Optional[ReleaseFrom]) -> bool:
+        """Determine if the the current pr is a release pr."""
+        if not self.pull_request:
+            return False
+        return self.pull_request.is_release_pr(release_from)
 
 
 def get_pr_number(branch: str) -> Optional[int]:
@@ -48,8 +60,6 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
     total_files = [
         len(item.allowed_files)
         for _, item in config.release_from.items()]
-    # TODO: Write tests to make sure unexpected exceptions gives us the info
-    # we need.
     max_files = max(0, 0, *total_files)
     pr_number = get_pr_number(branch)
     git_env_box = get_ci_run_info(
