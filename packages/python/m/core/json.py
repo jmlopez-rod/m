@@ -16,7 +16,8 @@ def read_json(
         empty: str = '' if error_if_empty else 'null'
         if filename is None:
             return Good(json.loads(sys.stdin.read() or empty))
-        return Good(json.loads(open(filename).read() or empty))
+        with open(filename) as file_handle:
+            return Good(json.loads(file_handle.read() or empty))
     except Exception as ex:
         return issue(
             'failed to read json file',

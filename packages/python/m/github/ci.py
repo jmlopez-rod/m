@@ -54,11 +54,14 @@ def get_build_sha(
     token: str,
     owner: str,
     repo: str,
-    sha: str
+    sha: str,
+    get_sha: bool = True
 ) -> OneOf[Issue, str]:
     """When building prs, we are not given the actual sha of the commit.
     Instead, we get the sha of the merge commit. This will give us the sha
     that we are looking for."""
+    if not get_sha:
+        return Good(sha)
     params = ['$owner: String!', '$repo: String!', '$sha: String!']
     params_str = ', '.join(params)
     query = f'''query ({params_str}) {{
@@ -83,7 +86,8 @@ def get_raw_ci_run_info(
     commit_info: CommitInfo,
     pr_number: Optional[int],
     file_count: int,
-    include_release: bool
+    include_release: bool,
+    get_sha: bool = True
 ) -> OneOf[Issue, Any]:
     """Retrieve the information of the given Github PR."""
     query = create_ci_query(pr_number, True, include_release)
@@ -93,7 +97,7 @@ def get_raw_ci_run_info(
         variables['pr'] = pr_number
     return one_of(lambda: [
         data
-        for variables['sha'] in get_build_sha(token, owner, repo, sha)
+        for variables['sha'] in get_build_sha(token, owner, repo, sha, get_sha)
         for res in api.graphql(token, query, variables)
         for data in get(res, 'repository')
     ])
