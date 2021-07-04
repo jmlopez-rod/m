@@ -45,22 +45,23 @@ class Config:
             p_latest = StrictVersion(gh_latest)
             ver_gt_latest = p_ver > p_latest
             ver_lt_latest = p_ver < p_latest
+            ver_eq_latest = p_ver == p_latest
         except Exception as ex:
             return issue('error comparing versions', cause=ex, data=err_data)
+        msg: str = ''
         if is_release_pr:
             if not ver_gt_latest:
-                return issue(
-                    'config version needs to be bumped',
-                    data=err_data)
+                msg = 'version needs to be bumped'
         elif not is_release:
             if ver_lt_latest:
-                return issue(
-                    'config version is behind (Branch may need to be updated)',
-                    data=err_data)
-            if ver_gt_latest:
-                return issue(
-                    'version is ahead (Revert configuration change)',
-                    data=err_data)
+                msg = 'version is behind (Branch may need to be updated)'
+            elif ver_gt_latest:
+                msg = 'version is ahead (Revert configuration change)'
+        elif is_release:
+            if ver_eq_latest or ver_lt_latest:
+                msg = 'version was not bumped during release pr'
+        if msg:
+            return issue(msg, data=err_data)
         return Good(0)
 
 

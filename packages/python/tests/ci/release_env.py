@@ -93,7 +93,7 @@ class ReleaseEnvTest(unittest.TestCase):
             iss = cast(Issue, result.value)
             self.assertEqual(
                 iss.message,
-                'config version is behind (Branch may need to be updated)'
+                'version is behind (Branch may need to be updated)'
             )
 
     def test_master(self):
@@ -147,7 +147,7 @@ class ReleaseEnvTest(unittest.TestCase):
             self.assertTrue(result.is_bad)
             self.assertEqual(
                 result.value.message,
-                'config version needs to be bumped'
+                'version needs to be bumped'
             )
 
     def test_release_pr(self):
@@ -173,7 +173,7 @@ class ReleaseEnvTest(unittest.TestCase):
     def test_release_merge(self):
         """Should use the proper version number"""
         self.env_vars.ci_env = True
-        self.config.version = '1.1.1'
+        self.config.version = '1.1.2'
         self.env_vars.git_branch = 'refs/heads/master'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
@@ -183,7 +183,7 @@ class ReleaseEnvTest(unittest.TestCase):
             result = self._get_env()
             self.assertFalse(result.is_bad)
             self.assertEqual(result.value.__dict__, dict(
-                version='1.1.1',
+                version='1.1.2',
                 is_release=True,
                 is_release_pr=False,
                 release_from=self.config.release_from_dict['master'],
