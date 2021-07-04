@@ -93,7 +93,7 @@ class ReleaseEnvTest(unittest.TestCase):
             iss = cast(Issue, result.value)
             self.assertEqual(
                 iss.message,
-                'version is behind 1.1.1. Merge latest?'
+                'config version is behind (Branch may need to be updated)'
             )
 
     def test_master(self):
@@ -147,7 +147,7 @@ class ReleaseEnvTest(unittest.TestCase):
             self.assertTrue(result.is_bad)
             self.assertEqual(
                 result.value.message,
-                'version needs to be greater than 1.1.1'
+                'config version needs to be bumped'
             )
 
     def test_release_pr(self):

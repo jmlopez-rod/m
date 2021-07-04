@@ -1,3 +1,4 @@
+from distutils.version import StrictVersion
 from dataclasses import dataclass
 from typing import List, Mapping, Any
 from ..core.fp import OneOf, Good
@@ -20,6 +21,47 @@ class Config:
     version: str
     m_dir: str
     release_from_dict: Mapping[str, ReleaseFrom]
+
+    def verify_version(
+        self,
+        gh_latest: str,
+        is_release_pr: bool,
+        is_release: bool,
+    ) -> OneOf[Issue, int]:
+        """Return 0 if everything is well with the version in the
+        configuration. Otherwise it will return an issue stating why
+        the version in the configuration is not valid. If `gh_latest`
+        is not provided then the checks are skipped."""
+        if not gh_latest:
+            return Good(0)
+        err_data = dict(
+            config_version=self.version,
+            gh_latest=gh_latest,
+            is_release=is_release,
+            is_release_pr=is_release_pr,
+        )
+        try:
+            p_ver = StrictVersion(self.version)
+            p_latest = StrictVersion(gh_latest)
+            ver_gt_latest = p_ver > p_latest
+            ver_lt_latest = p_ver < p_latest
+        except Exception as ex:
+            return issue('error comparing versions', cause=ex, data=err_data)
+        if is_release_pr:
+            if not ver_gt_latest:
+                return issue(
+                    'config version needs to be bumped',
+                    data=err_data)
+        elif not is_release:
+            if ver_lt_latest:
+                return issue(
+                    'config version is behind (Branch may need to be updated)',
+                    data=err_data)
+            if ver_gt_latest:
+                return issue(
+                    'version is ahead (Revert configuration change)',
+                    data=err_data)
+        return Good(0)
 
 
 def read_release_from(
