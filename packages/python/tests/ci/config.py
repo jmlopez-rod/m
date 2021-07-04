@@ -81,6 +81,6 @@ class ConfigTest(unittest.TestCase):
                 m_dir='m',
             )}, config.__dict__)
             self.assertEqual(
-                config.release_from['master'].allowed_files,
+                config.release_from_dict['master'].allowed_files,
                 ['CHANGELOG.md']
             )

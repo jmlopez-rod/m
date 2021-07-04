@@ -19,7 +19,7 @@ class Config:
     repo: str
     version: str
     m_dir: str
-    release_from: Mapping[str, ReleaseFrom]
+    release_from_dict: Mapping[str, ReleaseFrom]
 
 
 def read_release_from(

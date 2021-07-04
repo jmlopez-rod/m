@@ -98,7 +98,7 @@ def get_release_env(
     git_env: GitEnv,
 ) -> OneOf[Issue, ReleaseEnv]:
     """Provide the release environment information."""
-    release_from = config.release_from.get(git_env.target_branch)
+    release_from = config.release_from_dict.get(git_env.target_branch)
     is_release = git_env.is_release(release_from)
     is_release_pr = git_env.is_release_pr(release_from)
     result = ReleaseEnv(

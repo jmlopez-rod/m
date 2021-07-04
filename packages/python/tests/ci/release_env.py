@@ -34,7 +34,7 @@ class ReleaseEnvTest(unittest.TestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        release_from=dict(
+        release_from_dict=dict(
             master=ReleaseFrom(
                 pr_branch='release',
                 allowed_files=['m/m.json', 'CHANGELOG.md']
@@ -71,7 +71,7 @@ class ReleaseEnvTest(unittest.TestCase):
             version='0.0.0-local.git-sha-abc-123',
             is_release=False,
             is_release_pr=False,
-            release_from=self.config.release_from['master'],
+            release_from=self.config.release_from_dict['master'],
         ))
 
     def test_master_behind(self):
@@ -111,7 +111,7 @@ class ReleaseEnvTest(unittest.TestCase):
                 version='0.0.0-master.b404',
                 is_release=False,
                 is_release_pr=False,
-                release_from=self.config.release_from['master'],
+                release_from=self.config.release_from_dict['master'],
             ))
 
     def test_pr_1(self):
@@ -129,7 +129,7 @@ class ReleaseEnvTest(unittest.TestCase):
                 version='0.0.0-pr1.b404',
                 is_release=False,
                 is_release_pr=False,
-                release_from=self.config.release_from['master'],
+                release_from=self.config.release_from_dict['master'],
             ))
 
     def test_release_pr_no_update(self):
@@ -167,7 +167,7 @@ class ReleaseEnvTest(unittest.TestCase):
                 version='0.0.0-pr2.b404',
                 is_release=False,
                 is_release_pr=True,
-                release_from=self.config.release_from['master'],
+                release_from=self.config.release_from_dict['master'],
             ))
 
     def test_release_merge(self):
@@ -186,14 +186,14 @@ class ReleaseEnvTest(unittest.TestCase):
                 version='1.1.1',
                 is_release=True,
                 is_release_pr=False,
-                release_from=self.config.release_from['master'],
+                release_from=self.config.release_from_dict['master'],
             ))
 
     def test_release_pr_empty_allowed(self):
         """Empty allowed should allow you to commit any files."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
-        self.config.release_from['master'].allowed_files = []
+        self.config.release_from_dict['master'].allowed_files = []
         self.env_vars.git_branch = 'refs/pull/2'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
@@ -206,5 +206,5 @@ class ReleaseEnvTest(unittest.TestCase):
                 version='0.0.0-pr2.b404',
                 is_release=False,
                 is_release_pr=True,
-                release_from=self.config.release_from['master'],
+                release_from=self.config.release_from_dict['master'],
             ))
