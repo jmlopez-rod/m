@@ -1,5 +1,6 @@
 import unittest
-from m.core.issue import Issue, issue
+from m.core import issue
+from m.core.issue import Issue
 from m.core.fp import Bad
 
 

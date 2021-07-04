@@ -1,6 +1,7 @@
 import re
 from typing import List, Optional, Any
-from ..core.fp import OneOf, one_of, Good
+from ..core import one_of
+from ..core.fp import OneOf, Good
 from ..core.issue import Issue
 from ..core.json import get
 from .ci_dataclasses import (

@@ -2,12 +2,13 @@ import unittest
 from unittest.mock import patch
 from typing import cast
 
-from m.core.issue import Issue, issue
-from m.core.fp import Good, one_of
+from m.core import one_of
+from m.core.issue import Issue
+from m.core.fp import Good
 from m.ci.config import ReleaseFrom, Config
 from m.core.io import EnvVars
-from m.ci.git_env import get_git_env, GitEnv
-from m.ci.release_env import get_release_env, ReleaseEnv
+from m.ci.git_env import get_git_env
+from m.ci.release_env import get_release_env
 
 
 def read_fixture(name: str) -> str:
@@ -89,8 +90,9 @@ class ReleaseEnvTest(unittest.TestCase):
             ]
             result = self._get_env()
             self.assertTrue(result.is_bad)
+            iss = cast(Issue, result.value)
             self.assertEqual(
-                result.value.message,
+                iss.message,
                 'version is behind 1.1.1. Merge latest?'
             )
 
@@ -191,7 +193,7 @@ class ReleaseEnvTest(unittest.TestCase):
         """Empty allowed should allow you to commit any files."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
-        self.config.release_from['master'].allowed_files=[]
+        self.config.release_from['master'].allowed_files = []
         self.env_vars.git_branch = 'refs/pull/2'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
@@ -206,4 +208,3 @@ class ReleaseEnvTest(unittest.TestCase):
                 is_release_pr=True,
                 release_from=self.config.release_from['master'],
             ))
-

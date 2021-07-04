@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from typing import List, Optional, cast
 
 from ..github.ci_dataclasses import GithubCiRunInfo
+from ..core import issue
 from ..core.fp import OneOf, Good
-from ..core.issue import Issue, issue
+from ..core.issue import Issue
 from .config import Config, ReleaseFrom
 from ..core.io import EnvVars, JsonStr
 from ..github.ci import (

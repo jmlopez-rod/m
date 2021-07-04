@@ -1,6 +1,7 @@
 from subprocess import Popen, PIPE, STDOUT
+from . import issue
 from .fp import Good, OneOf
-from .issue import Issue, issue
+from .issue import Issue
 
 
 def eval_cmd(cmd: str) -> OneOf[Issue, str]:

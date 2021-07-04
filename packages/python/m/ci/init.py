@@ -3,8 +3,9 @@ import re
 import inspect
 from pathlib import Path
 from typing import Tuple, List
-from ..core.fp import Good, OneOf, one_of
-from ..core.issue import Issue, issue
+from ..core import one_of, issue
+from ..core.fp import Good, OneOf
+from ..core.issue import Issue
 from ..core.io import read_file, write_file, CiTool
 from ..core.subprocess import eval_cmd
 from ..git import get_remote_url

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Mapping, Any
-from ..core.fp import OneOf, one_of, Good
-from ..core.issue import Issue, issue
-from ..core import json
+from ..core.fp import OneOf, Good
+from ..core.issue import Issue
+from ..core import json, one_of, issue
 
 
 @dataclass

@@ -5,8 +5,9 @@ from dataclasses import dataclass
 from abc import ABC
 from typing import Optional, Type, List, cast
 from .. import git
-from .fp import OneOf, Good, one_of
-from .issue import Issue, issue
+from . import one_of, issue
+from .fp import OneOf, Good
+from .issue import Issue
 
 
 def env(name: str, def_val='') -> str:
@@ -92,7 +93,8 @@ def prompt_next_version(version: str) -> str:
 
 
 class JsonStr:
-    """Base class stringify dataclasses."""
+    """Base class to stringify dataclasses."""
+    # pylint: disable=too-few-public-methods
 
     def __str__(self) -> str:
         return json.dumps(

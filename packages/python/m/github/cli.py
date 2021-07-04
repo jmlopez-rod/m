@@ -1,5 +1,6 @@
 from typing import Any
-from ..core.fp import OneOf, one_of
+from ..core import one_of
+from ..core.fp import OneOf
 from ..core.issue import Issue
 from ..core.json import get
 from .api import graphql

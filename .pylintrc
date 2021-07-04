@@ -13,3 +13,10 @@ good-names=_,
   ex, pr, fp
 
 max-args=7
+
+
+min-similarity-lines=10
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=no
+ignore-signatures=yes

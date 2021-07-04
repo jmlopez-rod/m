@@ -3,9 +3,8 @@ import json
 import traceback
 import inspect
 from collections import OrderedDict
-from typing import Optional, List, cast, Any
+from typing import Optional, List, cast
 from typing_extensions import TypedDict
-from . import fp
 
 
 IssueDict = TypedDict(
@@ -103,14 +102,3 @@ class Issue(Exception):
 
     def __str__(self) -> str:
         return json.dumps(self.to_dict(), indent=2)
-
-
-def issue(
-    message: str,
-    description: Optional[str] = None,
-    cause: Optional[Exception] = None,
-    data: Optional[object] = None,
-    include_traceback: bool = True
-) -> fp.OneOf[Issue, Any]:
-    """Shortcut to create a Bad OneOf containing an Issue."""
-    return fp.Bad(Issue(message, description, cause, data, include_traceback))

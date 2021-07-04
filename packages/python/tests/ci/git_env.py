@@ -2,7 +2,8 @@ import unittest
 from unittest.mock import patch
 from typing import cast
 
-from m.core.issue import Issue, issue
+from m.core import issue
+from m.core.issue import Issue
 from m.core.fp import Good
 from m.ci.config import ReleaseFrom, Config
 from m.core.io import EnvVars

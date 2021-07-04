@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from typing import Optional, List, cast
 from .config import ReleaseFrom, Config
 from .git_env import GitEnv
+from ..core import issue
 from ..core.fp import Good, OneOf
-from ..core.issue import Issue, issue
+from ..core.issue import Issue
 from ..core.io import EnvVars
 
 
@@ -76,7 +77,10 @@ def _verify_pr(
                     data=dict(
                         allowed_files=allowed_files,
                         file_count=pr.file_count))
-            if allowed_files and not set(pr.files).issubset(set(allowed_files)):
+            if (
+                allowed_files and
+                not set(pr.files).issubset(set(allowed_files))
+            ):
                 return issue(
                     'modified files not subset of the allowed files.',
                     data=dict(

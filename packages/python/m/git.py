@@ -1,5 +1,5 @@
-from .core import subprocess
-from .core.fp import one_of, OneOf
+from .core import subprocess, one_of
+from .core.fp import OneOf
 from .core.issue import Issue
 
 

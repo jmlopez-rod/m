@@ -2,8 +2,9 @@ import json
 import http.client as httplib
 from urllib.parse import urlparse
 from typing import Mapping, Any, Optional
-from .fp import OneOf, Good, one_of
-from .issue import Issue, issue
+from . import one_of, issue
+from .fp import OneOf, Good
+from .issue import Issue
 from .json import parse_json
 
 

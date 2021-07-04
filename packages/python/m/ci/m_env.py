@@ -1,8 +1,8 @@
 import os
 from dataclasses import dataclass
 from typing import cast
-from ..core import fp
-from ..core.issue import Issue, issue
+from ..core import fp, issue, one_of
+from ..core.issue import Issue
 from ..core.io import EnvVars, CiTool, write_file, JsonStr
 from .config import Config, read_config
 from .git_env import GitEnv, get_git_env
@@ -20,7 +20,7 @@ class MEnv(JsonStr):
 
 def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
     """Obtain the M Environment object"""
-    return fp.one_of(lambda: [
+    return one_of(lambda: [
         MEnv(config, env_vars, git_env, release_env)
         for config in read_config(m_dir)
         for env_vars in CiTool.env_vars().flat_map_bad(
@@ -74,7 +74,7 @@ def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, int]:
     target_dir = f'{m_dir}/.m'
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
-    return fp.one_of(lambda: [
+    return one_of(lambda: [
         0
         for m_env in get_m_env(m_dir)
         for contents in _m_env_vars(m_env)
