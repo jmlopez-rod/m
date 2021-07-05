@@ -120,4 +120,3 @@ class CiDataclassesTest(FpTestCase):
             _test(release_from),
             'release pr requires files to be modified')
         self.assertListEqual(err.data['non_modified'], ['b', 'd'])
-

@@ -112,7 +112,8 @@ class PullRequest(JsonStr):
             ]
             if missing:
                 err_data['non_modified'] = missing
-                return issue('release pr requires files to be modified',
+                return issue(
+                    'release pr requires files to be modified',
                     data=err_data)
         return Good(0)
 
