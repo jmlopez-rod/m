@@ -43,7 +43,7 @@ class GitEnv(JsonStr):
         release_from object."""
         if not self.pull_request:
             return Good(0)
-        return self.pull_request.verify_release(release_from)
+        return self.pull_request.verify_release_pr(release_from)
 
     def get_build_tag(
         self,

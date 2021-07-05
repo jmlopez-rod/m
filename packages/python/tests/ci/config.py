@@ -59,8 +59,6 @@ class ConfigTest(unittest.TestCase):
             err = cast(Issue, cast(Issue, result.value).cause)
             missing = ', '.join([
                 'master.prBranch',
-                'master.allowedFiles',
-                'prod.allowedFiles',
             ])
             self.assertEqual(
                 err.message,

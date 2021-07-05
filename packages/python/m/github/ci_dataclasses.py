@@ -76,7 +76,7 @@ class PullRequest(JsonStr):
             return False
         return release_from.pr_branch == self.pr_branch
 
-    def verify_release(
+    def verify_release_pr(
         self,
         release_from: Optional[ReleaseFrom]
     ) -> OneOf[Issue, int]:

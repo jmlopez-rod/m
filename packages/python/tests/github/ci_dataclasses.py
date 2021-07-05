@@ -84,26 +84,27 @@ class CiDataclassesTest(FpTestCase):
 
     def test_pr_verify_release_pr(self):
         pr = copy(self.pr)
+        _test = pr.verify_release_pr
         # Not a release pr
-        self.assert_ok(pr.verify_release(None))
+        self.assert_ok(_test(None))
         release_from = ReleaseFrom(
             pr_branch='release',
             allowed_files=[],
         )
         pr.pr_branch = 'release'
         # No restrictions
-        self.assert_ok(pr.verify_release(release_from))
+        self.assert_ok(_test(release_from))
         # More than allowed
         release_from.allowed_files = ['a', 'b']
         pr.files = ['a', 'b', 'c', 'd']
         pr.file_count = 4
         self.assert_issue(
-            pr.verify_release(release_from),
+            _test(release_from),
             'max files threshold exceeded in release pr')
         # Not a subset
         release_from.allowed_files = ['a', 'b']
         pr.files = ['a', 'c']
         pr.file_count = 2
         self.assert_issue(
-            pr.verify_release(release_from),
+            _test(release_from),
             'modified files not subset of the allowed files')

@@ -74,8 +74,6 @@ def read_release_from(
         item = data[branch]
         if 'prBranch' not in item:
             missing.append(f'{branch}.prBranch')
-        if 'allowedFiles' not in item:
-            missing.append(f'{branch}.allowedFiles')
         pr_branch = item.get('prBranch', '')
         allowed_files = item.get('allowedFiles', [])
         obj[branch] = ReleaseFrom(pr_branch, allowed_files)
