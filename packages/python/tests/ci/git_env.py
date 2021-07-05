@@ -19,7 +19,8 @@ class GitEnvTest(unittest.TestCase):
         release_from_dict=dict(
             master=ReleaseFrom(
                 pr_branch='release',
-                allowed_files=['m/m.json', 'CHANGELOG.md']
+                allowed_files=['m/m.json', 'CHANGELOG.md'],
+                required_files=[]
             )
         )
     )

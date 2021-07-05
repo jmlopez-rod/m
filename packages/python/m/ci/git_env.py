@@ -23,6 +23,14 @@ class GitEnv(JsonStr):
     pull_request: Optional[PullRequest] = None
     release: Optional[Release] = None
 
+    def get_pr_branch(self) -> str:
+        """Get the pull request branch or empty string"""
+        return self.pull_request.pr_branch if self.pull_request else ''
+
+    def get_pr_number(self) -> int:
+        """Get the pull request branch or 0 if not a pull request"""
+        return self.pull_request.pr_number if self.pull_request else 0
+
     def is_release(self, release_from: Optional[ReleaseFrom]) -> bool:
         """Determine if the current commit should create a release."""
         if not self.commit:

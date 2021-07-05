@@ -60,6 +60,7 @@ class CiDataclassesTest(FpTestCase):
         release_from = ReleaseFrom(
             pr_branch='release',
             allowed_files=[],
+            required_files=[],
         )
         associated_pr.pr_branch = 'some-feature'
         self.assertFalse(commit.is_release(release_from))
@@ -75,6 +76,7 @@ class CiDataclassesTest(FpTestCase):
         release_from = ReleaseFrom(
             pr_branch='release',
             allowed_files=[],
+            required_files=[],
         )
         pr.pr_branch = 'some-feature'
         self.assertFalse(pr.is_release_pr(release_from))
@@ -90,6 +92,7 @@ class CiDataclassesTest(FpTestCase):
         release_from = ReleaseFrom(
             pr_branch='release',
             allowed_files=[],
+            required_files=[],
         )
         pr.pr_branch = 'release'
         # No restrictions
@@ -108,3 +111,13 @@ class CiDataclassesTest(FpTestCase):
         self.assert_issue(
             _test(release_from),
             'modified files not subset of the allowed files')
+        # Required files
+        release_from.allowed_files = []
+        release_from.required_files = ['a', 'b', 'c', 'd']
+        pr.files = ['a', 'c', 'one', 'two', 'three']
+        pr.file_count = 5
+        err = self.assert_issue(
+            _test(release_from),
+            'release pr requires files to be modified')
+        self.assertListEqual(err.data['non_modified'], ['b', 'd'])
+

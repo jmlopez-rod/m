@@ -31,10 +31,11 @@ class FpTestCase(unittest.TestCase):
         self,
         error: OneOf[Issue, Any],
         message: str,
-    ) -> None:
+    ) -> Any:
         self.assertTrue(error.is_bad, 'expecting issue')
         err = cast(Issue, error.value)
         self.assertEqual(err.message, message)
+        return err
 
     def assert_ok(self, either: OneOf[Issue, Any]) -> None:
         self.assertFalse(either.is_bad, 'expecting ok')

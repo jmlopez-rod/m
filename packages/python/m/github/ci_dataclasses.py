@@ -85,24 +85,35 @@ class PullRequest(JsonStr):
         if not is_release_pr:
             return Good(0)
         allowed_files: List[str] = []
+        required_files: List[str] = []
         if release_from:
             allowed_files = release_from.allowed_files
+            required_files = release_from.required_files
         err_data = dict(
             allowed_files=allowed_files,
+            required_files=required_files,
             file_count=self.file_count,
-            modified_files=self.files
+            modified_files=self.files,
         )
-        if allowed_files and self.file_count > len(allowed_files):
-            return issue(
-                'max files threshold exceeded in release pr',
-                data=err_data)
-        if (
-            allowed_files and
-            not set(self.files).issubset(set(allowed_files))
-        ):
-            return issue(
-                'modified files not subset of the allowed files',
-                data=err_data)
+        if allowed_files:
+            if self.file_count > len(allowed_files):
+                return issue(
+                    'max files threshold exceeded in release pr',
+                    data=err_data)
+            if not set(self.files).issubset(set(allowed_files)):
+                return issue(
+                    'modified files not subset of the allowed files',
+                    data=err_data)
+        if required_files:
+            missing = [
+                required
+                for required in required_files
+                if required not in self.files
+            ]
+            if missing:
+                err_data['non_modified'] = missing
+                return issue('release pr requires files to be modified',
+                    data=err_data)
         return Good(0)
 
 

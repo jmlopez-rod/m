@@ -11,6 +11,7 @@ class ReleaseFrom:
     """An object dictating where we are allowed to make a release."""
     pr_branch: str
     allowed_files: List[str]
+    required_files: List[str]
 
 
 @dataclass
@@ -76,7 +77,8 @@ def read_release_from(
             missing.append(f'{branch}.prBranch')
         pr_branch = item.get('prBranch', '')
         allowed_files = item.get('allowedFiles', [])
-        obj[branch] = ReleaseFrom(pr_branch, allowed_files)
+        required_files = item.get('requiredFiles', [])
+        obj[branch] = ReleaseFrom(pr_branch, allowed_files, required_files)
     if missing:
         missing_str = ', '.join(missing)
         return issue(f'missing [{missing_str}] in releaseFrom')
