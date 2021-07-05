@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 
 export PYTHONPATH=./src:${PYTHONPATH:-}
@@ -12,3 +12,5 @@ runTest core.fp.OneOfTest
 runTest core.issue.IssueTest
 runTest ci.config.ConfigTest
 runTest ci.git_env.GitEnvTest
+runTest ci.release_env.ReleaseEnvTest
+runTest github.ci_dataclasses.CiDataclassesTest

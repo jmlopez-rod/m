@@ -1,13 +1,14 @@
 from typing import Mapping, Any
-from ..core.fp import OneOf, Good, one_of
-from ..core.issue import Issue, issue
+from ..core import one_of, issue
+from ..core.fp import OneOf, Good
+from ..core.issue import Issue
 from ..core.http import fetch_json
 
 
 def _filter_data(data: Mapping[str, Any]) -> OneOf[Issue, Any]:
     if data.get('data'):
         return Good(data['data'])
-    return issue('', data={'response': data})
+    return issue('github response missing data field', data={'response': data})
 
 
 def graphql(

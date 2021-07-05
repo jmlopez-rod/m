@@ -1,6 +1,7 @@
 import re
 from typing import List, Optional, Any
-from ..core.fp import OneOf, one_of, Good
+from ..core import one_of
+from ..core.fp import OneOf, Good
 from ..core.issue import Issue
 from ..core.json import get
 from .ci_dataclasses import (
@@ -54,11 +55,14 @@ def get_build_sha(
     token: str,
     owner: str,
     repo: str,
-    sha: str
+    sha: str,
+    get_sha: bool = True
 ) -> OneOf[Issue, str]:
     """When building prs, we are not given the actual sha of the commit.
     Instead, we get the sha of the merge commit. This will give us the sha
     that we are looking for."""
+    if not get_sha:
+        return Good(sha)
     params = ['$owner: String!', '$repo: String!', '$sha: String!']
     params_str = ', '.join(params)
     query = f'''query ({params_str}) {{
@@ -83,7 +87,8 @@ def get_raw_ci_run_info(
     commit_info: CommitInfo,
     pr_number: Optional[int],
     file_count: int,
-    include_release: bool
+    include_release: bool,
+    get_sha: bool = True
 ) -> OneOf[Issue, Any]:
     """Retrieve the information of the given Github PR."""
     query = create_ci_query(pr_number, True, include_release)
@@ -93,7 +98,7 @@ def get_raw_ci_run_info(
         variables['pr'] = pr_number
     return one_of(lambda: [
         data
-        for variables['sha'] in get_build_sha(token, owner, repo, sha)
+        for variables['sha'] in get_build_sha(token, owner, repo, sha, get_sha)
         for res in api.graphql(token, query, variables)
         for data in get(res, 'repository')
     ])
@@ -135,10 +140,10 @@ def _get_commit(owner: str, repo: str, raw: Any) -> OneOf[Issue, Commit]:
             ),
             merged=pr['merged'],
             pr_number=pr['number'],
-            base_ref_name=pr['baseRefName'],
-            base_ref_oid=pr['baseRefOid'],
+            target_branch=pr['baseRefName'],
+            target_sha=pr['baseRefOid'],
             pr_branch=pr['headRefName'],
-            head_ref_oid=pr['headRefOid'],
+            pr_sha=pr['headRefOid'],
             title=pr['title'],
             body=pr['body'],
         )

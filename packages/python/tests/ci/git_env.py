@@ -2,7 +2,8 @@ import unittest
 from unittest.mock import patch
 from typing import cast
 
-from m.core.issue import Issue, issue
+from m.core import issue
+from m.core.issue import Issue
 from m.core.fp import Good
 from m.ci.config import ReleaseFrom, Config
 from m.core.io import EnvVars
@@ -15,10 +16,11 @@ class GitEnvTest(unittest.TestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        release_from=dict(
+        release_from_dict=dict(
             master=ReleaseFrom(
                 pr_branch='release',
-                allowed_files=['m/m.json', 'CHANGELOG.md']
+                allowed_files=['m/m.json', 'CHANGELOG.md'],
+                required_files=[]
             )
         )
     )

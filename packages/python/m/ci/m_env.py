@@ -1,16 +1,16 @@
 import os
 from dataclasses import dataclass
 from typing import cast
-from ..core import fp
-from ..core.issue import Issue, issue
-from ..core.io import EnvVars, CiTool, write_file
+from ..core import fp, issue, one_of
+from ..core.issue import Issue
+from ..core.io import EnvVars, CiTool, write_file, JsonStr
 from .config import Config, read_config
 from .git_env import GitEnv, get_git_env
 from .release_env import ReleaseEnv, get_release_env
 
 
 @dataclass
-class MEnv:
+class MEnv(JsonStr):
     """Contains all the information required for a CI run."""
     config: Config
     env_vars: EnvVars
@@ -20,7 +20,7 @@ class MEnv:
 
 def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
     """Obtain the M Environment object"""
-    return fp.one_of(lambda: [
+    return one_of(lambda: [
         MEnv(config, env_vars, git_env, release_env)
         for config in read_config(m_dir)
         for env_vars in CiTool.env_vars().flat_map_bad(
@@ -59,12 +59,14 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         M_BRANCH=git.branch,
         M_TARGET_BRANCH=git.target_branch,
         M_ASSOCIATED_PR_NUMBER=associated_pr and associated_pr.pr_number or '',
-        M_PR_NUMBER=git.pull_request and git.pull_request.pr_number or '',
-        M_TAG=release.version,
+        M_PR_BRANCH=git.get_pr_branch(),
+        M_PR_NUMBER=git.get_pr_number(),
+        M_TAG=release.build_tag,
         M_IS_RELEASE=release.is_release,
         M_IS_RELEASE_PR=release.is_release_pr,
     )
-    return fp.Good('\n'.join([f'{key}={env[key]}' for key in env]))
+    print(str(m_env))
+    return fp.Good('\n'.join([f'{key}={val}' for key, val in env.items()]))
 
 
 def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, int]:
@@ -72,7 +74,7 @@ def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, int]:
     target_dir = f'{m_dir}/.m'
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
-    return fp.one_of(lambda: [
+    return one_of(lambda: [
         0
         for m_env in get_m_env(m_dir)
         for contents in _m_env_vars(m_env)

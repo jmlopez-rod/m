@@ -1,11 +1,13 @@
 import os
 import sys
+import json
 from dataclasses import dataclass
 from abc import ABC
 from typing import Optional, Type, List, cast
 from .. import git
-from .fp import OneOf, Good, one_of
-from .issue import Issue, issue
+from . import one_of, issue
+from .fp import OneOf, Good
+from .issue import Issue
 
 
 def env(name: str, def_val='') -> str:
@@ -41,7 +43,8 @@ def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
 def read_file(filename: str) -> OneOf[Issue, str]:
     """Return a `Good` containing the contents of the file."""
     try:
-        return Good(open(filename).read())
+        with open(filename) as fp:
+            return Good(fp.read())
     except Exception as ex:
         return issue(
             'failed to read file',
@@ -90,8 +93,20 @@ def prompt_next_version(version: str) -> str:
     return result
 
 
+class JsonStr:
+    """Base class to stringify dataclasses."""
+    # pylint: disable=too-few-public-methods
+
+    def __str__(self) -> str:
+        return json.dumps(
+            self.__dict__,
+            default=lambda o: o.__dict__,
+            indent=2
+        )
+
+
 @dataclass
-class EnvVars:
+class EnvVars(JsonStr):
     """Class to store the values of the environment variables."""
     # pylint: disable=too-many-instance-attributes
     ci_env: bool = False

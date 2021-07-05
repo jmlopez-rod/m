@@ -26,6 +26,9 @@ def add_parser(sub_parser, raw):
                         "email": ""
                     },
             ...
+
+        NOTE: Use the --merge-commit flag if you are providing a sha from
+        github actions.
     """  # noqa
     parser = sub_parser.add_parser(
         'ci',
@@ -57,6 +60,10 @@ def add_parser(sub_parser, raw):
         default=False,
         action="store_true",
         help='include the last release information')
+    add('--merge-commit',
+        default=False,
+        action="store_true",
+        help='set if the sha is a merge commit sha (from github)')
 
 
 def run(arg):
@@ -68,4 +75,5 @@ def run(arg):
         arg.pr,
         arg.file_count,
         arg.include_release,
+        arg.merge_commit,
     ])

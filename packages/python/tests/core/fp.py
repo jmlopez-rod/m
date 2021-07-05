@@ -1,5 +1,6 @@
 import unittest
-from m.core.fp import Bad, Good, one_of
+from m.core import one_of
+from m.core.fp import Bad, Good
 from ..util import compare_values
 
 

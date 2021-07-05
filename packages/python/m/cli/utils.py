@@ -79,8 +79,8 @@ def get_cli_command_modules(
     cli_root = f'{main_mod}.cli'
     root_cmd = get_command_modules(root, f'{cli_root}.commands')
     mod: Map[str, Union[CmdModule, Map[str, CmdModule]]] = dict()
-    for key in root_cmd:
-        mod[key] = root_cmd[key]
+    for key, val in root_cmd.items():
+        mod[key] = val
 
     mod['.meta'] = import_mod(f'{cli_root}.commands')
     subcommands = list(iglob(f'{root}/cli/commands/*'))

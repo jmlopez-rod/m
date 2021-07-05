@@ -1,8 +1,9 @@
+from distutils.version import StrictVersion
 from dataclasses import dataclass
 from typing import List, Mapping, Any
-from ..core.fp import OneOf, one_of, Good
-from ..core.issue import Issue, issue
-from ..core import json
+from ..core.fp import OneOf, Good
+from ..core.issue import Issue
+from ..core import json, one_of, issue
 
 
 @dataclass
@@ -10,6 +11,7 @@ class ReleaseFrom:
     """An object dictating where we are allowed to make a release."""
     pr_branch: str
     allowed_files: List[str]
+    required_files: List[str]
 
 
 @dataclass
@@ -19,7 +21,48 @@ class Config:
     repo: str
     version: str
     m_dir: str
-    release_from: Mapping[str, ReleaseFrom]
+    release_from_dict: Mapping[str, ReleaseFrom]
+
+    def verify_version(
+        self,
+        gh_latest: str,
+        is_release_pr: bool,
+        is_release: bool,
+    ) -> OneOf[Issue, int]:
+        """Return 0 if everything is well with the version in the
+        configuration. Otherwise it will return an issue stating why
+        the version in the configuration is not valid. If `gh_latest`
+        is not provided then the checks are skipped."""
+        if not gh_latest:
+            return Good(0)
+        err_data = dict(
+            config_version=self.version,
+            gh_latest=gh_latest,
+            is_release=is_release,
+            is_release_pr=is_release_pr,
+        )
+        try:
+            p_ver = StrictVersion(self.version)
+            p_latest = StrictVersion(gh_latest)
+            ver_gt_latest = p_ver > p_latest
+            ver_lt_latest = p_ver < p_latest
+        except Exception as ex:
+            return issue('error comparing versions', cause=ex, data=err_data)
+        msg: str = ''
+        if is_release_pr:
+            if not ver_gt_latest:
+                msg = 'version needs to be bumped'
+        elif not is_release:
+            if ver_lt_latest:
+                msg = 'version is behind (Branch may need to be updated)'
+            elif ver_gt_latest:
+                msg = 'version is ahead (Revert configuration change)'
+        elif is_release:
+            if not ver_gt_latest:
+                msg = 'version was not bumped during release pr'
+        if msg:
+            return issue(msg, data=err_data)
+        return Good(0)
 
 
 def read_release_from(
@@ -32,11 +75,10 @@ def read_release_from(
         item = data[branch]
         if 'prBranch' not in item:
             missing.append(f'{branch}.prBranch')
-        if 'allowedFiles' not in item:
-            missing.append(f'{branch}.allowedFiles')
         pr_branch = item.get('prBranch', '')
         allowed_files = item.get('allowedFiles', [])
-        obj[branch] = ReleaseFrom(pr_branch, allowed_files)
+        required_files = item.get('requiredFiles', [])
+        obj[branch] = ReleaseFrom(pr_branch, allowed_files, required_files)
     if missing:
         missing_str = ', '.join(missing)
         return issue(f'missing [{missing_str}] in releaseFrom')

@@ -1,9 +1,10 @@
 import re
 from datetime import datetime
 from typing import List
+from ..core import one_of, issue
 from ..core.io import read_file, write_file
-from ..core.fp import OneOf, Good, one_of
-from ..core.issue import Issue, issue
+from ..core.fp import OneOf, Good
+from ..core.issue import Issue
 from ..github import compare_sha_url
 from ..git import get_first_commit_sha
 from ..ci.config import read_config, Config

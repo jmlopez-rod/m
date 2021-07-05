@@ -17,13 +17,13 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
-          pip install typing_extensions
-      - name: M Environment
+          pip install typing_extensions pycodestyle pylint mypy
+      - name: Checks
         run: |
-          m ci env m
-          cat m/.m/env.list
+          ./build/build.sh
+      - name: Publish
+        run: |
+          ./build/publish.sh

@@ -2,12 +2,10 @@ image:
 	docker build -t pyenv -f build/Dockerfile
 
 checks:
-	docker run \
-		--rm \
-		-v "${PWD}":/checkout:z \
-		-w /checkout \
-		pyenv \
-		/checkout/build/build.sh
+	./build/run.sh build
+
+pyTest:
+	./build/run.sh tests
 
 bashTest:
 	cd packages/bash/tests && ./run.sh

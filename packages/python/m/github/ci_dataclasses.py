@@ -1,9 +1,14 @@
 from dataclasses import dataclass
 from typing import Optional, List
+from ..core import issue
+from ..core.io import JsonStr
+from ..core.fp import OneOf, Good
+from ..core.issue import Issue
+from ..ci.config import ReleaseFrom
 
 
 @dataclass
-class Author:
+class Author(JsonStr):
     """An object representing a commiter."""
     login: str
     avatar_url: str
@@ -11,22 +16,22 @@ class Author:
 
 
 @dataclass
-class AssociatedPullRequest:
+class AssociatedPullRequest(JsonStr):
     """Information for commits that are associated with a pull request."""
     # pylint: disable=too-many-instance-attributes
     author: Author
     merged: bool
     pr_number: int
-    base_ref_name: str
-    base_ref_oid: str
+    target_branch: str
+    target_sha: str
     pr_branch: str
-    head_ref_oid: str
+    pr_sha: str
     title: str
     body: str
 
 
 @dataclass
-class Commit:
+class Commit(JsonStr):
     """The git commit info."""
     author_login: str
     short_sha: str
@@ -42,9 +47,15 @@ class Commit:
             return ''
         return self.associated_pull_request.pr_branch
 
+    def is_release(self, release_from: Optional[ReleaseFrom]) -> bool:
+        """Determine if the current commit should create a release."""
+        if not release_from:
+            return False
+        return release_from.pr_branch == self.get_pr_branch()
+
 
 @dataclass
-class PullRequest:
+class PullRequest(JsonStr):
     """Pull request information."""
     # pylint: disable=too-many-instance-attributes
     author: Author
@@ -59,9 +70,56 @@ class PullRequest:
     files: List[str]
     is_draft: bool
 
+    def is_release_pr(self, release_from: Optional[ReleaseFrom]) -> bool:
+        """Determine if the pull request is a release pull request."""
+        if not release_from:
+            return False
+        return release_from.pr_branch == self.pr_branch
+
+    def verify_release_pr(
+        self,
+        release_from: Optional[ReleaseFrom]
+    ) -> OneOf[Issue, int]:
+        """Return 0 if everything is ok with the release pr pull request."""
+        is_release_pr = self.is_release_pr(release_from)
+        if not is_release_pr:
+            return Good(0)
+        allowed_files: List[str] = []
+        required_files: List[str] = []
+        if release_from:
+            allowed_files = release_from.allowed_files
+            required_files = release_from.required_files
+        err_data = dict(
+            allowed_files=allowed_files,
+            required_files=required_files,
+            file_count=self.file_count,
+            modified_files=self.files,
+        )
+        if allowed_files:
+            if self.file_count > len(allowed_files):
+                return issue(
+                    'max files threshold exceeded in release pr',
+                    data=err_data)
+            if not set(self.files).issubset(set(allowed_files)):
+                return issue(
+                    'modified files not subset of the allowed files',
+                    data=err_data)
+        if required_files:
+            missing = [
+                required
+                for required in required_files
+                if required not in self.files
+            ]
+            if missing:
+                err_data['non_modified'] = missing
+                return issue(
+                    'release pr requires files to be modified',
+                    data=err_data)
+        return Good(0)
+
 
 @dataclass
-class Release:
+class Release(JsonStr):
     """Github release <==> Git tag."""
     name: str
     tag_name: str
@@ -69,7 +127,7 @@ class Release:
 
 
 @dataclass
-class GithubCiRunInfo:
+class GithubCiRunInfo(JsonStr):
     """The main information we need for a ci run."""
     commit: Commit
     pull_request: Optional[PullRequest] = None
@@ -77,7 +135,7 @@ class GithubCiRunInfo:
 
 
 @dataclass
-class CommitInfo:
+class CommitInfo(JsonStr):
     """A commit can be tracked with the following properties."""
     owner: str
     repo: str

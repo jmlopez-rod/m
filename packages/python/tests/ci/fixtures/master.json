@@ -1,0 +1,29 @@
+{
+  "data": {
+    "repository": {
+      "releases": {
+        "nodes": [
+          {
+            "name": "1.1.1",
+            "tagName": "1.1.1",
+            "publishedAt": "2021-01-01T12:12:12Z"
+          }
+        ]
+      },
+      "commit": {
+        "message": "testing build",
+        "author": {
+          "name": "Manuel Lopez",
+          "email": "",
+          "user": {
+            "login": "jmlopez-rod"
+          }
+        },
+        "oid": "174646b40adabe5ecadc3036d7c977fd726d99d0",
+        "associatedPullRequests": {
+          "nodes": []
+        }
+      }
+    }
+  }
+}
