@@ -14,6 +14,7 @@ cp ./package.json ./.stage/package.json
 
 find ./.stage | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 rm -rf ./.stage/python/tests
+rm -rf ./.stage/bash/tests
 sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" ./.stage/package.json
 
 cd .stage && npm pack && cd ..
