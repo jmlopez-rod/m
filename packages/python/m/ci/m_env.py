@@ -61,7 +61,7 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         M_ASSOCIATED_PR_NUMBER=associated_pr and associated_pr.pr_number or '',
         M_PR_BRANCH=git.pull_request and git.pull_request.pr_branch or '',
         M_PR_NUMBER=git.pull_request and git.pull_request.pr_number or '',
-        M_TAG=release.version,
+        M_TAG=release.build_tag,
         M_IS_RELEASE=release.is_release,
         M_IS_RELEASE_PR=release.is_release_pr,
     )

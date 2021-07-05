@@ -11,7 +11,7 @@ from ..core.io import EnvVars
 @dataclass
 class ReleaseEnv:
     """Object to store the release configuration."""
-    version: str
+    build_tag: str
     is_release: bool
     is_release_pr: bool
     release_from: Optional[ReleaseFrom]
@@ -26,11 +26,10 @@ def get_release_env(
     release_from = config.release_from_dict.get(git_env.target_branch)
     is_release = git_env.is_release(release_from)
     is_release_pr = git_env.is_release_pr(release_from)
-
     gh_latest = git_env.release.tag_name if git_env.release else ''
     return one_of(lambda: [
         ReleaseEnv(
-            version=build_tag,
+            build_tag=build_tag,
             is_release=is_release,
             is_release_pr=is_release_pr,
             release_from=release_from
