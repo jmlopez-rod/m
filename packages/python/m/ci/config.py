@@ -45,7 +45,6 @@ class Config:
             p_latest = StrictVersion(gh_latest)
             ver_gt_latest = p_ver > p_latest
             ver_lt_latest = p_ver < p_latest
-            ver_eq_latest = p_ver == p_latest
         except Exception as ex:
             return issue('error comparing versions', cause=ex, data=err_data)
         msg: str = ''
@@ -58,7 +57,7 @@ class Config:
             elif ver_gt_latest:
                 msg = 'version is ahead (Revert configuration change)'
         elif is_release:
-            if ver_eq_latest or ver_lt_latest:
+            if not ver_gt_latest:
                 msg = 'version was not bumped during release pr'
         if msg:
             return issue(msg, data=err_data)

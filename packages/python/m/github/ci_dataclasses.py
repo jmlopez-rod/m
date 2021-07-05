@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional, List
+from ..core import issue
 from ..core.io import JsonStr
+from ..core.fp import OneOf, Good
+from ..core.issue import Issue
 from ..ci.config import ReleaseFrom
 
 
@@ -72,6 +75,35 @@ class PullRequest(JsonStr):
         if not release_from:
             return False
         return release_from.pr_branch == self.pr_branch
+
+    def verify_release(
+        self,
+        release_from: Optional[ReleaseFrom]
+    ) -> OneOf[Issue, int]:
+        """Return 0 if everything is ok with the release pr pull request."""
+        is_release_pr = self.is_release_pr(release_from)
+        if not is_release_pr:
+            return Good(0)
+        allowed_files: List[str] = []
+        if release_from:
+            allowed_files = release_from.allowed_files
+        err_data = dict(
+            allowed_files=allowed_files,
+            file_count=self.file_count,
+            modified_files=self.files
+        )
+        if allowed_files and self.file_count > len(allowed_files):
+            return issue(
+                'max files threshold exceeded in release pr',
+                data=err_data)
+        if (
+            allowed_files and
+            not set(self.files).issubset(set(allowed_files))
+        ):
+            return issue(
+                'modified files not subset of the allowed files.',
+                data=err_data)
+        return Good(0)
 
 
 @dataclass

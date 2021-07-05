@@ -65,6 +65,7 @@ class ReleaseEnvTest(unittest.TestCase):
 
     def test_local(self):
         self.env_vars.ci_env = False
+        self.env_vars.run_id = ''
         result = self._get_env()
         self.assertFalse(result.is_bad)
         self.assertEqual(result.value.__dict__, dict(
@@ -100,6 +101,7 @@ class ReleaseEnvTest(unittest.TestCase):
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'
         self.env_vars.git_branch = 'refs/heads/master'
+        self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
                 Good(mock_commit_sha('sha')),
@@ -118,6 +120,7 @@ class ReleaseEnvTest(unittest.TestCase):
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'
         self.env_vars.git_branch = 'refs/pull/1'
+        self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
                 Good(mock_commit_sha('sha')),
@@ -156,6 +159,7 @@ class ReleaseEnvTest(unittest.TestCase):
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
         self.env_vars.git_branch = 'refs/pull/2'
+        self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
                 Good(mock_commit_sha('sha')),
@@ -175,6 +179,7 @@ class ReleaseEnvTest(unittest.TestCase):
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
         self.env_vars.git_branch = 'refs/heads/master'
+        self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
                 Good(mock_commit_sha('sha')),
@@ -195,6 +200,7 @@ class ReleaseEnvTest(unittest.TestCase):
         self.config.version = '1.1.2'
         self.config.release_from_dict['master'].allowed_files = []
         self.env_vars.git_branch = 'refs/pull/2'
+        self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
             graphql_mock.side_effect = [
                 Good(mock_commit_sha('sha')),

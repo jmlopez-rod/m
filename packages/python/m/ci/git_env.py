@@ -35,6 +35,31 @@ class GitEnv(JsonStr):
             return False
         return self.pull_request.is_release_pr(release_from)
 
+    def verify_release_pr(
+        self,
+        release_from: Optional[ReleaseFrom]
+    ) -> OneOf[Issue, int]:
+        """Verify the release pull request by applying the rules in the
+        release_from object."""
+        if not self.pull_request:
+            return Good(0)
+        return self.pull_request.verify_release(release_from)
+
+    def get_build_tag(
+        self,
+        config_version: str,
+        run_id: str,
+        release_from: Optional[ReleaseFrom],
+    ) -> OneOf[Issue, str]:
+        """Obtain the build tag for the current commit."""
+        if not run_id:
+            return Good(f'0.0.0-local.{self.sha}')
+        if self.is_release(release_from):
+            return Good(config_version)
+        if self.pull_request:
+            return Good(f'0.0.0-pr{self.pull_request.pr_number}.b{run_id}')
+        return Good(f'0.0.0-{self.target_branch}.b{run_id}')
+
 
 def get_pr_number(branch: str) -> Optional[int]:
     """Retrieve the pull request number from the branch name."""
