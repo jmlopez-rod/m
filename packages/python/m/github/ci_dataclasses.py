@@ -22,6 +22,7 @@ class AssociatedPullRequest(JsonStr):
     author: Author
     merged: bool
     pr_number: int
+    # target_branch
     base_ref_name: str
     base_ref_oid: str
     pr_branch: str
@@ -101,7 +102,7 @@ class PullRequest(JsonStr):
             not set(self.files).issubset(set(allowed_files))
         ):
             return issue(
-                'modified files not subset of the allowed files.',
+                'modified files not subset of the allowed files',
                 data=err_data)
         return Good(0)
 
