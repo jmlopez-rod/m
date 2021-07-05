@@ -1,5 +1,14 @@
 {
   "owner": "jmlopez-rod",
   "repo": "m",
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "releaseFrom": {
+    "master": {
+      "prBranch": "release",
+      "allowedFiles": [
+        "m/m.json",
+        "CHANGELOG.md"
+      ]
+    }
+  }
 }
