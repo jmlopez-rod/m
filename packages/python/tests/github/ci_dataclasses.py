@@ -12,7 +12,7 @@ class CiDataclassesTest(FpTestCase):
         pr_number=1,
         base_ref_name='',
         base_ref_oid='',
-        pr_branch= '',
+        pr_branch='',
         head_ref_oid='',
         title='',
         body=''

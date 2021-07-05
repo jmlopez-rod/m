@@ -3,6 +3,7 @@ from typing import List, Any, cast
 from m.core.issue import Issue
 from m.core.fp import OneOf
 
+
 def compare_values(test_case, items: List[Any]) -> None:
     """Compare multiple values without callng assertEqual
     on each line.
