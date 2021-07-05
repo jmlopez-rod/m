@@ -66,7 +66,7 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         M_IS_RELEASE_PR=release.is_release_pr,
     )
     print(str(m_env))
-    return fp.Good('\n'.join([f'{key}={env[key]}' for key in env]))
+    return fp.Good('\n'.join([f'{key}={val}' for key, val in env.items()]))
 
 
 def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, int]:

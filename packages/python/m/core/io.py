@@ -43,7 +43,8 @@ def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
 def read_file(filename: str) -> OneOf[Issue, str]:
     """Return a `Good` containing the contents of the file."""
     try:
-        return Good(open(filename).read())
+        with open(filename) as fp:
+            return Good(fp.read())
     except Exception as ex:
         return issue(
             'failed to read file',
