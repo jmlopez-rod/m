@@ -59,13 +59,36 @@ class GitEnv(JsonStr):
         run_id: str,
         release_from: Optional[ReleaseFrom],
     ) -> OneOf[Issue, str]:
-        """Obtain the build tag for the current commit."""
+        """Obtain the build tag for the current commit.
+
+        It is tempting to use the config_version when creating a build tag for
+        pull requests or branches. This will only be annoying when testing.
+
+        Consider the following scenario. An application is being tested with
+        `1.0.1-pr99.b123`. When using docker you may want to refer to the
+        latest pr build by using `1.0.1-pr99`. Now lets say that a release
+        happened and now the config_version is at `1.1.0`. The application
+        build will not get the latest changes because the new changes are in
+        `1.1.0-pr99`.
+
+        There are two solutions, either always state the version that is
+        being used or make a tag to depend only on the pull request number.
+        This is the reason why for prs (constantly changing) we avoid
+        using the version in the configuration.
+
+        For release prs we use `rc` followed by the pull request. In this case
+        it is safe to use config_version given that there should only be
+        one release at a time.
+        """
         if not run_id:
             return Good(f'0.0.0-local.{self.sha}')
         if self.is_release(release_from):
             return Good(config_version)
         if self.pull_request:
-            return Good(f'0.0.0-pr{self.pull_request.pr_number}.b{run_id}')
+            pr_number = self.pull_request.pr_number
+            if self.is_release_pr(release_from):
+                return Good(f'{config_version}-rc{pr_number}.b{run_id}')
+            return Good(f'0.0.0-pr{pr_number}.b{run_id}')
         return Good(f'0.0.0-{self.target_branch}.b{run_id}')
 
 

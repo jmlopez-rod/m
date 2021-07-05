@@ -169,7 +169,7 @@ class ReleaseEnvTest(unittest.TestCase):
             result = self._get_env()
             self.assertFalse(result.is_bad)
             self.assertEqual(result.value.__dict__, dict(
-                build_tag='0.0.0-pr2.b404',
+                build_tag='1.1.2-rc2.b404',
                 is_release=False,
                 is_release_pr=True,
                 release_from=self.config.release_from_dict['master'],
@@ -210,7 +210,7 @@ class ReleaseEnvTest(unittest.TestCase):
             result = self._get_env()
             self.assertFalse(result.is_bad)
             self.assertEqual(result.value.__dict__, dict(
-                build_tag='0.0.0-pr2.b404',
+                build_tag='1.1.2-rc2.b404',
                 is_release=False,
                 is_release_pr=True,
                 release_from=self.config.release_from_dict['master'],
