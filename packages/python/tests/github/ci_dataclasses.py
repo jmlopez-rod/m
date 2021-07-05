@@ -10,10 +10,10 @@ class CiDataclassesTest(FpTestCase):
         author=author,
         merged=False,
         pr_number=1,
-        base_ref_name='',
-        base_ref_oid='',
+        target_branch='',
+        target_sha='',
         pr_branch='',
-        head_ref_oid='',
+        pr_sha='',
         title='',
         body=''
     )

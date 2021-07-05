@@ -22,11 +22,10 @@ class AssociatedPullRequest(JsonStr):
     author: Author
     merged: bool
     pr_number: int
-    # target_branch
-    base_ref_name: str
-    base_ref_oid: str
+    target_branch: str
+    target_sha: str
     pr_branch: str
-    head_ref_oid: str
+    pr_sha: str
     title: str
     body: str
 

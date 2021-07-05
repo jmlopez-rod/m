@@ -140,10 +140,10 @@ def _get_commit(owner: str, repo: str, raw: Any) -> OneOf[Issue, Commit]:
             ),
             merged=pr['merged'],
             pr_number=pr['number'],
-            base_ref_name=pr['baseRefName'],
-            base_ref_oid=pr['baseRefOid'],
+            target_branch=pr['baseRefName'],
+            target_sha=pr['baseRefOid'],
             pr_branch=pr['headRefName'],
-            head_ref_oid=pr['headRefOid'],
+            pr_sha=pr['headRefOid'],
             title=pr['title'],
             body=pr['body'],
         )
