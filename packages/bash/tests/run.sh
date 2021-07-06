@@ -10,3 +10,4 @@ echo ""
 # Add tests files in here. You may comment some files during development.
 ./message_test.sh
 ./jsonq_test.sh
+./ci_npm_tag_test.sh

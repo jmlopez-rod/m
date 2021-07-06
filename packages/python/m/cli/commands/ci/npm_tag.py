@@ -14,6 +14,9 @@ def add_parser(sub_parser, raw):
             ~$ m ci npm_tag 0.0.0-pr1234.b123
             pr1234
 
+            ~$ m ci npm_tag 2.0.1-rc1234.b123
+            next
+
             ~$ m ci npm_tag 2.0.1
             latest
     """
@@ -27,10 +30,13 @@ def add_parser(sub_parser, raw):
 
 
 def run(arg):
-    regex = r"0.0.0-(.*)\.(.*)"
+    regex = r"\d.\d.\d-(.*)\.(.*)"
     matches = re.match(regex, arg.version)
     if matches:
         tag, _ = matches.groups()
-        print(tag)
+        if tag.startswith('rc'):
+            print('next')
+        else:
+            print(tag)
     else:
         print('latest')
