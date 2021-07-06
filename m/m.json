@@ -4,11 +4,7 @@
   "version": "0.0.1",
   "releaseFrom": {
     "master": {
-      "prBranch": "release",
-      "requiredFiles": [
-        "m/m.json",
-        "CHANGELOG.md"
-      ]
+      "prBranch": "release"
     }
   }
 }
