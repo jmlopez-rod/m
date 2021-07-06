@@ -5,7 +5,7 @@
   "releaseFrom": {
     "master": {
       "prBranch": "release",
-      "allowedFiles": [
+      "requiredFiles": [
         "m/m.json",
         "CHANGELOG.md"
       ]

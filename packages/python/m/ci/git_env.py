@@ -118,6 +118,10 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
         len(item.allowed_files)
         for _, item in config.release_from_dict.items()]
     max_files = max(0, 0, *total_files)
+    if len(total_files) == 0:
+        # will have to find another way to make file checks
+        # for now release prs for required_files are bound to 100
+        max_files = 100
     pr_number = get_pr_number(branch)
     git_env_box = get_ci_run_info(
         token=env_vars.github_token,
