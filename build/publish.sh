@@ -24,3 +24,7 @@ cd .stage && npm pack && cd ..
 
 npmTag=$(m ci npm_tag "$M_TAG")
 npm publish .stage/*.tgz --tag "$npmTag"
+
+# Only on release
+[ "$M_IS_RELEASE" == "True" ] || exit 0
+m github release --owner "$M_OWNER" --repo "$M_REPO" --version "$M_TAG"
