@@ -38,15 +38,15 @@ def fetch(
             f'{protocol} request failure',
             cause=ex,
             data=dict(url=url))
-    res = connection.getresponse()
-    code = res.status
     try:
+        res = connection.getresponse()
+        code = res.status
         res_body = res.read()
         if 200 <= code < 300:
             return Good(res_body)
         return issue(
             f'{protocol} request failure ({code})',
-            data=dict(url=url, body=body, code=code, res_body=res_body)
+            data=dict(url=url, body=body, code=code, res_body=str(res_body))
         )
     except Exception as ex:
         return issue(
