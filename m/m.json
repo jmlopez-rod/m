@@ -1,7 +1,7 @@
 {
   "owner": "jmlopez-rod",
   "repo": "m",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "releaseFrom": {
     "master": {
       "prBranch": "release"
