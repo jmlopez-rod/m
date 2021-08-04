@@ -1,5 +1,5 @@
 import inspect
-from ...utils import call_main, env
+from ...utils import run_main, env
 
 
 def add_parser(sub_parser, raw):
@@ -69,11 +69,11 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....github.ci import get_raw_ci_run_info, CommitInfo
-    return call_main(get_raw_ci_run_info, [
+    return run_main(lambda: get_raw_ci_run_info(
         arg.token,
         CommitInfo(arg.owner, arg.repo, arg.sha),
         arg.pr,
         arg.file_count,
         arg.include_release,
         arg.merge_commit,
-    ])
+    ))

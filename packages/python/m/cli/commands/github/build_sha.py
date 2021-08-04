@@ -1,5 +1,5 @@
 import inspect
-from ...utils import call_main, env
+from ...utils import run_main, env
 
 
 def add_parser(sub_parser, raw):
@@ -35,9 +35,6 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....github.ci import get_build_sha
-    return call_main(get_build_sha, [
-        arg.token,
-        arg.owner,
-        arg.repo,
-        arg.sha
-    ], True)
+    return run_main(
+        lambda: get_build_sha(arg.token, arg.owner, arg.repo, arg.sha),
+        print_raw=True)
