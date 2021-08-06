@@ -200,7 +200,7 @@ def run_main(
                 issue = Issue('non-issue exception', cause=cast(Issue, val))
                 handle_issue(issue)
             return 1
-        if val or isinstance(val, list):
+        if val is not None or isinstance(val, list):
             if print_raw:
                 print(val)
             else:
@@ -230,7 +230,7 @@ def call_main(fun, args, print_raw=False) -> int:
                 return error(val.message, val)
             issue = Issue('non-issue exception', cause=val)
             return error(issue.message, issue)
-        if val or isinstance(val, list):
+        if val is not None or isinstance(val, list):
             if print_raw:
                 print(val)
             else:
