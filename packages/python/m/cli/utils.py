@@ -181,13 +181,26 @@ def display_issue(issue: Issue) -> None:
     error_block(str(issue))
 
 
+def display_result(val: Any) -> None:
+    """print the JSON stringification of the param `val` provided that val
+    is not `None`."""
+    if val is not None:
+        try:
+            print(json.dumps(val, separators=(',', ':')))
+        except Exception:
+            print(val, file=sys.stderr)
+
+
 def run_main(
     callback: Callable[[], OneOf[Issue, Any]],
-    print_raw: bool = False,
+    handle_result: Callable[[Any], None] = display_result,
     handle_issue: Callable[[Issue], None] = display_issue,
 ):
     """Run the callback and print the returned value as a JSON string. Set
-    the print_raw param to True to bypass the JSON stringnification.
+    the print_raw param to True to bypass the JSON stringnification. To change
+    how the result or an issue should be display then provide the optional
+    arguments handle_result and handle_issue. For instance, to display the
+    raw value simply provide the `print` function.
 
     Return 0 if the callback is a `Good` result otherwise return 1."""
     try:
@@ -200,14 +213,7 @@ def run_main(
                 issue = Issue('non-issue exception', cause=cast(Issue, val))
                 handle_issue(issue)
             return 1
-        if val is not None or isinstance(val, list):
-            if print_raw:
-                print(val)
-            else:
-                try:
-                    print(json.dumps(val, separators=(',', ':')))
-                except Exception:
-                    print(val, file=sys.stderr)
+        handle_result(val)
     except Exception as ex:
         issue = Issue('unknown caught exception', cause=ex)
         handle_issue(issue)

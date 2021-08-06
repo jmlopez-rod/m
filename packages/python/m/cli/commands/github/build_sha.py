@@ -37,4 +37,4 @@ def run(arg):
     from ....github.ci import get_build_sha
     return run_main(
         lambda: get_build_sha(arg.token, arg.owner, arg.repo, arg.sha),
-        print_raw=True)
+        handle_result=print)

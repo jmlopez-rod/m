@@ -20,4 +20,4 @@ def add_parser(sub_parser, raw):
 def run(_):
     # pylint: disable=import-outside-toplevel
     from .... import git
-    return run_main(git.get_first_commit_sha, print_raw=True)
+    return run_main(git.get_first_commit_sha, print)
