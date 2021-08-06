@@ -13,8 +13,10 @@ from .issue import Issue
 
 def format_seconds(number_of_seconds: Union[int, float]) -> str:
     """Return a string representing the number of seconds in a friendly
-    format: Xd:Xh:Xm:Xs. """
-    seconds = int(math.floor(number_of_seconds))
+    format: Xd:Xh:Xm:Xs:Xms. """
+    milliseconds = int(math.floor(number_of_seconds * 1000))
+    _ms = milliseconds % 1000
+    seconds = int(math.floor(milliseconds / 1000))
     sec = seconds % 60
     minutes = int(math.floor(seconds / 60))
     mins = minutes % 60
@@ -27,8 +29,9 @@ def format_seconds(number_of_seconds: Union[int, float]) -> str:
         f'{hrs}h' if hours else '',
         f'{mins}m' if mins else '',
         f'{sec}s' if sec else '',
+        f'{_ms}ms' if _ms else '',
     ]
-    return ':'.join([x for x in entries if x])
+    return ':'.join([x for x in entries if x]) or '0s'
 
 
 def env(name: str, def_val='') -> str:
