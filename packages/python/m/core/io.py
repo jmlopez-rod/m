@@ -1,13 +1,37 @@
 import os
 import sys
 import json
+import math
 from dataclasses import dataclass
 from abc import ABC
-from typing import Optional, Type, List, cast
+from typing import Optional, Type, List, cast, Union
 from .. import git
 from . import one_of, issue
 from .fp import OneOf, Good
 from .issue import Issue
+
+
+def format_seconds(number_of_seconds: Union[int, float]) -> str:
+    """Return a string representing the number of seconds in a friendly
+    format: Xd:Xh:Xm:Xs:Xms. """
+    milliseconds = int(math.floor(number_of_seconds * 1000))
+    _ms = milliseconds % 1000
+    seconds = int(math.floor(milliseconds / 1000))
+    sec = seconds % 60
+    minutes = int(math.floor(seconds / 60))
+    mins = minutes % 60
+    hours = int(math.floor(minutes / 60))
+    hrs = hours % 24
+    days = int(math.floor(hours / 24))
+
+    entries = [
+        f'{days}d' if days else '',
+        f'{hrs}h' if hours else '',
+        f'{mins}m' if mins else '',
+        f'{sec}s' if sec else '',
+        f'{_ms}ms' if _ms else '',
+    ]
+    return ':'.join([x for x in entries if x]) or '0s'
 
 
 def env(name: str, def_val='') -> str:

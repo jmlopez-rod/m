@@ -20,9 +20,21 @@ IssueDict = TypedDict(
 )
 
 
+def remove_traceback(obj: object) -> None:
+    """Remove the `traceback` key from a dictionary if it exists and
+    recursively remove the `traceback` from its cause."""
+    if isinstance(obj, dict):
+        if 'traceback' in obj:
+            del obj['traceback']
+        if 'cause' in obj:
+            remove_traceback(obj['cause'])
+
+
 class Issue(Exception):
     """Wrapper to keep track of all exceptions. It provides a 'cause' field
     so that we may know why an issue was triggered."""
+    show_traceback = True
+
     message: str
     description: Optional[str]
     cause: Optional[Exception]
@@ -100,5 +112,13 @@ class Issue(Exception):
                     traceback=self.cause_tb)
         return obj
 
+    def to_str(self, show_traceback: bool) -> str:
+        """Convert the instance to string. We have the option of not
+        showing the traceback."""
+        obj = self.to_dict()
+        if not show_traceback:
+            remove_traceback(obj)
+        return json.dumps(obj, indent=2)
+
     def __str__(self) -> str:
-        return json.dumps(self.to_dict(), indent=2)
+        return self.to_str(Issue.show_traceback)

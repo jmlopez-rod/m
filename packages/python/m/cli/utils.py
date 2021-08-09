@@ -3,9 +3,12 @@ import argparse
 import sys
 import json
 from glob import iglob
-from typing import Type, Dict, Union, MutableMapping as Map, cast, Optional
+from typing import (
+    Callable, Type, Dict, Union, MutableMapping as Map, cast, Optional, Any
+)
 from ..core.issue import Issue
 from ..core.io import error_block, CiTool, env
+from ..core.fp import OneOf
 from .validators import validate_non_empty_str
 
 
@@ -157,7 +160,7 @@ def run_cli(
         def main_args(argp):
             argp.add_argument(...)
         def main():
-            run_main(__file__, main_args)
+            run_cli(__file__, main_args)
 
     We only need `main_args` if we need to gain access to the
     `argparse.ArgumentParser` instance.
@@ -172,8 +175,57 @@ def run_cli(
     sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg))
 
 
+def display_issue(issue: Issue) -> None:
+    """print an error message"""
+    CiTool.error(issue.message)
+    error_block(str(issue))
+
+
+def display_result(val: Any) -> None:
+    """print the JSON stringification of the param `val` provided that val
+    is not `None`."""
+    if val is not None:
+        try:
+            print(json.dumps(val, separators=(',', ':')))
+        except Exception:
+            print(val, file=sys.stderr)
+
+
+def run_main(
+    callback: Callable[[], OneOf[Issue, Any]],
+    handle_result: Callable[[Any], None] = display_result,
+    handle_issue: Callable[[Issue], None] = display_issue,
+):
+    """Run the callback and print the returned value as a JSON string. Set
+    the print_raw param to True to bypass the JSON stringnification. To change
+    how the result or an issue should be display then provide the optional
+    arguments handle_result and handle_issue. For instance, to display the
+    raw value simply provide the `print` function.
+
+    Return 0 if the callback is a `Good` result otherwise return 1."""
+    try:
+        res = callback()
+        val = res.value
+        if res.is_bad:
+            if isinstance(val, Issue):
+                handle_issue(val)
+            else:
+                issue = Issue('non-issue exception', cause=cast(Issue, val))
+                handle_issue(issue)
+            return 1
+        handle_result(val)
+    except Exception as ex:
+        issue = Issue('unknown caught exception', cause=ex)
+        handle_issue(issue)
+        return 1
+    return 0
+
+
 def call_main(fun, args, print_raw=False) -> int:
-    """The `fun` param will be called by providing the list of values in
+    """
+    @deprecated: Use run_main
+
+    The `fun` param will be called by providing the list of values in
     `args`. By default, the result of calling `fun` will be JSON stringified
     but we can avoid this by providing `print_raw` set to True. """
     try:
@@ -184,7 +236,7 @@ def call_main(fun, args, print_raw=False) -> int:
                 return error(val.message, val)
             issue = Issue('non-issue exception', cause=val)
             return error(issue.message, issue)
-        if val or isinstance(val, list):
+        if val is not None or isinstance(val, list):
             if print_raw:
                 print(val)
             else:
