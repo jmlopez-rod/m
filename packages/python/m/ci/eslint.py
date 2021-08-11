@@ -3,7 +3,7 @@ import enum
 from dataclasses import dataclass
 from typing import Callable, List, Dict, Any
 
-from ..core import OneOf, one_of, Good, Issue, issue, json
+from ..core import OneOf, one_of, Good, Issue, json, io
 
 
 class ExitCode(enum.Enum):
@@ -118,6 +118,7 @@ def get_project_status(
 
 
 def format_rule_status(rule: RuleIdStatus) -> str:
+    """Formats a single rule and its violations."""
     buffer = [f'{rule.rule_id} (found {rule.found}, allowed {rule.allowed}):']
     max_lines = 5
     cwd = os.getcwd() + '/'
@@ -130,7 +131,7 @@ def format_rule_status(rule: RuleIdStatus) -> str:
     return '\n'.join(buffer)
 
 
-def alignv(value: Any, alignment: str) -> Callable[[int], str]:
+def _alignv(value: Any, alignment: str) -> Callable[[int], str]:
     return str(value).ljust if alignment == 'l' else str(value).rjust
 
 
@@ -143,7 +144,7 @@ def format_row(
     items = [
         val
         for index, align in enumerate(alignment)
-        for val in (alignv(values[index], align)(widths[index]),)
+        for val in (_alignv(values[index], align)(widths[index]),)
     ]
     return '  '.join(items)
 
@@ -175,19 +176,28 @@ def print_project_status(project: ProjectStatus) -> OneOf[Issue, int]:
         for rule_id, rule_status in project.rules.items()
     ])
     print('\n'.join(blocks))
+    print()
+
+    total_found = sum([s.found for s in values])
+    total_allowed = sum([s.allowed for s in values])
     if project.status == ExitCode.ERROR:
-        return issue('errors were found')
-    if project.status == ExitCode.NEEDS_READJUSTMENT:
-        return issue('Number of allowed messages need to be lowered')
+        diff = total_found - total_allowed
+        io.CiTool.error(f'{diff} extra errors were introduced')
+    elif project.status == ExitCode.NEEDS_READJUSTMENT:
+        diff = total_allowed - total_found
+        io.CiTool.error(f'{diff} errors were removed - lower error allowance')
+    else:
+        print(f'project has {total_found} errors to clear')
     return Good(0)
 
 
 def eslint(
     payload: List[Dict[str, Any]],
     config: Dict[str, Any],
-) -> OneOf[Issue, str]:
+) -> OneOf[Issue, ProjectStatus]:
+    """format the eslint output. """
     return one_of(lambda: [
-        ''
+        project_status
         for data in read_payload(payload)
         for rules_dict in (to_rules_dict(data),)
         for allowed_rules in json.get(config, 'allowedEslintRules')

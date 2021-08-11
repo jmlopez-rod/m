@@ -1,6 +1,7 @@
 import inspect
+from typing import cast
 from ...validators import validate_json_payload
-from ...utils import run_main
+from ...utils import display_issue
 
 
 def add_parser(sub_parser, raw):
@@ -10,9 +11,17 @@ def add_parser(sub_parser, raw):
 
         examples:
 
-            ~$ eslint [...optons] | m ci eslint
+            ~$ eslint [...optons] | m ci eslint -c @tsconfig.json
             ...
-    """
+
+
+            ~$ eslint [...options] > tmp.json
+            ~$ m ci eslint @tmp.json -c '{"allowedEslintRules":{"semi":1}}'
+
+        This only works as long as the configuration object has
+        `allowedEslintRules` defined in it with the number of allowed
+        violations.
+    """  # noqa
     parser = sub_parser.add_parser(
         'eslint',
         help='process the json output of eslint',
@@ -31,11 +40,24 @@ def add_parser(sub_parser, raw):
         '--config',
         required=True,
         type=validate_json_payload,
-        help='config data: @filename (file), string.'
+        help='config data: @filename (file), string'
+    )
+    parser.add_argument(
+        '--traceback',
+        action='store_true',
+        help='display the exception traceback if available'
     )
 
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....ci.eslint import eslint
-    return run_main(lambda: eslint(arg.payload, arg.config), print)
+    from ....core.issue import Issue
+    from ....ci.eslint import eslint, ProjectStatus
+
+    result = eslint(arg.payload, arg.config)
+    if result.is_bad:
+        Issue.show_traceback = arg.traceback
+        val = cast(Issue, result.value)
+        display_issue(val)
+        return 1
+    return cast(ProjectStatus, result.value).status.value
