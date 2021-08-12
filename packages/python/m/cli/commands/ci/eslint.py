@@ -11,8 +11,8 @@ def add_parser(sub_parser, raw):
 
         examples:
 
-            ~$ eslint [...optons] | m ci eslint -c @tsconfig.json
-            ...
+            ~$ eslint [dir] -f json | m ci eslint -c @config.json
+            ~$ m ci eslint -c @config.json < <(eslint [dir] -f json || echo '')
 
 
             ~$ eslint [...options] > tmp.json
@@ -20,7 +20,11 @@ def add_parser(sub_parser, raw):
 
         This only works as long as the configuration object has
         `allowedEslintRules` defined in it with the number of allowed
-        violations.
+        violations. In the examples above we use `@config.json`. This means it
+        will read the file `config.json` and it expects `allowedEslintRules`
+        to be in there. You can use any file that you want. One option is to
+        use eslintrc.json or create a brand new file called
+        `allowed_errors.json`.
     """  # noqa
     parser = sub_parser.add_parser(
         'eslint',
