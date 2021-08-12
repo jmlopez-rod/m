@@ -151,6 +151,10 @@ def format_row(
 
 def print_project_status(project: ProjectStatus) -> OneOf[Issue, int]:
     """Status report"""
+    if project.status == ExitCode.OK:
+        print('No errors found')
+        return Good(0)
+
     keys = project.rules.keys()
     values = project.rules.values()
     blocks = [
