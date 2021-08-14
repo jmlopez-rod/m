@@ -8,10 +8,10 @@ from .pylint import read_payload as read_pylint_payload
 def get_linter(key: str) -> OneOf[Issue, Linter]:
     """Find an available linter based on the key provided."""
     mapping = dict(
-        eslint=linter('eslint', read_eslint_payload),
-        pycodestyle=linter('pycodestyle', read_pycodestyle_payload),
-        pylint=linter('pylint', read_pylint_payload),
+        eslint=read_eslint_payload,
+        pycodestyle=read_pycodestyle_payload,
+        pylint=read_pylint_payload,
     )
     if key not in mapping:
         return issue(f'{key} is not a supported linter')
-    return Good(mapping[key])
+    return Good(linter(key, mapping[key]))
