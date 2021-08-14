@@ -4,7 +4,7 @@ import json
 import math
 from dataclasses import dataclass
 from abc import ABC
-from typing import Optional, Type, List, cast, Union
+from typing import Optional, TextIO, Type, List, cast, Union
 from .. import git
 from . import one_of, issue
 from .fp import OneOf, Good
@@ -175,26 +175,28 @@ class CITool(ABC):
         description: str,
         file: Optional[str] = None,
         line: Optional[str] = None,
-        col: Optional[str] = None
+        col: Optional[str] = None,
+        stream: TextIO = sys.stderr,
     ) -> None:
         """Print an error message."""
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]' if loc else ''
-        print(f'error{info}: {description}', file=sys.stderr)
+        print(f'error{info}: {description}', file=stream)
 
     @staticmethod
     def warn(
         description: str,
         file: Optional[str] = None,
         line: Optional[str] = None,
-        col: Optional[str] = None
+        col: Optional[str] = None,
+        stream: TextIO = sys.stderr,
     ) -> None:
         """Print an warning message."""
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]' if loc else ''
-        print(f'warn{info}: {description}', file=sys.stderr)
+        print(f'warn{info}: {description}', file=stream)
 
 
 class GithubActions(CITool):
@@ -252,7 +254,8 @@ class GithubActions(CITool):
         description: str,
         file: Optional[str] = None,
         line: Optional[str] = None,
-        col: Optional[str] = None
+        col: Optional[str] = None,
+        stream: TextIO = sys.stderr,
     ) -> None:
         """Print an error message.
 
@@ -260,14 +263,15 @@ class GithubActions(CITool):
         """
         loc = f'file={file},line={line},col={col}' if file else ''
         info = f' {loc}' if loc else ''
-        print(f'::error{info}::{description}', file=sys.stderr)
+        print(f'::error{info}::{description}', file=stream)
 
     @staticmethod
     def warn(
         description: str,
         file: Optional[str] = None,
         line: Optional[str] = None,
-        col: Optional[str] = None
+        col: Optional[str] = None,
+        stream: TextIO = sys.stderr,
     ) -> None:
         """Print a warning message.
 
@@ -275,7 +279,7 @@ class GithubActions(CITool):
         """  # noqa
         loc = f'file={file},line={line},col={col}' if file else ''
         info = f' {loc}' if loc else ''
-        print(f'::warning{info}::{description}', file=sys.stderr)
+        print(f'::warning{info}::{description}', file=stream)
 
 
 class Teamcity(CITool):
@@ -321,7 +325,8 @@ class Teamcity(CITool):
         description: str,
         file: Optional[str] = None,
         line: Optional[str] = None,
-        col: Optional[str] = None
+        col: Optional[str] = None,
+        stream: TextIO = sys.stderr,
     ) -> None:
         """Print a message to teamcity so that the build may abort."""
         parts = [x for x in [file, line, col] if x]
@@ -330,7 +335,7 @@ class Teamcity(CITool):
         desc = Teamcity.escape_msg(f'{info}{description}' or '')
         print(
             f"##teamcity[buildProblem description='{desc}']",
-            file=sys.stderr
+            file=stream
         )
 
     @staticmethod
@@ -338,7 +343,8 @@ class Teamcity(CITool):
         description: str,
         file: Optional[str] = None,
         line: Optional[str] = None,
-        col: Optional[str] = None
+        col: Optional[str] = None,
+        stream: TextIO = sys.stderr,
     ) -> None:
         """Print a warning message to teamcity."""
         parts = [x for x in [file, line, col] if x]
@@ -347,7 +353,7 @@ class Teamcity(CITool):
         desc = Teamcity.escape_msg(f'{info}{description}' or '')
         print(
             f"##teamcity[message status='WARNING' text='{desc}']",
-            file=sys.stderr
+            file=stream
         )
 
 
@@ -363,15 +369,15 @@ def get_ci_tool() -> Type[CITool]:
 CiTool = get_ci_tool()
 
 
-def error_block(issue_: str) -> None:
+def error_block(issue_: str, stream: TextIO = sys.stderr) -> None:
     """Print an issue within an error block"""
     CiTool.open_block('error', '')
-    print(issue_, file=sys.stderr)
+    print(issue_, file=stream)
     CiTool.close_block('error')
 
 
-def warn_block(issue_: str) -> None:
+def warn_block(issue_: str, stream: TextIO = sys.stderr) -> None:
     """Print an issue within a warning block"""
     CiTool.open_block('warning', '')
-    print(issue_, file=sys.stderr)
+    print(issue_, file=stream)
     CiTool.close_block('warning')
