@@ -1,9 +1,10 @@
 import os
+import sys
 import enum
 from dataclasses import dataclass
-from typing import Callable, List, Dict, Any
+from typing import Callable, List, Dict, Any, TextIO
 
-from ..core import OneOf, one_of, Good, Issue, json, io
+from ..core import OneOf, one_of, Good, Issue, io
 
 
 class ExitCode(enum.Enum):
@@ -149,14 +150,23 @@ def format_row(
     return '  '.join(items)
 
 
-def print_project_status(project: ProjectStatus) -> OneOf[Issue, int]:
+def print_project_status(
+    project: ProjectStatus,
+    stream: TextIO = sys.stdout
+) -> OneOf[Issue, int]:
     """Status report"""
-    if project.status == ExitCode.OK:
-        print('No errors found')
-        return Good(0)
-
     keys = project.rules.keys()
     values = project.rules.values()
+    total_found = sum([s.found for s in values])
+    total_allowed = sum([s.allowed for s in values])
+
+    if project.status == ExitCode.OK:
+        if total_found > 0:
+            print(f'project has {total_found} errors to clear', file=stream)
+        else:
+            print('no errors found', file=stream)
+        return Good(0)
+
     blocks = [
         format_rule_status(rule)
         for rule in values if rule.found > rule.allowed
@@ -179,32 +189,33 @@ def print_project_status(project: ProjectStatus) -> OneOf[Issue, int]:
         )
         for rule_id, rule_status in project.rules.items()
     ])
-    print('\n'.join(blocks))
-    print()
+    print('\n'.join(blocks), file=stream)
+    print('', file=stream)
 
-    total_found = sum([s.found for s in values])
-    total_allowed = sum([s.allowed for s in values])
     if project.status == ExitCode.ERROR:
         diff = total_found - total_allowed
-        io.CiTool.error(f'{diff} extra errors were introduced')
+        io.CiTool.error(
+            f'{diff} extra errors were introduced',
+            stream=stream)
     elif project.status == ExitCode.NEEDS_READJUSTMENT:
         diff = total_allowed - total_found
-        io.CiTool.error(f'{diff} errors were removed - lower error allowance')
-    else:
-        print(f'project has {total_found} errors to clear')
+        io.CiTool.error(
+            f'{diff} errors were removed - lower error allowance',
+            stream=stream)
     return Good(0)
 
 
 def eslint(
     payload: List[Dict[str, Any]],
     config: Dict[str, Any],
+    stream: TextIO = sys.stdout
 ) -> OneOf[Issue, ProjectStatus]:
     """format the eslint output. """
     return one_of(lambda: [
         project_status
         for data in read_payload(payload)
         for rules_dict in (to_rules_dict(data),)
-        for allowed_rules in json.get(config, 'allowedEslintRules')
+        for allowed_rules in (config.get('allowedEslintRules', {}),)
         for project_status in (get_project_status(rules_dict, allowed_rules),)
-        for _ in print_project_status(project_status)
+        for _ in print_project_status(project_status, stream)
     ])

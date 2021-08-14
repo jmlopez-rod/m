@@ -1,0 +1,93 @@
+[
+  {
+    "filePath": "/home/jmlopez/Playground/eslint-test/file1.js",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'main2' is defined but never used.",
+        "line": 1,
+        "column": 10,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 1,
+        "endColumn": 15
+      },
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'a' is defined but never used.",
+        "line": 1,
+        "column": 16,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 1,
+        "endColumn": 17
+      },
+      {
+        "ruleId": "quotes",
+        "severity": 2,
+        "message": "Strings must use doublequote.",
+        "line": 2,
+        "column": 12,
+        "nodeType": "Literal",
+        "messageId": "wrongQuotes",
+        "endLine": 2,
+        "endColumn": 15,
+        "fix": {
+          "range": [
+            31,
+            34
+          ],
+          "text": "\"0\""
+        }
+      }
+    ],
+    "errorCount": 3,
+    "warningCount": 0,
+    "fixableErrorCount": 1,
+    "fixableWarningCount": 0,
+    "source": "function main2(a) {\n    return '0';\n\n}\n\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/home/jmlopez/Playground/eslint-test/file2.js",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'main' is defined but never used.",
+        "line": 1,
+        "column": 10,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 1,
+        "endColumn": 14
+      },
+      {
+        "ruleId": "semi",
+        "severity": 2,
+        "message": "Missing semicolon.",
+        "line": 2,
+        "column": 15,
+        "nodeType": "ReturnStatement",
+        "messageId": "missingSemi",
+        "endLine": 3,
+        "endColumn": 1,
+        "fix": {
+          "range": [
+            32,
+            32
+          ],
+          "text": ";"
+        }
+      }
+    ],
+    "errorCount": 2,
+    "warningCount": 0,
+    "fixableErrorCount": 1,
+    "fixableWarningCount": 0,
+    "source": "function main() {\n    return \"0\"\n}\n",
+    "usedDeprecatedRules": []
+  }
+]

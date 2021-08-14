@@ -4,6 +4,13 @@ from m.core.issue import Issue
 from m.core.fp import OneOf
 
 
+def read_fixture(name: str, path: str = 'ci/fixtures') -> str:
+    """Read a json file from the given path. Defaults to `ci/fixtures` since
+    this is the place that deals with with the most payloads."""
+    with open(f'packages/python/tests/{path}/{name}') as fp:
+        return fp.read()
+
+
 def compare_values(test_case, items: List[Any]) -> None:
     """Compare multiple values without callng assertEqual
     on each line.
