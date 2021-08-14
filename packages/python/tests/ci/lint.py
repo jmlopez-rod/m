@@ -135,8 +135,10 @@ class LintTest(FpTestCase):
             self.assert_ok(result)
             status = cast(ProjectStatus, result.value)
             self.assertEqual(status.status, ExitCode.ERROR)
-            assert_str_has(io_stream.getvalue(), [
+            output = io_stream.getvalue()
+            assert_str_has(output, [
                 'missing-function-docstring (found 1, allowed 0)',
                 'import-outside-toplevel (found 1, allowed 0)',
                 '2 extra errors were introduced',
             ])
+            self.assertNotIn('long message', output)
