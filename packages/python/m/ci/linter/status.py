@@ -97,7 +97,7 @@ def format_rule_status(rule: RuleIdStatus) -> str:
     cwd = os.getcwd() + '/'
     for msg in rule.messages[:max_lines]:
         file_path = msg.file_path.replace(cwd, '')
-        buffer.append(f'  {msg.line}:{msg.column}:{file_path} - {msg.message}')
+        buffer.append(f'  {file_path}:{msg.line}:{msg.column} - {msg.message}')
     if len(rule.messages) > max_lines:
         buffer.append(f'  ... and {len(rule.messages) - max_lines} more')
     buffer.append('')
