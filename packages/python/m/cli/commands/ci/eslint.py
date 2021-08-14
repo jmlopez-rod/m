@@ -56,7 +56,8 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....core.issue import Issue
-    from ....ci.eslint import eslint, ProjectStatus
+    from ....ci.linter.eslint import linter as eslint
+    from ....ci.linter.status import ProjectStatus
 
     result = eslint(arg.payload, arg.config)
     if result.is_bad:

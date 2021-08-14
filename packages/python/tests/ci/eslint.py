@@ -2,7 +2,8 @@ import json
 from typing import cast, List
 from io import StringIO
 
-from m.ci.eslint import eslint, ProjectStatus, ExitCode
+from m.ci.linter.eslint import linter as eslint
+from m.ci.linter.status import ProjectStatus, ExitCode
 from ..util import FpTestCase, read_fixture
 
 

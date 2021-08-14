@@ -4,7 +4,7 @@ import enum
 from dataclasses import dataclass
 from typing import Callable, List, Dict, Any, TextIO
 
-from ..core import OneOf, one_of, Good, Issue, io
+from ...core import OneOf, Good, Issue, io, one_of
 
 
 class ExitCode(enum.Enum):
@@ -16,25 +16,18 @@ class ExitCode(enum.Enum):
 
 @dataclass
 class Message:
-    """A message object containing information about the eslint rule that was
-    triggered.
-
-    https://eslint.org/docs/developer-guide/working-with-custom-formatters#the-result-object
-    """  # noqa
+    """A message object containing information about a rule that was
+    triggered. """
     rule_id: str
     message: str
     line: int
     column: int
-    # Not part of eslint. Adding here to make it easier to process data.
     file_path: str
 
 
 @dataclass
 class Result:
-    """A result object for each file reported to have errors in eslint.
-
-    https://eslint.org/docs/developer-guide/working-with-custom-formatters#the-result-object
-    """  # noqa
+    """A result object for each file reported to have errors. """
     file_path: str
     messages: List[Message]
 
@@ -55,30 +48,9 @@ class ProjectStatus:
     rules: Dict[str, RuleIdStatus]
 
 
-def read_payload(payload: List[Dict[str, Any]]) -> OneOf[Issue, List[Result]]:
-    """Transform the eslint payload to a list of python objects that we can use
-    to process the information."""
-    return Good([
-        Result(
-            file_path=item['filePath'],
-            messages=[
-                Message(
-                    msg['ruleId'],
-                    msg['message'],
-                    msg['line'],
-                    msg['column'],
-                    item['filePath'],
-                )
-                for msg in item['messages']
-            ]
-        )
-        for item in payload
-    ])
-
-
 def to_rules_dict(results: List[Result]) -> Dict[str, List[Message]]:
-    """Convert the eslint Result object to a dictionary that maps eslint rules
-    to messages."""
+    """Convert the list of Result objects to a dictionary that maps rules
+    to Messages."""
     obj: Dict[str, List[Message]] = dict()
     for result in results:
         for msg in result.messages:
@@ -205,17 +177,19 @@ def print_project_status(
     return Good(0)
 
 
-def eslint(
-    payload: List[Dict[str, Any]],
+def lint(
+    payload: Any,
+    transform: Callable[[Any], OneOf[Issue, List[Result]]],
     config: Dict[str, Any],
+    config_key: str,
     stream: TextIO = sys.stdout
 ) -> OneOf[Issue, ProjectStatus]:
-    """format the eslint output. """
+    """format the linter tool output. """
     return one_of(lambda: [
         project_status
-        for data in read_payload(payload)
+        for data in transform(payload)
         for rules_dict in (to_rules_dict(data),)
-        for allowed_rules in (config.get('allowedEslintRules', {}),)
+        for allowed_rules in (config.get(config_key, {}),)
         for project_status in (get_project_status(rules_dict, allowed_rules),)
         for _ in print_project_status(project_status, stream)
     ])
