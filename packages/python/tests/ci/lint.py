@@ -1,12 +1,14 @@
 from typing import cast, List
 from io import StringIO
 
-from m.ci.linter.eslint import read_payload
+from m.ci.linter.eslint import read_payload as read_eslint_payload
+from m.ci.linter.pycodestyle import read_payload as read_pycodestyle_payload
 from m.ci.linter.status import ProjectStatus, ExitCode, linter
 from ..util import FpTestCase, read_fixture
 
 
-eslint = linter('eslint', read_payload)
+eslint = linter('eslint', read_eslint_payload)
+pycodestyle = linter('pycodestyle', read_pycodestyle_payload)
 
 
 def assert_str_has(content: str, substrings: List[str]):
@@ -15,7 +17,7 @@ def assert_str_has(content: str, substrings: List[str]):
         raise AssertionError(f'missing {missing}')
 
 
-class EslintTest(FpTestCase):
+class LintTest(FpTestCase):
     def test_eslint_fail(self):
         with StringIO() as io_stream:
             payload = read_fixture('eslint_payload.json')
@@ -93,4 +95,20 @@ class EslintTest(FpTestCase):
             self.assertEqual(status.status, ExitCode.OK)
             assert_str_has(io_stream.getvalue(), [
                 'no errors found'
+            ])
+
+    def test_pycodestyle_fail(self):
+        with StringIO() as io_stream:
+            payload = read_fixture('pycodestyle_payload.txt')
+            result = pycodestyle(payload, {}, io_stream)
+            self.assert_ok(result)
+            status = cast(ProjectStatus, result.value)
+            self.assertEqual(status.status, ExitCode.ERROR)
+            assert_str_has(io_stream.getvalue(), [
+                'E303 (found 1, allowed 0)',
+                'E201 (found 1, allowed 0)',
+                'E202 (found 1, allowed 0)',
+                'E271 (found 1, allowed 0)',
+                'E203 (found 1, allowed 0)',
+                '5 extra errors were introduced',
             ])

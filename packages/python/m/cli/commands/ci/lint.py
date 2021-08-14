@@ -35,12 +35,13 @@ def add_parser(sub_parser, raw):
         Each tool will have different outputs. See below information for each
         tool.
 
-        - eslint:
-
-          expects json output. To be able to provide this make sure to use with
-          the `f` option:
+        - eslint: expects json output.
 
             eslint -f json [dir]
+
+        - pycodestyle: expects default output.
+
+            pycodestyle --format=default [dir]
     """  # noqa
     parser = sub_parser.add_parser(
         'lint',
