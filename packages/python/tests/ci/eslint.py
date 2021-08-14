@@ -1,10 +1,12 @@
-import json
 from typing import cast, List
 from io import StringIO
 
-from m.ci.linter.eslint import linter as eslint
-from m.ci.linter.status import ProjectStatus, ExitCode
+from m.ci.linter.eslint import read_payload
+from m.ci.linter.status import ProjectStatus, ExitCode, linter
 from ..util import FpTestCase, read_fixture
+
+
+eslint = linter('eslint', read_payload)
 
 
 def assert_str_has(content: str, substrings: List[str]):
@@ -17,7 +19,7 @@ class EslintTest(FpTestCase):
     def test_eslint_fail(self):
         with StringIO() as io_stream:
             payload = read_fixture('eslint_payload.json')
-            result = eslint(json.loads(payload), {}, io_stream)
+            result = eslint(payload, {}, io_stream)
             self.assert_ok(result)
             status = cast(ProjectStatus, result.value)
             self.assertEqual(status.status, ExitCode.ERROR)
@@ -37,7 +39,7 @@ class EslintTest(FpTestCase):
                     'semi': 1,
                 }
             }
-            result = eslint(json.loads(payload), config, io_stream)
+            result = eslint(payload, config, io_stream)
             self.assert_ok(result)
             status = cast(ProjectStatus, result.value)
             self.assertEqual(status.status, ExitCode.ERROR)
@@ -56,7 +58,7 @@ class EslintTest(FpTestCase):
                     'semi': 10,
                 }
             }
-            result = eslint(json.loads(payload), config, io_stream)
+            result = eslint(payload, config, io_stream)
             self.assert_ok(result)
             status = cast(ProjectStatus, result.value)
             self.assertEqual(status.status, ExitCode.NEEDS_READJUSTMENT)
@@ -74,7 +76,7 @@ class EslintTest(FpTestCase):
                     'semi': 1,
                 }
             }
-            result = eslint(json.loads(payload), config, io_stream)
+            result = eslint(payload, config, io_stream)
             self.assert_ok(result)
             status = cast(ProjectStatus, result.value)
             self.assertEqual(status.status, ExitCode.OK)
@@ -85,7 +87,7 @@ class EslintTest(FpTestCase):
     def test_eslint_no_errors(self):
         with StringIO() as io_stream:
             payload = read_fixture('eslint_payload_clear.json')
-            result = eslint(json.loads(payload), {}, io_stream)
+            result = eslint(payload, {}, io_stream)
             self.assert_ok(result)
             status = cast(ProjectStatus, result.value)
             self.assertEqual(status.status, ExitCode.OK)

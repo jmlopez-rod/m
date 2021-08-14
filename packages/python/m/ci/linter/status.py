@@ -178,8 +178,8 @@ def print_project_status(
 
 
 def lint(
-    payload: Any,
-    transform: Callable[[Any], OneOf[Issue, List[Result]]],
+    payload: str,
+    transform: Callable[[str], OneOf[Issue, List[Result]]],
     config: Dict[str, Any],
     config_key: str,
     stream: TextIO = sys.stdout
@@ -193,3 +193,22 @@ def lint(
         for project_status in (get_project_status(rules_dict, allowed_rules),)
         for _ in print_project_status(project_status, stream)
     ])
+
+
+Linter = Callable[[Any, Dict[str, Any], TextIO], OneOf[Issue, ProjectStatus]]
+
+
+def linter(
+    name: str,
+    transform: Callable[[str], OneOf[Issue, List[Result]]],
+) -> Linter:
+    """Generate a linter based on the tool name and its tranform."""
+    def _linter(
+        payload: str,
+        config: Dict[str, Any],
+        stream: TextIO = sys.stdout
+    ) -> OneOf[Issue, ProjectStatus]:
+        key = f'allowed{name.capitalize()}Rules'
+        return lint(payload, transform, config, key, stream)
+
+    return _linter

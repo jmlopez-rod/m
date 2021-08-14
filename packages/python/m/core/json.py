@@ -29,7 +29,7 @@ def read_json(
 def parse_json(
     data: str,
     error_if_empty: bool = False
-) -> OneOf[Issue, object]:
+) -> OneOf[Issue, Any]:
     """Return a `Good` containing the parsed contents of the json string."""
     try:
         empty = '' if error_if_empty else 'null'

@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from argparse import ArgumentTypeError
 from ..core.json import read_json, parse_json
@@ -24,6 +25,23 @@ def validate_json_payload(file_path: str):
     if res.is_bad:
         raise ArgumentTypeError(f'invalid json payload\n{res.value}')
     return res.value
+
+
+def validate_payload(file_path: str) -> str:
+    """Return the raw payload. This allows us to read from a file or the
+    stdin stream."""
+    if file_path.startswith('\\@'):
+        # escape @ with \ to let the cli know that the payload starts with @
+        return file_path[1:]
+    if file_path == '@-':
+        return sys.stdin.read()
+    if file_path.startswith('@'):
+        filename = file_path[1:]
+        if not Path(filename).exists():
+            raise ArgumentTypeError(f'file "{filename}" does not exist')
+        with open(filename) as fp:
+            return fp.read()
+    return file_path
 
 
 def validate_non_empty_str(value):
