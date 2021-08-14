@@ -13,6 +13,6 @@ runTest core.issue.IssueTest
 runTest ci.config.ConfigTest
 runTest ci.git_env.GitEnvTest
 runTest ci.release_env.ReleaseEnvTest
-runTest ci.eslint.EslintTest
+runTest ci.lint.LintTest
 runTest github.ci_dataclasses.CiDataclassesTest
 runTest core.io.IoTest
