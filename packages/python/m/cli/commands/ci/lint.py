@@ -42,6 +42,10 @@ def add_parser(sub_parser, raw):
         - pycodestyle: expects default output.
 
             pycodestyle --format=default [dir]
+
+        - pylint: expects json output
+
+            pylint -f json --rcfile=[file] [dir]
     """  # noqa
     parser = sub_parser.add_parser(
         'lint',

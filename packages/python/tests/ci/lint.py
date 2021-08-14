@@ -3,12 +3,14 @@ from io import StringIO
 
 from m.ci.linter.eslint import read_payload as read_eslint_payload
 from m.ci.linter.pycodestyle import read_payload as read_pycodestyle_payload
+from m.ci.linter.pylint import read_payload as read_pylint_payload
 from m.ci.linter.status import ProjectStatus, ExitCode, linter
 from ..util import FpTestCase, read_fixture
 
 
 eslint = linter('eslint', read_eslint_payload)
 pycodestyle = linter('pycodestyle', read_pycodestyle_payload)
+pylint = linter('pylint', read_pylint_payload)
 
 
 def assert_str_has(content: str, substrings: List[str]):
@@ -124,4 +126,17 @@ class LintTest(FpTestCase):
                 'E271 (found 1, allowed 0)',
                 'E203 (found 1, allowed 0)',
                 '5 extra errors were introduced',
+            ])
+
+    def test_pylint_fail(self):
+        with StringIO() as io_stream:
+            payload = read_fixture('pylint_payload.json')
+            result = pylint(payload, {}, io_stream)
+            self.assert_ok(result)
+            status = cast(ProjectStatus, result.value)
+            self.assertEqual(status.status, ExitCode.ERROR)
+            assert_str_has(io_stream.getvalue(), [
+                'missing-function-docstring (found 1, allowed 0)',
+                'import-outside-toplevel (found 1, allowed 0)',
+                '2 extra errors were introduced',
             ])
