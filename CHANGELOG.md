@@ -17,6 +17,7 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
    - eslint
    - pycodestyle
    - pylint
+  
   The tool allows us to make the linters continue with the ci process as long
   as we do not introduce any more errors. See more details by checking the
   help options `m ci lint -h`.
