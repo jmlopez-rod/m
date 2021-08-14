@@ -39,6 +39,7 @@ class LintTest(FpTestCase):
                 'allowedEslintRules': {
                     'no-unused-vars': 3,
                     'semi': 1,
+                    'made-up': 100,
                 }
             }
             result = eslint(payload, config, io_stream)
@@ -95,6 +96,18 @@ class LintTest(FpTestCase):
             self.assertEqual(status.status, ExitCode.OK)
             assert_str_has(io_stream.getvalue(), [
                 'no errors found'
+            ])
+
+    def test_eslint_no_errors_reduce(self):
+        with StringIO() as io_stream:
+            payload = read_fixture('eslint_payload_clear.json')
+            config = {'allowedEslintRules': {'semi': 10, 'other': 5}}
+            result = eslint(payload, config, io_stream)
+            self.assert_ok(result)
+            status = cast(ProjectStatus, result.value)
+            self.assertEqual(status.status, ExitCode.NEEDS_READJUSTMENT)
+            assert_str_has(io_stream.getvalue(), [
+                '15 errors were removed - lower error allowance'
             ])
 
     def test_pycodestyle_fail(self):

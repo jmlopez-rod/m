@@ -82,6 +82,16 @@ def get_project_status(
             allowed,
             messages,
         )
+    for rule_id, allowed in allowed_rules.items():
+        if rule_id not in rules:
+            rules[rule_id] = RuleIdStatus(
+                rule_id,
+                0,
+                allowed,
+                [],
+            )
+            if allowed > 0:
+                needs_readjustment = True
     status = ExitCode.OK
     if failed:
         status = ExitCode.ERROR
@@ -165,7 +175,11 @@ def print_project_status(
     print('', file=stream)
 
     if project.status == ExitCode.ERROR:
-        diff = total_found - total_allowed
+        diff = sum([
+            d
+            for s in values
+            for d in (s.found - s.allowed, ) if d > 0
+        ])
         io.CiTool.error(
             f'{diff} extra errors were introduced',
             stream=stream)
