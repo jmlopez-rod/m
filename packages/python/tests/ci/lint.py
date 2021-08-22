@@ -1,3 +1,4 @@
+import inspect
 from typing import cast, List
 from io import StringIO
 
@@ -142,3 +143,22 @@ class LintTest(FpTestCase):
                 '2 extra errors were introduced',
             ])
             self.assertNotIn('long message', output)
+
+    def test_pylint_fail_order(self):
+        with StringIO() as io_stream:
+            payload = read_fixture('pylint_payload_order.json')
+            result = pylint(payload, {}, io_stream)
+            self.assert_ok(result)
+            status = cast(ProjectStatus, result.value)
+            self.assertEqual(status.status, ExitCode.ERROR)
+            output = io_stream.getvalue()
+            assert_str_has(output, [
+                'missing-function-docstring (found 1, allowed 0)',
+                'import-outside-toplevel (found 2, allowed 0)',
+                '3 extra errors were introduced',
+            ])
+            expected = inspect.cleandoc('''
+                missing-function-docstring      1        0
+                import-outside-toplevel         2        0
+            ''').strip()
+            self.assertIn(expected, output)

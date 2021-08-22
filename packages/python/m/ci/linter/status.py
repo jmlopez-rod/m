@@ -170,7 +170,10 @@ def print_project_status(
             widths,
             'lrr'
         )
-        for rule_id, rule_status in project.rules.items()
+        for rule_id, rule_status in sorted(
+            project.rules.items(),
+            key=lambda x: x[1].found
+        )
     ])
     print('\n'.join(blocks), file=stream)
     print('', file=stream)
