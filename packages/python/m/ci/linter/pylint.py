@@ -10,7 +10,7 @@ def read_payload(payload: str) -> OneOf[Issue, List[Result]]:
     if res.is_bad:
         return res
     items = cast(List[Any], res.value)
-    data: Dict[str, List[Message]] = dict()
+    data: Dict[str, List[Message]] = {}
     for item in items:
         msg = Message(
             rule_id=item['symbol'],

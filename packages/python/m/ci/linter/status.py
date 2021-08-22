@@ -51,7 +51,7 @@ class ProjectStatus:
 def to_rules_dict(results: List[Result]) -> Dict[str, List[Message]]:
     """Convert the list of Result objects to a dictionary that maps rules
     to Messages."""
-    obj: Dict[str, List[Message]] = dict()
+    obj: Dict[str, List[Message]] = {}
     for result in results:
         for msg in result.messages:
             if msg.rule_id not in obj:

@@ -67,7 +67,7 @@ def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
 def read_file(filename: str) -> OneOf[Issue, str]:
     """Return a `Good` containing the contents of the file."""
     try:
-        with open(filename) as fp:
+        with open(filename, encoding='UTF-8') as fp:
             return Good(fp.read())
     except Exception as ex:
         return issue(
@@ -79,7 +79,7 @@ def read_file(filename: str) -> OneOf[Issue, str]:
 def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
     """Return a `Good` containing 0 if the file was written."""
     try:
-        with open(filename, 'w') as fp:
+        with open(filename, 'w', encoding='UTF-8') as fp:
             fp.write(contents)
         return Good(0)
     except Exception as ex:
