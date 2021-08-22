@@ -7,7 +7,7 @@ from m.core.fp import OneOf
 def read_fixture(name: str, path: str = 'ci/fixtures') -> str:
     """Read a json file from the given path. Defaults to `ci/fixtures` since
     this is the place that deals with with the most payloads."""
-    with open(f'packages/python/tests/{path}/{name}') as fp:
+    with open(f'packages/python/tests/{path}/{name}', encoding='UTF-8') as fp:
         return fp.read()
 
 

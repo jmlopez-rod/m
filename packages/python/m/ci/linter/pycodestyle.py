@@ -9,7 +9,7 @@ def read_payload(payload: str) -> OneOf[Issue, List[Result]]:
     """Transform the pycodestyle payload to a list of Result objects."""
     regex = r'(.*):(\d+):(\d+): (\w+) (.*)'
     lines = payload.splitlines()
-    data: Dict[str, List[Message]] = dict()
+    data: Dict[str, List[Message]] = {}
     for line in lines:
         match = re.match(regex, line)
         if match:

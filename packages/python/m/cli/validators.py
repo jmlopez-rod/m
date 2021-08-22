@@ -39,7 +39,7 @@ def validate_payload(file_path: str) -> str:
         filename = file_path[1:]
         if not Path(filename).exists():
             raise ArgumentTypeError(f'file "{filename}" does not exist')
-        with open(filename) as fp:
+        with open(filename, encoding='UTF-8') as fp:
             return fp.read()
     return file_path
 

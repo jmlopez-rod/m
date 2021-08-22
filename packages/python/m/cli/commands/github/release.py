@@ -1,5 +1,5 @@
 import inspect
-from ...utils import call_main, env
+from ...utils import run_main, env
 
 
 def add_parser(sub_parser, raw):
@@ -34,14 +34,20 @@ def add_parser(sub_parser, raw):
         type=str,
         required=True,
         help='version to release')
+    add('--branch',
+        type=str,
+        default=None,
+        help='The branch where the git tag will be created')
 
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....github.api import create_release
-    return call_main(create_release, [
-        arg.token,
-        arg.owner,
-        arg.repo,
-        arg.version,
-    ])
+    return run_main(
+        lambda: create_release(
+            arg.token,
+            arg.owner,
+            arg.repo,
+            arg.version,
+            arg.branch
+        ))

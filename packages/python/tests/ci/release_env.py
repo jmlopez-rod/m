@@ -12,7 +12,8 @@ from m.ci.release_env import get_release_env
 
 
 def read_fixture(name: str) -> str:
-    with open(f'packages/python/tests/ci/fixtures/{name}.json') as fp:
+    fname = f'packages/python/tests/ci/fixtures/{name}.json'
+    with open(fname, encoding='UTF-8') as fp:
         return fp.read()
 
 

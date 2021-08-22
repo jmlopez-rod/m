@@ -60,7 +60,7 @@ def get_command_modules(
     """
     dir_name = '/'.join(commands_module.split('.')[1:])
     mod_names = list(iglob(f'{root}/{dir_name}/*.py'))
-    mod = dict()
+    mod = {}
     for name in mod_names:
         tname = pth.split(name)[1][:-3]
         tmod = import_mod(f'{commands_module}.{tname}')
@@ -81,7 +81,7 @@ def get_cli_command_modules(
     main_mod = pth.split(root)[1]
     cli_root = f'{main_mod}.cli'
     root_cmd = get_command_modules(root, f'{cli_root}.commands')
-    mod: Map[str, Union[CmdModule, Map[str, CmdModule]]] = dict()
+    mod: Map[str, Union[CmdModule, Map[str, CmdModule]]] = {}
     for key, val in root_cmd.items():
         mod[key] = val
 

@@ -51,7 +51,7 @@ class ProjectStatus:
 def to_rules_dict(results: List[Result]) -> Dict[str, List[Message]]:
     """Convert the list of Result objects to a dictionary that maps rules
     to Messages."""
-    obj: Dict[str, List[Message]] = dict()
+    obj: Dict[str, List[Message]] = {}
     for result in results:
         for msg in result.messages:
             if msg.rule_id not in obj:
@@ -170,7 +170,10 @@ def print_project_status(
             widths,
             'lrr'
         )
-        for rule_id, rule_status in project.rules.items()
+        for rule_id, rule_status in sorted(
+            project.rules.items(),
+            key=lambda x: x[1].found
+        )
     ])
     print('\n'.join(blocks), file=stream)
     print('', file=stream)

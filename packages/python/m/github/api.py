@@ -48,6 +48,7 @@ def create_release(
     owner: str,
     repo: str,
     version: str,
+    branch: Optional[str] = None,
 ) -> OneOf[Issue, Any]:
     """Send a payload to create a release in github."""
     endpoint = f'/repos/{owner}/{repo}/releases'
@@ -60,4 +61,6 @@ def create_release(
         'draft': False,
         'prerelease': False,
     }
+    if branch:
+        data['target_commitish'] = branch
     return request(token, endpoint, 'POST', data)
