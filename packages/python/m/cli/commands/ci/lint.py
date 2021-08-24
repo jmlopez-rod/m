@@ -75,6 +75,13 @@ def add_parser(sub_parser, raw):
         help='config data: @filename (file), string'
     )
     add(
+        'm',
+        '--max-lines',
+        default=5,
+        type=int,
+        help='maximum number of lines to print per error'
+    )
+    add(
         '--traceback',
         action='store_true',
         help='display the exception traceback if available'
@@ -89,7 +96,7 @@ def run(arg):
 
     result = one_of(lambda: [
         res
-        for linter in get_linter(arg.tool)
+        for linter in get_linter(arg.tool, arg.max_lines)
         for res in linter(arg.payload, arg.config, sys.stdout)
     ])
     if result.is_bad:
