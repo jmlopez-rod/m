@@ -75,7 +75,7 @@ def add_parser(sub_parser, raw):
         help='config data: @filename (file), string'
     )
     add(
-        'm',
+        '-m',
         '--max-lines',
         default=5,
         type=int,
