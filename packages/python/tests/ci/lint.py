@@ -9,9 +9,9 @@ from m.ci.linter.status import ProjectStatus, ExitCode, linter
 from ..util import FpTestCase, read_fixture
 
 
-eslint = linter('eslint', read_eslint_payload)
-pycodestyle = linter('pycodestyle', read_pycodestyle_payload)
-pylint = linter('pylint', read_pylint_payload)
+eslint = linter('eslint', 5, read_eslint_payload)
+pycodestyle = linter('pycodestyle', 5, read_pycodestyle_payload)
+pylint = linter('pylint', 5, read_pylint_payload)
 
 
 def assert_str_has(content: str, substrings: List[str]):

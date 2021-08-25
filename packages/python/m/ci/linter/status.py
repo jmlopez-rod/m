@@ -100,10 +100,9 @@ def get_project_status(
     return ProjectStatus(status, rules)
 
 
-def format_rule_status(rule: RuleIdStatus) -> str:
+def format_rule_status(rule: RuleIdStatus, max_lines: int) -> str:
     """Formats a single rule and its violations."""
     buffer = [f'{rule.rule_id} (found {rule.found}, allowed {rule.allowed}):']
-    max_lines = 5
     cwd = os.getcwd() + '/'
     for msg in rule.messages[:max_lines]:
         file_path = msg.file_path.replace(cwd, '')
@@ -135,6 +134,7 @@ def format_row(
 
 def print_project_status(
     project: ProjectStatus,
+    max_lines: int,
     stream: TextIO = sys.stdout
 ) -> OneOf[Issue, int]:
     """Status report"""
@@ -151,7 +151,7 @@ def print_project_status(
         return Good(0)
 
     blocks = [
-        format_rule_status(rule)
+        format_rule_status(rule, max_lines)
         for rule in values if rule.found > rule.allowed
     ]
 
@@ -200,6 +200,7 @@ def lint(
     transform: Callable[[str], OneOf[Issue, List[Result]]],
     config: Dict[str, Any],
     config_key: str,
+    max_lines: int,
     stream: TextIO = sys.stdout
 ) -> OneOf[Issue, ProjectStatus]:
     """format the linter tool output. """
@@ -209,7 +210,7 @@ def lint(
         for rules_dict in (to_rules_dict(data),)
         for allowed_rules in (config.get(config_key, {}),)
         for project_status in (get_project_status(rules_dict, allowed_rules),)
-        for _ in print_project_status(project_status, stream)
+        for _ in print_project_status(project_status, max_lines, stream)
     ])
 
 
@@ -218,6 +219,7 @@ Linter = Callable[[Any, Dict[str, Any], TextIO], OneOf[Issue, ProjectStatus]]
 
 def linter(
     name: str,
+    max_lines: int,
     transform: Callable[[str], OneOf[Issue, List[Result]]],
 ) -> Linter:
     """Generate a linter based on the tool name and its tranform."""
@@ -227,6 +229,6 @@ def linter(
         stream: TextIO = sys.stdout
     ) -> OneOf[Issue, ProjectStatus]:
         key = f'allowed{name.capitalize()}Rules'
-        return lint(payload, transform, config, key, stream)
+        return lint(payload, transform, config, key, max_lines, stream)
 
     return _linter
