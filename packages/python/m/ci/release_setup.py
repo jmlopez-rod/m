@@ -110,10 +110,10 @@ def release_setup(
     m_dir: str,
     new_ver: str,
     changelog: str = 'CHANGELOG.md',
-) -> OneOf[Issue, int]:
+) -> OneOf[Issue, None]:
     """Modify all the necessary files to create a release."""
     return one_of(lambda: [
-        0
+        None
         for config in read_config(m_dir)
         for first_sha in get_first_commit_sha()
         for _ in update_version(m_dir, new_ver)

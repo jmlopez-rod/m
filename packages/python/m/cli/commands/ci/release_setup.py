@@ -1,4 +1,4 @@
-from ...utils import call_main
+from ...utils import run_main
 
 
 def add_parser(sub_parser, raw):
@@ -20,4 +20,8 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....ci.release_setup import release_setup
-    return call_main(release_setup, [arg.m_dir, arg.new_ver, arg.changelog])
+    return run_main(lambda: release_setup(
+        arg.m_dir,
+        arg.new_ver,
+        arg.changelog
+    ))
