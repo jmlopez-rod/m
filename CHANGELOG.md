@@ -8,6 +8,16 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.2.0] <a name="0.2.0" href="#0.2.0">-</a> August 25, 2021
+
+- Add `-m, --max-lines` to `m ci lint` command. It allows us to specify
+  the maximum lines that the command should display per error. It
+  defaults to 5.
+- Fix releaseSetup.sh output. With the deprecation of `call_main` and
+  a previous change that was done to it, the releaseSetup and other
+  commands display 0 after a successful run.
+
+
 ## [0.1.0] <a name="0.1.0" href="#0.1.0">-</a> August 21, 2021
 - Order results from `m ci lint` based on the number of errors found.
 - Add command line option to specify branch when creating a github release.
@@ -38,7 +48,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[Unreleased]: https://github.com/jmlopez-rod/m/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/jmlopez-rod/m/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/jmlopez-rod/m/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/jmlopez-rod/m/compare/0.0.3...0.1.0
 [0.0.3]: https://github.com/jmlopez-rod/m/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/jmlopez-rod/m/compare/0.0.1...0.0.2
