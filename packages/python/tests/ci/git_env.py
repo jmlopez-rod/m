@@ -5,7 +5,9 @@ from typing import cast
 from m.core import issue
 from m.core.issue import Issue
 from m.core.fp import Good
-from m.ci.config import ReleaseFrom, Config
+from m.ci.config import (
+    Config, Workflow, GitFlowConfig, MFlowConfig
+)
 from m.core.io import EnvVars
 from m.ci.git_env import get_git_env, GitEnv
 
@@ -16,12 +18,16 @@ class GitEnvTest(unittest.TestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        release_from_dict=dict(
-            master=ReleaseFrom(
-                pr_branch='release',
-                allowed_files=['m/m.json', 'CHANGELOG.md'],
-                required_files=[]
-            )
+        workflow=Workflow.FREE_FLOW,
+        git_flow=GitFlowConfig(
+            master_branch='master',
+            develop_branch='develop',
+            release_prefix='release',
+            hotfix_prefix='hotfix'
+        ),
+        m_flow=MFlowConfig(
+            master_branch='master',
+            release_prefix='release',
         )
     )
     env_vars = EnvVars(

@@ -1,5 +1,4 @@
 from dataclasses import replace as copy
-from m.ci.config import ReleaseFrom
 from m.github import ci_dataclasses as cid
 from ..util import FpTestCase
 
@@ -57,66 +56,21 @@ class CiDataclassesTest(FpTestCase):
         # Not a release
         self.assertFalse(commit.is_release(None))
         # Not a release due to branches not matching
-        release_from = ReleaseFrom(
-            pr_branch='release',
-            allowed_files=[],
-            required_files=[],
-        )
+        release_prefix = 'release'
         associated_pr.pr_branch = 'some-feature'
-        self.assertFalse(commit.is_release(release_from))
+        self.assertFalse(commit.is_release(release_prefix))
         # Release
         associated_pr.pr_branch = 'release'
-        self.assertTrue(commit.is_release(release_from))
+        self.assertTrue(commit.is_release(release_prefix))
 
     def test_pr_is_release_pr(self):
         pr = copy(self.pr)
         # Not a release pr
         self.assertFalse(pr.is_release_pr(None))
         # Not a release pr due to branches not matching
-        release_from = ReleaseFrom(
-            pr_branch='release',
-            allowed_files=[],
-            required_files=[],
-        )
+        release_prefix = 'release'
         pr.pr_branch = 'some-feature'
-        self.assertFalse(pr.is_release_pr(release_from))
+        self.assertFalse(pr.is_release_pr(release_prefix))
         # Release PR
         pr.pr_branch = 'release'
-        self.assertTrue(pr.is_release_pr(release_from))
-
-    def test_pr_verify_release_pr(self):
-        pr = copy(self.pr)
-        _test = pr.verify_release_pr
-        # Not a release pr
-        self.assert_ok(_test(None))
-        release_from = ReleaseFrom(
-            pr_branch='release',
-            allowed_files=[],
-            required_files=[],
-        )
-        pr.pr_branch = 'release'
-        # No restrictions
-        self.assert_ok(_test(release_from))
-        # More than allowed
-        release_from.allowed_files = ['a', 'b']
-        pr.files = ['a', 'b', 'c', 'd']
-        pr.file_count = 4
-        self.assert_issue(
-            _test(release_from),
-            'max files threshold exceeded in release pr')
-        # Not a subset
-        release_from.allowed_files = ['a', 'b']
-        pr.files = ['a', 'c']
-        pr.file_count = 2
-        self.assert_issue(
-            _test(release_from),
-            'modified files not subset of the allowed files')
-        # Required files
-        release_from.allowed_files = []
-        release_from.required_files = ['a', 'b', 'c', 'd']
-        pr.files = ['a', 'c', 'one', 'two', 'three']
-        pr.file_count = 5
-        err = self.assert_issue(
-            _test(release_from),
-            'release pr requires files to be modified')
-        self.assertListEqual(err.data['non_modified'], ['b', 'd'])
+        self.assertTrue(pr.is_release_pr(release_prefix))

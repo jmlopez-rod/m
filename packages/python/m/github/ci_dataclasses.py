@@ -1,10 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, List
-from ..core import issue
 from ..core.io import JsonStr
-from ..core.fp import OneOf, Good
-from ..core.issue import Issue
-from ..ci.config import ReleaseFrom
 
 
 @dataclass
@@ -47,11 +43,11 @@ class Commit(JsonStr):
             return ''
         return self.associated_pull_request.pr_branch
 
-    def is_release(self, release_from: Optional[ReleaseFrom]) -> bool:
+    def is_release(self, release_prefix: Optional[str]) -> bool:
         """Determine if the current commit should create a release."""
-        if not release_from:
+        if not release_prefix:
             return False
-        return release_from.pr_branch == self.get_pr_branch()
+        return self.get_pr_branch().startswith(release_prefix)
 
 
 @dataclass
@@ -70,52 +66,11 @@ class PullRequest(JsonStr):
     files: List[str]
     is_draft: bool
 
-    def is_release_pr(self, release_from: Optional[ReleaseFrom]) -> bool:
+    def is_release_pr(self, release_prefix: Optional[str]) -> bool:
         """Determine if the pull request is a release pull request."""
-        if not release_from:
+        if not release_prefix:
             return False
-        return release_from.pr_branch == self.pr_branch
-
-    def verify_release_pr(
-        self,
-        release_from: Optional[ReleaseFrom]
-    ) -> OneOf[Issue, int]:
-        """Return 0 if everything is ok with the release pr pull request."""
-        is_release_pr = self.is_release_pr(release_from)
-        if not is_release_pr:
-            return Good(0)
-        allowed_files: List[str] = []
-        required_files: List[str] = []
-        if release_from:
-            allowed_files = release_from.allowed_files
-            required_files = release_from.required_files
-        err_data = dict(
-            allowed_files=allowed_files,
-            required_files=required_files,
-            file_count=self.file_count,
-            modified_files=self.files,
-        )
-        if allowed_files:
-            if self.file_count > len(allowed_files):
-                return issue(
-                    'max files threshold exceeded in release pr',
-                    data=err_data)
-            if not set(self.files).issubset(set(allowed_files)):
-                return issue(
-                    'modified files not subset of the allowed files',
-                    data=err_data)
-        if required_files:
-            missing = [
-                required
-                for required in required_files
-                if required not in self.files
-            ]
-            if missing:
-                err_data['non_modified'] = missing
-                return issue(
-                    'release pr requires files to be modified',
-                    data=err_data)
-        return Good(0)
+        return self.pr_branch.startswith(release_prefix)
 
 
 @dataclass

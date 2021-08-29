@@ -6,7 +6,9 @@ from typing import cast, Any
 from m.core import issue
 from m.core.issue import Issue
 from m.core.fp import Good, OneOf
-from m.ci.config import read_config, Config
+from m.ci.config import (
+    GitFlowConfig, MFlowConfig, read_config, Config, Workflow
+)
 
 
 class ConfigTest(unittest.TestCase):
@@ -15,7 +17,17 @@ class ConfigTest(unittest.TestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        release_from_dict={}
+        workflow=Workflow.FREE_FLOW,
+        git_flow=GitFlowConfig(
+            master_branch='master',
+            develop_branch='develop',
+            release_prefix='release',
+            hotfix_prefix='hotfix'
+        ),
+        m_flow=MFlowConfig(
+            master_branch='master',
+            release_prefix='release',
+        )
     )
 
     def test_read_config_fail(self):
@@ -43,39 +55,13 @@ class ConfigTest(unittest.TestCase):
             else:
                 raise AssertionError('issue data should be a string')
 
-    def test_bad_release_from(self):
-        with patch('m.core.json.read_json') as read_json_mock:
-            read_json_mock.return_value = Good(dict(
-                owner='jmlopez-rod',
-                repo='m',
-                version='0.0.0',
-                releaseFrom=dict(
-                    master={},
-                    prod=dict(prBranch='releaseProd')
-                ),
-            ))
-            result = read_config('m')
-            self.assertTrue(result.is_bad)
-            err = cast(Issue, cast(Issue, result.value).cause)
-            missing = ', '.join([
-                'master.prBranch',
-            ])
-            self.assertEqual(
-                err.message,
-                f'missing [{missing}] in releaseFrom')
-
     def test_pass(self):
         with patch('m.core.json.read_json') as read_json_mock:
             read_json_mock.return_value = Good(dict(
                 owner='jmlopez-rod',
                 repo='m',
                 version='0.0.0',
-                releaseFrom=dict(
-                    master=dict(
-                        prBranch='release',
-                        allowedFiles=['CHANGELOG.md']
-                    ),
-                ),
+                workflow='m_flow',
             ))
             result = read_config('m')
             self.assertFalse(result.is_bad)
@@ -87,10 +73,6 @@ class ConfigTest(unittest.TestCase):
                 version='0.0.0',
                 m_dir='m',
             )}, config.__dict__)
-            self.assertEqual(
-                config.release_from_dict['master'].allowed_files,
-                ['CHANGELOG.md']
-            )
 
     def _expect_issue(
         self,

@@ -1,17 +1,33 @@
 from distutils.version import StrictVersion
 from dataclasses import dataclass
-from typing import List, Mapping, Any
+from enum import Enum
+from typing import Mapping, Any
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue
 from ..core import json, one_of, issue
 
 
+class Workflow(Enum):
+    """Supported workflows."""
+    GIT_FLOW = 'git_flow'
+    M_FLOW = 'm_flow'
+    FREE_FLOW = 'free_flow'
+
+
 @dataclass
-class ReleaseFrom:
-    """An object dictating where we are allowed to make a release."""
-    pr_branch: str
-    allowed_files: List[str]
-    required_files: List[str]
+class GitFlowConfig:
+    """An object mapping branches for the git_flow workflow."""
+    master_branch: str
+    develop_branch: str
+    release_prefix: str
+    hotfix_prefix: str
+
+
+@dataclass
+class MFlowConfig:
+    """An object mapping branches for the m_flow workflow."""
+    master_branch: str
+    release_prefix: str
 
 
 @dataclass
@@ -21,7 +37,9 @@ class Config:
     repo: str
     version: str
     m_dir: str
-    release_from_dict: Mapping[str, ReleaseFrom]
+    workflow: Workflow
+    git_flow: GitFlowConfig
+    m_flow: MFlowConfig
 
     def verify_version(
         self,
@@ -65,32 +83,43 @@ class Config:
         return Good(0)
 
 
-def read_release_from(
-    data: Mapping[str, Any]
-) -> OneOf[Issue, Mapping[str, ReleaseFrom]]:
-    """Parse the release-from field. """
-    obj = {}
-    missing: List[str] = []
-    for branch in data:
-        item = data[branch]
-        if 'prBranch' not in item:
-            missing.append(f'{branch}.prBranch')
-        pr_branch = item.get('prBranch', '')
-        allowed_files = item.get('allowedFiles', [])
-        required_files = item.get('requiredFiles', [])
-        obj[branch] = ReleaseFrom(pr_branch, allowed_files, required_files)
-    if missing:
-        missing_str = ', '.join(missing)
-        return issue(f'missing [{missing_str}] in releaseFrom')
-    return Good(obj)
+def read_workflow(data: str) -> OneOf[Issue, Workflow]:
+    """Parse the workflow field."""
+    try:
+        name = data.upper().replace('-', '_')
+        return Good(Workflow[name])
+    except Exception as ex:
+        return issue('invalid workflow', cause=ex)
+
+
+def read_git_flow(data: Mapping[str, Any]) -> OneOf[Issue, GitFlowConfig]:
+    """Parse the gitFlow field."""
+    config = GitFlowConfig(
+        master_branch=data.get('masterBranch', 'master'),
+        develop_branch=data.get('developBranch', 'develop'),
+        release_prefix=data.get('releasePrefix', 'release'),
+        hotfix_prefix=data.get('hotfixPrefix', 'hotfix'),
+    )
+    return Good(config)
+
+
+def read_m_flow(data: Mapping[str, Any]) -> OneOf[Issue, MFlowConfig]:
+    """Parse the mFlow field."""
+    config = MFlowConfig(
+        master_branch=data.get('masterBranch', 'master'),
+        release_prefix=data.get('releasePrefix', 'release'),
+    )
+    return Good(config)
 
 
 def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """Read an m configuration file."""
     return one_of(lambda: [
-        Config(owner, repo, version, m_dir, release_from)
+        Config(owner, repo, version, m_dir, workflow, git_flow, m_flow)
         for data in json.read_json(f'{m_dir}/m.json')
         for owner, repo, version in json.multi_get(
             data, 'owner', 'repo', 'version')
-        for release_from in read_release_from(data.get('releaseFrom', {}))
+        for workflow in read_workflow(data.get('workflow', 'free-flow'))
+        for git_flow in read_git_flow(data.get('gitFlow', {}))
+        for m_flow in read_m_flow(data.get('mFlow', {}))
     ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))

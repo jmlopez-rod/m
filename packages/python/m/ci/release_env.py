@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
-from .config import ReleaseFrom, Config
+from .config import Config, Workflow
 from .git_env import GitEnv
 from ..core import one_of
 from ..core.fp import OneOf
@@ -14,7 +14,19 @@ class ReleaseEnv:
     build_tag: str
     is_release: bool
     is_release_pr: bool
-    release_from: Optional[ReleaseFrom]
+    workflow: Workflow
+
+
+def get_release_prefix(config: Config) -> Optional[str]:
+    """Find out the release prefix based on the workflow specified in the
+    config."""
+    if config.workflow == Workflow.GIT_FLOW:
+        return config.git_flow.release_prefix
+    if config.workflow == Workflow.M_FLOW:
+        return config.m_flow.release_prefix
+    if config.workflow == Workflow.FREE_FLOW:
+        return None
+    return None
 
 
 def get_release_env(
@@ -23,24 +35,24 @@ def get_release_env(
     git_env: GitEnv,
 ) -> OneOf[Issue, ReleaseEnv]:
     """Provide the release environment information."""
-    release_from = config.release_from_dict.get(git_env.target_branch)
-    is_release = git_env.is_release(release_from)
-    is_release_pr = git_env.is_release_pr(release_from)
+    workflow = config.workflow
+    release_prefix = get_release_prefix(config)
+    is_release = git_env.is_release(release_prefix)
+    is_release_pr = git_env.is_release_pr(release_prefix)
     gh_latest = git_env.release.tag_name if git_env.release else ''
     return one_of(lambda: [
         ReleaseEnv(
             build_tag=build_tag,
             is_release=is_release,
             is_release_pr=is_release_pr,
-            release_from=release_from
+            workflow=workflow
         )
         for _ in config.verify_version(
             gh_latest,
             is_release_pr=is_release_pr,
             is_release=is_release)
-        for _ in git_env.verify_release_pr(release_from)
         for build_tag in git_env.get_build_tag(
             config.version,
             env_vars.run_id,
-            release_from)
+            release_prefix)
     ])

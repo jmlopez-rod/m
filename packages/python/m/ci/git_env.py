@@ -6,7 +6,7 @@ from ..github.ci_dataclasses import GithubCiRunInfo
 from ..core import issue
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue
-from .config import Config, ReleaseFrom
+from .config import Config
 from ..core.io import EnvVars, JsonStr
 from ..github.ci import (
     Commit, CommitInfo, PullRequest, Release, get_ci_run_info
@@ -31,33 +31,23 @@ class GitEnv(JsonStr):
         """Get the pull request branch or 0 if not a pull request"""
         return self.pull_request.pr_number if self.pull_request else 0
 
-    def is_release(self, release_from: Optional[ReleaseFrom]) -> bool:
+    def is_release(self, release_prefix: Optional[str]) -> bool:
         """Determine if the current commit should create a release."""
         if not self.commit:
             return False
-        return self.commit.is_release(release_from)
+        return self.commit.is_release(release_prefix)
 
-    def is_release_pr(self, release_from: Optional[ReleaseFrom]) -> bool:
+    def is_release_pr(self, release_prefix: Optional[str]) -> bool:
         """Determine if the the current pr is a release pr."""
         if not self.pull_request:
             return False
-        return self.pull_request.is_release_pr(release_from)
-
-    def verify_release_pr(
-        self,
-        release_from: Optional[ReleaseFrom]
-    ) -> OneOf[Issue, int]:
-        """Verify the release pull request by applying the rules in the
-        release_from object."""
-        if not self.pull_request:
-            return Good(0)
-        return self.pull_request.verify_release_pr(release_from)
+        return self.pull_request.is_release_pr(release_prefix)
 
     def get_build_tag(
         self,
         config_version: str,
         run_id: str,
-        release_from: Optional[ReleaseFrom],
+        release_prefix: Optional[str],
     ) -> OneOf[Issue, str]:
         """Obtain the build tag for the current commit.
 
@@ -82,11 +72,11 @@ class GitEnv(JsonStr):
         """
         if not run_id:
             return Good(f'0.0.0-local.{self.sha}')
-        if self.is_release(release_from):
+        if self.is_release(release_prefix):
             return Good(config_version)
         if self.pull_request:
             pr_number = self.pull_request.pr_number
-            if self.is_release_pr(release_from):
+            if self.is_release_pr(release_prefix):
                 return Good(f'{config_version}-rc{pr_number}.b{run_id}')
             return Good(f'0.0.0-pr{pr_number}.b{run_id}')
         return Good(f'0.0.0-{self.target_branch}.b{run_id}')
@@ -114,14 +104,6 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
     if not env_vars.ci_env:
         return Good(git_env)
 
-    total_files = [
-        len(item.allowed_files)
-        for _, item in config.release_from_dict.items()]
-    max_files = max(0, 0, *total_files)
-    if len(total_files) == 0:
-        # will have to find another way to make file checks
-        # for now release prs for required_files are bound to 100
-        max_files = 100
     pr_number = get_pr_number(branch)
     git_env_box = get_ci_run_info(
         token=env_vars.github_token,
@@ -131,7 +113,7 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
             sha=env_vars.git_sha,
         ),
         pr_number=pr_number,
-        file_count=max_files,
+        file_count=0,
         include_release=True,
     )
     if git_env_box.is_bad:

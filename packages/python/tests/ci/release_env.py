@@ -5,7 +5,9 @@ from typing import cast
 from m.core import one_of
 from m.core.issue import Issue
 from m.core.fp import Good
-from m.ci.config import ReleaseFrom, Config
+from m.ci.config import (
+    Config, Workflow, GitFlowConfig, MFlowConfig
+)
 from m.core.io import EnvVars
 from m.ci.git_env import get_git_env
 from m.ci.release_env import get_release_env
@@ -35,12 +37,16 @@ class ReleaseEnvTest(unittest.TestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        release_from_dict=dict(
-            master=ReleaseFrom(
-                pr_branch='release',
-                allowed_files=['m/m.json', 'CHANGELOG.md'],
-                required_files=[],
-            )
+        workflow=Workflow.FREE_FLOW,
+        git_flow=GitFlowConfig(
+            master_branch='master',
+            develop_branch='develop',
+            release_prefix='release',
+            hotfix_prefix='hotfix'
+        ),
+        m_flow=MFlowConfig(
+            master_branch='master',
+            release_prefix='release',
         )
     )
     env_vars = EnvVars(
@@ -74,7 +80,7 @@ class ReleaseEnvTest(unittest.TestCase):
             build_tag='0.0.0-local.git-sha-abc-123',
             is_release=False,
             is_release_pr=False,
-            release_from=self.config.release_from_dict['master'],
+            workflow=Workflow.FREE_FLOW
         ))
 
     def test_master_behind(self):
@@ -115,7 +121,7 @@ class ReleaseEnvTest(unittest.TestCase):
                 build_tag='0.0.0-master.b404',
                 is_release=False,
                 is_release_pr=False,
-                release_from=self.config.release_from_dict['master'],
+                workflow=Workflow.FREE_FLOW
             ))
 
     def test_pr_1(self):
@@ -134,7 +140,7 @@ class ReleaseEnvTest(unittest.TestCase):
                 build_tag='0.0.0-pr1.b404',
                 is_release=False,
                 is_release_pr=False,
-                release_from=self.config.release_from_dict['master'],
+                workflow=Workflow.FREE_FLOW
             ))
 
     def test_release_pr_no_update(self):
@@ -160,6 +166,7 @@ class ReleaseEnvTest(unittest.TestCase):
         the current one in github."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
+        self.config.workflow = Workflow.GIT_FLOW
         self.env_vars.git_branch = 'refs/pull/2'
         self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
@@ -173,13 +180,14 @@ class ReleaseEnvTest(unittest.TestCase):
                 build_tag='1.1.2-rc2.b404',
                 is_release=False,
                 is_release_pr=True,
-                release_from=self.config.release_from_dict['master'],
+                workflow=Workflow.GIT_FLOW
             ))
 
     def test_release_merge(self):
         """Should use the proper version number"""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
+        self.config.workflow = Workflow.GIT_FLOW
         self.env_vars.git_branch = 'refs/heads/master'
         self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
@@ -193,14 +201,13 @@ class ReleaseEnvTest(unittest.TestCase):
                 build_tag='1.1.2',
                 is_release=True,
                 is_release_pr=False,
-                release_from=self.config.release_from_dict['master'],
+                workflow=Workflow.GIT_FLOW
             ))
 
     def test_release_pr_empty_allowed(self):
         """Empty allowed should allow you to commit any files."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
-        self.config.release_from_dict['master'].allowed_files = []
         self.env_vars.git_branch = 'refs/pull/2'
         self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
@@ -214,5 +221,5 @@ class ReleaseEnvTest(unittest.TestCase):
                 build_tag='1.1.2-rc2.b404',
                 is_release=False,
                 is_release_pr=True,
-                release_from=self.config.release_from_dict['master'],
+                workflow=Workflow.GIT_FLOW
             ))
