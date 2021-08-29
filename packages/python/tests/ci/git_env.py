@@ -1,34 +1,24 @@
-import unittest
 from unittest.mock import patch
-from typing import cast
 
 from m.core import issue
-from m.core.issue import Issue
 from m.core.fp import Good
 from m.ci.config import (
     Config, Workflow, GitFlowConfig, MFlowConfig
 )
 from m.core.io import EnvVars
 from m.ci.git_env import get_git_env, GitEnv
+from ..util import FpTestCase
 
 
-class GitEnvTest(unittest.TestCase):
+class GitEnvTest(FpTestCase):
     config = Config(
         owner='jmlopez-rod',
         repo='m',
         version='0.0.0',
         m_dir='m',
         workflow=Workflow.FREE_FLOW,
-        git_flow=GitFlowConfig(
-            master_branch='master',
-            develop_branch='develop',
-            release_prefix='release',
-            hotfix_prefix='hotfix'
-        ),
-        m_flow=MFlowConfig(
-            master_branch='master',
-            release_prefix='release',
-        )
+        git_flow=GitFlowConfig(),
+        m_flow=MFlowConfig()
     )
     env_vars = EnvVars(
         ci_env=True,
@@ -44,7 +34,7 @@ class GitEnvTest(unittest.TestCase):
     def test_local(self):
         self.env_vars.ci_env = False
         result = get_git_env(self.config, self.env_vars)
-        self.assertFalse(result.is_bad)
+        self.assert_ok(result)
         self.assertDictEqual(
             result.value.__dict__,
             GitEnv(
@@ -58,9 +48,7 @@ class GitEnvTest(unittest.TestCase):
         with patch('m.github.api.graphql') as graphql_mock:
             graphql_mock.return_value = issue('made up issue')
             result = get_git_env(self.config, self.env_vars)
-            self.assertTrue(result.is_bad)
-            err = cast(Issue, result.value)
-            self.assertEqual(err.message, 'git_env failure')
+            err = self.assert_issue(result, 'git_env failure')
             self.assertIsNotNone(err.cause)
             self.assertEqual(err.cause.message, 'made up issue')
 
@@ -69,8 +57,7 @@ class GitEnvTest(unittest.TestCase):
         with patch('m.github.api.graphql') as graphql_mock:
             graphql_mock.side_effect = [Good({}), Good({})]
             result = get_git_env(self.config, self.env_vars)
-            self.assertTrue(result.is_bad)
-            err = cast(Issue, result.value)
+            err = self.assert_issue(result, 'git_env failure')
             self.assertEqual(
                 err.cause.message,
                 '`repository` path was not found')
