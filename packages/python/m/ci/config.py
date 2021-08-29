@@ -17,17 +17,17 @@ class Workflow(Enum):
 @dataclass
 class GitFlowConfig:
     """An object mapping branches for the git_flow workflow."""
-    master_branch: str
-    develop_branch: str
-    release_prefix: str
-    hotfix_prefix: str
+    master_branch: str = 'master'
+    develop_branch: str = 'develop'
+    release_prefix: str = 'release'
+    hotfix_prefix: str = 'hotfix'
 
 
 @dataclass
 class MFlowConfig:
     """An object mapping branches for the m_flow workflow."""
-    master_branch: str
-    release_prefix: str
+    master_branch: str = 'master'
+    release_prefix: str = 'release'
 
 
 @dataclass
@@ -117,8 +117,8 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
     return one_of(lambda: [
         Config(owner, repo, version, m_dir, workflow, git_flow, m_flow)
         for data in json.read_json(f'{m_dir}/m.json')
-        for owner, repo, version in json.multi_get(
-            data, 'owner', 'repo', 'version')
+        for owner, repo in json.multi_get(data, 'owner', 'repo')
+        for version in [data.get('version', '0.0.0')]
         for workflow in read_workflow(data.get('workflow', 'free-flow'))
         for git_flow in read_git_flow(data.get('gitFlow', {}))
         for m_flow in read_m_flow(data.get('mFlow', {}))

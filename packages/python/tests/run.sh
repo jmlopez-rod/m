@@ -10,7 +10,9 @@ runTest() {
 # Running manually so that we may select which test to turn off while debugging.
 runTest core.fp.OneOfTest
 runTest core.issue.IssueTest
-runTest ci.config.ConfigTest
+runTest ci.config.free_flow.ConfigFreeFlowTest
+runTest ci.config.git_flow.ConfigGitFlowTest
+runTest ci.config.m_flow.ConfigMFlowTest
 runTest ci.git_env.GitEnvTest
 runTest ci.release_env.ReleaseEnvTest
 runTest ci.lint.LintTest

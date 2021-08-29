@@ -44,5 +44,6 @@ class FpTestCase(unittest.TestCase):
         self.assertEqual(err.message, message)
         return err
 
-    def assert_ok(self, either: OneOf[Issue, Any]) -> None:
+    def assert_ok(self, either: OneOf[Issue, Any]) -> Any:
         self.assertFalse(either.is_bad, 'expecting ok')
+        return either.value
