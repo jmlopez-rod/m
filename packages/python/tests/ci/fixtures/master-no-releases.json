@@ -1,0 +1,24 @@
+
+{
+  "data": {
+    "repository": {
+      "releases": {
+        "nodes": []
+      },
+      "commit": {
+        "message": "testing build",
+        "author": {
+          "name": "Manuel Lopez",
+          "email": "",
+          "user": {
+            "login": "jmlopez-rod"
+          }
+        },
+        "oid": "174646b40adabe5ecadc3036d7c977fd726d99d0",
+        "associatedPullRequests": {
+          "nodes": []
+        }
+      }
+    }
+  }
+}

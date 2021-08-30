@@ -6,7 +6,7 @@ from ..github.ci_dataclasses import GithubCiRunInfo
 from ..core import issue
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue
-from .config import Config
+from .config import Config, Workflow
 from ..core.io import EnvVars, JsonStr
 from ..github.ci import (
     Commit, CommitInfo, PullRequest, Release, get_ci_run_info
@@ -31,11 +31,18 @@ class GitEnv(JsonStr):
         """Get the pull request branch or 0 if not a pull request"""
         return self.pull_request.pr_number if self.pull_request else 0
 
-    def is_release(self, release_prefix: Optional[str]) -> bool:
+    def is_release(
+        self,
+        release_prefix: Optional[str],
+        hotfix_prefix: Optional[str],
+    ) -> bool:
         """Determine if the current commit should create a release."""
         if not self.commit:
             return False
-        return self.commit.is_release(release_prefix)
+        return (
+            self.commit.is_release(release_prefix) or
+            self.commit.is_release(hotfix_prefix)
+        )
 
     def is_release_pr(self, release_prefix: Optional[str]) -> bool:
         """Determine if the the current pr is a release pr."""
@@ -43,11 +50,20 @@ class GitEnv(JsonStr):
             return False
         return self.pull_request.is_release_pr(release_prefix)
 
+    def is_hotfix_pr(self, hotfix_prefix: Optional[str]) -> bool:
+        """Determine if the the current pr is a hotfix pr. It is a release pr
+        as far as the pull request should see it but from the context of the
+        git environment we need to label it as a hotfix pr."""
+        if not self.pull_request:
+            return False
+        return self.pull_request.is_release_pr(hotfix_prefix)
+
     def get_build_tag(
         self,
-        config_version: str,
+        config: Config,
         run_id: str,
         release_prefix: Optional[str],
+        hotfix_prefix: Optional[str],
     ) -> OneOf[Issue, str]:
         """Obtain the build tag for the current commit.
 
@@ -68,18 +84,35 @@ class GitEnv(JsonStr):
 
         For release prs we use `rc` followed by the pull request. In this case
         it is safe to use config_version given that there should only be
-        one release at a time.
+        one release at a time. We treat hotfixes similar to releases.
+
+        Git flow will generate a special build tag: SKIP. This will happen when
+        we try to merge a release or hotfix branch to the develop branch.
         """
+        workflow = config.workflow
+        if (
+            workflow == Workflow.GIT_FLOW and
+            self.target_branch == config.git_flow.develop_branch
+        ):
+            if (
+                self.is_release(release_prefix, hotfix_prefix) or
+                self.is_release_pr(release_prefix) or
+                self.is_hotfix_pr(hotfix_prefix)
+            ):
+                return Good('SKIP')
+        prefix = '' if workflow == Workflow.FREE_FLOW else '0.0.0-'
         if not run_id:
-            return Good(f'0.0.0-local.{self.sha}')
-        if self.is_release(release_prefix):
-            return Good(config_version)
+            return Good(f'{prefix}local.{self.sha}')
+        if self.is_release(release_prefix, hotfix_prefix):
+            return Good(config.version)
         if self.pull_request:
             pr_number = self.pull_request.pr_number
             if self.is_release_pr(release_prefix):
-                return Good(f'{config_version}-rc{pr_number}.b{run_id}')
-            return Good(f'0.0.0-pr{pr_number}.b{run_id}')
-        return Good(f'0.0.0-{self.target_branch}.b{run_id}')
+                return Good(f'{config.version}-rc{pr_number}.b{run_id}')
+            if self.is_hotfix_pr(hotfix_prefix):
+                return Good(f'{config.version}-hotfix{pr_number}.b{run_id}')
+            return Good(f'{prefix}pr{pr_number}.b{run_id}')
+        return Good(f'{prefix}{self.target_branch}.b{run_id}')
 
 
 def get_pr_number(branch: str) -> Optional[int]:
