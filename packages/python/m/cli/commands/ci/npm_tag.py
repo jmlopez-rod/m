@@ -34,7 +34,7 @@ def run(arg):
     matches = re.match(regex, arg.version)
     if matches:
         tag, _ = matches.groups()
-        if tag.startswith('rc'):
+        if tag.startswith('rc') or tag.startswith('hotfix'):
             print('next')
         else:
             print(tag)

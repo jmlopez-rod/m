@@ -107,10 +107,13 @@ class GitEnv(JsonStr):
             return Good(config.version)
         if self.pull_request:
             pr_number = self.pull_request.pr_number
+            nprefix = ''
             if self.is_release_pr(release_prefix):
-                return Good(f'{config.version}-rc{pr_number}.b{run_id}')
-            if self.is_hotfix_pr(hotfix_prefix):
-                return Good(f'{config.version}-hotfix{pr_number}.b{run_id}')
+                nprefix = 'rc'
+            elif self.is_hotfix_pr(hotfix_prefix):
+                nprefix = 'hotfix'
+            if nprefix:
+                return Good(f'{config.version}-{nprefix}{pr_number}.b{run_id}')
             return Good(f'{prefix}pr{pr_number}.b{run_id}')
         return Good(f'{prefix}{self.target_branch}.b{run_id}')
 
