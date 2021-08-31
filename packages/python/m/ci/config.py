@@ -32,6 +32,7 @@ class MFlowConfig(JsonStr):
     """An object mapping branches for the m_flow workflow."""
     master_branch: str = 'master'
     release_prefix: str = 'release'
+    hotfix_prefix: str = 'hotfix'
 
 
 @dataclass
@@ -112,6 +113,7 @@ def read_m_flow(data: Mapping[str, Any]) -> OneOf[Issue, MFlowConfig]:
     config = MFlowConfig(
         master_branch=data.get('masterBranch', 'master'),
         release_prefix=data.get('releasePrefix', 'release'),
+        hotfix_prefix=data.get('hotfixPrefix', 'hotfix'),
     )
     return Good(config)
 

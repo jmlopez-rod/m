@@ -38,10 +38,10 @@ def new_changelog(
         return issue('missing "Unreleased" link')
 
     header, main = parts
-    entries = main.split('[Unreleased]:')[0]
+    entries = main.split('[unreleased]:')[0]
     versions = _get_versions(entries.split('\n'), new_ver, first_sha)
 
-    links = [f'[Unreleased]: {compare_sha_url(owner, repo, new_ver, "HEAD")}']
+    links = [f'[unreleased]: {compare_sha_url(owner, repo, new_ver, "HEAD")}']
     for i in range(len(versions) - 1):
         link = compare_sha_url(owner, repo, versions[i+1], versions[i])
         links.append(f'[{versions[i]}]: {link}')

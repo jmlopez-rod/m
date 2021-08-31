@@ -94,19 +94,23 @@ def _ver_str(major: int, minor: int, patch: int) -> str:
     return f'{major}.{minor}.{patch}'
 
 
-def prompt_next_version(version: str) -> str:
+def prompt_next_version(version: str, release_type: str) -> str:
     """Display the possible major, minor and patch versions and prompt
     the user to enter one of them. Return one of the versions.
 
     https://semver.org/
+
     """
     ver = version.split('-')[0]
     parts = [int(x) for x in ver.split('.')]
     patch = _ver_str(parts[0], parts[1], parts[2] + 1)
+    if release_type == 'hotfix':
+        return patch
+
     minor = _ver_str(parts[0], parts[1] + 1, 0)
     major = _ver_str(parts[0] + 1, 0, 0)
     valid = False
-    options = [patch, minor, major]
+    options = [minor, major]
     msg = f'Current version is {version}. Enter one of the following:\n  '
     msg += '\n  '.join(options)
     result = ''

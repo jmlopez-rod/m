@@ -179,3 +179,24 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_hotfix_pr=False,
                 workflow=Workflow.M_FLOW
             ))
+
+    def test_hotfix_merge(self):
+        """Should use the proper version number"""
+        self.env_vars.ci_env = True
+        self.config.version = '1.1.2'
+        self.env_vars.git_branch = 'refs/heads/master'
+        self.env_vars.run_id = '404'
+        with patch('m.core.http.fetch') as graphql_mock:
+            graphql_mock.side_effect = [
+                Good(mock_commit_sha('sha')),
+                Good(read_fixture('merge-hotfix.json')),
+            ]
+            result = self._get_env()
+            self.assert_ok(result)
+            self.assertEqual(result.value.__dict__, dict(
+                build_tag='1.1.2',
+                is_release=True,
+                is_release_pr=False,
+                is_hotfix_pr=False,
+                workflow=Workflow.M_FLOW
+            ))

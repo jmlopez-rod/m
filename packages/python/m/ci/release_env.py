@@ -33,6 +33,8 @@ def get_hotfix_prefix(config: Config) -> Optional[str]:
     config."""
     if config.workflow == Workflow.GIT_FLOW:
         return config.git_flow.hotfix_prefix
+    if config.workflow == Workflow.M_FLOW:
+        return config.m_flow.hotfix_prefix
     return None
 
 
@@ -44,27 +46,22 @@ def _verify_version(
     is_hotfix_pr: bool,
     is_release: bool
 ) -> OneOf[Issue, int]:
-    if config.workflow == Workflow.GIT_FLOW:
-        pr_branch = git_env.get_pr_branch()
-        flow = config.git_flow
-        # Skip verification only when release or hotfix are going to develop
-        if (
-            git_env.target_branch == flow.develop_branch and
-                (
-                    pr_branch.startswith(flow.release_prefix) or
-                    pr_branch.startswith(flow.hotfix_prefix)
-                )
-        ):
-            return Good(0)
+    if config.workflow in [Workflow.GIT_FLOW, Workflow.M_FLOW]:
+        if config.workflow == Workflow.GIT_FLOW:
+            pr_branch = git_env.get_pr_branch()
+            flow = config.git_flow
+            # Skip verification when release or hotfix are going to develop
+            if (
+                git_env.target_branch == flow.develop_branch and
+                    (
+                        pr_branch.startswith(flow.release_prefix) or
+                        pr_branch.startswith(flow.hotfix_prefix)
+                    )
+            ):
+                return Good(0)
         return config.verify_version(
             gh_latest,
             is_release_pr=(is_release_pr or is_hotfix_pr),
-            is_release=is_release
-        )
-    if config.workflow == Workflow.M_FLOW:
-        return config.verify_version(
-            gh_latest,
-            is_release_pr=is_release_pr,
             is_release=is_release
         )
     # Covers Workflow.FREE_FLOW

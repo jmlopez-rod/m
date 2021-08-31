@@ -9,12 +9,12 @@ def add_parser(sub_parser, raw):
 
         example:
 
-            $ m github create_pr \
-                --owner jmlopez-rod \
-                --repo repo \
-                --head feature_branch \
-                --base master \
-                --title 'PR Title' \
+            $ m github create_pr \\
+                --owner jmlopez-rod \\
+                --repo repo \\
+                --head feature_branch \\
+                --base master \\
+                --title 'PR Title' \\
                 @file_with_pr_body | m json
     """
     parser = sub_parser.add_parser(
