@@ -188,7 +188,7 @@ def display_result(val: Any) -> None:
         try:
             print(json.dumps(val, separators=(',', ':')))
         except Exception:
-            print(val, file=sys.stderr)
+            print(val)
 
 
 def run_main(

@@ -5,11 +5,11 @@ from .git_env import GitEnv
 from ..core import one_of, issue
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue
-from ..core.io import EnvVars
+from ..core.io import EnvVars, JsonStr
 
 
 @dataclass
-class ReleaseEnv:
+class ReleaseEnv(JsonStr):
     """Object to store the release configuration."""
     build_tag: str
     is_release: bool

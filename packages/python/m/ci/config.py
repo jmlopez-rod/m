@@ -5,6 +5,7 @@ from typing import Mapping, Any
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue
 from ..core import json, one_of, issue
+from ..core.io import JsonStr
 
 
 class Workflow(Enum):
@@ -13,9 +14,12 @@ class Workflow(Enum):
     M_FLOW = 'm_flow'
     FREE_FLOW = 'free_flow'
 
+    def __str__(self) -> str:
+        return str(self.value)
+
 
 @dataclass
-class GitFlowConfig:
+class GitFlowConfig(JsonStr):
     """An object mapping branches for the git_flow workflow."""
     master_branch: str = 'master'
     develop_branch: str = 'develop'
@@ -24,14 +28,14 @@ class GitFlowConfig:
 
 
 @dataclass
-class MFlowConfig:
+class MFlowConfig(JsonStr):
     """An object mapping branches for the m_flow workflow."""
     master_branch: str = 'master'
     release_prefix: str = 'release'
 
 
 @dataclass
-class Config:
+class Config(JsonStr):
     """Object to store the m project configuration."""
     owner: str
     repo: str

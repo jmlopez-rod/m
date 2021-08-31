@@ -3,8 +3,9 @@ import sys
 import json
 import math
 from dataclasses import dataclass
+from enum import Enum
 from abc import ABC
-from typing import Optional, TextIO, Type, List, cast, Union
+from typing import Optional, TextIO, Type, List, cast, Union, Any
 from .. import git
 from . import one_of, issue
 from .fp import OneOf, Good
@@ -117,16 +118,21 @@ def prompt_next_version(version: str) -> str:
     return result
 
 
+def serialize(obj: Any) -> Any:
+    """Return a serializable version of an object."""
+    if isinstance(obj, Enum):
+        return obj.value
+    if hasattr(obj, '__dict__'):
+        return obj.__dict__
+    return f'[Non-Serializable {repr(obj)}]'
+
+
 class JsonStr:
     """Base class to stringify dataclasses."""
     # pylint: disable=too-few-public-methods
 
     def __str__(self) -> str:
-        return json.dumps(
-            self.__dict__,
-            default=lambda o: o.__dict__,
-            indent=2
-        )
+        return json.dumps(self.__dict__, default=serialize)
 
 
 @dataclass

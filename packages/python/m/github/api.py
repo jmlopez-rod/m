@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Mapping, Any, Optional
 from ..core import one_of, issue
 from ..core.fp import OneOf, Good
@@ -63,4 +64,30 @@ def create_release(
     }
     if branch:
         data['target_commitish'] = branch
+    return request(token, endpoint, 'POST', data)
+
+
+@dataclass
+class GithubPullRequest:
+    """Data needed to create a pull request."""
+    title: str
+    body: str
+    head: str
+    base: str
+
+
+def create_pr(
+    token: str,
+    owner: str,
+    repo: str,
+    pr_info: GithubPullRequest,
+) -> OneOf[Issue, Any]:
+    """Send a payload to create a pull request in github."""
+    endpoint = f'/repos/{owner}/{repo}/pulls'
+    data = {
+        'title': pr_info.title,
+        'body': pr_info.body,
+        'head': pr_info.head,
+        'base': pr_info.base,
+    }
     return request(token, endpoint, 'POST', data)

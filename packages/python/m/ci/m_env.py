@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass
-from typing import cast
+from typing import cast, Any
 from ..core import fp, issue, one_of
 from ..core.issue import Issue
 from ..core.io import EnvVars, CiTool, write_file, JsonStr
@@ -53,6 +53,7 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         M_OWNER=config.owner,
         M_REPO=config.repo,
         M_CI=env_vars.ci_env,
+        M_WORKFLOW=config.workflow.value,
         M_RUN_ID=env_vars.run_id,
         M_RUN_NUMBER=env_vars.run_number,
         M_SHA=git.sha,
@@ -64,18 +65,18 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         M_TAG=release.build_tag,
         M_IS_RELEASE=release.is_release,
         M_IS_RELEASE_PR=release.is_release_pr,
+        M_IS_HOTFIX_PR=release.is_hotfix_pr,
     )
-    print(str(m_env))
     return fp.Good('\n'.join([f'{key}={val}' for key, val in env.items()]))
 
 
-def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, int]:
+def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
     """Write a file with the M environment variables."""
     target_dir = f'{m_dir}/.m'
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
     return one_of(lambda: [
-        0
+        m_env
         for m_env in get_m_env(m_dir)
         for contents in _m_env_vars(m_env)
         for _ in write_file(f'{m_dir}/.m/env.list', contents)
