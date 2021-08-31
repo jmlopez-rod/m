@@ -23,7 +23,7 @@ opt=$(
 [ "$opt" == 'yes' ] || exit
 
 # Commit the changes
-git commit -m "(release) $version"
+git commit -m "(release) $version" || echo '...'
 
 # Push the changes
  git push -u origin "$gitBranch"
@@ -32,7 +32,7 @@ git commit -m "(release) $version"
 mkdir -p m/.m/messages
 {
   echo "Please review the contents of CHANGELOG.md"
-} >> m/.m/messages/pr_body.md
+} > m/.m/messages/pr_body.md
 
 # read variables used to create pr
 read -r \
@@ -46,7 +46,7 @@ if [ "$workflow" == 'm_flow' ]; then
     --head "$gitBranch" \
     --base master \
     --title "(release) $version" \
-    @pr_body | m jsonq html_url
+    @m/.m/messages/pr_body.md | m jsonq html_url
 elif [ "$workflow" == 'git_flow' ]; then
     m github create_pr \
       --owner "$owner" \
@@ -54,7 +54,7 @@ elif [ "$workflow" == 'git_flow' ]; then
       --head "$gitBranch" \
       --base master \
       --title "(release) $version" \
-      @pr_body | m jsonq html_url
+      @m/.m/messages/pr_body.md | m jsonq html_url
 
     m github create_pr \
       --owner "$owner" \
@@ -62,7 +62,7 @@ elif [ "$workflow" == 'git_flow' ]; then
       --head "$gitBranch" \
       --base develop \
       --title "(release to develop) $version" \
-      @pr_body | m jsonq html_url
+      @m/.m/messages/pr_body.md | m jsonq html_url
 else
   echo 'unknown workflow'
 fi
