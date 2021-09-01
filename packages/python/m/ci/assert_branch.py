@@ -42,10 +42,10 @@ def _verify_branch(
     return Good(0)
 
 
-def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, str]:
+def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, None]:
     """Make sure git is using the correct branch based on the workflow."""
     return one_of(lambda: [
-        ''
+        None
         for config in read_config(m_dir)
         for branch in git.get_branch()
         for _ in _verify_branch(config, branch, assertion_type)
