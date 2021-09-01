@@ -13,6 +13,26 @@ from ..github.ci import (
 )
 
 
+def get_release_prefix(config: Config) -> Optional[str]:
+    """Find out the release prefix based on the workflow specified in the
+    config."""
+    if config.workflow == Workflow.GIT_FLOW:
+        return config.git_flow.release_prefix
+    if config.workflow == Workflow.M_FLOW:
+        return config.m_flow.release_prefix
+    return None
+
+
+def get_hotfix_prefix(config: Config) -> Optional[str]:
+    """Find out the hotfix prefix based on the workflow specified in the
+    config."""
+    if config.workflow == Workflow.GIT_FLOW:
+        return config.git_flow.hotfix_prefix
+    if config.workflow == Workflow.M_FLOW:
+        return config.m_flow.hotfix_prefix
+    return None
+
+
 @dataclass
 class GitEnv(JsonStr):
     """Object to store the git configuration."""
@@ -31,40 +51,45 @@ class GitEnv(JsonStr):
         """Get the pull request branch or 0 if not a pull request"""
         return self.pull_request.pr_number if self.pull_request else 0
 
-    def is_release(
-        self,
-        release_prefix: Optional[str],
-        hotfix_prefix: Optional[str],
-    ) -> bool:
+    def is_release(self, config: Config) -> bool:
         """Determine if the current commit should create a release."""
         if not self.commit:
+            return False
+        workflow = config.workflow
+        release_prefix = get_release_prefix(config)
+        hotfix_prefix = get_hotfix_prefix(config)
+        if (
+                workflow == Workflow.M_FLOW and
+                self.branch != config.m_flow.master_branch
+        ):
+            return False
+        if (
+                workflow == Workflow.GIT_FLOW and
+                self.branch != config.git_flow.master_branch
+        ):
             return False
         return (
             self.commit.is_release(release_prefix) or
             self.commit.is_release(hotfix_prefix)
         )
 
-    def is_release_pr(self, release_prefix: Optional[str]) -> bool:
+    def is_release_pr(self, config: Config) -> bool:
         """Determine if the the current pr is a release pr."""
         if not self.pull_request:
             return False
+        release_prefix = get_release_prefix(config)
         return self.pull_request.is_release_pr(release_prefix)
 
-    def is_hotfix_pr(self, hotfix_prefix: Optional[str]) -> bool:
+    def is_hotfix_pr(self, config: Config) -> bool:
         """Determine if the the current pr is a hotfix pr. It is a release pr
         as far as the pull request should see it but from the context of the
         git environment we need to label it as a hotfix pr."""
         if not self.pull_request:
             return False
+        hotfix_prefix = get_hotfix_prefix(config)
         return self.pull_request.is_release_pr(hotfix_prefix)
 
-    def get_build_tag(
-        self,
-        config: Config,
-        run_id: str,
-        release_prefix: Optional[str],
-        hotfix_prefix: Optional[str],
-    ) -> OneOf[Issue, str]:
+    def get_build_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
         """Obtain the build tag for the current commit.
 
         It is tempting to use the config_version when creating a build tag for
@@ -90,27 +115,26 @@ class GitEnv(JsonStr):
         we try to merge a release or hotfix branch to the develop branch.
         """
         workflow = config.workflow
+        is_release = self.is_release(config)
+        is_release_pr = self.is_release_pr(config)
+        is_hotfix_pr = self.is_hotfix_pr(config)
         if (
             workflow == Workflow.GIT_FLOW and
             self.target_branch == config.git_flow.develop_branch
         ):
-            if (
-                self.is_release(release_prefix, hotfix_prefix) or
-                self.is_release_pr(release_prefix) or
-                self.is_hotfix_pr(hotfix_prefix)
-            ):
+            if is_release or is_release_pr or is_hotfix_pr:
                 return Good('SKIP')
         prefix = '' if workflow == Workflow.FREE_FLOW else '0.0.0-'
         if not run_id:
             return Good(f'{prefix}local.{self.sha}')
-        if self.is_release(release_prefix, hotfix_prefix):
+        if is_release:
             return Good(config.version)
         if self.pull_request:
             pr_number = self.pull_request.pr_number
             nprefix = ''
-            if self.is_release_pr(release_prefix):
+            if is_release_pr:
                 nprefix = 'rc'
-            elif self.is_hotfix_pr(hotfix_prefix):
+            elif is_hotfix_pr:
                 nprefix = 'hotfix'
             if nprefix:
                 return Good(f'{config.version}-{nprefix}{pr_number}.b{run_id}')

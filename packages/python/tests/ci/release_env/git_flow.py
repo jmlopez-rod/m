@@ -206,9 +206,10 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ))
 
     def test_release_merge_develop(self):
-        """Should use the proper version number"""
+        """Need to merge release back into develop and make sure that the
+        build passes."""
         self.env_vars.ci_env = True
-        self.config.version = '1.1.2'
+        self.config.version = '1.1.1'
         self.env_vars.git_branch = 'refs/heads/develop'
         self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
@@ -219,8 +220,8 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_ok(result)
             self.assertEqual(result.value.__dict__, dict(
-                build_tag='SKIP',
-                is_release=True,
+                build_tag='0.0.0-develop.b404',
+                is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,
                 workflow=Workflow.GIT_FLOW
@@ -325,9 +326,11 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ))
 
     def test_hotfix_merge_develop(self):
-        """Should skip"""
+        """Should build since we need to make sure potential fixes done in
+        hotfix are going to work with the current develop. At this point
+        the configuration version should be the same as in github."""
         self.env_vars.ci_env = True
-        self.config.version = '1.1.2'
+        self.config.version = '1.1.1'
         self.env_vars.git_branch = 'refs/heads/develop'
         self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:
@@ -338,8 +341,8 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_ok(result)
             self.assertEqual(result.value.__dict__, dict(
-                build_tag='SKIP',
-                is_release=True,
+                build_tag='0.0.0-develop.b404',
+                is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,
                 workflow=Workflow.GIT_FLOW
@@ -357,4 +360,6 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                 Good(read_fixture('merge-hotfix-random.json')),
             ]
             result = self._get_env()
-            self.assert_issue(result, 'hotfix and releases only on master')
+            self.assert_issue(
+                result,
+                'version is ahead (Revert configuration change)')

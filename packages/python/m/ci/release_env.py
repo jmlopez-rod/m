@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 from .config import Config, Workflow
 from .git_env import GitEnv
 from ..core import one_of, issue
@@ -16,26 +15,6 @@ class ReleaseEnv(JsonStr):
     is_release_pr: bool
     is_hotfix_pr: bool
     workflow: Workflow
-
-
-def get_release_prefix(config: Config) -> Optional[str]:
-    """Find out the release prefix based on the workflow specified in the
-    config."""
-    if config.workflow == Workflow.GIT_FLOW:
-        return config.git_flow.release_prefix
-    if config.workflow == Workflow.M_FLOW:
-        return config.m_flow.release_prefix
-    return None
-
-
-def get_hotfix_prefix(config: Config) -> Optional[str]:
-    """Find out the hotfix prefix based on the workflow specified in the
-    config."""
-    if config.workflow == Workflow.GIT_FLOW:
-        return config.git_flow.hotfix_prefix
-    if config.workflow == Workflow.M_FLOW:
-        return config.m_flow.hotfix_prefix
-    return None
 
 
 def _verify_version(
@@ -88,11 +67,9 @@ def get_release_env(
     git_env: GitEnv,
 ) -> OneOf[Issue, ReleaseEnv]:
     """Provide the release environment information."""
-    release_prefix = get_release_prefix(config)
-    hotfix_prefix = get_hotfix_prefix(config)
-    is_release = git_env.is_release(release_prefix, hotfix_prefix)
-    is_release_pr = git_env.is_release_pr(release_prefix)
-    is_hotfix_pr = git_env.is_hotfix_pr(hotfix_prefix)
+    is_release = git_env.is_release(config)
+    is_release_pr = git_env.is_release_pr(config)
+    is_hotfix_pr = git_env.is_hotfix_pr(config)
     gh_latest = git_env.release.tag_name if git_env.release else ''
     if config.workflow != Workflow.FREE_FLOW:
         master_branch = _get_master_branch(config)
@@ -134,9 +111,5 @@ def get_release_env(
             is_release_pr=is_release_pr,
             is_hotfix_pr=is_hotfix_pr,
             is_release=is_release)
-        for build_tag in git_env.get_build_tag(
-            config,
-            env_vars.run_id,
-            release_prefix,
-            hotfix_prefix)
+        for build_tag in git_env.get_build_tag(config, env_vars.run_id)
     ])
