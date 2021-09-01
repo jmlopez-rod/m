@@ -4,6 +4,7 @@ set -euxo pipefail
 # Branch name should have the version
 gitBranch=$(m git branch)
 version=$(python -c "print('$gitBranch'.split('/')[1])")
+releaseType=$(python -c "print('$gitBranch'.split('/')[0])")
 
 # Add all files to commit
 git add .
@@ -23,7 +24,7 @@ opt=$(
 [ "$opt" == 'yes' ] || exit
 
 # Commit the changes
-git commit -m "(release) $version" || echo '...'
+git commit -m "($releaseType) $version" || echo '...'
 
 # Push the changes
  git push -u origin "$gitBranch"
@@ -39,30 +40,38 @@ read -r \
   workflow owner repo \
   <<< "$(m jsonq -s ' ' @m/m.json 'workflow' 'owner' 'repo')"
 
+
 if [ "$workflow" == 'm_flow' ]; then
   m github create_pr \
     --owner "$owner" \
     --repo "$repo" \
     --head "$gitBranch" \
     --base master \
-    --title "(release) $version" \
+    --title "($releaseType) $version" \
     @m/.m/messages/pr_body.md | m jsonq html_url
 elif [ "$workflow" == 'git_flow' ]; then
-    m github create_pr \
+    prUrl=$(m github create_pr \
       --owner "$owner" \
       --repo "$repo" \
       --head "$gitBranch" \
       --base master \
-      --title "(release) $version" \
-      @m/.m/messages/pr_body.md | m jsonq html_url
+      --title "($releaseType) $version" \
+      @m/.m/messages/pr_body.md | m jsonq html_url)
+
+    {
+      echo "Merge only after [$gitBranch]($prUrl) has been merged."
+      echo ""
+      echo "In case of conflicts, wait until the release has been done and"
+      echo "get this branch updated with the new contents of the develop branch."
+    } > m/.m/messages/pr_develop_body.md
 
     m github create_pr \
       --owner "$owner" \
       --repo "$repo" \
       --head "$gitBranch" \
       --base develop \
-      --title "(release to develop) $version" \
-      @m/.m/messages/pr_body.md | m jsonq html_url
+      --title "($releaseType to develop) $version" \
+      @m/.m/messages/pr_develop_body.md | m jsonq html_url
 else
   echo 'unknown workflow'
 fi
