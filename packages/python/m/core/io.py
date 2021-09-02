@@ -3,8 +3,9 @@ import sys
 import json
 import math
 from dataclasses import dataclass
+from enum import Enum
 from abc import ABC
-from typing import Optional, TextIO, Type, List, cast, Union
+from typing import Optional, TextIO, Type, List, cast, Union, Any
 from .. import git
 from . import one_of, issue
 from .fp import OneOf, Good
@@ -93,19 +94,23 @@ def _ver_str(major: int, minor: int, patch: int) -> str:
     return f'{major}.{minor}.{patch}'
 
 
-def prompt_next_version(version: str) -> str:
+def prompt_next_version(version: str, release_type: str) -> str:
     """Display the possible major, minor and patch versions and prompt
     the user to enter one of them. Return one of the versions.
 
     https://semver.org/
+
     """
     ver = version.split('-')[0]
     parts = [int(x) for x in ver.split('.')]
     patch = _ver_str(parts[0], parts[1], parts[2] + 1)
+    if release_type == 'hotfix':
+        return patch
+
     minor = _ver_str(parts[0], parts[1] + 1, 0)
     major = _ver_str(parts[0] + 1, 0, 0)
     valid = False
-    options = [patch, minor, major]
+    options = [minor, major]
     msg = f'Current version is {version}. Enter one of the following:\n  '
     msg += '\n  '.join(options)
     result = ''
@@ -117,16 +122,21 @@ def prompt_next_version(version: str) -> str:
     return result
 
 
+def serialize(obj: Any) -> Any:
+    """Return a serializable version of an object."""
+    if isinstance(obj, Enum):
+        return obj.value
+    if hasattr(obj, '__dict__'):
+        return obj.__dict__
+    return f'[Non-Serializable {repr(obj)}]'
+
+
 class JsonStr:
     """Base class to stringify dataclasses."""
     # pylint: disable=too-few-public-methods
 
     def __str__(self) -> str:
-        return json.dumps(
-            self.__dict__,
-            default=lambda o: o.__dict__,
-            indent=2
-        )
+        return json.dumps(self.__dict__, default=serialize)
 
 
 @dataclass

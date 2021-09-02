@@ -1,0 +1,45 @@
+{
+  "data": {
+    "repository": {
+      "releases": {
+        "nodes": [
+          {
+            "name": "1.1.1",
+            "tagName": "1.1.1",
+            "publishedAt": "2021-01-01T12:12:12Z"
+          }
+        ]
+      },
+      "commit": {
+        "message": "Merge pull request #1 from jmlopez-rod/hotfix\n1.1.1",
+        "author": {
+          "name": "Manuel Lopez",
+          "email": "",
+          "user": {
+            "login": "jmlopez-rod"
+          }
+        },
+        "oid": "96a9c6cba73a648864e84135e8f0e4f372ebeb3a",
+        "associatedPullRequests": {
+          "nodes": [
+            {
+              "author": {
+                "login": "jmlopez-rod",
+                "avatarUrl": "https://avatars.githubusercontent.com/u/1810397?s=50&v=4",
+                "email": ""
+              },
+              "number": 2,
+              "title": "hotfix title",
+              "body": "testing commits",
+              "baseRefName": "master",
+              "baseRefOid": "174646b40adabe5ecadc3036d7c977fd726d99d0",
+              "headRefName": "hotfix",
+              "headRefOid": "1efe314a67cf65d36ddad7881bf9359dc5588f8f",
+              "merged": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

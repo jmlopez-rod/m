@@ -2,9 +2,5 @@
   "owner": "jmlopez-rod",
   "repo": "m",
   "version": "0.2.0",
-  "releaseFrom": {
-    "master": {
-      "prBranch": "release"
-    }
-  }
+  "workflow": "m_flow"
 }

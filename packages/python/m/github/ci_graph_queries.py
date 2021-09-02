@@ -75,6 +75,7 @@ PULL_REQUEST = """
         path
       }
     }
+    merged
     isDraft
   }
 """

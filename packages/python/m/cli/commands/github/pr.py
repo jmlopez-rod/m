@@ -1,5 +1,5 @@
 import inspect
-from ...utils import call_main, env
+from ...utils import run_main, env
 
 
 def add_parser(sub_parser, raw):
@@ -42,9 +42,9 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....github.cli import get_pr_info
-    token = arg.token
-    repo = arg.repo
-    owner = arg.owner
-    pr_number = arg.pr_number
-    file_count = arg.files
-    return call_main(get_pr_info, [token, owner, repo, pr_number, file_count])
+    return run_main(lambda: get_pr_info(
+        arg.token,
+        arg.owner,
+        arg.repo,
+        arg.pr_number,
+        arg.files))

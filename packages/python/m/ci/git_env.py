@@ -6,11 +6,31 @@ from ..github.ci_dataclasses import GithubCiRunInfo
 from ..core import issue
 from ..core.fp import OneOf, Good
 from ..core.issue import Issue
-from .config import Config, ReleaseFrom
+from .config import Config, Workflow
 from ..core.io import EnvVars, JsonStr
 from ..github.ci import (
     Commit, CommitInfo, PullRequest, Release, get_ci_run_info
 )
+
+
+def get_release_prefix(config: Config) -> Optional[str]:
+    """Find out the release prefix based on the workflow specified in the
+    config."""
+    if config.workflow == Workflow.GIT_FLOW:
+        return config.git_flow.release_prefix
+    if config.workflow == Workflow.M_FLOW:
+        return config.m_flow.release_prefix
+    return None
+
+
+def get_hotfix_prefix(config: Config) -> Optional[str]:
+    """Find out the hotfix prefix based on the workflow specified in the
+    config."""
+    if config.workflow == Workflow.GIT_FLOW:
+        return config.git_flow.hotfix_prefix
+    if config.workflow == Workflow.M_FLOW:
+        return config.m_flow.hotfix_prefix
+    return None
 
 
 @dataclass
@@ -31,34 +51,45 @@ class GitEnv(JsonStr):
         """Get the pull request branch or 0 if not a pull request"""
         return self.pull_request.pr_number if self.pull_request else 0
 
-    def is_release(self, release_from: Optional[ReleaseFrom]) -> bool:
+    def is_release(self, config: Config) -> bool:
         """Determine if the current commit should create a release."""
         if not self.commit:
             return False
-        return self.commit.is_release(release_from)
+        workflow = config.workflow
+        release_prefix = get_release_prefix(config)
+        hotfix_prefix = get_hotfix_prefix(config)
+        if (
+                workflow == Workflow.M_FLOW and
+                self.branch != config.m_flow.master_branch
+        ):
+            return False
+        if (
+                workflow == Workflow.GIT_FLOW and
+                self.branch != config.git_flow.master_branch
+        ):
+            return False
+        return (
+            self.commit.is_release(release_prefix) or
+            self.commit.is_release(hotfix_prefix)
+        )
 
-    def is_release_pr(self, release_from: Optional[ReleaseFrom]) -> bool:
+    def is_release_pr(self, config: Config) -> bool:
         """Determine if the the current pr is a release pr."""
         if not self.pull_request:
             return False
-        return self.pull_request.is_release_pr(release_from)
+        release_prefix = get_release_prefix(config)
+        return self.pull_request.is_release_pr(release_prefix)
 
-    def verify_release_pr(
-        self,
-        release_from: Optional[ReleaseFrom]
-    ) -> OneOf[Issue, int]:
-        """Verify the release pull request by applying the rules in the
-        release_from object."""
+    def is_hotfix_pr(self, config: Config) -> bool:
+        """Determine if the the current pr is a hotfix pr. It is a release pr
+        as far as the pull request should see it but from the context of the
+        git environment we need to label it as a hotfix pr."""
         if not self.pull_request:
-            return Good(0)
-        return self.pull_request.verify_release_pr(release_from)
+            return False
+        hotfix_prefix = get_hotfix_prefix(config)
+        return self.pull_request.is_release_pr(hotfix_prefix)
 
-    def get_build_tag(
-        self,
-        config_version: str,
-        run_id: str,
-        release_from: Optional[ReleaseFrom],
-    ) -> OneOf[Issue, str]:
+    def get_build_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
         """Obtain the build tag for the current commit.
 
         It is tempting to use the config_version when creating a build tag for
@@ -78,18 +109,37 @@ class GitEnv(JsonStr):
 
         For release prs we use `rc` followed by the pull request. In this case
         it is safe to use config_version given that there should only be
-        one release at a time.
+        one release at a time. We treat hotfixes similar to releases.
+
+        Git flow will generate a special build tag: SKIP. This will happen when
+        we try to merge a release or hotfix branch to the develop branch.
         """
+        workflow = config.workflow
+        is_release = self.is_release(config)
+        is_release_pr = self.is_release_pr(config)
+        is_hotfix_pr = self.is_hotfix_pr(config)
+        if (
+            workflow == Workflow.GIT_FLOW and
+            self.target_branch == config.git_flow.develop_branch
+        ):
+            if is_release or is_release_pr or is_hotfix_pr:
+                return Good('SKIP')
+        prefix = '' if workflow == Workflow.FREE_FLOW else '0.0.0-'
         if not run_id:
-            return Good(f'0.0.0-local.{self.sha}')
-        if self.is_release(release_from):
-            return Good(config_version)
+            return Good(f'{prefix}local.{self.sha}')
+        if is_release:
+            return Good(config.version)
         if self.pull_request:
             pr_number = self.pull_request.pr_number
-            if self.is_release_pr(release_from):
-                return Good(f'{config_version}-rc{pr_number}.b{run_id}')
-            return Good(f'0.0.0-pr{pr_number}.b{run_id}')
-        return Good(f'0.0.0-{self.target_branch}.b{run_id}')
+            nprefix = ''
+            if is_release_pr:
+                nprefix = 'rc'
+            elif is_hotfix_pr:
+                nprefix = 'hotfix'
+            if nprefix:
+                return Good(f'{config.version}-{nprefix}{pr_number}.b{run_id}')
+            return Good(f'{prefix}pr{pr_number}.b{run_id}')
+        return Good(f'{prefix}{self.target_branch}.b{run_id}')
 
 
 def get_pr_number(branch: str) -> Optional[int]:
@@ -114,14 +164,6 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
     if not env_vars.ci_env:
         return Good(git_env)
 
-    total_files = [
-        len(item.allowed_files)
-        for _, item in config.release_from_dict.items()]
-    max_files = max(0, 0, *total_files)
-    if len(total_files) == 0:
-        # will have to find another way to make file checks
-        # for now release prs for required_files are bound to 100
-        max_files = 100
     pr_number = get_pr_number(branch)
     git_env_box = get_ci_run_info(
         token=env_vars.github_token,
@@ -131,7 +173,7 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
             sha=env_vars.git_sha,
         ),
         pr_number=pr_number,
-        file_count=max_files,
+        file_count=0,
         include_release=True,
     )
     if git_env_box.is_bad:

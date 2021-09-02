@@ -1,4 +1,4 @@
-from ...utils import call_main
+from ...utils import run_main
 
 
 def add_parser(sub_parser, raw):
@@ -15,4 +15,4 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....ci.m_env import write_m_env_vars
-    return call_main(write_m_env_vars, [arg.m_dir])
+    return run_main(lambda: write_m_env_vars(arg.m_dir))

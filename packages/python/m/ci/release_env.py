@@ -1,20 +1,64 @@
 from dataclasses import dataclass
-from typing import Optional
-from .config import ReleaseFrom, Config
+from .config import Config, Workflow
 from .git_env import GitEnv
-from ..core import one_of
-from ..core.fp import OneOf
+from ..core import one_of, issue
+from ..core.fp import OneOf, Good
 from ..core.issue import Issue
-from ..core.io import EnvVars
+from ..core.io import EnvVars, JsonStr
 
 
 @dataclass
-class ReleaseEnv:
+class ReleaseEnv(JsonStr):
     """Object to store the release configuration."""
     build_tag: str
     is_release: bool
     is_release_pr: bool
-    release_from: Optional[ReleaseFrom]
+    is_hotfix_pr: bool
+    workflow: Workflow
+
+
+def _verify_version(
+    config: Config,
+    git_env: GitEnv,
+    gh_latest: str,
+    is_release_pr: bool,
+    is_hotfix_pr: bool,
+    is_release: bool
+) -> OneOf[Issue, int]:
+    if config.workflow in [Workflow.GIT_FLOW, Workflow.M_FLOW]:
+        if config.workflow == Workflow.GIT_FLOW:
+            pr_branch = git_env.get_pr_branch()
+            flow = config.git_flow
+            # Skip verification when release or hotfix are going to develop
+            if (
+                git_env.target_branch == flow.develop_branch and
+                    (
+                        pr_branch.startswith(flow.release_prefix) or
+                        pr_branch.startswith(flow.hotfix_prefix)
+                    )
+            ):
+                return Good(0)
+        return config.verify_version(
+            gh_latest,
+            is_release_pr=(is_release_pr or is_hotfix_pr),
+            is_release=is_release
+        )
+    # Covers Workflow.FREE_FLOW
+    return Good(0)
+
+
+def _get_master_branch(config: Config) -> str:
+    if config.workflow == Workflow.GIT_FLOW:
+        return config.git_flow.master_branch
+    if config.workflow == Workflow.M_FLOW:
+        return config.m_flow.master_branch
+    return 'master'
+
+
+def _get_develop_branch(config: Config) -> str:
+    if config.workflow == Workflow.GIT_FLOW:
+        return config.git_flow.develop_branch
+    return 'develop'
 
 
 def get_release_env(
@@ -23,24 +67,49 @@ def get_release_env(
     git_env: GitEnv,
 ) -> OneOf[Issue, ReleaseEnv]:
     """Provide the release environment information."""
-    release_from = config.release_from_dict.get(git_env.target_branch)
-    is_release = git_env.is_release(release_from)
-    is_release_pr = git_env.is_release_pr(release_from)
+    is_release = git_env.is_release(config)
+    is_release_pr = git_env.is_release_pr(config)
+    is_hotfix_pr = git_env.is_hotfix_pr(config)
     gh_latest = git_env.release.tag_name if git_env.release else ''
+    if config.workflow != Workflow.FREE_FLOW:
+        master_branch = _get_master_branch(config)
+        develop_branch = _get_develop_branch(config)
+        if config.workflow == Workflow.GIT_FLOW:
+            if (
+                (is_release_pr or is_hotfix_pr) and
+                git_env.target_branch not in (master_branch, develop_branch)
+            ):
+                return issue(f'hotfix and releases prs to {master_branch}')
+            if (
+                is_release and
+                git_env.branch not in (master_branch, develop_branch)
+            ):
+                return issue(f'hotfix and releases only on {master_branch}')
+        if config.workflow == Workflow.M_FLOW:
+            if (
+                is_release_pr and
+                git_env.target_branch != master_branch
+            ):
+                return issue(f'release prs to {master_branch}')
+            if (
+                is_release and
+                git_env.branch != master_branch
+            ):
+                return issue(f'releases only on {master_branch}')
     return one_of(lambda: [
         ReleaseEnv(
             build_tag=build_tag,
             is_release=is_release,
             is_release_pr=is_release_pr,
-            release_from=release_from
+            is_hotfix_pr=is_hotfix_pr,
+            workflow=config.workflow
         )
-        for _ in config.verify_version(
+        for _ in _verify_version(
+            config,
+            git_env,
             gh_latest,
             is_release_pr=is_release_pr,
+            is_hotfix_pr=is_hotfix_pr,
             is_release=is_release)
-        for _ in git_env.verify_release_pr(release_from)
-        for build_tag in git_env.get_build_tag(
-            config.version,
-            env_vars.run_id,
-            release_from)
+        for build_tag in git_env.get_build_tag(config, env_vars.run_id)
     ])
