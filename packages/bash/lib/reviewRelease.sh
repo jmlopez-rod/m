@@ -56,8 +56,8 @@ if [ "$workflow" == 'm_flow' ]; then
     --base master \
     --title "($releaseType) $version" \
     @m/.m/messages/pr_body.md > m/.m/messages/pr_payload.json
-  prUrl = m jsonq @m/.m/messages/pr_payload.json html_url
-  headSha = m jsonq @m/.m/messages/pr_payload.json head.sha
+  prUrl=$(m jsonq @m/.m/messages/pr_payload.json html_url)
+  headSha=$(m jsonq @m/.m/messages/pr_payload.json head.sha)
   prNumber=$(python -c "print('$prUrl'.split('/')[-1])")
 
   # Add pr number for the endRelease script
@@ -81,9 +81,9 @@ elif [ "$workflow" == 'git_flow' ]; then
     --base master \
     --title "($releaseType) $version" \
     @m/.m/messages/pr_body.md > m/.m/messages/pr_payload.json
-  prUrl = m jsonq @m/.m/messages/pr_payload.json html_url
+  prUrl=$(m jsonq @m/.m/messages/pr_payload.json html_url)
   # Same sha for the next PR - we only need to provide new context for status
-  headSha = m jsonq @m/.m/messages/pr_payload.json head.sha
+  headSha=$(m jsonq @m/.m/messages/pr_payload.json head.sha)
   prNumber=$(python -c "print('$prUrl'.split('/')[-1])")
 
   {
