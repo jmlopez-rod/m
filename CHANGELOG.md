@@ -8,6 +8,12 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.3.1] <a name="0.3.1" href="#0.3.1">-</a> September 02, 2021
+- Fix startRelease and startHotfix scripts. When starting a release, the
+  script cannot detect the latest version by fetching the tags when using
+  the git-flow because the latest tag is in the master branch not develop.
+
+
 ## [0.3.0] <a name="0.3.0" href="#0.3.0">-</a> September 01, 2021
 **Breaking Changes**:
 - releaseFrom field is no longer used in the m configuration.
@@ -63,7 +69,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.3.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.3.1...HEAD
+[0.3.1]: https://github.com/jmlopez-rod/m/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/jmlopez-rod/m/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/jmlopez-rod/m/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/jmlopez-rod/m/compare/0.0.3...0.1.0
