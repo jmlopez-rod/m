@@ -12,8 +12,9 @@ m ci assert_branch --type hotfix m
 
 
 # Gather info
-git fetch --tags
-currentVersion=$(git describe --tags || echo '0.0.0')
+owner=$(m jsonq @m/m.json owner)
+repo=$(m jsonq @m/m.json repo)
+currentVersion=$(curl --silent "https://api.github.com/repos/$owner/$repo/releases/latest" | m jsonq tag_name || echo '0.0.0')
 newVersion=$(m ci bump_version --type hotfix "$currentVersion")
 
 # Swith to release branch
