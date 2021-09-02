@@ -14,7 +14,7 @@ m ci assert_branch --type release m
 # Gather info
 owner=$(m jsonq @m/m.json owner)
 repo=$(m jsonq @m/m.json repo)
-currentVersion=$(curl --silent "https://api.github.com/repos/$owner/$repo/releases/latest" | m jsonq tag_name || echo '0.0.0')
+currentVersion=$(m github latest_release --owner "$owner" --repo "$repo")
 newVersion=$(m ci bump_version --type release "$currentVersion")
 
 # Swith to release branch
