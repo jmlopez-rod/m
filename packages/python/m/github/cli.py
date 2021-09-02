@@ -1,6 +1,6 @@
 from typing import Any
 from ..core import one_of
-from ..core.fp import OneOf
+from ..core.fp import OneOf, Good
 from ..core.issue import Issue
 from ..core.json import get
 from .api import graphql
@@ -27,3 +27,28 @@ def get_pr_info(
         for res in graphql(token, query, variables)
         for data in get(res, 'repository.pullRequest')
     ])
+
+
+def get_latest_release(
+    token: str,
+    owner: str,
+    repo: str,
+) -> OneOf[Issue, str]:
+    """Retrieve the latest release for a repo."""
+    query = '''query ($owner: String!, $repo: String!) {
+      repository(owner:$owner, name:$repo) {
+         releases(last: 1) {
+            nodes {
+                name
+                tagName
+                publishedAt
+            }
+        }
+      }
+    }'''
+    variables = dict(owner=owner, repo=repo)
+    return one_of(lambda: [
+        data
+        for res in graphql(token, query, variables)
+        for data in get(res, 'repository.releases.nodes.0.tagName')
+    ]).flat_map_bad(lambda _: Good('0.0.0'))
