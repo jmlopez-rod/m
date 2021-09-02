@@ -62,12 +62,7 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[Unreleased]: https://github.com/jmlopez-rod/m/compare/0.2.0...HEAD
-[0.2.0]: https://github.com/jmlopez-rod/m/compare/0.1.0...0.2.0
-[0.1.0]: https://github.com/jmlopez-rod/m/compare/0.0.3...0.1.0
-[0.0.3]: https://github.com/jmlopez-rod/m/compare/0.0.2...0.0.3
-[0.0.2]: https://github.com/jmlopez-rod/m/compare/0.0.1...0.0.2
-[0.0.1]: https://github.com/jmlopez-rod/m/compare/bf286e270e13c75dfed289a3921289092477c058...0.0.1
+
 [unreleased]: https://github.com/jmlopez-rod/m/compare/0.3.0...HEAD
 [0.3.0]: https://github.com/jmlopez-rod/m/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/jmlopez-rod/m/compare/0.1.0...0.2.0
