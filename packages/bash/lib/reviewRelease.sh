@@ -44,16 +44,20 @@ read -r \
 {
   echo "OWNER=$owner"
   echo "REPO=$repo"
+  echo "WORKFLOW=$workflow"
+  echo "VERSION=$version"
 } > m/.m/release.list
 
 if [ "$workflow" == 'm_flow' ]; then
-  prUrl=$(m github create_pr \
-      --owner "$owner" \
-      --repo "$repo" \
-      --head "$gitBranch" \
-      --base master \
-      --title "($releaseType) $version" \
-      @m/.m/messages/pr_body.md | m jsonq html_url)
+  m github create_pr \
+    --owner "$owner" \
+    --repo "$repo" \
+    --head "$gitBranch" \
+    --base master \
+    --title "($releaseType) $version" \
+    @m/.m/messages/pr_body.md > m/.m/messages/pr_payload.json
+  prUrl = m jsonq @m/.m/messages/pr_payload.json html_url
+  headSha = m jsonq @m/.m/messages/pr_payload.json head.sha
   prNumber=$(python -c "print('$prUrl'.split('/')[-1])")
 
   # Add pr number for the endRelease script
@@ -70,13 +74,16 @@ if [ "$workflow" == 'm_flow' ]; then
   }
 
 elif [ "$workflow" == 'git_flow' ]; then
-  prUrl=$(m github create_pr \
+  m github create_pr \
     --owner "$owner" \
     --repo "$repo" \
     --head "$gitBranch" \
     --base master \
     --title "($releaseType) $version" \
-    @m/.m/messages/pr_body.md | m jsonq html_url)
+    @m/.m/messages/pr_body.md > m/.m/messages/pr_payload.json
+  prUrl = m jsonq @m/.m/messages/pr_payload.json html_url
+  # Same sha for the next PR - we only need to provide new context for status
+  headSha = m jsonq @m/.m/messages/pr_payload.json head.sha
   prNumber=$(python -c "print('$prUrl'.split('/')[-1])")
 
   {
@@ -101,6 +108,7 @@ elif [ "$workflow" == 'git_flow' ]; then
     echo "PR_DEV=$prNumberDev"
   } >> m/.m/release.list
 
+  # Display pr urls
   {
     set +x
     echo ''

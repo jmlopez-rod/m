@@ -7,6 +7,8 @@ def add_parser(sub_parser, raw):
     desc = """
         Create a pull request
 
+        https://docs.github.com/en/rest/reference/pulls#create-a-pull-request
+
         example:
 
             $ m github create_pr \\

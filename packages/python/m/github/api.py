@@ -91,3 +91,50 @@ def create_pr(
         'base': pr_info.base,
     }
     return request(token, endpoint, 'POST', data)
+
+
+def merge_pr(
+    token: str,
+    owner: str,
+    repo: str,
+    pr_number: int,
+    commit_title: Optional[str],
+) -> OneOf[Issue, Any]:
+    """Send a payload to merge a pull request in github."""
+    endpoint = f'/repos/{owner}/{repo}/pulls/{pr_number}/merge'
+    data = dict(commit_title=commit_title) if commit_title else {}
+    return request(token, endpoint, 'PUT', data)
+
+
+@dataclass
+class GithubShaStatus:
+    """Data needed to create a pull request."""
+    sha: str
+    context: str
+    state: str
+    description: str
+    url: Optional[str] = None
+
+
+def commit_status(
+    token: str,
+    owner: str,
+    repo: str,
+    sha_info: GithubShaStatus,
+):
+    """Set a status for a sha. The valid states are:
+
+    - pending
+    - success
+    - failure
+    - error
+    """
+    endpoint = f'/repos/{owner}/{repo}/statuses/{sha_info.sha}'
+    data = {
+        'context': sha_info.context,
+        'state': sha_info.state,
+        'description': sha_info.description,
+    }
+    if sha_info.url:
+        data['target_url'] = sha_info.url
+    return request(token, endpoint, 'POST', data)
