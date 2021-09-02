@@ -8,6 +8,12 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.4.0] <a name="0.4.0" href="#0.4.0">-</a> September 02, 2021
+- Add `m github latest_release` to check the latest version of a github repo.
+- Fix issues with `startRelease.sh` and `startHotfix.sh` authenticating to
+  github by using the `latest_release` command.
+
+
 ## [0.3.1] <a name="0.3.1" href="#0.3.1">-</a> September 02, 2021
 - Fix startRelease and startHotfix scripts. When starting a release, the
   script cannot detect the latest version by fetching the tags when using
@@ -69,7 +75,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.3.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/jmlopez-rod/m/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/jmlopez-rod/m/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/jmlopez-rod/m/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/jmlopez-rod/m/compare/0.1.0...0.2.0
