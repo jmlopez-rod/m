@@ -32,7 +32,19 @@ git commit -m "($releaseType) $version" || echo '...'
 # Create pr body
 mkdir -p m/.m/messages
 {
-  echo "Please review the contents of CHANGELOG.md"
+echo "**Reviewer Directions:**
+
+ Verify the \`CHANGELOG.md\` file contains a descriptive summary of all the changes in this release.
+
+**PR Author Directions:**
+
+- Wait for reviewers to approve.
+- **DO NOT** merge using the merge button.
+- run
+    \`\`\`sh
+    endRelease.sh
+    \`\`\`
+"
 } > m/.m/messages/pr_body.md
 
 # read variables used to create pr
