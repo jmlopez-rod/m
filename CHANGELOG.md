@@ -8,8 +8,22 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
-## [0.2.0] <a name="0.2.0" href="#0.2.0">-</a> August 25, 2021
+## [0.3.0] <a name="0.3.0" href="#0.3.0">-</a> September 01, 2021
+**Breaking Changes**:
+- releaseFrom field is no longer used in the m configuration.
+- To continue releasing versions we need to specify a "workflow":
+    - free_flow: No version, only tags.
+    - m_flow: Uses versions but only the master branch is needed.
+    - git_flow: Users versions and it uses master and develop branch.
+- Removed `releaseSetup.sh`. Instead we should use:
+    - `startRelease.sh` and `startHotfix.sh`.
 
+**Features**:
+- Add `reviewRelease.sh` to quickly commit the changes and open up a PR.
+- Add `endRelease.sh` to merge the PR.
+
+
+## [0.2.0] <a name="0.2.0" href="#0.2.0">-</a> August 25, 2021
 - Add `-m, --max-lines` to `m ci lint` command. It allows us to specify
   the maximum lines that the command should display per error. It
   defaults to 5.
@@ -48,7 +62,9 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[Unreleased]: https://github.com/jmlopez-rod/m/compare/0.2.0...HEAD
+
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/jmlopez-rod/m/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/jmlopez-rod/m/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/jmlopez-rod/m/compare/0.0.3...0.1.0
 [0.0.3]: https://github.com/jmlopez-rod/m/compare/0.0.2...0.0.3
