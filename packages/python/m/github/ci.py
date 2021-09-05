@@ -45,7 +45,7 @@ def create_ci_query(
 
 
 def _parse_commit_message(msg: str, sha: str) -> str:
-    match = re.match(r'^Merge (.*) into (.*)$', msg)
+    match = re.match('^Merge (.*) into (.*)$', msg)
     if match:
         return match.groups()[0]
     return sha

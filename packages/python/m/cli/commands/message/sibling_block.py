@@ -7,7 +7,7 @@ def add_parser(sub_parser, raw):
         'sibling_block',
         help='close and open a sibling block',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
     add('to_close', type=str, help='block name to close')

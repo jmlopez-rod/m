@@ -70,7 +70,7 @@ def add_parser(sub_parser, raw):
     add(
         '-c',
         '--config',
-        required=True,
+        default='{}',
         type=validate_json_payload,
         help='config data: @filename (file), string'
     )

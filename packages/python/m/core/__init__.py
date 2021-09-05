@@ -8,7 +8,7 @@ def issue(
     description: Optional[str] = None,
     cause: Optional[Exception] = None,
     data: Optional[object] = None,
-    include_traceback: bool = True
+    include_traceback: bool = True,
 ) -> OneOf[Issue, Any]:
     """Shortcut to create a Bad OneOf containing an Issue."""
     return Bad(Issue(message, description, cause, data, include_traceback))

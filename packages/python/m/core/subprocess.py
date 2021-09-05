@@ -12,7 +12,7 @@ def eval_cmd(cmd: str) -> OneOf[Issue, str]:
         universal_newlines=True,
         executable="/bin/bash",
         stdout=PIPE,
-        stderr=STDOUT
+        stderr=STDOUT,
     ) as process:
         out, _ = process.communicate()
         if process.returncode == 0:

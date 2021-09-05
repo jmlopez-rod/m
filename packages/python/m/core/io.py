@@ -158,11 +158,12 @@ class EnvVars(JsonStr):
 
 class CITool(ABC):
     """Class representing a continuous integration tool. We can use this
-    class static methods to display local messages."""
+    class static methods to display local messages.
+    """
 
     @staticmethod
     def env_vars() -> OneOf[Issue, EnvVars]:
-        """Obtain basic environment variables. """
+        """Obtain basic environment variables."""
         res = EnvVars()
         return one_of(lambda: [
             res
@@ -221,7 +222,7 @@ class GithubActions(CITool):
         )
         return one_of(lambda: [
             res
-            for [
+            for (
                 repo,
                 res.run_id,
                 res.run_number,
@@ -229,7 +230,7 @@ class GithubActions(CITool):
                 res.git_branch,
                 res.git_sha,
                 res.triggered_by,
-            ] in renv_vars([
+            ) in renv_vars([
                 'GITHUB_REPOSITORY',
                 'GITHUB_RUN_ID',
                 'GITHUB_RUN_NUMBER',

@@ -28,7 +28,7 @@ def read_json(
 
 def parse_json(
     data: str,
-    error_if_empty: bool = False
+    error_if_empty: bool = False,
 ) -> OneOf[Issue, Any]:
     """Return a `Good` containing the parsed contents of the json string."""
     try:
@@ -61,7 +61,7 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
         try:
             current = current[new_key]
         except KeyError:
-            pth = '.'.join(keys[:num+1])
+            pth = '.'.join(keys[:num + 1])
             return issue(f'`{pth}` path was not found')
         except Exception as ex:
             pth = '.'.join(keys[:num])

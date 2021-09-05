@@ -2,6 +2,7 @@
 set -xeuo pipefail
 
 export PYTHONPATH="${PWD}/packages/python"
+export PATH="${PWD}/packages/bash/lib:$PATH"
 
 # static checks
 mypy ./packages/python/m
@@ -16,3 +17,5 @@ pylint ./packages/python/tests --rcfile=packages/python/tests/.pylintrc
 
 # pep8
 pycodestyle --format=pylint packages/python
+
+m ci lint -t pycodestyle < <(flake8 packages/python/m)

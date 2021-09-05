@@ -48,7 +48,7 @@ class Issue(Exception):
         description: Optional[str] = None,
         cause: Optional[Exception] = None,
         data: Optional[object] = None,
-        include_traceback: bool = True
+        include_traceback: bool = True,
     ):
         """Create an Issue.
 

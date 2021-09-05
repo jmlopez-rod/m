@@ -3,7 +3,7 @@ from ..validators import validate_json_payload
 
 
 def add_parser(sub_parser, raw):
-    desc = """
+    desc = r"""
         query json data.
 
         single value:
@@ -23,8 +23,8 @@ def add_parser(sub_parser, raw):
 
         use `read` to store in bash variables:
 
-            read -r -d '\\n' \\
-                var1 var2 var3 \\
+            read -r -d '\n' \
+                var1 var2 var3 \
                 <<< "$(m jsonq @file.json 'path1' 'path2' 'path3')"
     """
     parser = sub_parser.add_parser(
@@ -47,7 +47,7 @@ def add_parser(sub_parser, raw):
         '--separator',
         type=str,
         default='\n',
-        help='separator for multiple values (default \\n)')
+        help=r'separator for multiple values (default \n)')
     add('query', type=str, nargs='+', help='path to json data')
 
 

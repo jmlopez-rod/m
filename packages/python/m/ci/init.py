@@ -13,7 +13,7 @@ from ..git import get_remote_url
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
     """Find the owner and repo from an ssh url"""
-    match = re.findall(r'.*:(.*)/(.*).git', ssh_url)
+    match = re.findall('.*:(.*)/(.*).git', ssh_url)
     if match:
         return Good(match[0])
     return issue('unable to obtain owner and repo', data=dict(ssh_url=ssh_url))

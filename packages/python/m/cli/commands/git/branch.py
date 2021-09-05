@@ -13,7 +13,7 @@ def add_parser(sub_parser, raw):
         'branch',
         help='display the current git branch',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
 
 

@@ -30,7 +30,7 @@ def _filter_data(data: Mapping[str, Any]) -> OneOf[Issue, Any]:
 def graphql(
     token: str,
     query: str,
-    variables: Mapping[str, Any]
+    variables: Mapping[str, Any],
 ) -> OneOf[Issue, Any]:
     """Make a request to Github's graphql API:
 

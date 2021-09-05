@@ -4,7 +4,7 @@ from typing import cast
 
 from m.core.fp import Good
 from m.ci.config import (
-    GitFlowConfig, MFlowConfig, read_config, Config, Workflow
+    GitFlowConfig, MFlowConfig, read_config, Config, Workflow,
 )
 from ...util import FpTestCase
 

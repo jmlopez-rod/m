@@ -139,7 +139,7 @@ def print_project_status(
 ) -> OneOf[Issue, int]:
     """Status report"""
     keys = project.rules.keys()
-    values = project.rules.values()
+    values = sorted(project.rules.values(), key=lambda r: r.found)
     total_found = sum([s.found for s in values])
     total_allowed = sum([s.allowed for s in values])
 

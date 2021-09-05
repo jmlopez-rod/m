@@ -64,7 +64,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_issue(
                 result,
-                'version is ahead (Revert configuration change)'
+                'version is ahead (Revert configuration change)',
             )
 
     def test_master(self):
@@ -181,7 +181,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=True,
                 is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
+                workflow=Workflow.GIT_FLOW,
             ))
 
     def test_release_merge(self):
@@ -207,7 +207,8 @@ class ReleaseEnvGitFlowTest(FpTestCase):
 
     def test_release_merge_develop(self):
         """Need to merge release back into develop and make sure that the
-        build passes."""
+        build passes.
+        """
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'
         self.env_vars.git_branch = 'refs/heads/develop'
@@ -345,7 +346,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
+                workflow=Workflow.GIT_FLOW,
             ))
 
     def test_hotfix_merge_random(self):

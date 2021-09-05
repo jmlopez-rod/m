@@ -29,7 +29,7 @@ def new_changelog(
     owner: str,
     repo: str,
     new_ver: str,
-    first_sha: str
+    first_sha: str,
 ) -> OneOf[Issue, str]:
     """Modify the contents of a CHANGELOG so that a new entry with the new
     version is added to the new changelog contents."""
@@ -43,7 +43,7 @@ def new_changelog(
 
     links = [f'[unreleased]: {compare_sha_url(owner, repo, new_ver, "HEAD")}']
     for i in range(len(versions) - 1):
-        link = compare_sha_url(owner, repo, versions[i+1], versions[i])
+        link = compare_sha_url(owner, repo, versions[i + 1], versions[i])
         links.append(f'[{versions[i]}]: {link}')
 
     date = datetime.now().strftime('%B %d, %Y')

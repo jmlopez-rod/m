@@ -30,7 +30,7 @@ def validate_json_payload(file_path: str):
 def validate_payload(file_path: str) -> str:
     """Return the raw payload. This allows us to read from a file or the
     stdin stream."""
-    if file_path.startswith('\\@'):
+    if file_path.startswith(r'\@'):
         # escape @ with \ to let the cli know that the payload starts with @
         return file_path[1:]
     if file_path == '@-':
