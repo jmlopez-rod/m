@@ -31,10 +31,12 @@ class ReleaseEnvGitFlowTest(FpTestCase):
         ])
 
     def test_branch_behind(self):
-        """Github says version is 1.1.1 but the config is still in 0.0.0
-        This can be fixed by merging the latest. This usually happens when a
-        release gets merged and now the other branches are behind. So this
-        type of error will be a good reminder to developers to update.
+        """Github says version is 1.1.1 but the config is still in 0.0.0 This
+        can be fixed by merging the latest.
+
+        This usually happens when a release gets merged and now the
+        other branches are behind. So this type of error will be a good
+        reminder to developers to update.
         """
         self.env_vars.ci_env = True
         self.config.version = '0.0.0'
@@ -51,8 +53,11 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             )
 
     def test_version_ahead(self):
-        """Github says version is 1.1.1 but the config is in 2.0.0. This can
-        be due to a mistake on a developer that bumped the version."""
+        """Github says version is 1.1.1 but the config is in 2.0.0.
+
+        This can be due to a mistake on a developer that bumped the
+        version.
+        """
         self.env_vars.ci_env = True
         self.config.version = '2.0.0'
         self.env_vars.git_branch = 'refs/heads/my-branch'
@@ -185,7 +190,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ))
 
     def test_release_merge(self):
-        """Should use the proper version number"""
+        """Should use the proper version number."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
         self.env_vars.git_branch = 'refs/heads/master'
@@ -206,9 +211,8 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ))
 
     def test_release_merge_develop(self):
-        """Need to merge release back into develop and make sure that the
-        build passes.
-        """
+        """Need to merge release back into develop and make sure that the build
+        passes."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'
         self.env_vars.git_branch = 'refs/heads/develop'
@@ -306,7 +310,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ))
 
     def test_hotfix_merge(self):
-        """Should use the proper version number"""
+        """Should use the proper version number."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
         self.env_vars.git_branch = 'refs/heads/master'
@@ -328,8 +332,11 @@ class ReleaseEnvGitFlowTest(FpTestCase):
 
     def test_hotfix_merge_develop(self):
         """Should build since we need to make sure potential fixes done in
-        hotfix are going to work with the current develop. At this point
-        the configuration version should be the same as in github."""
+        hotfix are going to work with the current develop.
+
+        At this point the configuration version should be the same as in
+        github.
+        """
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'
         self.env_vars.git_branch = 'refs/heads/develop'

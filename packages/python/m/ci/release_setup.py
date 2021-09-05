@@ -65,8 +65,8 @@ def update_changelog_file(
     first_sha: str,
     filename: str = 'CHANGELOG.md',
 ) -> OneOf[Issue, int]:
-    """Add an entry to the CHANGELOG file with the new version to be released.
-    """
+    """Add an entry to the CHANGELOG file with the new version to be
+    released."""
     return one_of(lambda: [
         0
         for data in read_file(filename)

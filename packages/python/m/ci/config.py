@@ -54,9 +54,12 @@ class Config(JsonStr):
         is_release: bool,
     ) -> OneOf[Issue, int]:
         """Return 0 if everything is well with the version in the
-        configuration. Otherwise it will return an issue stating why
-        the version in the configuration is not valid. If `gh_latest`
-        is not provided then the checks are skipped."""
+        configuration.
+
+        Otherwise it will return an issue stating why the version in the
+        configuration is not valid. If `gh_latest` is not provided then
+        the checks are skipped.
+        """
         if not gh_latest:
             return Good(0)
         err_data = dict(

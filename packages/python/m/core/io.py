@@ -37,7 +37,10 @@ def format_seconds(number_of_seconds: Union[int, float]) -> str:
 
 
 def env(name: str, def_val='') -> str:
-    """Access an environment variable. Return empty string if not defined."""
+    """Access an environment variable.
+
+    Return empty string if not defined.
+    """
     return os.environ.get(name, def_val)
 
 
@@ -96,11 +99,10 @@ def _ver_str(major: int, minor: int, patch: int) -> str:
 
 
 def prompt_next_version(version: str, release_type: str) -> str:
-    """Display the possible major, minor and patch versions and prompt
-    the user to enter one of them. Return one of the versions.
+    """Display the possible major, minor and patch versions and prompt the user
+    to enter one of them. Return one of the versions.
 
     https://semver.org/
-
     """
     ver = version.split('-')[0]
     parts = [int(x) for x in ver.split('.')]
@@ -158,8 +160,9 @@ class EnvVars(JsonStr):
 
 
 class CITool(ABC):
-    """Class representing a continuous integration tool. We can use this
-    class static methods to display local messages.
+    """Class representing a continuous integration tool.
+
+    We can use this class static methods to display local messages.
     """
 
     @staticmethod
@@ -329,7 +332,10 @@ class Teamcity(CITool):
 
     @staticmethod
     def close_block(name: str) -> None:
-        """Closes a previously defined block. See `open_block`. """
+        """Closes a previously defined block.
+
+        See `open_block`.
+        """
         print(f"##teamcity[blockClosed name='{name}']")
 
     @staticmethod
@@ -382,14 +388,14 @@ CiTool = get_ci_tool()
 
 
 def error_block(issue_: str, stream: TextIO = sys.stderr) -> None:
-    """Print an issue within an error block"""
+    """Print an issue within an error block."""
     CiTool.open_block('error', '')
     print(issue_, file=stream)
     CiTool.close_block('error')
 
 
 def warn_block(issue_: str, stream: TextIO = sys.stderr) -> None:
-    """Print an issue within a warning block"""
+    """Print an issue within a warning block."""
     CiTool.open_block('warning', '')
     print(issue_, file=stream)
     CiTool.close_block('warning')

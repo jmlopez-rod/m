@@ -13,7 +13,7 @@ from ..git import get_remote_url
 
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
-    """Find the owner and repo from an ssh url"""
+    """Find the owner and repo from an ssh url."""
     match = re.findall('.*:(.*)/(.*).git', ssh_url)
     if match:
         return Good(match[0])
@@ -21,7 +21,7 @@ def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
 
 
 def get_repo_info() -> OneOf[Issue, Tuple[str, str]]:
-    """Get the owner and repo name from the current repository. """
+    """Get the owner and repo name from the current repository."""
     return one_of(lambda: [
         info
         for ssh_url in get_remote_url()

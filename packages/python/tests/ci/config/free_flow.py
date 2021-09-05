@@ -12,8 +12,10 @@ from ...util import FpTestCase
 
 
 class ConfigFreeFlowTest(FpTestCase):
-    """The base config should not change during the tests. The version will
-    be ignored during the free-flow workflow."""
+    """The base config should not change during the tests.
+
+    The version will be ignored during the free-flow workflow.
+    """
     base_config = Config(
         owner='jmlopez-rod',
         repo='m',

@@ -30,7 +30,7 @@ def add_parser(sub_parser, raw):
 
 
 def run(arg):
-    regex = r"\d.\d.\d-(.*)\.(.*)"
+    regex = r'\d.\d.\d-(.*)\.(.*)'
     matches = re.match(regex, arg.version)
     if matches:
         tag, _ = matches.groups()

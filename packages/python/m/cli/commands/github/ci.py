@@ -59,11 +59,11 @@ def add_parser(sub_parser, raw):
         help='max number of files to retrieve')
     add('--include-release',
         default=False,
-        action="store_true",
+        action='store_true',
         help='include the last release information')
     add('--merge-commit',
         default=False,
-        action="store_true",
+        action='store_true',
         help='set if the sha is a merge commit sha (from github)')
 
 

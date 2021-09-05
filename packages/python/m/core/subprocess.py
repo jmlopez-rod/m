@@ -11,7 +11,7 @@ def eval_cmd(cmd: str) -> OneOf[Issue, str]:
         cmd,
         shell=True,
         universal_newlines=True,
-        executable="/bin/bash",
+        executable='/bin/bash',
         stdout=PIPE,
         stderr=STDOUT,
     ) as process:

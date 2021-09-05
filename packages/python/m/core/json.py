@@ -117,8 +117,10 @@ def jsonq(
     display_warning: bool,
     *key_str: str
 ) -> int:
-    """Print the values obtained from `multi_get` to stdout. Returns
-    0 if all the keys are available. Returns non-zero if there are problems.
+    """Print the values obtained from `multi_get` to stdout.
+
+    Returns 0 if all the keys are available. Returns non-zero if there
+    are problems.
     """
     result = multi_get(obj, *key_str)
     if result.is_bad:

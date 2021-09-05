@@ -1,8 +1,11 @@
 [flake8]
 ignore =
+  D100,    # Missing docstring in public module
+  D103,    # Missing docstring in public function
   D104,    # Missing docstring in public package
   WPS300,  # Found local folder import
   WPS221,  # Found line with high Jones Complexity: 15 > 14
   WPS305,  # Found `f` string
+  WPS433,  # Found nested import
   WPS111,  # Found too short name: x < 2
   WPS224   # Found a comprehension with too many `for` statements

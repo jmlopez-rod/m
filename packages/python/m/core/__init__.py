@@ -17,7 +17,9 @@ def issue(
 
 def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
     """`comp` should be a lambda function which returns an array with a single
-    value. To be used so that we may iterate over OneOf objects that may raise
+    value.
+
+    To be used so that we may iterate over OneOf objects that may raise
     the StopBadIteration exception.
     """
     try:

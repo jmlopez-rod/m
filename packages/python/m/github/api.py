@@ -14,6 +14,7 @@ def request(
     data: Optional[Any] = None,
 ) -> OneOf[Issue, Any]:
     """Make an api request to github. See:
+
     - https://docs.github.com/en/rest/overview/resources-in-the-rest-api
     - https://docs.github.com/en/rest/overview/endpoints-available-for-github-apps
     """  # noqa

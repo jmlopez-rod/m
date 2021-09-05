@@ -17,7 +17,7 @@ class ExitCode(enum.Enum):
 @dataclass
 class Message:
     """A message object containing information about a rule that was
-    triggered. """
+    triggered."""
     rule_id: str
     message: str
     line: int
@@ -27,7 +27,7 @@ class Message:
 
 @dataclass
 class Result:
-    """A result object for each file reported to have errors. """
+    """A result object for each file reported to have errors."""
     file_path: str
     messages: List[Message]
 
@@ -49,8 +49,8 @@ class ProjectStatus:
 
 
 def to_rules_dict(results: List[Result]) -> Dict[str, List[Message]]:
-    """Convert the list of Result objects to a dictionary that maps rules
-    to Messages."""
+    """Convert the list of Result objects to a dictionary that maps rules to
+    Messages."""
     obj: Dict[str, List[Message]] = {}
     for result in results:
         for msg in result.messages:
@@ -123,7 +123,7 @@ def format_row(
     widths: List[int],
     alignment: str,
 ) -> str:
-    """Format a row to be displayed in a table"""
+    """Format a row to be displayed in a table."""
     items = [
         val
         for index, align in enumerate(alignment)
@@ -137,7 +137,7 @@ def print_project_status(
     max_lines: int,
     stream: TextIO = sys.stdout
 ) -> OneOf[Issue, int]:
-    """Status report"""
+    """Status report."""
     keys = project.rules.keys()
     values = sorted(project.rules.values(), key=lambda r: r.found)
     total_found = sum([s.found for s in values])
@@ -203,7 +203,7 @@ def lint(
     max_lines: int,
     stream: TextIO = sys.stdout
 ) -> OneOf[Issue, ProjectStatus]:
-    """format the linter tool output. """
+    """format the linter tool output."""
     return one_of(lambda: [
         project_status
         for data in transform(payload)

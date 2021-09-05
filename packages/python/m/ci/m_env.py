@@ -20,7 +20,7 @@ class MEnv(JsonStr):
 
 
 def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
-    """Obtain the M Environment object"""
+    """Obtain the M Environment object."""
     return one_of(lambda: [
         MEnv(config, env_vars, git_env, release_env)
         for config in read_config(m_dir)

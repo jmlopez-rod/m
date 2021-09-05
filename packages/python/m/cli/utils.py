@@ -14,14 +14,17 @@ from .validators import validate_non_empty_str
 
 
 class CmdModule:
-    """Interface for command modules. """
+    """Interface for command modules."""
     meta: Dict[str, str]
 
     @staticmethod
     def add_arguments(_parser: argparse.ArgumentParser) -> None:
         """Should be defined if we want to manipulate the argument parser
-        object. This will allow us to define options that may apply to the
-        subparsers."""
+        object.
+
+        This will allow us to define options that may apply to the
+        subparsers.
+        """
         ...
 
     @staticmethod
@@ -41,7 +44,7 @@ class CmdModule:
 
 
 def import_mod(name: str) -> CmdModule:
-    """Import a module by string"""
+    """Import a module by string."""
     module = __import__(name)
     for part in name.split('.')[1:]:
         module = getattr(module, part)
@@ -73,10 +76,11 @@ def get_command_modules(
 def get_cli_command_modules(
     file_path: str
 ) -> Map[str, Union[CmdModule, Map[str, CmdModule]]]:
-    """Return a dictionary containing the commands and subcommands for the
-    cli. Note that file_path is expected to be the absolute path to the
-    __main__.py file. Another restriction is that the __main__.py file must
-    have the `cli.commands` module as its sibling.
+    """Return a dictionary containing the commands and subcommands for the cli.
+
+    Note that file_path is expected to be the absolute path to the
+    __main__.py file. Another restriction is that the __main__.py file
+    must have the `cli.commands` module as its sibling.
     """
     root = pth.split(pth.abspath(file_path))[0]
     main_mod = pth.split(root)[1]
@@ -103,8 +107,10 @@ def main_parser(
 ):
     """Creates an argp parser and returns the result calling its parse_arg
     method.
+
     The `add_args` param may be provided as a function that takes in an
-    `argparse.ArgumentParser` instance to be able to take additional actions.
+    `argparse.ArgumentParser` instance to be able to take additional
+    actions.
     """
     meta_mod = cast(CmdModule, mod['.meta'])
     main_meta = meta_mod.meta  # type: ignore
@@ -177,14 +183,14 @@ def run_cli(
 
 
 def display_issue(issue: Issue) -> None:
-    """print an error message"""
+    """print an error message."""
     CiTool.error(issue.message)
     error_block(str(issue))
 
 
 def display_result(val: Any) -> None:
-    """print the JSON stringification of the param `val` provided that val
-    is not `None`."""
+    """print the JSON stringification of the param `val` provided that val is
+    not `None`."""
     if val is not None:
         try:
             print(json.dumps(val, separators=(',', ':')))
@@ -197,13 +203,14 @@ def run_main(
     handle_result: Callable[[Any], None] = display_result,
     handle_issue: Callable[[Issue], None] = display_issue,
 ):
-    """Run the callback and print the returned value as a JSON string. Set
-    the print_raw param to True to bypass the JSON stringnification. To change
-    how the result or an issue should be display then provide the optional
-    arguments handle_result and handle_issue. For instance, to display the
-    raw value simply provide the `print` function.
+    """Run the callback and print the returned value as a JSON string. Set the
+    print_raw param to True to bypass the JSON stringnification. To change how
+    the result or an issue should be display then provide the optional
+    arguments handle_result and handle_issue. For instance, to display the raw
+    value simply provide the `print` function.
 
-    Return 0 if the callback is a `Good` result otherwise return 1."""
+    Return 0 if the callback is a `Good` result otherwise return 1.
+    """
     try:
         res = callback()
         val = res.value
@@ -253,7 +260,7 @@ def call_main(fun, args, print_raw=False) -> int:
 
 
 def error(msg: str, issue: Optional[Issue] = None) -> int:
-    """print an error message"""
+    """print an error message."""
     CiTool.error(msg)
     if issue:
         error_block(str(issue))
@@ -261,9 +268,11 @@ def error(msg: str, issue: Optional[Issue] = None) -> int:
 
 
 def cli_integration_token(integration: str, env_var: str):
-    """Return a function that takes in a parser. This generated function
-    registers a token argument in the parser which looks for its value in the
-    environment variables. """
+    """Return a function that takes in a parser.
+
+    This generated function registers a token argument in the parser
+    which looks for its value in the environment variables.
+    """
     return lambda parser: parser.add_argument(
         '-t',
         '--token',

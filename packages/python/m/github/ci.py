@@ -53,8 +53,10 @@ def get_build_sha(
     get_sha: bool = True
 ) -> OneOf[Issue, str]:
     """When building prs, we are not given the actual sha of the commit.
-    Instead, we get the sha of the merge commit. This will give us the sha
-    that we are looking for."""
+
+    Instead, we get the sha of the merge commit. This will give us the
+    sha that we are looking for.
+    """
     if not get_sha:
         return Good(sha)
     params = ['$owner: String!', '$repo: String!', '$sha: String!']
