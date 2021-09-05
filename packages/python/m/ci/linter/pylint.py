@@ -1,6 +1,6 @@
-from typing import List, Dict, Any, cast
+from typing import Any, Dict, List, cast
 
-from ...core import OneOf, Issue, Good, json
+from ...core import Good, Issue, OneOf, json
 from .status import Message, Result
 
 

@@ -1,14 +1,15 @@
-import os.path as pth
 import argparse
-import sys
 import json
+import os.path as pth
+import sys
 from glob import iglob
-from typing import (
-    Callable, Type, Dict, Union, MutableMapping as Map, cast, Optional, Any
-)
-from ..core.issue import Issue
-from ..core.io import error_block, CiTool, env
+from typing import Any, Callable, Dict
+from typing import MutableMapping as Map
+from typing import Optional, Type, Union, cast
+
 from ..core.fp import OneOf
+from ..core.io import CiTool, env, error_block
+from ..core.issue import Issue
 from .validators import validate_non_empty_str
 
 

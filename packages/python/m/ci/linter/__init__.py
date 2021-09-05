@@ -1,8 +1,8 @@
-from ...core import OneOf, Issue, issue, Good
-from .status import Linter, linter
+from ...core import Good, Issue, OneOf, issue
 from .eslint import read_payload as read_eslint_payload
 from .pycodestyle import read_payload as read_pycodestyle_payload
 from .pylint import read_payload as read_pylint_payload
+from .status import Linter, linter
 
 
 def get_linter(key: str, max_lines: int) -> OneOf[Issue, Linter]:

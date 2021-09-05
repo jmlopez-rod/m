@@ -1,10 +1,10 @@
-import sys
 import inspect
+import sys
 from typing import cast
 
 from ....core import one_of
-from ...validators import validate_payload, validate_json_payload
 from ...utils import display_issue
+from ...validators import validate_json_payload, validate_payload
 
 
 def add_parser(sub_parser, raw):
@@ -90,9 +90,9 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....core.issue import Issue
     from ....ci.linter import get_linter
     from ....ci.linter.status import ProjectStatus
+    from ....core.issue import Issue
 
     result = one_of(lambda: [
         res

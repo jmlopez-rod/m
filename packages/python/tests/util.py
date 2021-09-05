@@ -1,7 +1,8 @@
 import unittest
-from typing import List, Any, cast
-from m.core.issue import Issue
+from typing import Any, List, cast
+
 from m.core.fp import OneOf
+from m.core.issue import Issue
 
 
 def read_fixture(name: str, path: str = 'ci/fixtures') -> str:

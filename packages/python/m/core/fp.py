@@ -1,5 +1,4 @@
-from typing import TypeVar, Generic, Union, Iterator, cast, Callable
-
+from typing import Callable, Generic, Iterator, TypeVar, Union, cast
 
 A = TypeVar('A')  # pylint: disable=invalid-name
 B = TypeVar('B')  # pylint: disable=invalid-name

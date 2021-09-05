@@ -1,7 +1,8 @@
 import sys
-from pathlib import Path
 from argparse import ArgumentTypeError
-from ..core.json import read_json, parse_json
+from pathlib import Path
+
+from ..core.json import parse_json, read_json
 
 
 def validate_json_payload(file_path: str):

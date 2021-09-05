@@ -1,20 +1,14 @@
 import re
-from typing import List, Optional, Any
+from typing import Any, List, Optional
+
 from ..core import one_of
-from ..core.fp import OneOf, Good
+from ..core.fp import Good, OneOf
 from ..core.issue import Issue
 from ..core.json import get
-from .ci_dataclasses import (
-    Release,
-    PullRequest,
-    CommitInfo,
-    Commit,
-    Author,
-    AssociatedPullRequest,
-    GithubCiRunInfo,
-)
-from .ci_graph_queries import commit_query, PULL_REQUEST, LATEST_RELEASE
 from . import api
+from .ci_dataclasses import (AssociatedPullRequest, Author, Commit, CommitInfo,
+                             GithubCiRunInfo, PullRequest, Release)
+from .ci_graph_queries import LATEST_RELEASE, PULL_REQUEST, commit_query
 
 
 def create_ci_query(

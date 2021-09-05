@@ -1,14 +1,15 @@
-import os
-import sys
 import json
 import math
+import os
+import sys
+from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
-from abc import ABC
-from typing import Optional, TextIO, Type, List, cast, Union, Any
+from typing import Any, List, Optional, TextIO, Type, Union, cast
+
 from .. import git
-from . import one_of, issue
-from .fp import OneOf, Good
+from . import issue, one_of
+from .fp import Good, OneOf
 from .issue import Issue
 
 

@@ -1,13 +1,14 @@
 import re
 from datetime import datetime
 from typing import List
-from ..core import one_of, issue
+
+from ..ci.config import Config, read_config
+from ..core import issue, one_of
+from ..core.fp import Good, OneOf
 from ..core.io import read_file, write_file
-from ..core.fp import OneOf, Good
 from ..core.issue import Issue
-from ..github import compare_sha_url
 from ..git import get_first_commit_sha
-from ..ci.config import read_config, Config
+from ..github import compare_sha_url
 
 
 def _get_versions(lines: List[str], new_ver: str, first_sha: str) -> List[str]:

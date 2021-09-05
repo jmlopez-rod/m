@@ -1,11 +1,11 @@
 from dataclasses import replace as copy
 from unittest.mock import patch
 
-from m.core import one_of
-from m.core.fp import Good
 from m.ci.config import Workflow
 from m.ci.git_env import get_git_env
 from m.ci.release_env import get_release_env
+from m.core import one_of
+from m.core.fp import Good
 
 from ...util import FpTestCase, read_fixture
 from .util import CONFIG, ENV_VARS, mock_commit_sha

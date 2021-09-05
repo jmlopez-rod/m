@@ -1,7 +1,7 @@
 import re
-from typing import List, Dict
+from typing import Dict, List
 
-from ...core import OneOf, Issue, Good
+from ...core import Good, Issue, OneOf
 from .status import Message, Result
 
 

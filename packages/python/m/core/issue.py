@@ -1,11 +1,11 @@
-import sys
-import json
-import traceback
 import inspect
+import json
+import sys
+import traceback
 from collections import OrderedDict
-from typing import Optional, List, cast
-from typing_extensions import TypedDict
+from typing import List, Optional, cast
 
+from typing_extensions import TypedDict
 
 IssueDict = TypedDict(
     'IssueDict',

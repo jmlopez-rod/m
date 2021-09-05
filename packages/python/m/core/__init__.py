@@ -1,6 +1,7 @@
-from typing import Any, cast, Callable, List, Optional
+from typing import Any, Callable, List, Optional, cast
+
+from .fp import Bad, G, Good, OneOf, StopBadIteration
 from .issue import Issue
-from .fp import OneOf, Good, Bad, StopBadIteration, G
 
 
 def issue(

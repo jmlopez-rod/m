@@ -1,12 +1,11 @@
 from unittest.mock import patch
 
+from m.ci.config import Config, GitFlowConfig, MFlowConfig, Workflow
+from m.ci.git_env import GitEnv, get_git_env
 from m.core import issue
 from m.core.fp import Good
-from m.ci.config import (
-    Config, Workflow, GitFlowConfig, MFlowConfig
-)
 from m.core.io import EnvVars
-from m.ci.git_env import get_git_env, GitEnv
+
 from ..util import FpTestCase
 
 

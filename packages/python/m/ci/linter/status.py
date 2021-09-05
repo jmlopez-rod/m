@@ -1,10 +1,10 @@
+import enum
 import os
 import sys
-import enum
 from dataclasses import dataclass
-from typing import Callable, List, Dict, Any, TextIO
+from typing import Any, Callable, Dict, List, TextIO
 
-from ...core import OneOf, Good, Issue, io, one_of
+from ...core import Good, Issue, OneOf, io, one_of
 
 
 class ExitCode(enum.Enum):

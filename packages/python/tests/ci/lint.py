@@ -1,13 +1,13 @@
 import inspect
-from typing import cast, List
 from io import StringIO
+from typing import List, cast
 
 from m.ci.linter.eslint import read_payload as read_eslint_payload
 from m.ci.linter.pycodestyle import read_payload as read_pycodestyle_payload
 from m.ci.linter.pylint import read_payload as read_pylint_payload
-from m.ci.linter.status import ProjectStatus, ExitCode, linter
-from ..util import FpTestCase, read_fixture
+from m.ci.linter.status import ExitCode, ProjectStatus, linter
 
+from ..util import FpTestCase, read_fixture
 
 eslint = linter('eslint', 5, read_eslint_payload)
 pycodestyle = linter('pycodestyle', 5, read_pycodestyle_payload)

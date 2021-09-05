@@ -1,11 +1,12 @@
-from distutils.version import StrictVersion
 from dataclasses import dataclass
+from distutils.version import StrictVersion
 from enum import Enum
-from typing import Mapping, Any
-from ..core.fp import OneOf, Good
-from ..core.issue import Issue
-from ..core import json, one_of, issue
+from typing import Any, Mapping
+
+from ..core import issue, json, one_of
+from ..core.fp import Good, OneOf
 from ..core.io import JsonStr
+from ..core.issue import Issue
 
 
 class Workflow(Enum):

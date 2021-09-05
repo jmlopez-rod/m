@@ -1,6 +1,5 @@
+from m.ci.config import Config, GitFlowConfig, MFlowConfig, Workflow
 from m.core.io import EnvVars
-from m.ci.config import Config, Workflow, GitFlowConfig, MFlowConfig
-
 
 CONFIG = Config(
     owner='jmlopez-rod',

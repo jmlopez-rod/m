@@ -1,5 +1,7 @@
 from dataclasses import replace as copy
+
 from m.github import ci_dataclasses as cid
+
 from ..util import FpTestCase
 
 

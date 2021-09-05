@@ -1,5 +1,6 @@
 import inspect
-from ...utils import run_main, env
+
+from ...utils import env, run_main
 from ...validators import validate_payload
 
 
@@ -52,7 +53,7 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....github.api import create_pr, GithubPullRequest
+    from ....github.api import GithubPullRequest, create_pr
     return run_main(lambda: create_pr(
         arg.token,
         arg.owner,

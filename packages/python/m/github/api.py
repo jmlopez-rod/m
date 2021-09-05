@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Mapping, Any, Optional
-from ..core import one_of, issue
-from ..core.fp import OneOf, Good
-from ..core.issue import Issue
+from typing import Any, Mapping, Optional
+
+from ..core import issue, one_of
+from ..core.fp import Good, OneOf
 from ..core.http import fetch_json
+from ..core.issue import Issue
 
 
 def request(

@@ -1,9 +1,10 @@
-import json
 import http.client as httplib
+import json
+from typing import Any, Mapping, Optional
 from urllib.parse import urlparse
-from typing import Mapping, Any, Optional
-from . import one_of, issue
-from .fp import OneOf, Good
+
+from . import issue, one_of
+from .fp import Good, OneOf
 from .issue import Issue
 from .json import parse_json
 

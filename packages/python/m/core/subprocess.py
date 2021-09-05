@@ -1,4 +1,5 @@
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import PIPE, STDOUT, Popen
+
 from . import issue
 from .fp import Good, OneOf
 from .issue import Issue

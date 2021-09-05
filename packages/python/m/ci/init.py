@@ -1,12 +1,13 @@
+import inspect
 import os
 import re
-import inspect
 from pathlib import Path
-from typing import Tuple, List
-from ..core import one_of, issue
+from typing import List, Tuple
+
+from ..core import issue, one_of
 from ..core.fp import Good, OneOf
+from ..core.io import CiTool, read_file, write_file
 from ..core.issue import Issue
-from ..core.io import read_file, write_file, CiTool
 from ..core.subprocess import eval_cmd
 from ..git import get_remote_url
 

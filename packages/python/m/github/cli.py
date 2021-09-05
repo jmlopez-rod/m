@@ -1,6 +1,7 @@
 from typing import Any
+
 from ..core import one_of
-from ..core.fp import OneOf, Good
+from ..core.fp import Good, OneOf
 from ..core.issue import Issue
 from ..core.json import get
 from .api import graphql

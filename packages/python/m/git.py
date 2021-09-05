@@ -1,4 +1,4 @@
-from .core import subprocess, one_of
+from .core import one_of, subprocess
 from .core.fp import OneOf
 from .core.issue import Issue
 

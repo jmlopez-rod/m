@@ -1,11 +1,14 @@
 import json
 import sys
-from typing import Any, Optional, Mapping as Map, List, cast, Union
 from collections.abc import Mapping
+from typing import Any, List
+from typing import Mapping as Map
+from typing import Optional, Union, cast
+
 from . import issue
 from .fp import Good, OneOf
-from .issue import Issue
 from .io import CITool
+from .issue import Issue
 
 
 def read_json(
