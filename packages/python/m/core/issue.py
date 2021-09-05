@@ -14,7 +14,7 @@ IssueDict = TypedDict(
         'description': str,
         'cause': object,
         'data': object,
-        'traceback': List[str]
+        'traceback': List[str],
     },
     total=False,
 )
@@ -72,7 +72,8 @@ class Issue(Exception):
                     *traceback.format_tb(sys.exc_info()[2]),
                     *traceback.format_exception_only(
                         sys.exc_info()[0],
-                        sys.exc_info()[1]),
+                        sys.exc_info()[1],
+                    ),
                 ]
                 self.cause_tb = [
                     y
@@ -111,7 +112,8 @@ class Issue(Exception):
             else:
                 obj['cause'] = dict(
                     message=str(self.cause),
-                    traceback=self.cause_tb)
+                    traceback=self.cause_tb,
+                )
         return obj
 
     def to_str(self, show_traceback: bool) -> str:

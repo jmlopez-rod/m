@@ -16,7 +16,7 @@ class CiDataclassesTest(FpTestCase):
         pr_branch='',
         pr_sha='',
         title='',
-        body=''
+        body='',
     )
     commit = cid.Commit(
         author_login='',

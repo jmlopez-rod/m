@@ -30,7 +30,7 @@ class CmdModule:
     @staticmethod
     def add_parser(
         _subparser: argparse._SubParsersAction,  # noqa pylint: disable=protected-access
-        _raw: Type[argparse.RawTextHelpFormatter]
+        _raw: Type[argparse.RawTextHelpFormatter],
     ) -> None:
         """This function is required for commands so that we may be able to
         define arguments."""
@@ -74,7 +74,7 @@ def get_command_modules(
 
 
 def get_cli_command_modules(
-    file_path: str
+    file_path: str,
 ) -> Map[str, Union[CmdModule, Map[str, CmdModule]]]:
     """Return a dictionary containing the commands and subcommands for the cli.
 
@@ -103,7 +103,7 @@ def get_cli_command_modules(
 
 def main_parser(
     mod: Map[str, Union[CmdModule, Map[str, CmdModule]]],
-    add_args=None
+    add_args=None,
 ):
     """Creates an argp parser and returns the result calling its parse_arg
     method.
@@ -119,7 +119,7 @@ def main_parser(
     #   override the error method to be able to print CI environment messages.
     argp = argparse.ArgumentParser(
         formatter_class=raw,
-        description=main_meta['description']
+        description=main_meta['description'],
     )
     if add_args:
         add_args(argp)
@@ -128,7 +128,8 @@ def main_parser(
         dest='command_name',
         required=True,
         help='additional help',
-        metavar='<command>')
+        metavar='<command>',
+    )
     names = sorted(mod.keys())
     for name in names:
         if name.endswith('.meta'):
@@ -140,7 +141,8 @@ def main_parser(
                 name,
                 help=meta['help'],
                 formatter_class=raw,
-                description=meta['description'])
+                description=meta['description'],
+            )
             if hasattr(meta_mod, 'add_arguments'):
                 meta_mod.add_arguments(parser)
             subsubp = parser.add_subparsers(
@@ -148,19 +150,19 @@ def main_parser(
                 dest='subcommand_name',
                 required=True,
                 help='additional help',
-                metavar='<command>')
+                metavar='<command>',
+            )
             sub_mod = cast(Dict[str, CmdModule], mod[name])
             for subname in sorted(sub_mod.keys()):
                 sub_mod[subname].add_parser(subsubp, raw)
         else:
             cast(CmdModule, mod[name]).add_parser(subp, raw)
-    arg = argp.parse_args()
-    return arg
+    return argp.parse_args()
 
 
 def run_cli(
     file_path: str,
-    main_args=None
+    main_args=None,
 ) -> None:
     """Helper function to create a cli application.
 

@@ -32,23 +32,29 @@ def add_parser(sub_parser, raw):
         'jsonq',
         help='query json data',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('payload',
+    add(
+        'payload',
         type=validate_json_payload,
         nargs='?',
         default='@-',
-        help='json data: @- (default stdin), @filename (file), string')
-    add('-w',
+        help='json data: @- (default stdin), @filename (file), string',
+    )
+    add(
+        '-w',
         '--warn',
         action='store_true',
-        help='print warning messages instead of errors')
-    add('-s',
+        help='print warning messages instead of errors',
+    )
+    add(
+        '-s',
         '--separator',
         type=str,
         default='\n',
-        help=r'separator for multiple values (default \n)')
+        help=r'separator for multiple values (default \n)',
+    )
     add('query', type=str, nargs='+', help='path to json data')
 
 

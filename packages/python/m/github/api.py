@@ -39,11 +39,13 @@ def graphql(
     https://docs.github.com/en/graphql/guides/forming-calls-with-graphql
     """
     data = dict(query=query, variables=variables or {})
-    return one_of(lambda: [
-        payload
-        for res in request(token, '/graphql', 'POST', data)
-        for payload in _filter_data(res)
-    ])
+    return one_of(
+        lambda: [
+            payload
+            for res in request(token, '/graphql', 'POST', data)
+            for payload in _filter_data(res)
+        ],
+    )
 
 
 def create_release(

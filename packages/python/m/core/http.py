@@ -20,7 +20,7 @@ def fetch(
     url: str,
     headers: Mapping[str, str],
     method: str = 'GET',
-    body: Optional[str] = None
+    body: Optional[str] = None,
 ) -> OneOf[Issue, str]:
     """Send an http(s) request."""
     parts = urlparse(url)
@@ -38,7 +38,8 @@ def fetch(
         return issue(
             f'{protocol} request failure',
             cause=ex,
-            data=dict(url=url))
+            data=dict(url=url),
+        )
     try:
         res = connection.getresponse()
         code = res.status
@@ -47,20 +48,21 @@ def fetch(
             return Good(res_body)
         return issue(
             f'{protocol} request failure ({code})',
-            data=dict(url=url, body=body, code=code, res_body=str(res_body))
+            data=dict(url=url, body=body, code=code, res_body=str(res_body)),
         )
     except Exception as ex:
         return issue(
             f'{protocol} request read failure',
             cause=ex,
-            data=dict(url=url))
+            data=dict(url=url),
+        )
 
 
 def fetch_json(
     url: str,
     headers: Mapping[str, str],
     method: str = 'GET',
-    data: Any = None
+    data: Any = None,
 ) -> OneOf[Issue, Any]:
     """Especialized fetch to deal with json data."""
     body = json.dumps(data) if data else None
@@ -69,8 +71,10 @@ def fetch_json(
         'content-type': 'application/json',
         **headers,
     }
-    return one_of(lambda: [
-        value
-        for payload in fetch(url, _headers, method, body)
-        for value in parse_json(payload)
-    ])
+    return one_of(
+        lambda: [
+            value
+            for payload in fetch(url, _headers, method, body)
+            for value in parse_json(payload)
+        ],
+    )

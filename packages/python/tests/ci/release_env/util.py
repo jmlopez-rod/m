@@ -8,7 +8,7 @@ CONFIG = Config(
     m_dir='m',
     workflow=Workflow.FREE_FLOW,
     git_flow=GitFlowConfig(),
-    m_flow=MFlowConfig()
+    m_flow=MFlowConfig(),
 )
 
 ENV_VARS = EnvVars(

@@ -20,4 +20,5 @@ def eval_cmd(cmd: str) -> OneOf[Issue, str]:
             return Good(out.strip())
     return issue(
         'command returned a non zero exit code',
-        data={'cmd': cmd, 'output': out})
+        data={'cmd': cmd, 'output': out},
+    )

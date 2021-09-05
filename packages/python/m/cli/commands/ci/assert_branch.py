@@ -13,13 +13,15 @@ def add_parser(sub_parser, raw):
         'assert_branch',
         help='assert that we are working on the correct branch',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--type',
+    add(
+        '--type',
         required=True,
         choices=['release', 'hotfix'],
-        help='verification type')
+        help='verification type',
+    )
     add('m_dir', type=str, help='m project directory')
 
 

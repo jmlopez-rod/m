@@ -7,7 +7,7 @@ from .config import Config, Workflow, read_config
 def _verify_branch(
     config: Config,
     branch: str,
-    assertion_type: str
+    assertion_type: str,
 ) -> OneOf[Issue, int]:
     workflow = config.workflow
     if workflow == Workflow.FREE_FLOW:

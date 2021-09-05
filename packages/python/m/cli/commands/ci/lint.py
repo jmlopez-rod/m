@@ -51,7 +51,7 @@ def add_parser(sub_parser, raw):
         'lint',
         help='process the output of linter',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
     add(
@@ -59,32 +59,32 @@ def add_parser(sub_parser, raw):
         type=validate_payload,
         nargs='?',
         default='@-',
-        help='data: @- (stdin), @filename (file), string. Defaults to @-'
+        help='data: @- (stdin), @filename (file), string. Defaults to @-',
     )
     add(
         '-t',
         '--tool',
         required=True,
-        help='name of a supported linter'
+        help='name of a supported linter',
     )
     add(
         '-c',
         '--config',
         default='{}',
         type=validate_json_payload,
-        help='config data: @filename (file), string'
+        help='config data: @filename (file), string',
     )
     add(
         '-m',
         '--max-lines',
         default=5,
         type=int,
-        help='maximum number of lines to print per error'
+        help='maximum number of lines to print per error',
     )
     add(
         '--traceback',
         action='store_true',
-        help='display the exception traceback if available'
+        help='display the exception traceback if available',
     )
 
 
@@ -94,11 +94,13 @@ def run(arg):
     from ....ci.linter.status import ProjectStatus
     from ....core.issue import Issue
 
-    result = one_of(lambda: [
-        res
-        for linter in get_linter(arg.tool, arg.max_lines)
-        for res in linter(arg.payload, arg.config, sys.stdout)
-    ])
+    result = one_of(
+        lambda: [
+            res
+            for linter in get_linter(arg.tool, arg.max_lines)
+            for res in linter(arg.payload, arg.config, sys.stdout)
+        ],
+    )
     if result.is_bad:
         Issue.show_traceback = arg.traceback
         val = cast(Issue, result.value)

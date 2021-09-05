@@ -135,7 +135,7 @@ def format_row(
 def print_project_status(
     project: ProjectStatus,
     max_lines: int,
-    stream: TextIO = sys.stdout
+    stream: TextIO = sys.stdout,
 ) -> OneOf[Issue, int]:
     """Status report."""
     keys = project.rules.keys()
@@ -168,11 +168,11 @@ def print_project_status(
         format_row(
             [rule_id, rule_status.found, rule_status.allowed],
             widths,
-            'lrr'
+            'lrr',
         )
         for rule_id, rule_status in sorted(
             project.rules.items(),
-            key=lambda x: x[1].found
+            key=lambda x: x[1].found,
         )
     ])
     print('\n'.join(blocks), file=stream)
@@ -182,16 +182,18 @@ def print_project_status(
         diff = sum([
             d
             for s in values
-            for d in (s.found - s.allowed, ) if d > 0
+            for d in (s.found - s.allowed,) if d > 0
         ])
         io.CiTool.error(
             f'{diff} extra errors were introduced',
-            stream=stream)
+            stream=stream,
+        )
     elif project.status == ExitCode.NEEDS_READJUSTMENT:
         diff = total_allowed - total_found
         io.CiTool.error(
             f'{diff} errors were removed - lower error allowance',
-            stream=stream)
+            stream=stream,
+        )
     return Good(0)
 
 
@@ -201,7 +203,7 @@ def lint(
     config: Dict[str, Any],
     config_key: str,
     max_lines: int,
-    stream: TextIO = sys.stdout
+    stream: TextIO = sys.stdout,
 ) -> OneOf[Issue, ProjectStatus]:
     """format the linter tool output."""
     return one_of(lambda: [
@@ -226,7 +228,7 @@ def linter(
     def _linter(
         payload: str,
         config: Dict[str, Any],
-        stream: TextIO = sys.stdout
+        stream: TextIO = sys.stdout,
     ) -> OneOf[Issue, ProjectStatus]:
         key = f'allowed{name.capitalize()}Rules'
         return lint(payload, transform, config, key, max_lines, stream)

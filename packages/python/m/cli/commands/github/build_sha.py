@@ -16,21 +16,27 @@ def add_parser(sub_parser, raw):
         'build_sha',
         help='get the correct commit sha',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
+    add(
+        '--owner',
         type=str,
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         type=str,
         required=True,
-        help='repo name')
-    add('--sha',
+        help='repo name',
+    )
+    add(
+        '--sha',
         type=str,
         required=True,
-        help='commit sha')
+        help='commit sha',
+    )
 
 
 def run(arg):
@@ -38,4 +44,5 @@ def run(arg):
     from ....github.ci import get_build_sha
     return run_main(
         lambda: get_build_sha(arg.token, arg.owner, arg.repo, arg.sha),
-        handle_result=print)
+        handle_result=print,
+    )

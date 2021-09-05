@@ -24,30 +24,40 @@ def add_parser(sub_parser, raw):
         'create_pr',
         help='create a pull request',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
+    add(
+        '--owner',
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         required=True,
-        help='repo name')
-    add('--head',
+        help='repo name',
+    )
+    add(
+        '--head',
         required=True,
-        help='name of the branch where the changes are implemented.')
-    add('--base',
+        help='name of the branch where the changes are implemented.',
+    )
+    add(
+        '--base',
         required=True,
-        help='name of the branch you want the changes pulled into')
-    add('--title',
+        help='name of the branch you want the changes pulled into',
+    )
+    add(
+        '--title',
         required=True,
-        help='pull request title')
+        help='pull request title',
+    )
     add(
         'body',
         type=validate_payload,
         nargs='?',
         default='@-',
-        help='data: @- (stdin), @filename (file), string. Defaults to @-'
+        help='data: @- (stdin), @filename (file), string. Defaults to @-',
     )
 
 
@@ -58,4 +68,5 @@ def run(arg):
         arg.token,
         arg.owner,
         arg.repo,
-        GithubPullRequest(arg.title, arg.body, arg.head, arg.base)))
+        GithubPullRequest(arg.title, arg.body, arg.head, arg.base),
+    ))

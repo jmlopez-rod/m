@@ -7,7 +7,7 @@ def add_parser(sub_parser, raw):
         'open',
         help='open block',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     parser.add_argument('name', type=str, help='block name to open')
     parser.add_argument('description', type=str, help='block description')

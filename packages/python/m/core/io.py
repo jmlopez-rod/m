@@ -78,7 +78,8 @@ def read_file(filename: str) -> OneOf[Issue, str]:
         return issue(
             'failed to read file',
             data={'filename': filename},
-            cause=ex)
+            cause=ex,
+        )
 
 
 def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
@@ -91,7 +92,8 @@ def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
         return issue(
             'failed to write file',
             data={'filename': filename},
-            cause=ex)
+            cause=ex,
+        )
 
 
 def _ver_str(major: int, minor: int, patch: int) -> str:
@@ -169,11 +171,13 @@ class CITool(ABC):
     def env_vars() -> OneOf[Issue, EnvVars]:
         """Obtain basic environment variables."""
         res = EnvVars()
-        return one_of(lambda: [
-            res
-            for res.git_branch in git.get_branch()
-            for res.git_sha in git.get_current_commit_sha()
-        ])
+        return one_of(
+            lambda: [
+                res
+                for res.git_branch in git.get_branch()
+                for res.git_sha in git.get_current_commit_sha()
+            ],
+        )
 
     @staticmethod
     def open_block(name: str, description: str) -> None:
@@ -224,30 +228,33 @@ class GithubActions(CITool):
             ci_env=True,
             server_url='https://github.com',
         )
-        return one_of(lambda: [
-            res
-            for (
-                repo,
-                res.run_id,
-                res.run_number,
-                res.github_token,
-                res.git_branch,
-                res.git_sha,
-                res.triggered_by,
-            ) in renv_vars([
-                'GITHUB_REPOSITORY',
-                'GITHUB_RUN_ID',
-                'GITHUB_RUN_NUMBER',
-                'GITHUB_TOKEN',
-                'GITHUB_REF',
-                'GITHUB_SHA',
-                'GITHUB_ACTOR',
-            ])
-            for res.run_url in [
-                f'{res.server_url}/{repo}/actions/runs/{res.run_id}'
-            ]
-        ]).flat_map_bad(lambda x: issue(
-            'GH Actions env_vars failure', cause=cast(Issue, x)))
+        return one_of(
+            lambda: [
+                res
+                for [
+                    repo,
+                    res.run_id,
+                    res.run_number,
+                    res.github_token,
+                    res.git_branch,
+                    res.git_sha,
+                    res.triggered_by,
+                ] in renv_vars([
+                    'GITHUB_REPOSITORY',
+                    'GITHUB_RUN_ID',
+                    'GITHUB_RUN_NUMBER',
+                    'GITHUB_TOKEN',
+                    'GITHUB_REF',
+                    'GITHUB_SHA',
+                    'GITHUB_ACTOR',
+                ])
+                for res.run_url in [
+                    f'{res.server_url}/{repo}/actions/runs/{res.run_id}',
+                ]
+            ],
+        ).flat_map_bad(lambda x: issue(
+            'GH Actions env_vars failure', cause=cast(Issue, x),
+        ))
 
     @staticmethod
     def open_block(name: str, _description: str) -> None:
@@ -353,7 +360,7 @@ class Teamcity(CITool):
         desc = Teamcity.escape_msg(f'{info}{description}' or '')
         print(
             f"##teamcity[buildProblem description='{desc}']",
-            file=stream
+            file=stream,
         )
 
     @staticmethod
@@ -371,7 +378,7 @@ class Teamcity(CITool):
         desc = Teamcity.escape_msg(f'{info}{description}' or '')
         print(
             f"##teamcity[message status='WARNING' text='{desc}']",
-            file=stream
+            file=stream,
         )
 
 

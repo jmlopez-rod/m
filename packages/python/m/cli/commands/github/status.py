@@ -23,30 +23,42 @@ def add_parser(sub_parser, raw):
         'status',
         help='create a commit status',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
+    add(
+        '--owner',
         type=str,
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         type=str,
         required=True,
-        help='repo name')
-    add('--sha',
+        help='repo name',
+    )
+    add(
+        '--sha',
         required=True,
-        help='The commit sha')
-    add('--context',
+        help='The commit sha',
+    )
+    add(
+        '--context',
         required=True,
-        help='unique identifier for the status (a name?)')
-    add('--state',
+        help='unique identifier for the status (a name?)',
+    )
+    add(
+        '--state',
         required=True,
         choices=['error', 'failure', 'pending', 'success'],
-        help='the state of the status')
-    add('--description',
+        help='the state of the status',
+    )
+    add(
+        '--description',
         required=True,
-        help='a short description of the status')
+        help='a short description of the status',
+    )
     add('--url', help='URL to associate with this status')
 
 
@@ -64,5 +76,6 @@ def run(arg):
                 state=arg.state,
                 description=arg.description,
                 url=arg.url,
-            )
-        ))
+            ),
+        ),
+    )

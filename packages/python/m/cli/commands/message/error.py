@@ -18,7 +18,7 @@ def add_parser(sub_parser, raw):
         'error',
         help='report an error',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
     add('message', type=str, help='error message')

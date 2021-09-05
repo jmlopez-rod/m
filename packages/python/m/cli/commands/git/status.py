@@ -27,7 +27,7 @@ def add_parser(sub_parser, raw):
         'status',
         help='display the current git status',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
 
 

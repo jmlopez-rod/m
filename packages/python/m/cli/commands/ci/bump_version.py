@@ -3,13 +3,15 @@ def add_parser(sub_parser, raw):
         'bump_version',
         help='prompt for the next version',
         formatter_class=raw,
-        description='Prompt user for the next valid semantic version'
+        description='Prompt user for the next valid semantic version',
     )
     add = parser.add_argument
-    add('--type',
+    add(
+        '--type',
         required=True,
         choices=['release', 'hotfix'],
-        help='verification type')
+        help='verification type',
+    )
     add('version', type=str, help='version to bump')
 
 

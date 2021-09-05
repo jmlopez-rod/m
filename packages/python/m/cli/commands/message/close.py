@@ -10,7 +10,7 @@ def add_parser(sub_parser, raw):
         'close',
         help='close block',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     parser.add_argument('name', type=str, help='block name to close')
 

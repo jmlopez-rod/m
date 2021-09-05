@@ -20,15 +20,17 @@ class ReleaseEnvGitFlowTest(FpTestCase):
         self.config.workflow = Workflow.GIT_FLOW
 
     def _get_env(self):
-        return one_of(lambda: [
-            release_env
-            for git_env in get_git_env(self.config, self.env_vars)
-            for release_env in get_release_env(
-                self.config,
-                self.env_vars,
-                git_env
-            )
-        ])
+        return one_of(
+            lambda: [
+                release_env
+                for git_env in get_git_env(self.config, self.env_vars)
+                for release_env in get_release_env(
+                    self.config,
+                    self.env_vars,
+                    git_env,
+                )
+            ],
+        )
 
     def test_branch_behind(self):
         """Github says version is 1.1.1 but the config is still in 0.0.0 This
@@ -49,7 +51,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_issue(
                 result,
-                'version is behind (Branch may need to be updated)'
+                'version is behind (Branch may need to be updated)',
             )
 
     def test_version_ahead(self):
@@ -84,13 +86,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='0.0.0-master.b404',
-                is_release=False,
-                is_release_pr=False,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='0.0.0-master.b404',
+                    is_release=False,
+                    is_release_pr=False,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_pr_1(self):
         self.env_vars.ci_env = True
@@ -104,13 +108,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='0.0.0-pr1.b404',
-                is_release=False,
-                is_release_pr=False,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='0.0.0-pr1.b404',
+                    is_release=False,
+                    is_release_pr=False,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_release_pr_no_update(self):
         """Make sure that the developer updates the version to be greater than
@@ -138,13 +144,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='SKIP',
-                is_release=False,
-                is_release_pr=True,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='SKIP',
+                    is_release=False,
+                    is_release_pr=True,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_release_pr(self):
         """Make sure that the developer updates the version to be greater than
@@ -160,13 +168,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='1.1.2-rc2.b404',
-                is_release=False,
-                is_release_pr=True,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='1.1.2-rc2.b404',
+                    is_release=False,
+                    is_release_pr=True,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_release_pr_develop(self):
         """Proper PR made to develop."""
@@ -181,13 +191,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='SKIP',
-                is_release=False,
-                is_release_pr=True,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW,
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='SKIP',
+                    is_release=False,
+                    is_release_pr=True,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_release_merge(self):
         """Should use the proper version number."""
@@ -202,13 +214,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='1.1.2',
-                is_release=True,
-                is_release_pr=False,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='1.1.2',
+                    is_release=True,
+                    is_release_pr=False,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_release_merge_develop(self):
         """Need to merge release back into develop and make sure that the build
@@ -224,13 +238,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='0.0.0-develop.b404',
-                is_release=False,
-                is_release_pr=False,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='0.0.0-develop.b404',
+                    is_release=False,
+                    is_release_pr=False,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_hotfix_pr_no_update(self):
         """Make sure that the developer updates the version to be greater than
@@ -258,13 +274,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='SKIP',
-                is_release=False,
-                is_release_pr=False,
-                is_hotfix_pr=True,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='SKIP',
+                    is_release=False,
+                    is_release_pr=False,
+                    is_hotfix_pr=True,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_hotfix_pr(self):
         """Make sure that the developer updates the version to be greater than
@@ -280,13 +298,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='1.1.2-hotfix2.b404',
-                is_release=False,
-                is_release_pr=False,
-                is_hotfix_pr=True,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='1.1.2-hotfix2.b404',
+                    is_release=False,
+                    is_release_pr=False,
+                    is_hotfix_pr=True,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_hotfix_pr_develop(self):
         """Proper PR made to develop."""
@@ -301,13 +321,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='SKIP',
-                is_release=False,
-                is_release_pr=False,
-                is_hotfix_pr=True,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='SKIP',
+                    is_release=False,
+                    is_release_pr=False,
+                    is_hotfix_pr=True,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_hotfix_merge(self):
         """Should use the proper version number."""
@@ -322,13 +344,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='1.1.2',
-                is_release=True,
-                is_release_pr=False,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='1.1.2',
+                    is_release=True,
+                    is_release_pr=False,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_hotfix_merge_develop(self):
         """Should build since we need to make sure potential fixes done in
@@ -348,13 +372,15 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             ]
             result = self._get_env()
             self.assert_ok(result)
-            self.assertEqual(result.value.__dict__, dict(
-                build_tag='0.0.0-develop.b404',
-                is_release=False,
-                is_release_pr=False,
-                is_hotfix_pr=False,
-                workflow=Workflow.GIT_FLOW,
-            ))
+            self.assertEqual(
+                result.value.__dict__, dict(
+                    build_tag='0.0.0-develop.b404',
+                    is_release=False,
+                    is_release_pr=False,
+                    is_hotfix_pr=False,
+                    workflow=Workflow.GIT_FLOW,
+                ),
+            )
 
     def test_hotfix_merge_random(self):
         """We should not be merging hotfix branches to random branches."""
@@ -370,4 +396,5 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_issue(
                 result,
-                'version is ahead (Revert configuration change)')
+                'version is ahead (Revert configuration change)',
+            )

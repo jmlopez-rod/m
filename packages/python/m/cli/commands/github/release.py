@@ -20,25 +20,33 @@ def add_parser(sub_parser, raw):
         'release',
         help='create a github release',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
+    add(
+        '--owner',
         type=str,
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         type=str,
         required=True,
-        help='repo name')
-    add('--version',
+        help='repo name',
+    )
+    add(
+        '--version',
         type=str,
         required=True,
-        help='version to release')
-    add('--branch',
+        help='version to release',
+    )
+    add(
+        '--branch',
         type=str,
         default=None,
-        help='The branch where the git tag will be created')
+        help='The branch where the git tag will be created',
+    )
 
 
 def run(arg):
@@ -50,5 +58,6 @@ def run(arg):
             arg.owner,
             arg.repo,
             arg.version,
-            arg.branch
-        ))
+            arg.branch,
+        ),
+    )

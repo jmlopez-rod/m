@@ -6,8 +6,10 @@ from ..core import issue
 from ..core.fp import Good, OneOf
 from ..core.io import EnvVars, JsonStr
 from ..core.issue import Issue
-from ..github.ci import (Commit, CommitInfo, PullRequest, Release,
-                         get_ci_run_info)
+from ..github.ci import (
+    Commit, CommitInfo, PullRequest, Release,
+    get_ci_run_info,
+)
 from ..github.ci_dataclasses import GithubCiRunInfo
 from .config import Config, Workflow
 

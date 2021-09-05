@@ -13,7 +13,7 @@ from .issue import Issue
 
 def read_json(
     filename: Optional[str],
-    error_if_empty: bool = False
+    error_if_empty: bool = False,
 ) -> OneOf[Issue, Any]:
     """Return a `Good` containing the parsed contents of the json file."""
     try:
@@ -26,7 +26,8 @@ def read_json(
         return issue(
             'failed to read json file',
             data={'filename': filename or 'SYS.STDIN'},
-            cause=ex)
+            cause=ex,
+        )
 
 
 def parse_json(
@@ -76,7 +77,7 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
 
 def multi_get(
     obj: object,
-    *keys: str
+    *keys: str,
 ) -> OneOf[Issue, List[Any]]:
     """Call `get` for every input specified by `keys`. It collects the invalid
     keys and returns an `Issue`.
@@ -88,18 +89,21 @@ def multi_get(
     for key in keys:
         res = get(obj, key)
         if res.is_bad:
-            failures.append(Issue(
-                message=f'key lookup failure: `{key}`',
-                cause=res.value,
-                include_traceback=False,
-            ))
+            failures.append(
+                Issue(
+                    message=f'key lookup failure: `{key}`',
+                    cause=res.value,
+                    include_traceback=False,
+                ),
+            )
         else:
             result.append(res.value)
     if failures:
         return issue(
             'multi_get key retrieval failure',
             data=[x.to_dict() for x in failures],
-            include_traceback=False)
+            include_traceback=False,
+        )
     return Good(result)
 
 
@@ -115,7 +119,7 @@ def jsonq(
     obj: Map[str, Any],
     separator: str,
     display_warning: bool,
-    *key_str: str
+    *key_str: str,
 ) -> int:
     """Print the values obtained from `multi_get` to stdout.
 
