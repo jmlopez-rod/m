@@ -82,6 +82,12 @@ def add_parser(sub_parser, raw):
         help='maximum number of lines to print per error',
     )
     add(
+        '--full-message',
+        action='store_true',
+        help='display the full error message',
+    )
+    add('--file-regex', help="regex expression to filter files")
+    add(
         '--traceback',
         action='store_true',
         help='display the exception traceback if available',
@@ -91,13 +97,14 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....ci.linter import get_linter
-    from ....ci.linter.status import ProjectStatus
+    from ....ci.linter.status import ProjectStatus, ToolConfig
     from ....core.issue import Issue
 
+    config = ToolConfig(arg.max_lines, arg.full_message, arg.file_regex)
     result = one_of(
         lambda: [
             res
-            for linter in get_linter(arg.tool, arg.max_lines)
+            for linter in get_linter(arg.tool, config)
             for res in linter(arg.payload, arg.config, sys.stdout)
         ],
     )

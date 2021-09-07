@@ -2,7 +2,7 @@ import inspect
 
 
 def add_parser(sub_parser, raw):
-    desc = """open a block to group several messages in the build log"""
+    desc = 'open a block to group several messages in the build log'
     parser = sub_parser.add_parser(
         'open',
         help='open block',

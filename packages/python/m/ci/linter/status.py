@@ -1,8 +1,9 @@
 import enum
 import os
+import re
 import sys
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, TextIO
+from typing import Any, Callable, Dict, List, Optional, TextIO
 
 from ...core import Good, Issue, OneOf, io, one_of
 
@@ -46,6 +47,15 @@ class ProjectStatus:
     """Status about a project."""
     status: ExitCode
     rules: Dict[str, RuleIdStatus]
+    files: Dict[str, List[Message]]
+
+
+@dataclass
+class ToolConfig:
+    """Configuration to use for the linter."""
+    max_lines: int = 5
+    full_message: bool = False
+    file_regex: Optional[str] = None
 
 
 def to_rules_dict(results: List[Result]) -> Dict[str, List[Message]]:
@@ -61,11 +71,16 @@ def to_rules_dict(results: List[Result]) -> Dict[str, List[Message]]:
 
 
 def get_project_status(
+    results: List[Result],
     rules_dict: Dict[str, List[Message]],
     allowed_rules: Dict[str, int],
 ) -> ProjectStatus:
     """Compare the rules_dict with the allowed rules to provide an easy to
     display project status."""
+    files: Dict[str, List[Message]] = {
+        x.file_path: x.messages
+        for x in results
+    }
     rules: Dict[str, RuleIdStatus] = {}
     failed = False
     needs_readjustment = False
@@ -97,19 +112,26 @@ def get_project_status(
         status = ExitCode.ERROR
     elif needs_readjustment:
         status = ExitCode.NEEDS_READJUSTMENT
-    return ProjectStatus(status, rules)
+    return ProjectStatus(status, rules, files)
 
 
-def format_rule_status(rule: RuleIdStatus, max_lines: int) -> str:
+def format_rule_status(
+    rule: RuleIdStatus,
+    config: ToolConfig,
+) -> str:
     """Formats a single rule and its violations."""
     buffer = [f'{rule.rule_id} (found {rule.found}, allowed {rule.allowed}):']
     cwd = os.getcwd() + '/'
-    for msg in rule.messages[:max_lines]:
+    for msg in rule.messages[:config.max_lines]:
         file_path = msg.file_path.replace(cwd, '')
-        _msg = msg.message.splitlines()[0]
+        _msg, *rest = msg.message.splitlines()
         buffer.append(f'  {file_path}:{msg.line}:{msg.column} - {_msg}')
-    if len(rule.messages) > max_lines:
-        buffer.append(f'  ... and {len(rule.messages) - max_lines} more')
+        if rest and config.full_message:
+            buffer.extend([f'    {x}' for x in rest])
+    if len(rule.messages) > config.max_lines:
+        buffer.append(
+            f'  ... and {len(rule.messages) - config.max_lines} more',
+        )
     buffer.append('')
     return '\n'.join(buffer)
 
@@ -134,7 +156,7 @@ def format_row(
 
 def print_project_status(
     project: ProjectStatus,
-    max_lines: int,
+    config: ToolConfig,
     stream: TextIO = sys.stdout,
 ) -> OneOf[Issue, int]:
     """Status report."""
@@ -151,9 +173,17 @@ def print_project_status(
         return Good(0)
 
     blocks = [
-        format_rule_status(rule, max_lines)
+        format_rule_status(rule, config)
         for rule in values if rule.found > rule.allowed
     ]
+
+    blocks.append('FILES:')
+    by_file = sorted(project.files.items(), key=lambda t: len(t[1]))
+    blocks.extend([
+        f'  {file_name}: found {len(messages)}'
+        for file_name, messages in by_file
+    ])
+    blocks.append('')
 
     c1_w = max([len(x) for x in keys])
     c1_w = max([c1_w, len('rules')])
@@ -197,22 +227,39 @@ def print_project_status(
     return Good(0)
 
 
+def filter_results(
+    results: List[Result],
+    config: ToolConfig
+) -> List[Result]:
+    """Filter the list of results based on the file path.
+    """
+    regex = config.file_regex
+    return [
+        x
+        for x in results
+        if not regex or re.match(regex, x.file_path)
+    ]
+
+
 def lint(
     payload: str,
     transform: Callable[[str], OneOf[Issue, List[Result]]],
     config: Dict[str, Any],
     config_key: str,
-    max_lines: int,
+    tool_config: ToolConfig,
     stream: TextIO = sys.stdout,
 ) -> OneOf[Issue, ProjectStatus]:
     """format the linter tool output."""
     return one_of(lambda: [
         project_status
-        for data in transform(payload)
-        for rules_dict in (to_rules_dict(data),)
+        for results in transform(payload)
+        for filtered in (filter_results(results, tool_config),)
+        for rules_dict in (to_rules_dict(filtered),)
         for allowed_rules in (config.get(config_key, {}),)
-        for project_status in (get_project_status(rules_dict, allowed_rules),)
-        for _ in print_project_status(project_status, max_lines, stream)
+        for project_status in (
+            get_project_status(filtered, rules_dict, allowed_rules),
+        )
+        for _ in print_project_status(project_status, tool_config, stream)
     ])
 
 
@@ -221,7 +268,7 @@ Linter = Callable[[Any, Dict[str, Any], TextIO], OneOf[Issue, ProjectStatus]]
 
 def linter(
     name: str,
-    max_lines: int,
+    tool_config: ToolConfig,
     transform: Callable[[str], OneOf[Issue, List[Result]]],
 ) -> Linter:
     """Generate a linter based on the tool name and its tranform."""
@@ -231,6 +278,6 @@ def linter(
         stream: TextIO = sys.stdout,
     ) -> OneOf[Issue, ProjectStatus]:
         key = f'allowed{name.capitalize()}Rules'
-        return lint(payload, transform, config, key, max_lines, stream)
+        return lint(payload, transform, config, key, tool_config, stream)
 
     return _linter

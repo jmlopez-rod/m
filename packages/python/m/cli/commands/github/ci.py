@@ -40,19 +40,16 @@ def add_parser(sub_parser, raw):
     add = parser.add_argument
     add(
         '--owner',
-        type=str,
         default=env('GITHUB_REPOSITORY_OWNER'),
         help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
     )
     add(
         '--repo',
-        type=str,
         required=True,
         help='repo name',
     )
     add(
         '--sha',
-        type=str,
         required=True,
         help='commit sha',
     )
@@ -84,13 +81,11 @@ def add_parser(sub_parser, raw):
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....github.ci import CommitInfo, get_raw_ci_run_info
-    return run_main(
-        lambda: get_raw_ci_run_info(
-            arg.token,
-            CommitInfo(arg.owner, arg.repo, arg.sha),
-            arg.pr,
-            arg.file_count,
-            arg.include_release,
-            arg.merge_commit,
-        ),
-    )
+    return run_main(lambda: get_raw_ci_run_info(
+        arg.token,
+        CommitInfo(arg.owner, arg.repo, arg.sha),
+        arg.pr,
+        arg.file_count,
+        arg.include_release,
+        arg.merge_commit,
+    ))

@@ -38,7 +38,7 @@ def get_latest_release(
     repo: str,
 ) -> OneOf[Issue, str]:
     """Retrieve the latest release for a repo."""
-    query = '''query ($owner: String!, $repo: String!) {
+    query = """query ($owner: String!, $repo: String!) {
       repository(owner:$owner, name:$repo) {
          releases(last: 1) {
             nodes {
@@ -48,7 +48,7 @@ def get_latest_release(
             }
         }
       }
-    }'''
+    }"""
     variables = dict(owner=owner, repo=repo)
     return one_of(
         lambda: [

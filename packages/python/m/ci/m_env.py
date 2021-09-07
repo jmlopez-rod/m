@@ -13,6 +13,7 @@ from .release_env import ReleaseEnv, get_release_env
 @dataclass
 class MEnv(JsonStr):
     """Contains all the information required for a CI run."""
+
     config: Config
     env_vars: EnvVars
     git_env: GitEnv
@@ -29,12 +30,12 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
         )
         for git_env in get_git_env(
             config,
-            env_vars
+            env_vars,
         ).flat_map_bad(lambda x: issue('git_env failure', cause=x))
         for release_env in get_release_env(
             config,
             env_vars,
-            git_env
+            git_env,
         ).flat_map_bad(lambda x: issue('release_env failure', cause=x))
     ]).flat_map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
 

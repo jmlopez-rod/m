@@ -5,13 +5,14 @@ from typing import List, cast
 from m.ci.linter.eslint import read_payload as read_eslint_payload
 from m.ci.linter.pycodestyle import read_payload as read_pycodestyle_payload
 from m.ci.linter.pylint import read_payload as read_pylint_payload
-from m.ci.linter.status import ExitCode, ProjectStatus, linter
+from m.ci.linter.status import ExitCode, ProjectStatus, ToolConfig, linter
 
 from ..util import FpTestCase, read_fixture
 
-eslint = linter('eslint', 5, read_eslint_payload)
-pycodestyle = linter('pycodestyle', 5, read_pycodestyle_payload)
-pylint = linter('pylint', 5, read_pylint_payload)
+tool_config = ToolConfig()
+eslint = linter('eslint', tool_config, read_eslint_payload)
+pycodestyle = linter('pycodestyle', tool_config, read_pycodestyle_payload)
+pylint = linter('pylint', tool_config, read_pylint_payload)
 
 
 def assert_str_has(content: str, substrings: List[str]):

@@ -4,11 +4,11 @@ from ...utils import run_main
 
 
 def add_parser(sub_parser, raw):
-    desc = '''
+    desc = """
         Used during a release setup or hotfix setup. We want to make sure
         that we are working on the correct branch depending on verification
         we want to make and the workflow that we are using.
-    '''
+    """
     parser = sub_parser.add_parser(
         'assert_branch',
         help='assert that we are working on the correct branch',

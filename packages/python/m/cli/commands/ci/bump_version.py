@@ -12,12 +12,12 @@ def add_parser(sub_parser, raw):
         choices=['release', 'hotfix'],
         help='verification type',
     )
-    add('version', type=str, help='version to bump')
+    add('version', help='version to bump')
 
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....core.io import prompt_next_version
     next_ver = prompt_next_version(arg.version, arg.type)
-    print(next_ver)
+    print(next_ver)  # noqa: WPS421
     return 0
