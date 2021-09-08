@@ -3,7 +3,8 @@ import os
 import re
 import sys
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, TextIO
+from functools import cmp_to_key
+from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple
 
 from ...core import Good, Issue, OneOf, io, one_of
 
@@ -76,6 +77,7 @@ def get_project_status(
     results: List[Result],
     rules_dict: Dict[str, List[Message]],
     allowed_rules: Dict[str, int],
+    ignored_rules: Dict[str, str],
 ) -> ProjectStatus:
     """Compare the rules_dict with the allowed rules to provide an easy to
     display project status."""
@@ -88,11 +90,16 @@ def get_project_status(
     needs_readjustment = False
     for rule_id, messages in rules_dict.items():
         total_messages = len(messages)
-        allowed = allowed_rules.get(rule_id, 0)
-        if total_messages > allowed:
-            failed = True
-        elif total_messages < allowed:
-            needs_readjustment = True
+        allowed = (
+            -1
+            if ignored_rules.get(rule_id)
+            else allowed_rules.get(rule_id, 0)
+        )
+        if allowed != -1:
+            if total_messages > allowed:
+                failed = True
+            elif total_messages < allowed:
+                needs_readjustment = True
         rules[rule_id] = RuleIdStatus(
             rule_id,
             total_messages,
@@ -122,7 +129,8 @@ def format_rule_status(
     config: ToolConfig,
 ) -> str:
     """Formats a single rule and its violations."""
-    buffer = [f'{rule.rule_id} (found {rule.found}, allowed {rule.allowed}):']
+    allowed = f'allowed {rule.allowed}' if rule.allowed != -1 else 'IGNORED'
+    buffer = [f'{rule.rule_id} (found {rule.found}, {allowed}):']
     cwd = os.getcwd() + '/'
     for msg in rule.messages[:config.max_lines]:
         file_path = msg.file_path.replace(cwd, '')
@@ -156,6 +164,17 @@ def format_row(
     return '  '.join(items)
 
 
+def _compare_rules(x: RuleIdStatus, y: RuleIdStatus) -> int:
+    return x.found - y.found or x.allowed - y.allowed
+
+
+def _compare_rule_items(
+    x: Tuple[str, RuleIdStatus],
+    y: Tuple[str, RuleIdStatus],
+) -> int:
+    return _compare_rules(x[1], y[1])
+
+
 def print_project_status(
     project: ProjectStatus,
     config: ToolConfig,
@@ -168,11 +187,18 @@ def print_project_status(
         return Good(0)
 
     keys = project.rules.keys()
-    values = sorted(project.rules.values(), key=lambda r: r.found)
-    total_found = sum([s.found for s in values])
-    total_allowed = sum([s.allowed for s in values])
+    values = sorted(project.rules.values(), key=cmp_to_key(_compare_rules))
+    total_found = sum([s.found for s in values if s.allowed > -1])
+    total_allowed = sum([s.allowed for s in values if s.allowed > -1])
 
     if project.status == ExitCode.OK:
+        blocks = [
+            format_rule_status(rule, config)
+            for rule in values if rule.allowed == -1
+        ]
+        if blocks:
+            print('\n'.join(blocks), file=stream)
+            print('', file=stream)
         if total_found > 0:
             print(f'project has {total_found} errors to clear', file=stream)
         else:
@@ -209,8 +235,9 @@ def print_project_status(
         )
         for rule_id, rule_status in sorted(
             project.rules.items(),
-            key=lambda x: x[1].found,
+            key=cmp_to_key(_compare_rule_items),
         )
+        if rule_status.allowed > -1
     ])
     print('\n'.join(blocks), file=stream)
     print('', file=stream)
@@ -219,7 +246,7 @@ def print_project_status(
         diff = sum([
             d
             for s in values
-            for d in (s.found - s.allowed,) if d > 0
+            for d in (s.found - s.allowed,) if d > 0 and s.allowed > -1
         ])
         io.CiTool.error(
             f'{diff} extra errors were introduced',
@@ -254,8 +281,8 @@ def map_filenames(payload: str, tool_config: ToolConfig) -> str:
         return payload
     old_str, new_str = tool_config.prefix_mapping.split(':')
     return re.sub(
-        f"{old_str}(.*)\\.py",
-        lambda x: f'{new_str}{x.group(1)}.py',
+        f"{old_str}(.*)\\.([a-z]+)",
+        lambda x: f'{new_str}{x.group(1)}.{x.group(2)}',
         payload,
     )
 
@@ -264,7 +291,8 @@ def lint(
     payload: str,
     transform: Callable[[str], OneOf[Issue, List[Result]]],
     config: Dict[str, Any],
-    config_key: str,
+    error_key: str,
+    warn_key: str,
     tool_config: ToolConfig,
     stream: TextIO = sys.stdout,
 ) -> OneOf[Issue, ProjectStatus]:
@@ -275,9 +303,12 @@ def lint(
         for results in transform(new_pyload)
         for filtered in (filter_results(results, tool_config),)
         for rules_dict in (to_rules_dict(filtered),)
-        for allowed_rules in (config.get(config_key, {}),)
+        for allowed_rules in (config.get(error_key, {}),)
+        for ignored_rules in (config.get(warn_key, {}),)
         for project_status in (
-            get_project_status(filtered, rules_dict, allowed_rules),
+            get_project_status(
+                filtered, rules_dict, allowed_rules, ignored_rules,
+            ),
         )
         for _ in print_project_status(
             project_status, tool_config, new_pyload, stream,
@@ -299,7 +330,16 @@ def linter(
         config: Dict[str, Any],
         stream: TextIO = sys.stdout,
     ) -> OneOf[Issue, ProjectStatus]:
-        key = f'allowed{name.capitalize()}Rules'
-        return lint(payload, transform, config, key, tool_config, stream)
+        error_key = f'allowed{name.capitalize()}Rules'
+        warn_key = f'ignored{name.capitalize()}Rules'
+        return lint(
+            payload,
+            transform,
+            config,
+            error_key,
+            warn_key,
+            tool_config,
+            stream,
+        )
 
     return _linter

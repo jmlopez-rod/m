@@ -163,3 +163,23 @@ class LintTest(FpTestCase):
                 import-outside-toplevel         2        0
             ''').strip()
             self.assertIn(expected, output)
+
+    def test_pycodestyle_ignored(self):
+        with StringIO() as io_stream:
+            payload = read_fixture('pycodestyle_payload.txt')
+            result = pycodestyle(
+                payload,
+                {'ignoredPycodestyleRules': {'E201': 'reason'}},
+                io_stream,
+            )
+            self.assert_ok(result)
+            status = cast(ProjectStatus, result.value)
+            self.assertEqual(status.status, ExitCode.ERROR)
+            assert_str_has(io_stream.getvalue(), [
+                'E303 (found 1, allowed 0)',
+                'E201 (found 1, IGNORED)',
+                'E202 (found 1, allowed 0)',
+                'E271 (found 1, allowed 0)',
+                'E203 (found 1, allowed 0)',
+                '4 extra errors were introduced',
+            ])
