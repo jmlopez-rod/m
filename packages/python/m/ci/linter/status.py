@@ -56,6 +56,8 @@ class ToolConfig:
     max_lines: int = 5
     full_message: bool = False
     file_regex: Optional[str] = None
+    prefix_mapping: str = ''
+    unprocessed: bool = False
 
 
 def to_rules_dict(results: List[Result]) -> Dict[str, List[Message]]:
@@ -157,9 +159,14 @@ def format_row(
 def print_project_status(
     project: ProjectStatus,
     config: ToolConfig,
+    payload: str,
     stream: TextIO = sys.stdout,
 ) -> OneOf[Issue, int]:
     """Status report."""
+    if config.unprocessed:
+        print(payload, file=stream)
+        return Good(0)
+
     keys = project.rules.keys()
     values = sorted(project.rules.values(), key=lambda r: r.found)
     total_found = sum([s.found for s in values])
@@ -241,6 +248,18 @@ def filter_results(
     ]
 
 
+def map_filenames(payload: str, tool_config: ToolConfig) -> str:
+    """Replace the prefix of python file names."""
+    if not tool_config.prefix_mapping:
+        return payload
+    old_str, new_str = tool_config.prefix_mapping.split(':')
+    return re.sub(
+        f"{old_str}(.*)\\.py",
+        lambda x: f'{new_str}{x.group(1)}.py',
+        payload,
+    )
+
+
 def lint(
     payload: str,
     transform: Callable[[str], OneOf[Issue, List[Result]]],
@@ -252,14 +271,17 @@ def lint(
     """format the linter tool output."""
     return one_of(lambda: [
         project_status
-        for results in transform(payload)
+        for new_pyload in (map_filenames(payload, tool_config),)
+        for results in transform(new_pyload)
         for filtered in (filter_results(results, tool_config),)
         for rules_dict in (to_rules_dict(filtered),)
         for allowed_rules in (config.get(config_key, {}),)
         for project_status in (
             get_project_status(filtered, rules_dict, allowed_rules),
         )
-        for _ in print_project_status(project_status, tool_config, stream)
+        for _ in print_project_status(
+            project_status, tool_config, new_pyload, stream,
+        )
     ])
 
 

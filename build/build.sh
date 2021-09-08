@@ -5,7 +5,7 @@ export PYTHONPATH="${PWD}/packages/python"
 export PATH="${PWD}/packages/bash/lib:$PATH"
 
 # Use regex to filter files: --file-regex='.*(npm_tag|http)\.py$'
-# m ci lint -t flake8 < <(flake8 packages/python/m)
+# m ci lint -t flake8 --prefix-mapping 'packages/python:new/foo' < <(flake8 packages/python/m)
 
 # static checks
 mypy ./packages/python/m

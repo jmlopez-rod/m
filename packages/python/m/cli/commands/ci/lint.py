@@ -86,7 +86,13 @@ def add_parser(sub_parser, raw):
         action='store_true',
         help='display the full error message',
     )
-    add('--file-regex', help="regex expression to filter files")
+    add('--file-regex', help='regex expression to filter files')
+    add(
+        '--unprocessed',
+        action='store_true',
+        help="do not process the linter output"
+    )
+    add('--prefix-mapping', help="replace file prefix with 'old:new'")
     add(
         '--traceback',
         action='store_true',
@@ -100,7 +106,13 @@ def run(arg):
     from ....ci.linter.status import ProjectStatus, ToolConfig
     from ....core.issue import Issue
 
-    config = ToolConfig(arg.max_lines, arg.full_message, arg.file_regex)
+    config = ToolConfig(
+        arg.max_lines,
+        arg.full_message,
+        arg.file_regex,
+        arg.prefix_mapping,
+        arg.unprocessed,
+    )
     result = one_of(
         lambda: [
             res
