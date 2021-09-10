@@ -1,5 +1,5 @@
-import inspect
 import sys
+import inspect
 from typing import cast
 
 from ....core import one_of
@@ -9,23 +9,25 @@ from ...validators import validate_json_payload, validate_payload
 
 def add_parser(sub_parser, raw):
     desc = """
-        process the output of a linter to determine if the ci process should
-        stop.
+        process the output of a compiler or linter to determine if the ci
+        process should stop.
 
         examples:
 
-            ~$ eslint [dir] -f json | m ci lint -t eslint -c @config.json
-            ~$ m ci lint -t eslint -c @config.json < <(eslint [dir] -f json || echo '')
+            ~$ eslint [dir] -f json | m ci celt -t eslint -c @config.json
+            ~$ m ci celt -t eslint -c @config.json < <(eslint [dir] -f json)
 
             ~$ eslint [...options] > tmp.json
-            ~$ m ci lint -t eslint @tmp.json -c '{"allowedEslintRules":{"semi":1}}'
+            ~$ m ci celt -t eslint @tmp.json -c '{"allowedEslintRules":{"semi":1}}'
 
         Depending on the tool that is chosen the configuration should have an
-        entry of the form "allowed[ToolName]Rules". Only the first letter
-        of the tool should be capitalized to conform to the camelcase style.
+        entry of the form "allowed[ToolName]Rules" or "ignored[ToolName]Rules".
+        Only the first letter of the tool should be capitalized to conform to
+        the camelcase style.
 
         The entry should define a map of rule ids to the number of allowed
-        violations.
+        violations. In the case of `ignored[ToolName]Rules` we may define
+        the rule id and assign an explanation as to why its being ignored.
 
         In the examples above we use `@config.json`. This means it
         will read the file `config.json`. You can use any file that you want.
@@ -48,8 +50,8 @@ def add_parser(sub_parser, raw):
             pylint -f json --rcfile=[file] [dir]
     """  # noqa
     parser = sub_parser.add_parser(
-        'lint',
-        help='process the output of linter',
+        'celt',
+        help='process the output of compiler/linter',
         formatter_class=raw,
         description=inspect.cleandoc(desc),
     )
@@ -65,7 +67,7 @@ def add_parser(sub_parser, raw):
         '-t',
         '--tool',
         required=True,
-        help='name of a supported linter',
+        help='name of a supported compiler/linter',
     )
     add(
         '-c',
@@ -87,12 +89,12 @@ def add_parser(sub_parser, raw):
         help='display the full error message',
     )
     add('--file-regex', help='regex expression to filter files')
+    add('--file-prefix', help="replace file prefix with 'old1|old2:new'")
     add(
         '--unprocessed',
         action='store_true',
         help="do not process the linter output"
     )
-    add('--prefix-mapping', help="replace file prefix with 'old:new'")
     add(
         '--traceback',
         action='store_true',
@@ -102,22 +104,25 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....ci.linter import get_linter
-    from ....ci.linter.status import ProjectStatus, ToolConfig
+    from ....ci.celt.post_processor import get_post_processor
+    from ....ci.celt.core.process import PostProcessor
+    from ....ci.celt.core.types import ProjectStatus, Configuration
     from ....core.issue import Issue
+    from ....core.io import CiTool
 
-    config = ToolConfig(
+    config = Configuration(
         arg.max_lines,
         arg.full_message,
         arg.file_regex,
-        arg.prefix_mapping,
+        arg.file_prefix,
         arg.unprocessed,
     )
+    tool_either = get_post_processor(arg.tool, config)
     result = one_of(
         lambda: [
-            res
-            for linter in get_linter(arg.tool, config)
-            for res in linter(arg.payload, arg.config, sys.stdout)
+            project
+            for tool in tool_either
+            for project in tool.run(arg.payload, arg.config)
         ],
     )
     if result.is_bad:
@@ -125,4 +130,9 @@ def run(arg):
         val = cast(Issue, result.value)
         display_issue(val)
         return 1
-    return cast(ProjectStatus, result.value).status.value
+    tool = cast(PostProcessor, tool_either.value)
+    project = cast(ProjectStatus, result.value)
+    print(tool.to_str(project), file=sys.stderr)
+    if project.error_msg:
+        CiTool.error(project.error_msg)
+    return project.status.value

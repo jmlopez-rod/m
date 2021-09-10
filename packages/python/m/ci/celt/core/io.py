@@ -1,0 +1,143 @@
+from functools import cmp_to_key
+from typing import Any, Callable, List, Tuple
+
+from .types import Configuration, ExitCode, ProjectStatus, RuleInfo
+
+
+def _compare_rules(x: RuleInfo, y: RuleInfo) -> int:
+    diff = x.found - y.found or x.allowed - y.allowed
+    if not diff:
+        return 1 if x.rule_id < y.rule_id else -1
+    return diff
+
+
+def _compare_rule_items(
+    x: Tuple[str, RuleInfo],
+    y: Tuple[str, RuleInfo],
+) -> int:
+    return _compare_rules(x[1], y[1])
+
+
+def _align(token: Any, alignment: str) -> Callable[[int], str]:
+    return str(token).ljust if alignment == 'l' else str(token).rjust
+
+
+def rule_info_str(
+    rule: RuleInfo,
+    config: Configuration,
+) -> str:
+    """Format a single rule and its violations.
+
+    Args:
+        rule: The rule to display.
+        config: The post processor configuration.
+
+    Returns:
+        A string representation of the rule info.
+    """
+    allowed = 'IGNORED' if rule.ignored else f'allowed {rule.allowed}'
+    buffer = [f'{rule.rule_id} (found {rule.found}, {allowed}):']
+    for violation in rule.violations[:config.max_lines]:
+        file_path = violation.file_path
+        msg, *rest = violation.message.splitlines()
+        line = violation.line
+        column = violation.column
+        buffer.append(f'  {file_path}:{line}:{column} - {msg}')
+        if rest and config.full_message:
+            buffer.extend([f'    {x}' for x in rest])
+    if len(rule.violations) > config.max_lines:
+        remaining = len(rule.violations) - config.max_lines
+        buffer.append(f'  ... and {remaining} more')
+    buffer.append('')
+    return '\n'.join(buffer)
+
+
+def format_row(tokens: List[Any], widths: List[int], alignment: str) -> str:
+    """Format a row to be displayed in a table.
+
+    Args:
+        tokens:
+            A list of values to be displayed.
+        widths:
+            A list of integers of same size as tokens dictating the how many
+            spaces to take for a token.
+        alignment:
+            Either 'l' or 'r' so that the tokens may be aligned on the left
+            or right.
+
+    Returns:
+        A single string for a row of a table.
+    """
+    return '  '.join([
+        token
+        for index, align in enumerate(alignment)
+        for token in (_align(tokens[index], align)(widths[index]),)
+    ])
+
+
+def project_status_str(
+    project: ProjectStatus,
+    celt_config: Configuration,
+) -> str:
+    """Stringify a `ProjectStatus` instance.
+
+    Args:
+        project: The `ProjectStatus` instance.
+        celt_config: The post processor configuration.
+
+    Returns:
+        The string version of the project status.
+    """
+    if celt_config.unprocessed:
+        return project.payload
+
+    keys = project.rules.keys()
+    rules = sorted(project.rules.values(), key=cmp_to_key(_compare_rules))
+
+    if project.status == ExitCode.ok:
+        buffer = [
+            rule_info_str(rule, celt_config)
+            for rule in rules
+            if rule.ignored
+        ]
+        if project.total_found > 0:
+            buffer.append(f'project has {project.total_found} errors to clear')
+        else:
+            buffer.append('no errors found')
+        return '\n'.join(buffer)
+
+    buffer = [
+        rule_info_str(rule, celt_config)
+        for rule in rules
+        if rule.found > rule.allowed
+    ]
+
+    buffer.append('FILES:')
+    by_file = sorted(project.files.items(), key=lambda t: len(t[1]))
+    buffer.extend([
+        f'  {file_name}: found {total}'
+        for file_name, violations in by_file
+        for total in (len(violations), )
+    ])
+    buffer.append('')
+
+    c1_w = max([len(x) for x in keys])
+    c1_w = max([c1_w, len('rules')])
+    c2_w = max([len(str(s.found)) for s in rules])
+    c2_w = max([c2_w, len('found')])
+    c3_w = max([len(str(s.allowed)) for s in rules])
+    c3_w = max([c3_w, len('allowed')])
+    widths = [c1_w, c2_w, c3_w]
+
+    key_rule = sorted(
+        project.rules.items(),
+        key=cmp_to_key(_compare_rule_items),
+    )
+    buffer.append(format_row(['RULES', 'FOUND', 'ALLOWED'], widths, 'lll'))
+    buffer.extend([
+        format_row([rule_id, rule.found, rule.allowed], widths, 'lrr')
+        for rule_id, rule in key_rule
+        if not rule.ignored
+    ])
+    buffer.append('')
+    return '\n'.join(buffer)

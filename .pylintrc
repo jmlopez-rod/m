@@ -12,6 +12,8 @@ good-names=_,
   x, y, z,
   ex, pr, fp
 
+class-const-naming-style=snake_case
+
 max-args=7
 
 

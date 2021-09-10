@@ -1,0 +1,5 @@
+{
+  "allowedPylintRules": {
+    "invalid-name": 3
+  }
+}

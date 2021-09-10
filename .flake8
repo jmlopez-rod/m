@@ -4,6 +4,7 @@ ignore =
   D103,    # Missing docstring in public function
   D104,    # Missing docstring in public package
   WPS300,  # Found local folder import
+  WPS210,  # Found too many local variables: 8 > 5
   WPS221,  # Found line with high Jones Complexity: 15 > 14
   WPS305,  # Found `f` string
   WPS306,  # Found class without a base class

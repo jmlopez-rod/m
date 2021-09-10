@@ -1,24 +1,24 @@
 from typing import List
 
-from ...core import Issue, OneOf, json, one_of
-from .status import Message, Result
+from ....core import Issue, OneOf, json, one_of
+from ..core.types import FileReport, Violation
 
 
-def read_payload(payload: str) -> OneOf[Issue, List[Result]]:
-    """Transform an eslint payload to a list of `Result` objects.
+def read_payload(payload: str) -> OneOf[Issue, List[FileReport]]:
+    """Transform an eslint payload to a list of `FileReport` instances.
 
     Args:
-        payload: The raw payload from eslint
+        payload: The raw payload from eslint.
 
     Returns:
-        A `OneOf` containing an `Issue` or a list of `Result` objects.
+        A `OneOf` containing an `Issue` or a list of `FileReport` instances.
     """
     return one_of(lambda: [
         [
-            Result(
+            FileReport(
                 file_path=error['filePath'],
-                messages=[
-                    Message(
+                violations=[
+                    Violation(
                         msg['ruleId'],
                         msg['message'],
                         msg['line'],
