@@ -2,7 +2,7 @@ import re
 from typing import Any, Dict, List, Optional, Tuple
 
 from ....core import Good, Issue, OneOf, issue, one_of
-from .io import project_status_str
+from .io import project_stats_json, project_status_str
 from .types import (
     Configuration,
     ExitCode,
@@ -261,3 +261,17 @@ class PostProcessor:
             The string version of the project status.
         """
         return project_status_str(project, self.celt_config)
+
+    def stats_json(self, project: ProjectStatus) -> str:
+        """Strinfigy a `ProjectStatus`.
+
+        Show a dictionary with the total number of violations. Useful when
+        writing an entry for the configuration file.
+
+        Args:
+            project: The `ProjectStatus` obtained by running the `run` method.
+
+        Returns:
+            The string version of the project status.
+        """
+        return project_stats_json(self.name, project)

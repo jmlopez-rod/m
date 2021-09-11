@@ -88,9 +88,6 @@ def project_status_str(
     Returns:
         The string version of the project status.
     """
-    if celt_config.unprocessed:
-        return project.payload
-
     keys = project.rules.keys()
     rules = sorted(project.rules.values(), key=cmp_to_key(_compare_rules))
 
@@ -140,4 +137,42 @@ def project_status_str(
         if not rule.ignored
     ])
     buffer.append('')
+    return '\n'.join(buffer)
+
+
+def project_stats_json(
+    name: str,
+    project: ProjectStatus,
+) -> str:
+    """Stringify a `ProjectStatus` instance.
+
+    Displays as json showing the current total of violations for each rule.
+
+    Args:
+        name: The name of the compiler/linter.
+        project: The `ProjectStatus` instance.
+        celt_config: The post processor configuration.
+
+    Returns:
+        The string version of the project status.
+    """
+    cap_name = name.capitalize()
+    buffer = [
+        '{',
+        f'  "allowed{cap_name}Rules": {{',
+    ]
+
+    key_rule = sorted(
+        project.rules.items(),
+        key=cmp_to_key(_compare_rule_items),
+    )
+    buffer.extend([
+        f'    "{rule_id}": {rule.found},'
+        for rule_id, rule in key_rule
+        if not rule.ignored
+    ])
+    buffer.extend([
+        '  }',
+        '}',
+    ])
     return '\n'.join(buffer)

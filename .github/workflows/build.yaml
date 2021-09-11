@@ -20,7 +20,7 @@ jobs:
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
-          pip install typing_extensions pycodestyle pylint mypy
+          pip install typing_extensions pycodestyle pylint mypy wemake-python-styleguide flake8
       - name: Checks
         run: |
           ./build/build.sh

@@ -84,16 +84,18 @@ def add_parser(sub_parser, raw):
         help='maximum number of lines to print per error',
     )
     add(
+        '-f',
         '--full-message',
         action='store_true',
         help='display the full error message',
     )
-    add('--file-regex', help='regex expression to filter files')
-    add('--file-prefix', help="replace file prefix with 'old1|old2:new'")
+    add('-r', '--file-regex', help='regex expression to filter files')
+    add('-p', '--file-prefix', help="replace file prefix with 'old1|old2:new'")
     add(
-        '--unprocessed',
+        '-s',
+        '--stats-only',
         action='store_true',
-        help="do not process the linter output"
+        help="display a dictionary with current total violations"
     )
     add(
         '--traceback',
@@ -115,7 +117,6 @@ def run(arg):
         arg.full_message,
         arg.file_regex,
         arg.file_prefix,
-        arg.unprocessed,
     )
     tool_either = get_post_processor(arg.tool, config)
     result = one_of(
@@ -132,7 +133,12 @@ def run(arg):
         return 1
     tool = cast(PostProcessor, tool_either.value)
     project = cast(ProjectStatus, result.value)
-    print(tool.to_str(project), file=sys.stderr)
+    output = (
+        tool.stats_json(project)
+        if arg.stats_only
+        else tool.to_str(project)
+    )
+    print(output, file=sys.stderr)  # noqa: WPS421
     if project.error_msg:
         CiTool.error(project.error_msg)
     return project.status.value

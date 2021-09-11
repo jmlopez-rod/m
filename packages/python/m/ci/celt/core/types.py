@@ -86,7 +86,6 @@ class Configuration:
     full_message: bool = False
     file_regex: Optional[str] = None
     file_prefix: Optional[str] = None
-    unprocessed: bool = False
 
 
 Transform = Callable[[str], OneOf[Issue, List[FileReport]]]
