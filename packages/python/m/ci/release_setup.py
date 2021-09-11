@@ -1,13 +1,14 @@
 import re
 from datetime import datetime
 from typing import List
-from ..core import one_of, issue
+
+from ..ci.config import Config, read_config
+from ..core import issue, one_of
+from ..core.fp import Good, OneOf
 from ..core.io import read_file, write_file
-from ..core.fp import OneOf, Good
 from ..core.issue import Issue
-from ..github import compare_sha_url
 from ..git import get_first_commit_sha
-from ..ci.config import read_config, Config
+from ..github import compare_sha_url
 
 
 def _get_versions(lines: List[str], new_ver: str, first_sha: str) -> List[str]:
@@ -29,7 +30,7 @@ def new_changelog(
     owner: str,
     repo: str,
     new_ver: str,
-    first_sha: str
+    first_sha: str,
 ) -> OneOf[Issue, str]:
     """Modify the contents of a CHANGELOG so that a new entry with the new
     version is added to the new changelog contents."""
@@ -43,7 +44,7 @@ def new_changelog(
 
     links = [f'[unreleased]: {compare_sha_url(owner, repo, new_ver, "HEAD")}']
     for i in range(len(versions) - 1):
-        link = compare_sha_url(owner, repo, versions[i+1], versions[i])
+        link = compare_sha_url(owner, repo, versions[i + 1], versions[i])
         links.append(f'[{versions[i]}]: {link}')
 
     date = datetime.now().strftime('%B %d, %Y')
@@ -64,8 +65,8 @@ def update_changelog_file(
     first_sha: str,
     filename: str = 'CHANGELOG.md',
 ) -> OneOf[Issue, int]:
-    """Add an entry to the CHANGELOG file with the new version to be released.
-    """
+    """Add an entry to the CHANGELOG file with the new version to be
+    released."""
     return one_of(lambda: [
         0
         for data in read_file(filename)

@@ -6,7 +6,7 @@ def add_parser(sub_parser, raw):
         'init',
         help='initialize an m project',
         formatter_class=raw,
-        description='Create the necessary files for an m project.'
+        description='Create the necessary files for an m project.',
     )
 
 

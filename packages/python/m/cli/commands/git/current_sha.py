@@ -1,4 +1,5 @@
 import inspect
+
 from ...utils import run_main
 
 
@@ -13,7 +14,7 @@ def add_parser(sub_parser, raw):
         'current_sha',
         help='display the current commit sha',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
 
 

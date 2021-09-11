@@ -1,9 +1,10 @@
 import inspect
+
 from ..validators import validate_json_payload
 
 
 def add_parser(sub_parser, raw):
-    desc = """
+    desc = r"""
         query json data.
 
         single value:
@@ -23,31 +24,37 @@ def add_parser(sub_parser, raw):
 
         use `read` to store in bash variables:
 
-            read -r -d '\\n' \\
-                var1 var2 var3 \\
+            read -r -d '\n' \
+                var1 var2 var3 \
                 <<< "$(m jsonq @file.json 'path1' 'path2' 'path3')"
     """
     parser = sub_parser.add_parser(
         'jsonq',
         help='query json data',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('payload',
+    add(
+        'payload',
         type=validate_json_payload,
         nargs='?',
         default='@-',
-        help='json data: @- (default stdin), @filename (file), string')
-    add('-w',
+        help='json data: @- (default stdin), @filename (file), string',
+    )
+    add(
+        '-w',
         '--warn',
         action='store_true',
-        help='print warning messages instead of errors')
-    add('-s',
+        help='print warning messages instead of errors',
+    )
+    add(
+        '-s',
         '--separator',
         type=str,
         default='\n',
-        help='separator for multiple values (default \\n)')
+        help=r'separator for multiple values (default \n)',
+    )
     add('query', type=str, nargs='+', help='path to json data')
 
 

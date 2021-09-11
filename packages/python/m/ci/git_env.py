@@ -2,15 +2,14 @@ import re
 from dataclasses import dataclass
 from typing import List, Optional, cast
 
-from ..github.ci_dataclasses import GithubCiRunInfo
 from ..core import issue
-from ..core.fp import OneOf, Good
-from ..core.issue import Issue
-from .config import Config, Workflow
+from ..core.fp import Good, OneOf
 from ..core.io import EnvVars, JsonStr
-from ..github.ci import (
-    Commit, CommitInfo, PullRequest, Release, get_ci_run_info
-)
+from ..core.issue import Issue
+from ..github.ci import (Commit, CommitInfo, PullRequest, Release,
+                         get_ci_run_info)
+from ..github.ci_dataclasses import GithubCiRunInfo
+from .config import Config, Workflow
 
 
 def get_release_prefix(config: Config) -> Optional[str]:
@@ -44,11 +43,11 @@ class GitEnv(JsonStr):
     release: Optional[Release] = None
 
     def get_pr_branch(self) -> str:
-        """Get the pull request branch or empty string"""
+        """Get the pull request branch or empty string."""
         return self.pull_request.pr_branch if self.pull_request else ''
 
     def get_pr_number(self) -> int:
-        """Get the pull request branch or 0 if not a pull request"""
+        """Get the pull request branch or 0 if not a pull request."""
         return self.pull_request.pr_number if self.pull_request else 0
 
     def is_release(self, config: Config) -> bool:
@@ -81,9 +80,12 @@ class GitEnv(JsonStr):
         return self.pull_request.is_release_pr(release_prefix)
 
     def is_hotfix_pr(self, config: Config) -> bool:
-        """Determine if the the current pr is a hotfix pr. It is a release pr
-        as far as the pull request should see it but from the context of the
-        git environment we need to label it as a hotfix pr."""
+        """Determine if the the current pr is a hotfix pr.
+
+        It is a release pr as far as the pull request should see it but
+        from the context of the git environment we need to label it as a
+        hotfix pr.
+        """
         if not self.pull_request:
             return False
         hotfix_prefix = get_hotfix_prefix(config)

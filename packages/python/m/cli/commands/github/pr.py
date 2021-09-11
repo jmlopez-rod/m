@@ -1,5 +1,6 @@
 import inspect
-from ...utils import run_main, env
+
+from ...utils import env, run_main
 
 
 def add_parser(sub_parser, raw):
@@ -21,21 +22,27 @@ def add_parser(sub_parser, raw):
         'pr',
         help='get information on a pull request',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
+    add(
+        '--owner',
         type=str,
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         type=str,
         required=True,
-        help='repo name')
-    add('--files',
+        help='repo name',
+    )
+    add(
+        '--files',
         type=int,
         default=10,
-        help='max number of files to retrieve (default: 10)')
+        help='max number of files to retrieve (default: 10)',
+    )
     add('pr_number', type=int, help='pull request number')
 
 
@@ -47,4 +54,5 @@ def run(arg):
         arg.owner,
         arg.repo,
         arg.pr_number,
-        arg.files))
+        arg.files,
+    ))

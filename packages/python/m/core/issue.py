@@ -1,11 +1,11 @@
-import sys
-import json
-import traceback
 import inspect
+import json
+import sys
+import traceback
 from collections import OrderedDict
-from typing import Optional, List, cast
-from typing_extensions import TypedDict
+from typing import List, Optional, cast
 
+from typing_extensions import TypedDict
 
 IssueDict = TypedDict(
     'IssueDict',
@@ -14,7 +14,7 @@ IssueDict = TypedDict(
         'description': str,
         'cause': object,
         'data': object,
-        'traceback': List[str]
+        'traceback': List[str],
     },
     total=False,
 )
@@ -31,8 +31,11 @@ def remove_traceback(obj: object) -> None:
 
 
 class Issue(Exception):
-    """Wrapper to keep track of all exceptions. It provides a 'cause' field
-    so that we may know why an issue was triggered."""
+    """Wrapper to keep track of all exceptions.
+
+    It provides a 'cause' field so that we may know why an issue was
+    triggered.
+    """
     show_traceback = True
 
     message: str
@@ -48,7 +51,7 @@ class Issue(Exception):
         description: Optional[str] = None,
         cause: Optional[Exception] = None,
         data: Optional[object] = None,
-        include_traceback: bool = True
+        include_traceback: bool = True,
     ):
         """Create an Issue.
 
@@ -69,7 +72,8 @@ class Issue(Exception):
                     *traceback.format_tb(sys.exc_info()[2]),
                     *traceback.format_exception_only(
                         sys.exc_info()[0],
-                        sys.exc_info()[1]),
+                        sys.exc_info()[1],
+                    ),
                 ]
                 self.cause_tb = [
                     y
@@ -93,8 +97,7 @@ class Issue(Exception):
 
     def to_dict(self) -> IssueDict:
         """Convert to a ordered dictionary so that each of the properties are
-        written in an expected order.
-        """
+        written in an expected order."""
         obj = cast(IssueDict, OrderedDict())
         obj['message'] = self.message
         if self.description:
@@ -109,12 +112,15 @@ class Issue(Exception):
             else:
                 obj['cause'] = dict(
                     message=str(self.cause),
-                    traceback=self.cause_tb)
+                    traceback=self.cause_tb,
+                )
         return obj
 
     def to_str(self, show_traceback: bool) -> str:
-        """Convert the instance to string. We have the option of not
-        showing the traceback."""
+        """Convert the instance to string.
+
+        We have the option of not showing the traceback.
+        """
         obj = self.to_dict()
         if not show_traceback:
             remove_traceback(obj)

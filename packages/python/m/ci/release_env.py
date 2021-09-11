@@ -1,10 +1,11 @@
 from dataclasses import dataclass
+
+from ..core import issue, one_of
+from ..core.fp import Good, OneOf
+from ..core.io import EnvVars, JsonStr
+from ..core.issue import Issue
 from .config import Config, Workflow
 from .git_env import GitEnv
-from ..core import one_of, issue
-from ..core.fp import OneOf, Good
-from ..core.issue import Issue
-from ..core.io import EnvVars, JsonStr
 
 
 @dataclass
@@ -30,14 +31,12 @@ def _verify_version(
             pr_branch = git_env.get_pr_branch()
             flow = config.git_flow
             # Skip verification when release or hotfix are going to develop
-            if (
-                git_env.target_branch == flow.develop_branch and
-                    (
-                        pr_branch.startswith(flow.release_prefix) or
-                        pr_branch.startswith(flow.hotfix_prefix)
-                    )
-            ):
-                return Good(0)
+            if git_env.target_branch == flow.develop_branch:
+                if (
+                    pr_branch.startswith(flow.release_prefix) or
+                    pr_branch.startswith(flow.hotfix_prefix)
+                ):
+                    return Good(0)
         return config.verify_version(
             gh_latest,
             is_release_pr=(is_release_pr or is_hotfix_pr),

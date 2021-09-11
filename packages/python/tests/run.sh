@@ -17,6 +17,7 @@ runTest ci.git_env.GitEnvTest
 runTest ci.release_env.free_flow.ReleaseEnvFreeFlowTest
 runTest ci.release_env.git_flow.ReleaseEnvGitFlowTest
 runTest ci.release_env.m_flow.ReleaseEnvMFlowTest
-runTest ci.lint.LintTest
+runTest ci.celt.process.ProcessTest
+runTest ci.celt.processors.CeltTest
 runTest github.ci_dataclasses.CiDataclassesTest
 runTest core.io.IoTest

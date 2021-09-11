@@ -1,11 +1,12 @@
-from distutils.version import StrictVersion
 from dataclasses import dataclass
+from distutils.version import StrictVersion
 from enum import Enum
-from typing import Mapping, Any
-from ..core.fp import OneOf, Good
-from ..core.issue import Issue
-from ..core import json, one_of, issue
+from typing import Any, Mapping
+
+from ..core import issue, json, one_of
+from ..core.fp import Good, OneOf
 from ..core.io import JsonStr
+from ..core.issue import Issue
 
 
 class Workflow(Enum):
@@ -53,9 +54,12 @@ class Config(JsonStr):
         is_release: bool,
     ) -> OneOf[Issue, int]:
         """Return 0 if everything is well with the version in the
-        configuration. Otherwise it will return an issue stating why
-        the version in the configuration is not valid. If `gh_latest`
-        is not provided then the checks are skipped."""
+        configuration.
+
+        Otherwise it will return an issue stating why the version in the
+        configuration is not valid. If `gh_latest` is not provided then
+        the checks are skipped.
+        """
         if not gh_latest:
             return Good(0)
         err_data = dict(

@@ -1,5 +1,4 @@
-from typing import TypeVar, Generic, Union, Iterator, cast, Callable
-
+from typing import Callable, Generic, Iterator, TypeVar, Union, cast
 
 A = TypeVar('A')  # pylint: disable=invalid-name
 B = TypeVar('B')  # pylint: disable=invalid-name
@@ -8,13 +7,16 @@ LazyArg = Union[A, Callable[[], A]]
 
 
 def lazy_arg(param: LazyArg[A]) -> A:
-    """Return the result of evaluating `param` if it is function. Otherwise
-    param is returned."""
+    """Return the result of evaluating `param` if it is function.
+
+    Otherwise param is returned.
+    """
     return param if not callable(param) else param()
 
 
 class StopBadIteration(Exception):
     """Store a `Bad` instance."""
+
     def __init__(self, bad):
         Exception.__init__(self)
         self.bad = bad
@@ -33,8 +35,10 @@ class OneOf(Generic[B, G]):
         yield cast(G, self.value)
 
     def iter(self):
-        """Shortcut to transform to a list: list(x.iter()). It will either
-        contain a value or be an empty list."""
+        """Shortcut to transform to a list: list(x.iter()).
+
+        It will either contain a value or be an empty list.
+        """
         if not self.is_bad:
             yield self.value
 
@@ -52,12 +56,14 @@ class OneOf(Generic[B, G]):
 
 
 class Bad(OneOf[B, G]):
-    """The bad side of the disjoint union"""
+    """The bad side of the disjoint union."""
+
     def __init__(self, val):
         OneOf.__init__(self, True, val)
 
 
 class Good(OneOf[B, G]):
-    """The good side of the disjoint union"""
+    """The good side of the disjoint union."""
+
     def __init__(self, val):
         OneOf.__init__(self, False, val)

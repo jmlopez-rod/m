@@ -1,24 +1,27 @@
 import inspect
+
 from ...utils import run_main
 
 
 def add_parser(sub_parser, raw):
-    desc = '''
+    desc = """
         Used during a release setup or hotfix setup. We want to make sure
         that we are working on the correct branch depending on verification
         we want to make and the workflow that we are using.
-    '''
+    """
     parser = sub_parser.add_parser(
         'assert_branch',
         help='assert that we are working on the correct branch',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--type',
+    add(
+        '--type',
         required=True,
         choices=['release', 'hotfix'],
-        help='verification type')
+        help='verification type',
+    )
     add('m_dir', type=str, help='m project directory')
 
 

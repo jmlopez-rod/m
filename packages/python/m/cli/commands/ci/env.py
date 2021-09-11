@@ -6,7 +6,7 @@ def add_parser(sub_parser, raw):
         'env',
         help='create a list of env variables',
         formatter_class=raw,
-        description='Create the [m_dir]/.m/env.list file'
+        description='Create the [m_dir]/.m/env.list file',
     )
     add = parser.add_argument
     add('m_dir', type=str, help='m project directory')

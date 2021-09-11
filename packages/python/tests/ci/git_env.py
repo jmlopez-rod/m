@@ -1,12 +1,11 @@
 from unittest.mock import patch
 
+from m.ci.config import Config, GitFlowConfig, MFlowConfig, Workflow
+from m.ci.git_env import GitEnv, get_git_env
 from m.core import issue
 from m.core.fp import Good
-from m.ci.config import (
-    Config, Workflow, GitFlowConfig, MFlowConfig
-)
 from m.core.io import EnvVars
-from m.ci.git_env import get_git_env, GitEnv
+
 from ..util import FpTestCase
 
 
@@ -18,7 +17,7 @@ class GitEnvTest(FpTestCase):
         m_dir='m',
         workflow=Workflow.FREE_FLOW,
         git_flow=GitFlowConfig(),
-        m_flow=MFlowConfig()
+        m_flow=MFlowConfig(),
     )
     env_vars = EnvVars(
         ci_env=True,
@@ -40,8 +39,9 @@ class GitEnvTest(FpTestCase):
             GitEnv(
                 sha='git-sha-abc-123',
                 branch='master',
-                target_branch='master'
-            ).__dict__)
+                target_branch='master',
+            ).__dict__,
+        )
 
     def test_read_git_env_fail(self):
         self.env_vars.ci_env = True
@@ -60,25 +60,32 @@ class GitEnvTest(FpTestCase):
             err = self.assert_issue(result, 'git_env failure')
             self.assertEqual(
                 err.cause.message,
-                '`repository` path was not found')
+                '`repository` path was not found',
+            )
 
     def test_pass(self):
         self.env_vars.ci_env = True
         with patch('m.github.api.graphql') as graphql_mock:
             graphql_mock.side_effect = [
-                Good(dict(
-                    repository=dict(
-                        commit=dict(
-                            message='Merge sha1 into sha2'
-                        )
-                    ))),
-                Good(dict(
-                    repository=dict(
-                        commit=dict(
-                            oid='123456789',
-                            message='commit message',
-                        )
-                    )
-                ))]
+                Good(
+                    dict(
+                        repository=dict(
+                            commit=dict(
+                                message='Merge sha1 into sha2',
+                            ),
+                        ),
+                    ),
+                ),
+                Good(
+                    dict(
+                        repository=dict(
+                            commit=dict(
+                                oid='123456789',
+                                message='commit message',
+                            ),
+                        ),
+                    ),
+                ),
+            ]
             result = get_git_env(self.config, self.env_vars)
             self.assertFalse(result.is_bad)

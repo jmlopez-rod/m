@@ -1,12 +1,16 @@
 import sys
-from pathlib import Path
 from argparse import ArgumentTypeError
-from ..core.json import read_json, parse_json
+from pathlib import Path
+
+from ..core.json import parse_json, read_json
 
 
 def validate_json_payload(file_path: str):
-    """Return a dictionary from the contents of file_path. This is a string
-    that tell us to read from a file, stdin or just plain json data."""
+    """Return a dictionary from the contents of file_path.
+
+    This is a string that tell us to read from a file, stdin or just
+    plain json data.
+    """
     if file_path == '@-':
         res = read_json(None)
         if res.is_bad:
@@ -28,9 +32,11 @@ def validate_json_payload(file_path: str):
 
 
 def validate_payload(file_path: str) -> str:
-    """Return the raw payload. This allows us to read from a file or the
-    stdin stream."""
-    if file_path.startswith('\\@'):
+    """Return the raw payload.
+
+    This allows us to read from a file or the stdin stream.
+    """
+    if file_path.startswith(r'\@'):
         # escape @ with \ to let the cli know that the payload starts with @
         return file_path[1:]
     if file_path == '@-':

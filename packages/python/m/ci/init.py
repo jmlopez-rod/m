@@ -1,26 +1,27 @@
+import inspect
 import os
 import re
-import inspect
 from pathlib import Path
-from typing import Tuple, List
-from ..core import one_of, issue
+from typing import List, Tuple
+
+from ..core import issue, one_of
 from ..core.fp import Good, OneOf
+from ..core.io import CiTool, read_file, write_file
 from ..core.issue import Issue
-from ..core.io import read_file, write_file, CiTool
 from ..core.subprocess import eval_cmd
 from ..git import get_remote_url
 
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
-    """Find the owner and repo from an ssh url"""
-    match = re.findall(r'.*:(.*)/(.*).git', ssh_url)
+    """Find the owner and repo from an ssh url."""
+    match = re.findall('.*:(.*)/(.*).git', ssh_url)
     if match:
         return Good(match[0])
     return issue('unable to obtain owner and repo', data=dict(ssh_url=ssh_url))
 
 
 def get_repo_info() -> OneOf[Issue, Tuple[str, str]]:
-    """Get the owner and repo name from the current repository. """
+    """Get the owner and repo name from the current repository."""
     return one_of(lambda: [
         info
         for ssh_url in get_remote_url()

@@ -1,5 +1,7 @@
 from dataclasses import replace as copy
+
 from m.github import ci_dataclasses as cid
+
 from ..util import FpTestCase
 
 
@@ -14,7 +16,7 @@ class CiDataclassesTest(FpTestCase):
         pr_branch='',
         pr_sha='',
         title='',
-        body=''
+        body='',
     )
     commit = cid.Commit(
         author_login='',

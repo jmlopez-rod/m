@@ -1,9 +1,10 @@
 import os
 from dataclasses import dataclass
-from typing import cast, Any
+from typing import Any, cast
+
 from ..core import fp, issue, one_of
+from ..core.io import CiTool, EnvVars, JsonStr, write_file
 from ..core.issue import Issue
-from ..core.io import EnvVars, CiTool, write_file, JsonStr
 from .config import Config, read_config
 from .git_env import GitEnv, get_git_env
 from .release_env import ReleaseEnv, get_release_env
@@ -12,6 +13,7 @@ from .release_env import ReleaseEnv, get_release_env
 @dataclass
 class MEnv(JsonStr):
     """Contains all the information required for a CI run."""
+
     config: Config
     env_vars: EnvVars
     git_env: GitEnv
@@ -19,7 +21,7 @@ class MEnv(JsonStr):
 
 
 def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
-    """Obtain the M Environment object"""
+    """Obtain the M Environment object."""
     return one_of(lambda: [
         MEnv(config, env_vars, git_env, release_env)
         for config in read_config(m_dir)
@@ -28,12 +30,12 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
         )
         for git_env in get_git_env(
             config,
-            env_vars
+            env_vars,
         ).flat_map_bad(lambda x: issue('git_env failure', cause=x))
         for release_env in get_release_env(
             config,
             env_vars,
-            git_env
+            git_env,
         ).flat_map_bad(lambda x: issue('release_env failure', cause=x))
     ]).flat_map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
 

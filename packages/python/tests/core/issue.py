@@ -1,7 +1,6 @@
 import unittest
-from m.core import issue
-from m.core.issue import Issue
-from m.core.fp import Bad
+
+from m.core import Bad, Issue, issue
 
 
 class IssueTest(unittest.TestCase):

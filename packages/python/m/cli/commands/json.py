@@ -1,4 +1,5 @@
 import inspect
+
 from ..validators import validate_json_payload
 
 
@@ -18,14 +19,14 @@ def add_parser(sub_parser, raw):
         'json',
         help='format json data',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     parser.add_argument(
         'payload',
         type=validate_json_payload,
         nargs='?',
         default='@-',
-        help='json data: @- (stdin), @filename (file), string. Defaults to @-'
+        help='json data: @- (stdin), @filename (file), string. Defaults to @-',
     )
     parser.add_argument(
         '--sort-keys',

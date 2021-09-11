@@ -24,13 +24,13 @@ def add_parser(sub_parser, raw):
         'npm_tag',
         help='display an npm tag',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     parser.add_argument('version', type=str, help='npm package version')
 
 
 def run(arg):
-    regex = r"\d.\d.\d-(.*)\.(.*)"
+    regex = r'\d.\d.\d-(.*)\.(.*)'
     matches = re.match(regex, arg.version)
     if matches:
         tag, _ = matches.groups()

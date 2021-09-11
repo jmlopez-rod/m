@@ -1,4 +1,5 @@
 import inspect
+
 from ...utils import call_main
 
 
@@ -13,7 +14,7 @@ def add_parser(sub_parser, raw):
         'branch',
         help='display the current git branch',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
 
 

@@ -1,6 +1,7 @@
-from typing import Any, cast, Callable, List, Optional
+from typing import Any, Callable, List, Optional, cast
+
+from .fp import Bad, G, Good, OneOf, StopBadIteration
 from .issue import Issue
-from .fp import OneOf, Good, Bad, StopBadIteration, G
 
 
 def issue(
@@ -8,7 +9,7 @@ def issue(
     description: Optional[str] = None,
     cause: Optional[Exception] = None,
     data: Optional[object] = None,
-    include_traceback: bool = True
+    include_traceback: bool = True,
 ) -> OneOf[Issue, Any]:
     """Shortcut to create a Bad OneOf containing an Issue."""
     return Bad(Issue(message, description, cause, data, include_traceback))
@@ -16,7 +17,9 @@ def issue(
 
 def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
     """`comp` should be a lambda function which returns an array with a single
-    value. To be used so that we may iterate over OneOf objects that may raise
+    value.
+
+    To be used so that we may iterate over OneOf objects that may raise
     the StopBadIteration exception.
     """
     try:

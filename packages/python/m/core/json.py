@@ -1,16 +1,19 @@
 import json
 import sys
-from typing import Any, Optional, Mapping as Map, List, cast, Union
 from collections.abc import Mapping
+from typing import Any, List
+from typing import Mapping as Map
+from typing import Optional, Union, cast
+
 from . import issue
 from .fp import Good, OneOf
-from .issue import Issue
 from .io import CITool
+from .issue import Issue
 
 
 def read_json(
     filename: Optional[str],
-    error_if_empty: bool = False
+    error_if_empty: bool = False,
 ) -> OneOf[Issue, Any]:
     """Return a `Good` containing the parsed contents of the json file."""
     try:
@@ -23,12 +26,13 @@ def read_json(
         return issue(
             'failed to read json file',
             data={'filename': filename or 'SYS.STDIN'},
-            cause=ex)
+            cause=ex,
+        )
 
 
 def parse_json(
     data: str,
-    error_if_empty: bool = False
+    error_if_empty: bool = False,
 ) -> OneOf[Issue, Any]:
     """Return a `Good` containing the parsed contents of the json string."""
     try:
@@ -61,7 +65,7 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
         try:
             current = current[new_key]
         except KeyError:
-            pth = '.'.join(keys[:num+1])
+            pth = '.'.join(keys[:num + 1])
             return issue(f'`{pth}` path was not found')
         except Exception as ex:
             pth = '.'.join(keys[:num])
@@ -73,7 +77,7 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
 
 def multi_get(
     obj: object,
-    *keys: str
+    *keys: str,
 ) -> OneOf[Issue, List[Any]]:
     """Call `get` for every input specified by `keys`. It collects the invalid
     keys and returns an `Issue`.
@@ -85,18 +89,21 @@ def multi_get(
     for key in keys:
         res = get(obj, key)
         if res.is_bad:
-            failures.append(Issue(
-                message=f'key lookup failure: `{key}`',
-                cause=res.value,
-                include_traceback=False,
-            ))
+            failures.append(
+                Issue(
+                    message=f'key lookup failure: `{key}`',
+                    cause=res.value,
+                    include_traceback=False,
+                ),
+            )
         else:
             result.append(res.value)
     if failures:
         return issue(
             'multi_get key retrieval failure',
             data=[x.to_dict() for x in failures],
-            include_traceback=False)
+            include_traceback=False,
+        )
     return Good(result)
 
 
@@ -112,10 +119,12 @@ def jsonq(
     obj: Map[str, Any],
     separator: str,
     display_warning: bool,
-    *key_str: str
+    *key_str: str,
 ) -> int:
-    """Print the values obtained from `multi_get` to stdout. Returns
-    0 if all the keys are available. Returns non-zero if there are problems.
+    """Print the values obtained from `multi_get` to stdout.
+
+    Returns 0 if all the keys are available. Returns non-zero if there
+    are problems.
     """
     result = multi_get(obj, *key_str)
     if result.is_bad:

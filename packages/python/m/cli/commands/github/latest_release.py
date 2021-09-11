@@ -1,5 +1,6 @@
 import inspect
-from ...utils import run_main, env
+
+from ...utils import env, run_main
 
 
 def add_parser(sub_parser, raw):
@@ -15,23 +16,29 @@ def add_parser(sub_parser, raw):
         'latest_release',
         help='get the latest release for a repo',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
+    add(
+        '--owner',
         type=str,
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         required=True,
-        help='repo name')
+        help='repo name',
+    )
 
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....github.cli import get_latest_release
-    return run_main(lambda: get_latest_release(
-        arg.token,
-        arg.owner,
-        arg.repo,
-    ), print)
+    return run_main(
+        lambda: get_latest_release(
+            arg.token,
+            arg.owner,
+            arg.repo,
+        ), print,
+    )

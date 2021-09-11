@@ -1,6 +1,5 @@
+from m.ci.config import Config, GitFlowConfig, MFlowConfig, Workflow
 from m.core.io import EnvVars
-from m.ci.config import Config, Workflow, GitFlowConfig, MFlowConfig
-
 
 CONFIG = Config(
     owner='jmlopez-rod',
@@ -9,7 +8,7 @@ CONFIG = Config(
     m_dir='m',
     workflow=Workflow.FREE_FLOW,
     git_flow=GitFlowConfig(),
-    m_flow=MFlowConfig()
+    m_flow=MFlowConfig(),
 )
 
 ENV_VARS = EnvVars(

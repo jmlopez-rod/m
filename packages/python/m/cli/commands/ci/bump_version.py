@@ -3,19 +3,21 @@ def add_parser(sub_parser, raw):
         'bump_version',
         help='prompt for the next version',
         formatter_class=raw,
-        description='Prompt user for the next valid semantic version'
+        description='Prompt user for the next valid semantic version',
     )
     add = parser.add_argument
-    add('--type',
+    add(
+        '--type',
         required=True,
         choices=['release', 'hotfix'],
-        help='verification type')
-    add('version', type=str, help='version to bump')
+        help='verification type',
+    )
+    add('version', help='version to bump')
 
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
     from ....core.io import prompt_next_version
     next_ver = prompt_next_version(arg.version, arg.type)
-    print(next_ver)
+    print(next_ver)  # noqa: WPS421
     return 0

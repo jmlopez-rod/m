@@ -1,4 +1,5 @@
 import inspect
+
 from ...utils import run_main
 
 
@@ -13,7 +14,7 @@ def add_parser(sub_parser, raw):
         'first_sha',
         help='display the first commit sha',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
 
 

@@ -1,5 +1,6 @@
 import inspect
-from ...utils import run_main, env
+
+from ...utils import env, run_main
 
 
 def add_parser(sub_parser, raw):
@@ -34,41 +35,52 @@ def add_parser(sub_parser, raw):
         'ci',
         help='continous integration information',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
-        type=str,
+    add(
+        '--owner',
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
-        type=str,
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         required=True,
-        help='repo name')
-    add('--sha',
-        type=str,
+        help='repo name',
+    )
+    add(
+        '--sha',
         required=True,
-        help='commit sha')
-    add('--pr',
+        help='commit sha',
+    )
+    add(
+        '--pr',
         type=int,
-        help='pull request number')
-    add('--file-count',
+        help='pull request number',
+    )
+    add(
+        '--file-count',
         default=10,
         type=int,
-        help='max number of files to retrieve')
-    add('--include-release',
+        help='max number of files to retrieve',
+    )
+    add(
+        '--include-release',
         default=False,
-        action="store_true",
-        help='include the last release information')
-    add('--merge-commit',
+        action='store_true',
+        help='include the last release information',
+    )
+    add(
+        '--merge-commit',
         default=False,
-        action="store_true",
-        help='set if the sha is a merge commit sha (from github)')
+        action='store_true',
+        help='set if the sha is a merge commit sha (from github)',
+    )
 
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....github.ci import get_raw_ci_run_info, CommitInfo
+    from ....github.ci import CommitInfo, get_raw_ci_run_info
     return run_main(lambda: get_raw_ci_run_info(
         arg.token,
         CommitInfo(arg.owner, arg.repo, arg.sha),

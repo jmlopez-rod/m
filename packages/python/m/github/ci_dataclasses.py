@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import List, Optional
+
 from ..core.io import JsonStr
 
 
@@ -37,7 +38,7 @@ class Commit(JsonStr):
     associated_pull_request: Optional[AssociatedPullRequest] = None
 
     def get_pr_branch(self) -> str:
-        """Returns the pr branch if the commit has an associated pr or empty
+        """Return the pr branch if the commit has an associated pr or empty
         string."""
         if not self.associated_pull_request:
             return ''

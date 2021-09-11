@@ -14,7 +14,7 @@ def add_parser(sub_parser, raw):
         'warn',
         help='report a warning',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
     add('message', type=str, help='warning message')

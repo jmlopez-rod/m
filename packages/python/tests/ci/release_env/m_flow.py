@@ -1,11 +1,11 @@
 from dataclasses import replace as copy
 from unittest.mock import patch
 
-from m.core import one_of
-from m.core.fp import Good
 from m.ci.config import Workflow
 from m.ci.git_env import get_git_env
 from m.ci.release_env import get_release_env
+from m.core import one_of
+from m.core.fp import Good
 
 from ...util import FpTestCase, read_fixture
 from .util import CONFIG, ENV_VARS, mock_commit_sha
@@ -44,10 +44,12 @@ class ReleaseEnvMFlowTest(FpTestCase):
         ))
 
     def test_master_behind(self):
-        """Github says version is 1.1.1 but the config is still in 0.0.0
-        This can be fixed by merging the latest. This usually happens when a
-        release gets merged and now the other branches are behind. So this
-        type of error will be a good reminder to developers to update.
+        """Github says version is 1.1.1 but the config is still in 0.0.0 This
+        can be fixed by merging the latest.
+
+        This usually happens when a release gets merged and now the
+        other branches are behind. So this type of error will be a good
+        reminder to developers to update.
         """
         self.env_vars.ci_env = True
         self.config.version = '0.0.0'
@@ -139,7 +141,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
             ))
 
     def test_release_merge(self):
-        """Should use the proper version number"""
+        """Should use the proper version number."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
         self.env_vars.git_branch = 'refs/heads/master'
@@ -181,7 +183,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
             ))
 
     def test_hotfix_merge(self):
-        """Should use the proper version number"""
+        """Should use the proper version number."""
         self.env_vars.ci_env = True
         self.config.version = '1.1.2'
         self.env_vars.git_branch = 'refs/heads/master'

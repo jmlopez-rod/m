@@ -1,6 +1,9 @@
 def commit_query(include_pr: bool, include_author: bool) -> str:
-    """Helper function to build a graphql query for github. The output of this
-    function is meant to go inside the repository field."""
+    """Helper function to build a graphql query for github.
+
+    The output of this function is meant to go inside the repository
+    field.
+    """
     author = '''
       author {
         name

@@ -1,13 +1,13 @@
-from ..core import one_of, OneOf, issue, Good
-from ..core.issue import Issue
-from .config import read_config, Workflow, Config
 from .. import git
+from ..core import Good, OneOf, issue, one_of
+from ..core.issue import Issue
+from .config import Config, Workflow, read_config
 
 
 def _verify_branch(
     config: Config,
     branch: str,
-    assertion_type: str
+    assertion_type: str,
 ) -> OneOf[Issue, int]:
     workflow = config.workflow
     if workflow == Workflow.FREE_FLOW:

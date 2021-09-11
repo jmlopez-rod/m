@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Mapping, Any, Optional
-from ..core import one_of, issue
-from ..core.fp import OneOf, Good
-from ..core.issue import Issue
+from typing import Any, Mapping, Optional
+
+from ..core import issue, one_of
+from ..core.fp import Good, OneOf
 from ..core.http import fetch_json
+from ..core.issue import Issue
 
 
 def request(
@@ -13,6 +14,7 @@ def request(
     data: Optional[Any] = None,
 ) -> OneOf[Issue, Any]:
     """Make an api request to github. See:
+
     - https://docs.github.com/en/rest/overview/resources-in-the-rest-api
     - https://docs.github.com/en/rest/overview/endpoints-available-for-github-apps
     """  # noqa
@@ -30,18 +32,20 @@ def _filter_data(data: Mapping[str, Any]) -> OneOf[Issue, Any]:
 def graphql(
     token: str,
     query: str,
-    variables: Mapping[str, Any]
+    variables: Mapping[str, Any],
 ) -> OneOf[Issue, Any]:
     """Make a request to Github's graphql API:
 
     https://docs.github.com/en/graphql/guides/forming-calls-with-graphql
     """
     data = dict(query=query, variables=variables or {})
-    return one_of(lambda: [
-        payload
-        for res in request(token, '/graphql', 'POST', data)
-        for payload in _filter_data(res)
-    ])
+    return one_of(
+        lambda: [
+            payload
+            for res in request(token, '/graphql', 'POST', data)
+            for payload in _filter_data(res)
+        ],
+    )
 
 
 def create_release(

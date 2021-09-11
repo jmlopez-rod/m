@@ -1,5 +1,6 @@
 import inspect
-from ...utils import run_main, env
+
+from ...utils import env, run_main
 
 
 def add_parser(sub_parser, raw):
@@ -20,20 +21,28 @@ def add_parser(sub_parser, raw):
         'merge_pr',
         help='merge a pull request',
         formatter_class=raw,
-        description=inspect.cleandoc(desc)
+        description=inspect.cleandoc(desc),
     )
     add = parser.add_argument
-    add('--owner',
+    add(
+        '--owner',
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)')
-    add('--repo',
+        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+    )
+    add(
+        '--repo',
         required=True,
-        help='repo name')
-    add('--commit-title',
-        help='commit title')
-    add('pr',
+        help='repo name',
+    )
+    add(
+        '--commit-title',
+        help='commit title',
+    )
+    add(
+        'pr',
         type=int,
-        help='the pr number')
+        help='the pr number',
+    )
 
 
 def run(arg):
@@ -44,4 +53,5 @@ def run(arg):
         arg.owner,
         arg.repo,
         arg.pr,
-        arg.commit_title))
+        arg.commit_title,
+    ))

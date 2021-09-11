@@ -1,4 +1,4 @@
-from .core import subprocess, one_of
+from .core import one_of, subprocess
 from .core.fp import OneOf
 from .core.issue import Issue
 
@@ -44,7 +44,9 @@ def _extract_status(msg: str) -> str:
 def get_status() -> OneOf[Issue, str]:
     """Return a `OneOf` containing the current git status."""
     res = subprocess.eval_cmd('git status')
-    return one_of(lambda: [
-        _extract_status(msg)
-        for msg in res
-    ])
+    return one_of(
+        lambda: [
+            _extract_status(msg)
+            for msg in res
+        ],
+    )

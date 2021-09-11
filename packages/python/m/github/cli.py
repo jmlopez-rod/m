@@ -1,6 +1,7 @@
 from typing import Any
+
 from ..core import one_of
-from ..core.fp import OneOf, Good
+from ..core.fp import Good, OneOf
 from ..core.issue import Issue
 from ..core.json import get
 from .api import graphql
@@ -12,7 +13,7 @@ def get_pr_info(
     owner: str,
     repo: str,
     pr_number: int,
-    file_count: int
+    file_count: int,
 ) -> OneOf[Issue, Any]:
     """Retrieve the information of the given Github PR."""
     query = create_ci_query(pr_number, False, False)
@@ -22,11 +23,13 @@ def get_pr_info(
         pr=pr_number,
         fc=file_count,
     )
-    return one_of(lambda: [
-        data
-        for res in graphql(token, query, variables)
-        for data in get(res, 'repository.pullRequest')
-    ])
+    return one_of(
+        lambda: [
+            data
+            for res in graphql(token, query, variables)
+            for data in get(res, 'repository.pullRequest')
+        ],
+    )
 
 
 def get_latest_release(
@@ -35,7 +38,7 @@ def get_latest_release(
     repo: str,
 ) -> OneOf[Issue, str]:
     """Retrieve the latest release for a repo."""
-    query = '''query ($owner: String!, $repo: String!) {
+    query = """query ($owner: String!, $repo: String!) {
       repository(owner:$owner, name:$repo) {
          releases(last: 1) {
             nodes {
@@ -45,10 +48,12 @@ def get_latest_release(
             }
         }
       }
-    }'''
+    }"""
     variables = dict(owner=owner, repo=repo)
-    return one_of(lambda: [
-        data
-        for res in graphql(token, query, variables)
-        for data in get(res, 'repository.releases.nodes.0.tagName')
-    ]).flat_map_bad(lambda _: Good('0.0.0'))
+    return one_of(
+        lambda: [
+            data
+            for res in graphql(token, query, variables)
+            for data in get(res, 'repository.releases.nodes.0.tagName')
+        ],
+    ).flat_map_bad(lambda _: Good('0.0.0'))
