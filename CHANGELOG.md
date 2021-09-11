@@ -1,4 +1,4 @@
-# Changelog
+x# Changelog
 
 The format of this changelog is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
@@ -7,6 +7,17 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 > The public API should not be considered stable.
 
 ## [Unreleased]
+
+## [0.5.0] <a name="0.5.0" href="#0.5.0">-</a> September 11, 2021
+- *Breaking Change*: Renamed `m ci lint` to `m ci celt`.
+- `celt` cli command adds the following options:
+  - `--full-message`: Display the whole error message (useful with pylint)
+  - `--file-regex`: When provided it only displays errors of files matching it.
+  - `--file-prefix`: A string of the form `[old]:[new]`. It modifies a file
+    prefix that matches `old` for `new`. Useful to display file paths when
+    running in docker.
+  - `--stats-only`: Displays the current number of violations for each rule.
+
 
 ## [0.4.0] <a name="0.4.0" href="#0.4.0">-</a> September 02, 2021
 - Add `m github latest_release` to check the latest version of a github repo.
@@ -75,7 +86,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.4.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/jmlopez-rod/m/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/jmlopez-rod/m/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/jmlopez-rod/m/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/jmlopez-rod/m/compare/0.2.0...0.3.0
