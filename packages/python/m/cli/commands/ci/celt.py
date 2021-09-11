@@ -14,7 +14,6 @@ def add_parser(sub_parser, raw):
 
         examples:
 
-            ~$ eslint [dir] -f json | m ci celt -t eslint -c @config.json
             ~$ m ci celt -t eslint -c @config.json < <(eslint [dir] -f json)
 
             ~$ eslint [...options] > tmp.json
@@ -44,6 +43,10 @@ def add_parser(sub_parser, raw):
         - pycodestyle: expects default output.
 
             pycodestyle --format=default [dir]
+
+        - flake8: expects default output.
+
+            flake8 [dir]
 
         - pylint: expects json output
 
