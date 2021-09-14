@@ -84,6 +84,7 @@ class Configuration:
 
     max_lines: int = 5
     full_message: bool = False
+    ignore_error_allowance: bool = False
     file_regex: Optional[str] = None
     file_prefix: Optional[str] = None
 
