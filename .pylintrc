@@ -5,7 +5,7 @@ disable=
   broad-except,
   missing-module-docstring
 
-no-docstring-rgx=^_|run|add_parser|main|add_arguments
+no-docstring-rgx=^_|run|add_parser|main|add_arguments|^test|(.*)Test$
 
 good-names=_,
   i, j, k,

@@ -151,7 +151,6 @@ def project_stats_json(
     Args:
         name: The name of the compiler/linter.
         project: The `ProjectStatus` instance.
-        celt_config: The post processor configuration.
 
     Returns:
         The string version of the project status.

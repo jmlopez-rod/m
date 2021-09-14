@@ -77,7 +77,7 @@ def read_file(filename: str) -> OneOf[Issue, str]:
     except Exception as ex:
         return issue(
             'failed to read file',
-            data={'filename': filename},
+            context={'filename': filename},
             cause=ex,
         )
 
@@ -91,7 +91,7 @@ def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
     except Exception as ex:
         return issue(
             'failed to write file',
-            data={'filename': filename},
+            context={'filename': filename},
             cause=ex,
         )
 

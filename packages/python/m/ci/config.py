@@ -74,7 +74,11 @@ class Config(JsonStr):
             ver_gt_latest = p_ver > p_latest
             ver_lt_latest = p_ver < p_latest
         except Exception as ex:
-            return issue('error comparing versions', cause=ex, data=err_data)
+            return issue(
+                'error comparing versions',
+                cause=ex,
+                context=err_data,
+            )
         msg: str = ''
         if is_release_pr:
             if not ver_gt_latest:
@@ -88,7 +92,7 @@ class Config(JsonStr):
             if not ver_gt_latest:
                 msg = 'version was not bumped during release pr'
         if msg:
-            return issue(msg, data=err_data)
+            return issue(msg, context=err_data)
         return Good(0)
 
 
@@ -126,10 +130,10 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """Read an m configuration file."""
     return one_of(lambda: [
         Config(owner, repo, version, m_dir, workflow, git_flow, m_flow)
-        for data in json.read_json(f'{m_dir}/m.json')
-        for owner, repo in json.multi_get(data, 'owner', 'repo')
-        for version in [data.get('version', '0.0.0')]
-        for workflow in read_workflow(data.get('workflow', 'free-flow'))
-        for git_flow in read_git_flow(data.get('gitFlow', {}))
-        for m_flow in read_m_flow(data.get('mFlow', {}))
+        for m_cfg in json.read_json(f'{m_dir}/m.json')
+        for owner, repo in json.multi_get(m_cfg, 'owner', 'repo')
+        for version in [m_cfg.get('version', '0.0.0')]
+        for workflow in read_workflow(m_cfg.get('workflow', 'free-flow'))
+        for git_flow in read_git_flow(m_cfg.get('gitFlow', {}))
+        for m_flow in read_m_flow(m_cfg.get('mFlow', {}))
     ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))

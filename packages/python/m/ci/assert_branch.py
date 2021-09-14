@@ -30,13 +30,13 @@ def _verify_branch(
     if not req_branch:
         return issue(
             'invalid m workflow',
-            data=dict(workflow=str(workflow)),
+            context={'workflow': str(workflow)},
             include_traceback=False,
         )
     if branch != req_branch:
         return issue(
             f"invalid branch for '{assertion_type}' using {config.workflow}",
-            data=dict(branch=branch, requiredBranch=req_branch),
+            context={'branch': branch, 'requiredBranch': req_branch},
             include_traceback=False,
         )
     return Good(0)

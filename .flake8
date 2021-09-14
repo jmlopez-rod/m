@@ -1,4 +1,5 @@
 [flake8]
+i-control-code = False
 ignore =
   D100,    # Missing docstring in public module
   D103,    # Missing docstring in public function
@@ -11,3 +12,6 @@ ignore =
   WPS433,  # Found nested import
   WPS111,  # Found too short name: x < 2
   WPS224   # Found a comprehension with too many `for` statements
+per-file-ignores =
+  # There are multiple `assert`s in tests, we allow them:
+  tests/*.py:S101

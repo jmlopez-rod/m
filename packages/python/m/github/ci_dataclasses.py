@@ -7,6 +7,7 @@ from ..core.io import JsonStr
 @dataclass
 class Author(JsonStr):
     """An object representing a commiter."""
+
     login: str
     avatar_url: str
     email: str
@@ -15,6 +16,7 @@ class Author(JsonStr):
 @dataclass
 class AssociatedPullRequest(JsonStr):
     """Information for commits that are associated with a pull request."""
+
     # pylint: disable=too-many-instance-attributes
     author: Author
     merged: bool
@@ -30,6 +32,7 @@ class AssociatedPullRequest(JsonStr):
 @dataclass
 class Commit(JsonStr):
     """The git commit info."""
+
     author_login: str
     short_sha: str
     sha: str
@@ -39,7 +42,8 @@ class Commit(JsonStr):
 
     def get_pr_branch(self) -> str:
         """Return the pr branch if the commit has an associated pr or empty
-        string."""
+        string.
+        """
         if not self.associated_pull_request:
             return ''
         return self.associated_pull_request.pr_branch
@@ -54,6 +58,7 @@ class Commit(JsonStr):
 @dataclass
 class PullRequest(JsonStr):
     """Pull request information."""
+
     # pylint: disable=too-many-instance-attributes
     author: Author
     pr_number: int
@@ -77,6 +82,7 @@ class PullRequest(JsonStr):
 @dataclass
 class Release(JsonStr):
     """Github release <==> Git tag."""
+
     name: str
     tag_name: str
     published_at: str
@@ -85,6 +91,7 @@ class Release(JsonStr):
 @dataclass
 class GithubCiRunInfo(JsonStr):
     """The main information we need for a ci run."""
+
     commit: Commit
     pull_request: Optional[PullRequest] = None
     release: Optional[Release] = None
@@ -93,6 +100,7 @@ class GithubCiRunInfo(JsonStr):
 @dataclass
 class CommitInfo(JsonStr):
     """A commit can be tracked with the following properties."""
+
     owner: str
     repo: str
     sha: str

@@ -25,7 +25,7 @@ def read_json(
     except Exception as ex:
         return issue(
             'failed to read json file',
-            data={'filename': filename or 'SYS.STDIN'},
+            context={'filename': filename or 'SYS.STDIN'},
             cause=ex,
         )
 
@@ -101,7 +101,7 @@ def multi_get(
     if failures:
         return issue(
             'multi_get key retrieval failure',
-            data=[x.to_dict() for x in failures],
+            context=[x.to_dict() for x in failures],
             include_traceback=False,
         )
     return Good(result)

@@ -1,12 +1,18 @@
 from subprocess import PIPE, STDOUT, Popen
 
-from . import issue
+from . import issue, Issue
 from .fp import Good, OneOf
-from .issue import Issue
 
 
 def eval_cmd(cmd: str) -> OneOf[Issue, str]:
-    """Evaluate a bash command and return its output in a `Good`."""
+    """Evaluate a bash command and return its output.
+
+    Args:
+        cmd: The shell command to evaluate.
+
+    Returns:
+        The output of the command (or an Issue if the command failed).
+    """
     with Popen(
         cmd,
         shell=True,
@@ -20,5 +26,5 @@ def eval_cmd(cmd: str) -> OneOf[Issue, str]:
             return Good(out.strip())
     return issue(
         'command returned a non zero exit code',
-        data={'cmd': cmd, 'output': out},
+        context={'cmd': cmd, 'output': out},
     )

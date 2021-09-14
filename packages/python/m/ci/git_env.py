@@ -2,12 +2,16 @@ import re
 from dataclasses import dataclass
 from typing import List, Optional, cast
 
-from ..core import issue
+from ..core import Issue, issue
 from ..core.fp import Good, OneOf
 from ..core.io import EnvVars, JsonStr
-from ..core.issue import Issue
-from ..github.ci import (Commit, CommitInfo, PullRequest, Release,
-                         get_ci_run_info)
+from ..github.ci import (
+    Commit,
+    CommitInfo,
+    PullRequest,
+    Release,
+    get_ci_run_info,
+)
 from ..github.ci_dataclasses import GithubCiRunInfo
 from .config import Config, Workflow
 
@@ -120,10 +124,9 @@ class GitEnv(JsonStr):
         is_release = self.is_release(config)
         is_release_pr = self.is_release_pr(config)
         is_hotfix_pr = self.is_hotfix_pr(config)
-        if (
-            workflow == Workflow.GIT_FLOW and
-            self.target_branch == config.git_flow.develop_branch
-        ):
+        is_git_flow = workflow == Workflow.GIT_FLOW
+        is_dev_branch = self.target_branch == config.git_flow.develop_branch
+        if is_git_flow and is_dev_branch:
             if is_release or is_release_pr or is_hotfix_pr:
                 return Good('SKIP')
         prefix = '' if workflow == Workflow.FREE_FLOW else '0.0.0-'

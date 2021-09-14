@@ -26,7 +26,10 @@ def request(
 def _filter_data(data: Mapping[str, Any]) -> OneOf[Issue, Any]:
     if data.get('data'):
         return Good(data['data'])
-    return issue('github response missing data field', data={'response': data})
+    return issue(
+        'github response missing data field',
+        context={'response': data}
+    )
 
 
 def graphql(

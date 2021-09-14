@@ -38,7 +38,7 @@ def fetch(
         return issue(
             f'{protocol} request failure',
             cause=ex,
-            data=dict(url=url),
+            context={'url': url},
         )
     try:
         res = connection.getresponse()
@@ -48,13 +48,18 @@ def fetch(
             return Good(res_body)
         return issue(
             f'{protocol} request failure ({code})',
-            data=dict(url=url, body=body, code=code, res_body=str(res_body)),
+            context={
+                'url': url,
+                'body': body,
+                'code': code,
+                'res_body': str(res_body),
+            },
         )
     except Exception as ex:
         return issue(
             f'{protocol} request read failure',
             cause=ex,
-            data=dict(url=url),
+            context={'url': url},
         )
 
 

@@ -13,24 +13,46 @@ from ..git import get_remote_url
 
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
-    """Find the owner and repo from an ssh url."""
+    """Find the owner and repo from an ssh url.
+
+    Args:
+        ssh_url: The url of the repo
+
+    Returns:
+        A tuple with the owner and repo (or an Issue).
+    """
     match = re.findall('.*:(.*)/(.*).git', ssh_url)
     if match:
         return Good(match[0])
-    return issue('unable to obtain owner and repo', data=dict(ssh_url=ssh_url))
+    return issue(
+        'unable to obtain owner and repo',
+        context=dict(ssh_url=ssh_url),
+    )
 
 
 def get_repo_info() -> OneOf[Issue, Tuple[str, str]]:
-    """Get the owner and repo name from the current repository."""
+    """Get the owner and repo name from the current repository.
+
+    Returns:
+        A tuple with the owner and repo (or an Issue).
+    """
     return one_of(lambda: [
-        info
+        owner_repo
         for ssh_url in get_remote_url()
-        for info in parse_ssh_url(ssh_url)
+        for owner_repo in parse_ssh_url(ssh_url)
     ])
 
 
 def m_json_body(owner: str, repo: str) -> str:
-    """Create the basic contents of a m configuration file."""
+    """Create the basic contents of a m configuration file.
+
+    Args:
+        owner: The repo owner.
+        repo: The repo name.
+
+    Returns:
+        A json string to be the content of the `m.json` file.
+    """
     return inspect.cleandoc(f'''
         {{
           "owner": "{owner}",
