@@ -8,6 +8,15 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.6.0] <a name="0.6.0" href="#0.6.0">-</a> September 14, 2021
+- `m ci celt` has `-i` option to ignore error allowance. This is helpful when
+  working on single files or the whole project and we want to see all the errors
+  without having to edit the configuration.
+- `m ci celt` accepts `-1` as a valid value for the `-m` option. This will
+  print all the errors instead of partially showing them.
+- `-s` option in `celt` removes error allownances that are set to zero.
+
+
 ## [0.5.0] <a name="0.5.0" href="#0.5.0">-</a> September 11, 2021
 - *Breaking Change*: Renamed `m ci lint` to `m ci celt`.
 - `celt` cli command adds the following options:
@@ -86,7 +95,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.5.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/jmlopez-rod/m/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/jmlopez-rod/m/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/jmlopez-rod/m/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/jmlopez-rod/m/compare/0.3.0...0.3.1
