@@ -242,6 +242,8 @@ class PostProcessor:
         """
         cap_name = self.name.capitalize()
         allowed_rules = config.get(f'allowed{cap_name}Rules', {})
+        if self.celt_config.ignore_error_allowance:
+            allowed_rules = {}
         ignored_rules = config.get(f'ignored{cap_name}Rules', {})
         return process(
             payload,

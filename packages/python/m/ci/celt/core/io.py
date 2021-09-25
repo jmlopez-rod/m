@@ -37,7 +37,12 @@ def rule_info_str(
     """
     allowed = 'IGNORED' if rule.ignored else f'allowed {rule.allowed}'
     buffer = [f'{rule.rule_id} (found {rule.found}, {allowed}):']
-    for violation in rule.violations[:config.max_lines]:
+    violations = (
+        rule.violations
+        if config.max_lines == -1
+        else rule.violations[:config.max_lines]
+    )
+    for violation in violations:
         file_path = violation.file_path
         msg, *rest = violation.message.splitlines()
         line = violation.line
@@ -45,7 +50,7 @@ def rule_info_str(
         buffer.append(f'  {file_path}:{line}:{column} - {msg}')
         if rest and config.full_message:
             buffer.extend([f'    {x}' for x in rest])
-    if len(rule.violations) > config.max_lines:
+    if -1 < config.max_lines < len(rule.violations):
         remaining = len(rule.violations) - config.max_lines
         buffer.append(f'  ... and {remaining} more')
     buffer.append('')
@@ -162,14 +167,19 @@ def project_stats_json(
     ]
 
     key_rule = sorted(
-        project.rules.items(),
+        [
+            x
+            for x in project.rules.items()
+            if x[1].found > 0 and not x[1].ignored
+        ],
         key=cmp_to_key(_compare_rule_items),
     )
     buffer.extend([
         f'    "{rule_id}": {rule.found},'
-        for rule_id, rule in key_rule
-        if not rule.ignored
+        for rule_id, rule in key_rule[:-1]
     ])
+    rule_id, rule = key_rule[-1]
+    buffer.append(f'    "{rule_id}": {rule.found}')
     buffer.extend([
         '  }',
         '}',
