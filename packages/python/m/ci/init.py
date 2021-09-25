@@ -26,7 +26,7 @@ def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
         return Good(match[0])
     return issue(
         'unable to obtain owner and repo',
-        context=dict(ssh_url=ssh_url),
+        context={'ssh_url': ssh_url},
     )
 
 

@@ -138,8 +138,8 @@ def serialize(obj: Any) -> Any:
 
 class JsonStr:
     """Base class to stringify dataclasses."""
-    # pylint: disable=too-few-public-methods
 
+    # pylint: disable=too-few-public-methods
     def __str__(self) -> str:
         return json.dumps(self.__dict__, default=serialize)
 
@@ -147,6 +147,7 @@ class JsonStr:
 @dataclass
 class EnvVars(JsonStr):
     """Class to store the values of the environment variables."""
+
     # pylint: disable=too-many-instance-attributes
     ci_env: bool = False
     github_token: str = ''

@@ -1,8 +1,8 @@
 import inspect
 
-meta = dict(
-    help='display messages',
-    description=inspect.cleandoc('''
+meta = {
+    'help': 'display messages',
+    'description': inspect.cleandoc('''
         CI/CD tools provide ways of interacting with them via shell messages.
 
         Github Actions:
@@ -14,4 +14,4 @@ meta = dict(
         The commands provided here attempt to create an interface to
         display those messages.
     '''),
-)
+}

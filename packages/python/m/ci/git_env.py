@@ -39,6 +39,7 @@ def get_hotfix_prefix(config: Config) -> Optional[str]:
 @dataclass
 class GitEnv(JsonStr):
     """Object to store the git configuration."""
+
     sha: str
     branch: str
     target_branch: str
@@ -62,8 +63,8 @@ class GitEnv(JsonStr):
         release_prefix = get_release_prefix(config)
         hotfix_prefix = get_hotfix_prefix(config)
         if (
-                workflow == Workflow.M_FLOW and
-                self.branch != config.m_flow.master_branch
+            workflow == Workflow.M_FLOW and
+            self.branch != config.m_flow.master_branch
         ):
             return False
         if (

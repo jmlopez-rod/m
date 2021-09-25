@@ -11,6 +11,7 @@ from .git_env import GitEnv
 @dataclass
 class ReleaseEnv(JsonStr):
     """Object to store the release configuration."""
+
     build_tag: str
     is_release: bool
     is_release_pr: bool

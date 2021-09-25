@@ -41,7 +41,7 @@ def graphql(
 
     https://docs.github.com/en/graphql/guides/forming-calls-with-graphql
     """
-    data = dict(query=query, variables=variables or {})
+    data = {'query': query, 'variables': variables or {}}
     return one_of(
         lambda: [
             payload
@@ -77,6 +77,7 @@ def create_release(
 @dataclass
 class GithubPullRequest:
     """Data needed to create a pull request."""
+
     title: str
     body: str
     head: str
@@ -109,13 +110,14 @@ def merge_pr(
 ) -> OneOf[Issue, Any]:
     """Send a payload to merge a pull request in github."""
     endpoint = f'/repos/{owner}/{repo}/pulls/{pr_number}/merge'
-    data = dict(commit_title=commit_title) if commit_title else {}
+    data = {'commit_title': commit_title} if commit_title else {}
     return request(token, endpoint, 'PUT', data)
 
 
 @dataclass
 class GithubShaStatus:
     """Data needed to create a pull request."""
+
     sha: str
     context: str
     state: str

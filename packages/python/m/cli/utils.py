@@ -15,6 +15,7 @@ from .validators import validate_non_empty_str
 
 class CmdModule:
     """Interface for command modules."""
+
     meta: Dict[str, str]
 
     @staticmethod

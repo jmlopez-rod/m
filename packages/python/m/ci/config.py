@@ -11,6 +11,7 @@ from ..core.issue import Issue
 
 class Workflow(Enum):
     """Supported workflows."""
+
     GIT_FLOW = 'git_flow'
     M_FLOW = 'm_flow'
     FREE_FLOW = 'free_flow'
@@ -22,6 +23,7 @@ class Workflow(Enum):
 @dataclass
 class GitFlowConfig(JsonStr):
     """An object mapping branches for the git_flow workflow."""
+
     master_branch: str = 'master'
     develop_branch: str = 'develop'
     release_prefix: str = 'release'
@@ -31,6 +33,7 @@ class GitFlowConfig(JsonStr):
 @dataclass
 class MFlowConfig(JsonStr):
     """An object mapping branches for the m_flow workflow."""
+
     master_branch: str = 'master'
     release_prefix: str = 'release'
     hotfix_prefix: str = 'hotfix'
@@ -39,6 +42,7 @@ class MFlowConfig(JsonStr):
 @dataclass
 class Config(JsonStr):
     """Object to store the m project configuration."""
+
     owner: str
     repo: str
     version: str
@@ -62,12 +66,12 @@ class Config(JsonStr):
         """
         if not gh_latest:
             return Good(0)
-        err_data = dict(
-            config_version=self.version,
-            gh_latest=gh_latest,
-            is_release=is_release,
-            is_release_pr=is_release_pr,
-        )
+        err_data = {
+            'config_version': self.version,
+            'gh_latest': gh_latest,
+            'is_release': is_release,
+            'is_release_pr': is_release_pr,
+        }
         try:
             p_ver = StrictVersion(self.version)
             p_latest = StrictVersion(gh_latest)

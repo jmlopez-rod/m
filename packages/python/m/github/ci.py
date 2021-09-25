@@ -66,11 +66,11 @@ def get_build_sha(
         {commit_query(False, False)}
       }}
     }}'''
-    variables = dict(
-        owner=owner,
-        repo=repo,
-        sha=sha,
-    )
+    variables = {
+        'owner': owner,
+        'repo': repo,
+        'sha': sha,
+    }
     return one_of(
         lambda: [
             _parse_commit_message(data, sha)
@@ -91,7 +91,7 @@ def get_raw_ci_run_info(
     """Retrieve the information of the given Github PR."""
     query = create_ci_query(pr_number, True, include_release)
     owner, repo, sha = [commit_info.owner, commit_info.repo, commit_info.sha]
-    variables = dict(owner=owner, repo=repo, sha=sha, fc=file_count)
+    variables = {'owner': owner, 'repo': repo, 'sha': sha, 'fc': file_count}
     if pr_number:
         variables['pr'] = pr_number
     return one_of(lambda: [
