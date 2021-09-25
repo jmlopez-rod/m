@@ -1,6 +1,6 @@
 from subprocess import PIPE, STDOUT, Popen
 
-from . import issue, Issue
+from . import Issue, issue
 from .fp import Good, OneOf
 
 

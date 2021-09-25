@@ -1,9 +1,9 @@
 import inspect
 from typing import List, cast
 
-from m.ci.celt.post_processor import get_post_processor
 from m.ci.celt.core.process import PostProcessor
 from m.ci.celt.core.types import Configuration, ExitCode, ProjectStatus
+from m.ci.celt.post_processor import get_post_processor
 
 from ...util import FpTestCase, read_fixture
 

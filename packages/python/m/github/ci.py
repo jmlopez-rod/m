@@ -6,8 +6,15 @@ from ..core.fp import Good, OneOf
 from ..core.issue import Issue
 from ..core.json import get
 from . import api
-from .ci_dataclasses import (AssociatedPullRequest, Author, Commit, CommitInfo,
-                             GithubCiRunInfo, PullRequest, Release)
+from .ci_dataclasses import (
+    AssociatedPullRequest,
+    Author,
+    Commit,
+    CommitInfo,
+    GithubCiRunInfo,
+    PullRequest,
+    Release,
+)
 from .ci_graph_queries import LATEST_RELEASE, PULL_REQUEST, commit_query
 
 

@@ -2,8 +2,13 @@ from dataclasses import replace as copy
 from typing import cast
 from unittest.mock import patch
 
-from m.ci.config import (Config, GitFlowConfig, MFlowConfig, Workflow,
-                         read_config)
+from m.ci.config import (
+    Config,
+    GitFlowConfig,
+    MFlowConfig,
+    Workflow,
+    read_config,
+)
 from m.core.fp import Good
 
 from ...util import FpTestCase

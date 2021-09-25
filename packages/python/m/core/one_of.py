@@ -6,11 +6,12 @@ from .issue import Issue
 G = TypeVar('G')  # pylint: disable=invalid-name
 
 
-def issue(
+def issue(  # noqa: WPS211
     message: str,
     description: Optional[str] = None,
     cause: Optional[Exception] = None,
     context: Optional[object] = None,
+    data: Optional[object] = None,  # noqa: WPS110
     include_traceback: bool = True,
 ) -> OneOf[Issue, Any]:
     """Shortcut to create a Bad OneOf containing an Issue.
@@ -20,13 +21,14 @@ def issue(
         description: Optional description.
         cause: Optional exception that caused the issue.
         context: Optional dictionary to provide extra information.
+        data: deprecated, use context instead.
         include_traceback: Defaults to true to provde the stack trace.
 
     Returns:
         An instance of an `Issue`.
     """
     return Bad(
-        Issue(message, description, cause, context, include_traceback),
+        Issue(message, description, cause, context or data, include_traceback),
     )
 
 
