@@ -1,5 +1,6 @@
 {
   "allowedPylintRules": {
+    "consider-using-f-string": 1,
     "invalid-name": 3
   },
   "allowedFlake8Rules": {

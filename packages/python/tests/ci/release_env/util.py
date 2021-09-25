@@ -24,12 +24,12 @@ ENV_VARS = EnvVars(
 
 
 def mock_commit_sha(sha: str) -> str:
-    return """{
-        "data": {
-            "repository": {
-                "commit": {
-                    "message": "Merge %s into sha2"
-                }
-            }
-        }
-    }""" % sha
+    return f"""{{
+        "data": {{
+            "repository": {{
+                "commit": {{
+                    "message": "Merge {sha} into sha2"
+                }}
+            }}
+        }}
+    }}"""
