@@ -98,7 +98,8 @@ class Issue(Exception):
 
     def to_dict(self) -> IssueDict:
         """Convert to a ordered dictionary so that each of the properties are
-        written in an expected order."""
+        written in an expected order.
+        """
         obj = cast(IssueDict, OrderedDict())
         obj['message'] = self.message
         if self.description:

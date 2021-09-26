@@ -42,8 +42,7 @@ class Commit(JsonStr):
 
     def get_pr_branch(self) -> str:
         """Return the pr branch if the commit has an associated pr or empty
-        string.
-        """
+        string."""
         if not self.associated_pull_request:
             return ''
         return self.associated_pull_request.pr_branch
