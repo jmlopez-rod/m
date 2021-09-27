@@ -1,18 +1,19 @@
-import http.client as httplib
-import json
+import json as builtin_json
+from http import client as httplib
 from typing import Any, Mapping, Optional
 from urllib.parse import urlparse
 
-from . import issue, one_of
+from . import Issue, issue, one_of
 from .fp import Good, OneOf
-from .issue import Issue
 from .json import parse_json
 
+STATUS_OK = 200
+STATUS_REDIRECT = 300
 
-def get_connection(protocol: str, hostname: str) -> httplib.HTTPConnection:
-    """Create a connection for the given host."""
+
+def _get_connection(protocol: str, hostname: str) -> httplib.HTTPConnection:
     if protocol == 'https':
-        return httplib.HTTPSConnection(hostname)
+        return httplib.HTTPSConnection(hostname)  # noqa: S309
     return httplib.HTTPConnection(hostname)
 
 
@@ -22,64 +23,90 @@ def fetch(
     method: str = 'GET',
     body: Optional[str] = None,
 ) -> OneOf[Issue, str]:
-    """Send an http(s) request."""
+    """Send an http(s) request.
+
+    Args:
+        url:
+            The url to request.
+        headers:
+            The headers for the request. By default it sets the `user-agent`
+            to "m".
+        method:
+            The request method type. Defaults to `GET`.
+        body:
+            The body of the request.
+
+    Returns:
+        A `OneOf` containing the raw response from the server or an Issue.
+    """
     parts = urlparse(url)
     protocol, hostname, path = [parts.scheme, parts.netloc, parts.path]
-    if parts.query:
-        path += f'?{parts.query}'
-    _headers = {'user-agent': 'm', **headers}
+    endpoint = f'{path}?{parts.query}' if parts.query else path
+    fetch_headers = {'user-agent': 'm', **headers}
     if body:
-        _headers['content-length'] = f'{len(body)}'
-    connection = get_connection(protocol, hostname)
-    url = f'{hostname}{path}'
+        fetch_headers['content-length'] = str(len(body))
+    connection = _get_connection(protocol, hostname)
+    url = f'{hostname}{endpoint}'
+    ctxt = {'url': url}
+    # Would like to use same variable for exceptions but:
+    #  https://github.com/wemake-services/wemake-python-styleguide/issues/1416
     try:
-        connection.request(method, path, body, _headers)
-    except Exception as ex:
-        return issue(
-            f'{protocol} request failure',
-            cause=ex,
-            context={'url': url},
-        )
+        connection.request(method, endpoint, body, fetch_headers)
+    except Exception as ex1:
+        return issue(f'{protocol} request failure', cause=ex1, context=ctxt)
     try:
         res = connection.getresponse()
-        code = res.status
+    except Exception as ex2:
+        return issue(f'{protocol} response failure', cause=ex2, context=ctxt)
+    try:
         res_body = res.read()
-        if 200 <= code < 300:
-            return Good(res_body)
-        return issue(
-            f'{protocol} request failure ({code})',
-            context={
-                'url': url,
-                'body': body,
-                'code': code,
-                'res_body': str(res_body),
-            },
-        )
-    except Exception as ex:
-        return issue(
-            f'{protocol} request read failure',
-            cause=ex,
-            context={'url': url},
-        )
+    except Exception as ex3:
+        return issue(f'{protocol} read failure', cause=ex3, context=ctxt)
+    code = res.status
+    if STATUS_OK <= code < STATUS_REDIRECT:
+        return Good(res_body)
+    return issue(
+        f'{protocol} request failure ({code})',
+        context={
+            'url': url,
+            'body': body,
+            'code': code,
+            'res_body': str(res_body),
+        },
+    )
 
 
 def fetch_json(
     url: str,
     headers: Mapping[str, str],
     method: str = 'GET',
-    data: Any = None,
+    body_json: Any = None,
 ) -> OneOf[Issue, Any]:
-    """Especialized fetch to deal with json data."""
-    body = json.dumps(data) if data else None
-    _headers = {
+    """Especialized fetch to deal with json data.
+
+    Args:
+        url:
+            The url to request.
+        headers:
+            Additional headers for the request. By default it will add
+            proper accept and content-type headers for json requests.
+        method:
+            The request method type. Defaults to `GET`.
+        body_json:
+            The data to send to the server (python object).
+
+    Returns:
+        A `OneOf` containing a json parsed response from the server or an
+        Issue.
+    """
+    body = builtin_json.dumps(body_json) if body_json else None
+    fetch_headers = {
         'accept': 'application/json',
         'content-type': 'application/json',
         **headers,
     }
-    return one_of(
-        lambda: [
-            value
-            for payload in fetch(url, _headers, method, body)
-            for value in parse_json(payload)
-        ],
-    )
+    return one_of(lambda: [
+        response
+        for payload in fetch(url, fetch_headers, method, body)
+        for response in parse_json(payload)
+    ])
