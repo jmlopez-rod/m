@@ -41,16 +41,16 @@ def fetch(
     """
     parts = urlparse(url)
     protocol, hostname, path = [parts.scheme, parts.netloc, parts.path]
-    endpoint = f'{path}?{parts.query}' if parts.query else path
+    path = f'{path}?{parts.query}' if parts.query else path
     fetch_headers = {'user-agent': 'm', **headers}
     if body:
         fetch_headers['content-length'] = str(len(body))
     connection = _get_connection(protocol, hostname)
-    ctxt = {'url': f'{hostname}{endpoint}'}
+    ctxt = {'url': f'{hostname}{path}'}
     # See the next link for explanation disabling WPS440:
     #  https://github.com/wemake-services/wemake-python-styleguide/issues/1416
     try:
-        connection.request(method, endpoint, body, fetch_headers)
+        connection.request(method, path, body, fetch_headers)
     except Exception as ex:
         return issue(f'{protocol} request failure', cause=ex, context=ctxt)
     try:
@@ -61,13 +61,14 @@ def fetch(
         res_body = res.read()
     except Exception as ex:  # noqa: WPS440
         return issue(f'{protocol} read failure', cause=ex, context=ctxt)
-    if STATUS_OK <= res.status < STATUS_REDIRECT:
+    code = res.getcode()
+    if STATUS_OK <= code < STATUS_REDIRECT:
         return Good(res_body)
     return issue(
-        f'{protocol} request failure ({res.status})',
+        f'{protocol} request failure ({code})',
         context={
             'body': body,
-            'code': res.status,
+            'code': code,
             'res_body': str(res_body),
             **ctxt,
         },
