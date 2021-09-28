@@ -46,32 +46,30 @@ def fetch(
     if body:
         fetch_headers['content-length'] = str(len(body))
     connection = _get_connection(protocol, hostname)
-    url = f'{hostname}{endpoint}'
-    ctxt = {'url': url}
-    # Would like to use same variable for exceptions but:
+    ctxt = {'url': f'{hostname}{endpoint}'}
+    # See the next link for explanation disabling WPS440:
     #  https://github.com/wemake-services/wemake-python-styleguide/issues/1416
     try:
         connection.request(method, endpoint, body, fetch_headers)
-    except Exception as ex1:
-        return issue(f'{protocol} request failure', cause=ex1, context=ctxt)
+    except Exception as ex:
+        return issue(f'{protocol} request failure', cause=ex, context=ctxt)
     try:
         res = connection.getresponse()
-    except Exception as ex2:
-        return issue(f'{protocol} response failure', cause=ex2, context=ctxt)
+    except Exception as ex:  # noqa: WPS440
+        return issue(f'{protocol} response failure', cause=ex, context=ctxt)
     try:
         res_body = res.read()
-    except Exception as ex3:
-        return issue(f'{protocol} read failure', cause=ex3, context=ctxt)
-    code = res.status
-    if STATUS_OK <= code < STATUS_REDIRECT:
+    except Exception as ex:  # noqa: WPS440
+        return issue(f'{protocol} read failure', cause=ex, context=ctxt)
+    if STATUS_OK <= res.status < STATUS_REDIRECT:
         return Good(res_body)
     return issue(
-        f'{protocol} request failure ({code})',
+        f'{protocol} request failure ({res.status})',
         context={
-            'url': url,
             'body': body,
-            'code': code,
+            'code': res.status,
             'res_body': str(res_body),
+            **ctxt,
         },
     )
 
