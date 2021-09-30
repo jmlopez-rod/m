@@ -42,3 +42,4 @@ def run(arg):
     import sys
     json.dump(arg.payload, sys.stdout, indent=2, sort_keys=arg.sort_keys)
     sys.stdout.write('\n')
+    return 0

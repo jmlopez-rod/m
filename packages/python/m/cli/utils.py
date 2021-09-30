@@ -179,10 +179,11 @@ def run_cli(
     arg = main_parser(mod, main_args)
     if arg == 1:
         sys.exit(1)
-    if hasattr(arg, 'subcommand_name'):
+    elif hasattr(arg, 'subcommand_name'):
         sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
         sys.exit(sub_mod[arg.subcommand_name].run(arg))
-    sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg))
+    else:
+        sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg))
 
 
 def display_issue(issue: Issue) -> None:
