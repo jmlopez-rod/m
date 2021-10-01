@@ -36,3 +36,13 @@ class CliJsonTest(unittest.TestCase):
         main()
         self.assertEqual(mock_stdout.getvalue(), f'{cdoc(expected)}\n')
         mock_exit.assert_called_with(0)
+
+    @patch('sys.argv', ['m', 'json', 'oops'])
+    @patch('sys.stderr', new_callable=StringIO)
+    @patch.object(sys, 'exit')
+    def test_error(self, mock_exit, mock_stderr):
+        self.assertRaises(Exception, main)
+        errors = mock_stderr.getvalue()
+        self.assertIn('failed to parse the json data', errors)
+        self.assertIn('json.decoder.JSONDecodeError:', errors)
+        mock_exit.assert_called_with(2)
