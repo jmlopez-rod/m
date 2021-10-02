@@ -1,6 +1,5 @@
 from .. import git
-from ..core import Good, OneOf, issue, one_of
-from ..core.issue import Issue
+from ..core import Good, Issue, OneOf, issue, one_of
 from .config import Config, Workflow, read_config
 
 
@@ -43,7 +42,17 @@ def _verify_branch(
 
 
 def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, None]:
-    """Make sure git is using the correct branch based on the workflow."""
+    """Make sure git is using the correct branch based on the workflow.
+
+    Args:
+        assertion_type:
+            Either 'release' or 'hotfix'.
+        m_dir:
+            The directory for the m configuration.
+
+    Returns:
+        A OneOf containing `None` or an `Issue`.
+    """
     return one_of(lambda: [
         None
         for config in read_config(m_dir)
