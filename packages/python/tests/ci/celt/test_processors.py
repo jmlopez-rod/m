@@ -26,6 +26,10 @@ def _post_processor(name: str) -> PostProcessor:
 
 
 class CeltTest(FpTestCase):
+    def test_unknown_post_processor_fail(self):
+        eslint = get_post_processor('unknown', Configuration())
+        self.assert_issue(eslint, 'unknown is not a supported post processor')
+
     def test_eslint_fail(self):
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload.json')
@@ -39,6 +43,18 @@ class CeltTest(FpTestCase):
             'semi (found 1, allowed 0)',
         ])
         self.assertEqual(project.error_msg, '5 extra errors were introduced')
+        # test json stats
+        json_stats = eslint.stats_json(project)
+        expected = """
+            {
+              "allowedEslintRules": {
+                "semi": 1,
+                "quotes": 1,
+                "no-unused-vars": 3
+              }
+            }
+        """
+        self.assertEqual(json_stats, inspect.cleandoc(expected))
 
     def test_eslint_fail_errors(self):
         eslint = _post_processor('eslint')
@@ -55,9 +71,19 @@ class CeltTest(FpTestCase):
         project = cast(ProjectStatus, result.value)
         self.assertEqual(project.status, ExitCode.error)
         assert_str_has(eslint.to_str(project), [
+            'no-unused-vars      3        3',
             'quotes (found 1, allowed 0)',
         ])
         self.assertEqual(project.error_msg, '1 extra errors were introduced')
+        # Ignoring the configuration - See all errors
+        eslint.celt_config.ignore_error_allowance = True
+        result = eslint.run(payload, config)
+        self.assert_ok(result)
+        project = cast(ProjectStatus, result.value)
+        self.assertEqual(project.status, ExitCode.error)
+        assert_str_has(eslint.to_str(project), [
+            'no-unused-vars      3        0'
+        ])
 
     def test_eslint_fail_reduce(self):
         eslint = _post_processor('eslint')
@@ -138,6 +164,11 @@ class CeltTest(FpTestCase):
             project.error_msg,
             '5 extra errors were introduced',
         )
+
+    def test_pylint_fail_bad_json(self):
+        pylint = _post_processor('pylint')
+        result = pylint.run('bad_json', {})
+        self.assert_issue(result, 'failed to parse the json data')
 
     def test_pylint_fail(self):
         pylint = _post_processor('pylint')
