@@ -8,6 +8,7 @@ from m.ci.config import (
     MFlowConfig,
     Workflow,
     read_config,
+    read_workflow,
 )
 from m.core import issue
 from m.core.fp import Good
@@ -26,16 +27,25 @@ class ConfigFreeFlowTest(FpTestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        workflow=Workflow.FREE_FLOW,
+        workflow=Workflow.free_flow,
         git_flow=GitFlowConfig(),
         m_flow=MFlowConfig(),
     )
 
-    def test_read_config_fail(self):
-        with patch('m.core.json.read_json') as read_json_mock:
-            read_json_mock.return_value = issue('made up issue')
-            result = read_config('m')
-            self.assert_issue(result, 'read_config failure')
+    def test_workflow_config(self):
+        result = read_workflow('free-flow')
+        workflow = self.assert_ok(result)
+        self.assertEqual(workflow, Workflow.free_flow)
+
+    def test_workflow_config_fail(self):
+        result = read_workflow('unknown-flow')
+        self.assert_issue(result, 'invalid workflow')
+
+    @patch('m.core.json.read_json')
+    def test_read_config_fail(self, read_json_mock):
+        read_json_mock.return_value = issue('made up issue')
+        result = read_config('m')
+        self.assert_issue(result, 'read_config failure')
 
     def test_empty_config(self):
         with patch('m.core.json.read_json') as read_json_mock:

@@ -27,8 +27,8 @@ def _verify_version(
     is_hotfix_pr: bool,
     is_release: bool
 ) -> OneOf[Issue, int]:
-    if config.workflow in [Workflow.GIT_FLOW, Workflow.M_FLOW]:
-        if config.workflow == Workflow.GIT_FLOW:
+    if config.workflow in [Workflow.git_flow, Workflow.m_flow]:
+        if config.uses_git_flow():
             pr_branch = git_env.get_pr_branch()
             flow = config.git_flow
             # Skip verification when release or hotfix are going to develop
@@ -43,20 +43,20 @@ def _verify_version(
             is_release_pr=(is_release_pr or is_hotfix_pr),
             is_release=is_release
         )
-    # Covers Workflow.FREE_FLOW
+    # Covers Workflow.free_flow
     return Good(0)
 
 
 def _get_master_branch(config: Config) -> str:
-    if config.workflow == Workflow.GIT_FLOW:
+    if config.uses_git_flow():
         return config.git_flow.master_branch
-    if config.workflow == Workflow.M_FLOW:
+    if config.uses_m_flow():
         return config.m_flow.master_branch
     return 'master'
 
 
 def _get_develop_branch(config: Config) -> str:
-    if config.workflow == Workflow.GIT_FLOW:
+    if config.uses_git_flow():
         return config.git_flow.develop_branch
     return 'develop'
 
@@ -71,10 +71,10 @@ def get_release_env(
     is_release_pr = git_env.is_release_pr(config)
     is_hotfix_pr = git_env.is_hotfix_pr(config)
     gh_latest = git_env.release.tag_name if git_env.release else ''
-    if config.workflow != Workflow.FREE_FLOW:
+    if not config.uses_free_flow():
         master_branch = _get_master_branch(config)
         develop_branch = _get_develop_branch(config)
-        if config.workflow == Workflow.GIT_FLOW:
+        if config.uses_git_flow():
             if (
                 (is_release_pr or is_hotfix_pr) and
                 git_env.target_branch not in (master_branch, develop_branch)
@@ -85,7 +85,7 @@ def get_release_env(
                 git_env.branch not in (master_branch, develop_branch)
             ):
                 return issue(f'hotfix and releases only on {master_branch}')
-        if config.workflow == Workflow.M_FLOW:
+        if config.uses_m_flow():
             if (
                 is_release_pr and
                 git_env.target_branch != master_branch

@@ -17,7 +17,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
 
     def __init__(self, methodName):
         super().__init__(methodName)
-        self.config.workflow = Workflow.GIT_FLOW
+        self.config.workflow = Workflow.git_flow
 
     def _get_env(self):
         return one_of(
@@ -92,7 +92,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -114,7 +114,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -150,7 +150,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=True,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -174,7 +174,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=True,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -197,7 +197,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=True,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -220,7 +220,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=True,
                     is_release_pr=False,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -244,7 +244,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -280,7 +280,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=True,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -304,7 +304,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=True,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -327,7 +327,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=True,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -350,7 +350,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=True,
                     is_release_pr=False,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 
@@ -378,7 +378,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
-                    workflow=Workflow.GIT_FLOW,
+                    workflow=Workflow.git_flow,
                 ),
             )
 

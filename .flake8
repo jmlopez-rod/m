@@ -1,6 +1,7 @@
 [flake8]
 i-control-code = False
 ignore =
+  W503,    #
   D100,    # Missing docstring in public module
   D103,    # Missing docstring in public function
   D104,    # Missing docstring in public package

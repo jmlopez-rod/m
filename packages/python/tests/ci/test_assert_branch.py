@@ -17,7 +17,7 @@ class AssertBranchTest(FpTestCase):
         'repo',
         '0.0.0',
         'm',
-        Workflow.FREE_FLOW,
+        Workflow.free_flow,
         GitFlowConfig(),
         MFlowConfig(),
     )
@@ -48,7 +48,7 @@ class AssertBranchTest(FpTestCase):
     def test_m_flow(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('master')
         config = copy(self.base_config)
-        config.workflow = Workflow.M_FLOW
+        config.workflow = Workflow.m_flow
         read_config_mock.return_value = Good(config)
         res = assert_branch('release', 'm')
         self.assert_ok(res)
@@ -65,7 +65,7 @@ class AssertBranchTest(FpTestCase):
     def test_git_flow(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('develop')
         config = copy(self.base_config)
-        config.workflow = Workflow.GIT_FLOW
+        config.workflow = Workflow.git_flow
         read_config_mock.return_value = Good(config)
         res = assert_branch('release', 'm')
         self.assert_ok(res)
@@ -86,7 +86,7 @@ class AssertBranchTest(FpTestCase):
     def test_m_flow_error(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('topic/active-branch')
         config = copy(self.base_config)
-        config.workflow = Workflow.M_FLOW
+        config.workflow = Workflow.m_flow
         read_config_mock.return_value = Good(config)
         res = assert_branch('release', 'm')
         self.assert_issue(

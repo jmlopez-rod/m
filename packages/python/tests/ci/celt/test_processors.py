@@ -188,6 +188,36 @@ class CeltTest(FpTestCase):
             '2 extra errors were introduced',
         )
 
+    def test_pylint_fail_full_message(self):
+        pylint = _post_processor('pylint')
+        payload = read_fixture('pylint_payload.json')
+        pylint.celt_config.full_message = True
+        result = pylint.run(payload, {})
+        self.assert_ok(result)
+        project = cast(ProjectStatus, result.value)
+        self.assertEqual(project.status, ExitCode.error)
+        output = pylint.to_str(project)
+        assert_str_has(output, [
+            'missing-function-docstring (found 1, allowed 0)',
+            'import-outside-toplevel (found 1, allowed 0)',
+            'long message',
+        ])
+
+    def test_pylint_fail_max_lines(self):
+        pylint = _post_processor('pylint')
+        payload = read_fixture('pylint_payload.json')
+        pylint.celt_config.max_lines = 0
+        result = pylint.run(payload, {})
+        self.assert_ok(result)
+        project = cast(ProjectStatus, result.value)
+        self.assertEqual(project.status, ExitCode.error)
+        output = pylint.to_str(project)
+        assert_str_has(output, [
+            'missing-function-docstring (found 1, allowed 0)',
+            'import-outside-toplevel (found 1, allowed 0)',
+            '... and 1 more',
+        ])
+
     def test_pylint_fail_order(self):
         pylint = _post_processor('pylint')
         payload = read_fixture('pylint_payload_order.json')

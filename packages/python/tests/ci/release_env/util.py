@@ -6,12 +6,12 @@ CONFIG = Config(
     repo='m',
     version='0.0.0',
     m_dir='m',
-    workflow=Workflow.FREE_FLOW,
+    workflow=Workflow.free_flow,
     git_flow=GitFlowConfig(),
     m_flow=MFlowConfig(),
 )
 
-ENV_VARS = EnvVars(
+ENV_VARS = EnvVars(  # noqa: S106 - testing, token is irrelevant
     ci_env=True,
     github_token='super_secret_like_damn',
     server_url='abc.xyz',

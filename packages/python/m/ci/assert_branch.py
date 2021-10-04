@@ -1,6 +1,6 @@
 from .. import git
 from ..core import Good, Issue, OneOf, issue, one_of
-from .config import Config, Workflow, read_config
+from .config import Config, read_config
 
 
 def _verify_branch(
@@ -9,15 +9,15 @@ def _verify_branch(
     assertion_type: str,
 ) -> OneOf[Issue, int]:
     workflow = config.workflow
-    if workflow == Workflow.FREE_FLOW:
+    if config.uses_free_flow():
         return issue(
             'The free-flow workflow does not support releases',
             include_traceback=False,
         )
     req_branch = None
-    if workflow == Workflow.M_FLOW:
+    if config.uses_m_flow():
         req_branch = config.m_flow.master_branch
-    elif workflow == Workflow.GIT_FLOW:
+    elif config.uses_git_flow():
         flow = config.git_flow
         # releases are made from develop branch
         # hotfixes are made from master branch

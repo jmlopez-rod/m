@@ -20,7 +20,7 @@ class ConfigGitFlowTest(FpTestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        workflow=Workflow.GIT_FLOW,
+        workflow=Workflow.git_flow,
         git_flow=GitFlowConfig(),
         m_flow=MFlowConfig(),
     )
@@ -45,7 +45,7 @@ class ConfigGitFlowTest(FpTestCase):
                         repo='m',
                         version='0.0.0',
                         m_dir='m',
-                        workflow=Workflow.GIT_FLOW,
+                        workflow=Workflow.git_flow,
                     ),
                 }, config.__dict__,
             )
@@ -53,4 +53,4 @@ class ConfigGitFlowTest(FpTestCase):
     def test_verify_version(self):
         """Test is already covered by the m_flow tests."""
         config = copy(self.base_config)
-        self.assertEqual(config.workflow, Workflow.GIT_FLOW)
+        self.assertEqual(config.workflow, Workflow.git_flow)
