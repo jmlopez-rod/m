@@ -1,4 +1,5 @@
 [flake8]
+max-module-members = 10
 i-control-code = False
 ignore =
   W503,    #
