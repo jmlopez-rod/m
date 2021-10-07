@@ -196,9 +196,10 @@ class CITool(ABC):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print an error message."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]' if loc else ''
@@ -210,9 +211,10 @@ class CITool(ABC):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print an warning message."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]' if loc else ''
