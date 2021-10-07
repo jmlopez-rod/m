@@ -280,12 +280,13 @@ class GithubActions(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print an error message.
 
         https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
         """
+        stream = stream or sys.stderr
         loc = f'file={file},line={line},col={col}' if file else ''
         info = f' {loc}' if loc else ''
         print(f'::error{info}::{description}', file=stream)
@@ -296,12 +297,13 @@ class GithubActions(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print a warning message.
 
         https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
         """  # noqa
+        stream = stream or sys.stderr
         loc = f'file={file},line={line},col={col}' if file else ''
         info = f' {loc}' if loc else ''
         print(f'::warning{info}::{description}', file=stream)
@@ -354,9 +356,10 @@ class Teamcity(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print a message to teamcity so that the build may abort."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]: ' if loc else ''
@@ -372,9 +375,10 @@ class Teamcity(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print a warning message to teamcity."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]: ' if loc else ''

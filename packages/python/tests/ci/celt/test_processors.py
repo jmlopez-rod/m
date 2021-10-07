@@ -142,7 +142,6 @@ class CeltTest(FpTestCase):
         """
         self.assertEqual(json_stats, inspect.cleandoc(expected))
 
-
     def test_eslint_no_errors_reduce(self):
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload_clear.json')
