@@ -132,6 +132,16 @@ class CeltTest(FpTestCase):
         assert_str_has(eslint.to_str(project), [
             'no errors found'
         ])
+        # test json stats
+        json_stats = eslint.stats_json(project)
+        expected = """
+            {
+              "allowedEslintRules": {
+              }
+            }
+        """
+        self.assertEqual(json_stats, inspect.cleandoc(expected))
+
 
     def test_eslint_no_errors_reduce(self):
         eslint = _post_processor('eslint')
