@@ -30,7 +30,7 @@ def remove_traceback(obj: object) -> None:
             remove_traceback(obj['cause'])
 
 
-class Issue(Exception):
+class Issue(Exception):  # noqa: N818 - Intention is not to raise
     """Wrapper to keep track of all exceptions.
 
     It provides a 'cause' field so that we may know why an issue was
@@ -62,7 +62,7 @@ class Issue(Exception):
         - data: Provide a dictionary with any useful data related to the issue.
         - include_traceback: If False, it skips computing the traceback.
         """
-        Exception.__init__(self)
+        super().__init__()
         self.message = message
         self.description = description
         self.cause = cause

@@ -1,7 +1,7 @@
 image:
 	docker build -t pyenv -f build/Dockerfile
 
-checks:
+ciChecks:
 	./build/run.sh build
 
 pyTest:

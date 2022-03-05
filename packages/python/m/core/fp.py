@@ -20,7 +20,7 @@ def lazy_arg(z_arg: LazyArg[A]) -> A:
     return z_arg() if callable(z_arg) else z_arg
 
 
-class StopBadIteration(Exception):
+class StopBadIteration(Exception):  # noqa: N818 - This is for internal use
     """Store a `Bad` instance."""
 
     def __init__(self, bad):
