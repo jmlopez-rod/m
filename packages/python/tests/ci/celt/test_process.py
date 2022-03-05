@@ -1,6 +1,5 @@
-from m.ci.celt.core.types import FileReport, Violation
-
 from m.ci.celt.core import process
+from m.ci.celt.core.types import FileReport, Violation
 
 from ...util import FpTestCase
 

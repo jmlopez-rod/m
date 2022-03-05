@@ -36,7 +36,7 @@ class ReleaseEnvFreeFlowTest(FpTestCase):
             is_release=False,
             is_release_pr=False,
             is_hotfix_pr=False,
-            workflow=Workflow.FREE_FLOW
+            workflow=Workflow.free_flow
         ))
 
     def test_master(self):
@@ -55,7 +55,7 @@ class ReleaseEnvFreeFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,
-                workflow=Workflow.FREE_FLOW
+                workflow=Workflow.free_flow
             ))
 
     def test_pr_1(self):
@@ -74,5 +74,5 @@ class ReleaseEnvFreeFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,
-                workflow=Workflow.FREE_FLOW
+                workflow=Workflow.free_flow
             ))

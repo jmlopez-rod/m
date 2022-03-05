@@ -15,7 +15,7 @@ class GitEnvTest(FpTestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        workflow=Workflow.FREE_FLOW,
+        workflow=Workflow.free_flow,
         git_flow=GitFlowConfig(),
         m_flow=MFlowConfig(),
     )

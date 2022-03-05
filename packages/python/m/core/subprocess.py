@@ -1,24 +1,26 @@
-from subprocess import PIPE, STDOUT, Popen
+import shlex
+from subprocess import STDOUT, CalledProcessError, check_output  # noqa: S404
 
-from . import issue
+from . import Issue, issue
 from .fp import Good, OneOf
-from .issue import Issue
 
 
 def eval_cmd(cmd: str) -> OneOf[Issue, str]:
-    """Evaluate a bash command and return its output in a `Good`."""
-    with Popen(
-        cmd,
-        shell=True,
-        universal_newlines=True,
-        executable='/bin/bash',
-        stdout=PIPE,
-        stderr=STDOUT,
-    ) as process:
-        out, _ = process.communicate()
-        if process.returncode == 0:
-            return Good(out.strip())
-    return issue(
-        'command returned a non zero exit code',
-        data={'cmd': cmd, 'output': out},
-    )
+    """Evaluate a bash command and return its output.
+
+    Args:
+        cmd: The shell command to evaluate.
+
+    Returns:
+        The output of the command (or an Issue if the command failed).
+    """
+    command = shlex.split(cmd)
+    try:
+        out = check_output(command, stderr=STDOUT, shell=False).decode()  # noqa: S603,E501
+    except CalledProcessError as ex:
+        out = ex.output.decode()
+        return issue(
+            'command returned a non zero exit code',
+            context={'cmd': cmd, 'output': out},
+        )
+    return Good(out.strip())

@@ -174,12 +174,15 @@ def project_stats_json(
         ],
         key=cmp_to_key(_compare_rule_items),
     )
-    buffer.extend([
-        f'    "{rule_id}": {rule.found},'
-        for rule_id, rule in key_rule[:-1]
-    ])
-    rule_id, rule = key_rule[-1]
-    buffer.append(f'    "{rule_id}": {rule.found}')
+
+    if key_rule:
+        buffer.extend([
+            f'    "{rule_id}": {rule.found},'
+            for rule_id, rule in key_rule[:-1]
+        ])
+        rule_id, rule = key_rule[-1]
+        buffer.append(f'    "{rule_id}": {rule.found}')
+
     buffer.extend([
         '  }',
         '}',

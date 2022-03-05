@@ -17,7 +17,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
 
     def __init__(self, methodName):
         super().__init__(methodName)
-        self.config.workflow = Workflow.M_FLOW
+        self.config.workflow = Workflow.m_flow
 
     def _get_env(self):
         return one_of(lambda: [
@@ -40,7 +40,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
             is_release=False,
             is_release_pr=False,
             is_hotfix_pr=False,
-            workflow=Workflow.M_FLOW
+            workflow=Workflow.m_flow
         ))
 
     def test_master_behind(self):
@@ -81,7 +81,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,
-                workflow=Workflow.M_FLOW
+                workflow=Workflow.m_flow
             ))
 
     def test_pr_1(self):
@@ -101,7 +101,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,
-                workflow=Workflow.M_FLOW
+                workflow=Workflow.m_flow
             ))
 
     def test_release_pr_no_update(self):
@@ -137,7 +137,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=True,
                 is_hotfix_pr=False,
-                workflow=Workflow.M_FLOW
+                workflow=Workflow.m_flow
             ))
 
     def test_release_merge(self):
@@ -158,7 +158,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_release=True,
                 is_release_pr=False,
                 is_hotfix_pr=False,
-                workflow=Workflow.M_FLOW
+                workflow=Workflow.m_flow
             ))
 
     def test_release_pr_empty_allowed(self):
@@ -179,7 +179,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_release=False,
                 is_release_pr=True,
                 is_hotfix_pr=False,
-                workflow=Workflow.M_FLOW
+                workflow=Workflow.m_flow
             ))
 
     def test_hotfix_merge(self):
@@ -200,5 +200,5 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_release=True,
                 is_release_pr=False,
                 is_hotfix_pr=False,
-                workflow=Workflow.M_FLOW
+                workflow=Workflow.m_flow
             ))

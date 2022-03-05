@@ -77,7 +77,7 @@ def read_file(filename: str) -> OneOf[Issue, str]:
     except Exception as ex:
         return issue(
             'failed to read file',
-            data={'filename': filename},
+            context={'filename': filename},
             cause=ex,
         )
 
@@ -91,7 +91,7 @@ def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
     except Exception as ex:
         return issue(
             'failed to write file',
-            data={'filename': filename},
+            context={'filename': filename},
             cause=ex,
         )
 
@@ -138,8 +138,8 @@ def serialize(obj: Any) -> Any:
 
 class JsonStr:
     """Base class to stringify dataclasses."""
-    # pylint: disable=too-few-public-methods
 
+    # pylint: disable=too-few-public-methods
     def __str__(self) -> str:
         return json.dumps(self.__dict__, default=serialize)
 
@@ -147,6 +147,7 @@ class JsonStr:
 @dataclass
 class EnvVars(JsonStr):
     """Class to store the values of the environment variables."""
+
     # pylint: disable=too-many-instance-attributes
     ci_env: bool = False
     github_token: str = ''
@@ -195,9 +196,10 @@ class CITool(ABC):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print an error message."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]' if loc else ''
@@ -209,9 +211,10 @@ class CITool(ABC):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print an warning message."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]' if loc else ''
@@ -277,12 +280,13 @@ class GithubActions(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print an error message.
 
         https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
         """
+        stream = stream or sys.stderr
         loc = f'file={file},line={line},col={col}' if file else ''
         info = f' {loc}' if loc else ''
         print(f'::error{info}::{description}', file=stream)
@@ -293,12 +297,13 @@ class GithubActions(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print a warning message.
 
         https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
         """  # noqa
+        stream = stream or sys.stderr
         loc = f'file={file},line={line},col={col}' if file else ''
         info = f' {loc}' if loc else ''
         print(f'::warning{info}::{description}', file=stream)
@@ -351,9 +356,10 @@ class Teamcity(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print a message to teamcity so that the build may abort."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]: ' if loc else ''
@@ -369,9 +375,10 @@ class Teamcity(CITool):
         file: Optional[str] = None,
         line: Optional[str] = None,
         col: Optional[str] = None,
-        stream: TextIO = sys.stderr,
+        stream: Optional[TextIO] = None,
     ) -> None:
         """Print a warning message to teamcity."""
+        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]: ' if loc else ''

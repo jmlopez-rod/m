@@ -36,6 +36,7 @@ class Issue(Exception):
     It provides a 'cause' field so that we may know why an issue was
     triggered.
     """
+
     show_traceback = True
 
     message: str
@@ -97,7 +98,8 @@ class Issue(Exception):
 
     def to_dict(self) -> IssueDict:
         """Convert to a ordered dictionary so that each of the properties are
-        written in an expected order."""
+        written in an expected order.
+        """
         obj = cast(IssueDict, OrderedDict())
         obj['message'] = self.message
         if self.description:
@@ -110,10 +112,10 @@ class Issue(Exception):
             if isinstance(self.cause, Issue):
                 obj['cause'] = self.cause.to_dict()
             else:
-                obj['cause'] = dict(
-                    message=str(self.cause),
-                    traceback=self.cause_tb,
-                )
+                obj['cause'] = {
+                    'message': str(self.cause),
+                    'traceback': self.cause_tb,
+                }
         return obj
 
     def to_str(self, show_traceback: bool) -> str:

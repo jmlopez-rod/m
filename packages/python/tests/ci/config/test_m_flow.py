@@ -2,8 +2,13 @@ from dataclasses import replace as copy
 from typing import cast
 from unittest.mock import patch
 
-from m.ci.config import (Config, GitFlowConfig, MFlowConfig, Workflow,
-                         read_config)
+from m.ci.config import (
+    Config,
+    GitFlowConfig,
+    MFlowConfig,
+    Workflow,
+    read_config,
+)
 from m.core.fp import Good
 
 from ...util import FpTestCase
@@ -15,7 +20,7 @@ class ConfigMFlowTest(FpTestCase):
         repo='m',
         version='0.0.0',
         m_dir='m',
-        workflow=Workflow.M_FLOW,
+        workflow=Workflow.m_flow,
         git_flow=GitFlowConfig(),
         m_flow=MFlowConfig(),
     )
@@ -40,7 +45,7 @@ class ConfigMFlowTest(FpTestCase):
                         repo='m',
                         version='0.0.0',
                         m_dir='m',
-                        workflow=Workflow.M_FLOW,
+                        workflow=Workflow.m_flow,
                     ),
                 }, config.__dict__,
             )
@@ -95,5 +100,12 @@ class ConfigMFlowTest(FpTestCase):
         gh_latest = '1.0.0'
         self.assert_issue(
             _test(gh_latest, False, True),
-            'error comparing versions',
+            'error parsing version',
+        )
+        # Should not be possible but just in case...
+        config.version = '0.0.1'
+        gh_latest = '1.0.0-rc123'  # <- unparsable latest
+        self.assert_issue(
+            _test(gh_latest, False, True),
+            'error parsing latest',
         )

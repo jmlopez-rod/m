@@ -2,32 +2,50 @@ import re
 from dataclasses import dataclass
 from typing import List, Optional, cast
 
-from ..core import issue
+from ..core import Issue, issue
 from ..core.fp import Good, OneOf
 from ..core.io import EnvVars, JsonStr
-from ..core.issue import Issue
-from ..github.ci import (Commit, CommitInfo, PullRequest, Release,
-                         get_ci_run_info)
+from ..github.ci import (
+    Commit,
+    CommitInfo,
+    PullRequest,
+    Release,
+    get_ci_run_info,
+)
 from ..github.ci_dataclasses import GithubCiRunInfo
-from .config import Config, Workflow
+from .config import Config
 
 
 def get_release_prefix(config: Config) -> Optional[str]:
-    """Find out the release prefix based on the workflow specified in the
-    config."""
-    if config.workflow == Workflow.GIT_FLOW:
+    """Find out the release prefix.
+
+    Args:
+        config:
+            The m configuration. Its workflow is used to determine the prefix.
+
+    Returns:
+        The release prefix or None if not using a supported workflow.
+    """
+    if config.uses_git_flow():
         return config.git_flow.release_prefix
-    if config.workflow == Workflow.M_FLOW:
+    if config.uses_m_flow():
         return config.m_flow.release_prefix
     return None
 
 
 def get_hotfix_prefix(config: Config) -> Optional[str]:
-    """Find out the hotfix prefix based on the workflow specified in the
-    config."""
-    if config.workflow == Workflow.GIT_FLOW:
+    """Find out the hotfix prefix.
+
+    Args:
+        config:
+            The m configuration. Its workflow is used to determine the prefix.
+
+    Returns:
+        The hofix prefix or None if not using a supported workflow.
+    """
+    if config.uses_git_flow():
         return config.git_flow.hotfix_prefix
-    if config.workflow == Workflow.M_FLOW:
+    if config.uses_m_flow():
         return config.m_flow.hotfix_prefix
     return None
 
@@ -35,6 +53,7 @@ def get_hotfix_prefix(config: Config) -> Optional[str]:
 @dataclass
 class GitEnv(JsonStr):
     """Object to store the git configuration."""
+
     sha: str
     branch: str
     target_branch: str
@@ -43,33 +62,36 @@ class GitEnv(JsonStr):
     release: Optional[Release] = None
 
     def get_pr_branch(self) -> str:
-        """Get the pull request branch or empty string."""
+        """Get the pull request branch or empty string.
+
+        Returns:
+            The name of the pull request branch or an empty string when not
+            dealing with a pull request.
+        """
         return self.pull_request.pr_branch if self.pull_request else ''
 
     def get_pr_number(self) -> int:
-        """Get the pull request branch or 0 if not a pull request."""
+        """Get the pull request number or 0 if not a pull request.
+
+        Returns:
+            The pull request number or 0 if not a pull request.
+        """
         return self.pull_request.pr_number if self.pull_request else 0
 
     def is_release(self, config: Config) -> bool:
         """Determine if the current commit should create a release."""
         if not self.commit:
             return False
-        workflow = config.workflow
         release_prefix = get_release_prefix(config)
         hotfix_prefix = get_hotfix_prefix(config)
-        if (
-                workflow == Workflow.M_FLOW and
-                self.branch != config.m_flow.master_branch
-        ):
+        if config.uses_m_flow() and self.branch != config.m_flow.master_branch:
             return False
-        if (
-                workflow == Workflow.GIT_FLOW and
-                self.branch != config.git_flow.master_branch
-        ):
-            return False
+        if config.uses_git_flow():
+            if self.branch != config.git_flow.master_branch:
+                return False
         return (
-            self.commit.is_release(release_prefix) or
-            self.commit.is_release(hotfix_prefix)
+            self.commit.is_release(release_prefix)
+            or self.commit.is_release(hotfix_prefix)
         )
 
     def is_release_pr(self, config: Config) -> bool:
@@ -116,17 +138,14 @@ class GitEnv(JsonStr):
         Git flow will generate a special build tag: SKIP. This will happen when
         we try to merge a release or hotfix branch to the develop branch.
         """
-        workflow = config.workflow
         is_release = self.is_release(config)
         is_release_pr = self.is_release_pr(config)
         is_hotfix_pr = self.is_hotfix_pr(config)
-        if (
-            workflow == Workflow.GIT_FLOW and
-            self.target_branch == config.git_flow.develop_branch
-        ):
+        is_dev_branch = self.target_branch == config.git_flow.develop_branch
+        if config.uses_git_flow() and is_dev_branch:
             if is_release or is_release_pr or is_hotfix_pr:
                 return Good('SKIP')
-        prefix = '' if workflow == Workflow.FREE_FLOW else '0.0.0-'
+        prefix = '' if config.uses_free_flow() else '0.0.0-'
         if not run_id:
             return Good(f'{prefix}local.{self.sha}')
         if is_release:

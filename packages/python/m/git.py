@@ -4,22 +4,38 @@ from .core.issue import Issue
 
 
 def get_branch() -> OneOf[Issue, str]:
-    """Return a `OneOf` object containing the branch name."""
+    """Get the current git branch name.
+
+    Returns:
+        A `OneOf` containing an `Issue` or a string specifying the branch.
+    """
     return subprocess.eval_cmd('git rev-parse --abbrev-ref HEAD')
 
 
 def get_first_commit_sha() -> OneOf[Issue, str]:
-    """Return a `OneOf` object containing the first commit."""
+    """Find the first commit sha in the repository.
+
+    Returns:
+        A `OneOf` containing an `Issue` or a string of the first commit sha.
+    """
     return subprocess.eval_cmd('git rev-list --max-parents=0 HEAD')
 
 
 def get_current_commit_sha() -> OneOf[Issue, str]:
-    """Returns a `OneOf` object containing the current commit."""
+    """Find the sha of the current commit.
+
+    Returns:
+        A `OneOf` containing an `Issue` or a string of the current commit sha.
+    """
     return subprocess.eval_cmd('git rev-parse HEAD')
 
 
 def get_remote_url() -> OneOf[Issue, str]:
-    """Returns a `OneOf` object containing the remote url."""
+    """Find the remote url of the repo.
+
+    Returns:
+        A `OneOf` containing an `Issue` or a string with the url.
+    """
     return subprocess.eval_cmd('git config --get remote.origin.url')
 
 
@@ -42,7 +58,11 @@ def _extract_status(msg: str) -> str:
 
 
 def get_status() -> OneOf[Issue, str]:
-    """Return a `OneOf` containing the current git status."""
+    """Find the current git status.
+
+    Returns:
+        A `OneOf` containing an `Issue` or a word denoting the git status.
+    """
     res = subprocess.eval_cmd('git status')
     return one_of(
         lambda: [

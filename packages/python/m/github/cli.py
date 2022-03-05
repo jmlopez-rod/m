@@ -17,12 +17,12 @@ def get_pr_info(
 ) -> OneOf[Issue, Any]:
     """Retrieve the information of the given Github PR."""
     query = create_ci_query(pr_number, False, False)
-    variables = dict(
-        owner=owner,
-        repo=repo,
-        pr=pr_number,
-        fc=file_count,
-    )
+    variables = {
+        'owner': owner,
+        'repo': repo,
+        'pr': pr_number,
+        'fc': file_count,
+    }
     return one_of(
         lambda: [
             data
@@ -49,7 +49,7 @@ def get_latest_release(
         }
       }
     }"""
-    variables = dict(owner=owner, repo=repo)
+    variables = {'owner': owner, 'repo': repo}
     return one_of(
         lambda: [
             data
