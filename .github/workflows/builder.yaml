@@ -12,7 +12,8 @@ jobs:
     env:
       PYTHONPATH: ./packages/python
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      TWINE_USERNAME: __token__
+      TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: PATH setup
