@@ -1,5 +1,5 @@
 .vscode
 __pycache__
-.stage
+.stage*
 m/.m
 .coverage

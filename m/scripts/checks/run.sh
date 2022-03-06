@@ -8,4 +8,4 @@ docker run \
   -v "${PWD}":/checkout:z \
   -w /checkout \
   pyenv \
-  "/checkout/build/$1.sh"
+  "/checkout/m/scripts/checks/$1.sh"

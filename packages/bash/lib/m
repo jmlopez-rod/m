@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+import os
+import sys
+
+cwd = os.getcwd()
+py_path = f'{cwd}/node_modules/@jmlopez-rod/m/python'
+
+try:
+    sys.path.index(py_path)
+except ValueError:
+    sys.path.append(py_path)
 
 if __name__ == '__main__':
     from m.__main__ import main
