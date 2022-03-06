@@ -13,6 +13,9 @@ mypy ./packages/python/tests
 
 # tests
 ./packages/python/tests/run.sh
+(
+  cd packages/bash/tests && ./run.sh
+)
 
 # pylint
 m ci celt -t pylint -m 10 -c @allowed_errors.json < <(pylint ./packages/python/m --rcfile=.pylintrc -f json)

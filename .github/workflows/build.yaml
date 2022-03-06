@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,7 +20,7 @@ jobs:
           pip install typing_extensions pycodestyle pylint mypy wemake-python-styleguide flake8 coverage bandit==1.7.2
       - name: Checks
         run: |
-          ./build/build.sh
+          ./m/scripts/checks/ci.sh
       - name: Publish
         run: |
-          ./build/publish.sh
+          ./m/scripts/publish.sh

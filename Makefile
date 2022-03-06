@@ -1,14 +1,14 @@
 image:
-	docker build -t pyenv -f build/Dockerfile
+	docker build -t pyenv -f m/scripts/checks/Dockerfile
 
 ciChecks:
-	./build/run.sh build
+	m/scripts/checks/run.sh ci
 
-pyTest:
-	./build/run.sh tests
+tests:
+	m/scripts/checks/run.sh tests
 
 shell:
-	./build/shell.sh
+	m/scripts/checks/shell.sh
 
 bashTest:
 	cd packages/bash/tests && ./run.sh
