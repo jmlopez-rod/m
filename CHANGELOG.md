@@ -8,6 +8,15 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.7.0] <a name="0.7.0" href="#0.7.0">-</a> March 06, 2022
+*fixes*: `m ci celt` fails when project has no errors [669bc54](https://github.com/jmlopez-rod/m/commit/669bc5430a2fc8e343082165943e6f8b688eaaf0)
+
+*changes*: Trying not to use `Popen` to make bash calls [6babc6be](https://github.com/jmlopez-rod/m/commit/6babc6bee7bb6ec23e1301456f587e9bab2a688d)
+
+*features*: Publishing to [`npmjs`](https://www.npmjs.com/package/@jmlopez/m) and [`pypi`](https://pypi.org/project/jmlopez-m/). Only releases are published to the public registries. In github we can access the package from
+prs and the latest on the `master` branch.
+
+
 ## [0.6.0] <a name="0.6.0" href="#0.6.0">-</a> September 14, 2021
 - `m ci celt` has `-i` option to ignore error allowance. This is helpful when
   working on single files or the whole project and we want to see all the errors
@@ -95,7 +104,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.6.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/jmlopez-rod/m/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/jmlopez-rod/m/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/jmlopez-rod/m/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/jmlopez-rod/m/compare/0.3.1...0.4.0
