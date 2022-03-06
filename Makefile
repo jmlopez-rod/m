@@ -12,3 +12,6 @@ shell:
 
 bashTest:
 	cd packages/bash/tests && ./run.sh
+
+localPublish:
+	m/scripts/publish.sh
