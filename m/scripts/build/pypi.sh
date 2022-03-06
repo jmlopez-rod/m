@@ -1,8 +1,6 @@
 #!/bin/bash
 set -xeuo pipefail
 
-M_TAG=0.0.0-a2
-
 target=.stage-pypi
 binDir=./packages/bash/lib
 buildDir=./m/scripts/build/pypi
