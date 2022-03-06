@@ -1,4 +1,13 @@
 #!/bin/bash
+
+# Adding to path so that npx can work: https://superuser.com/a/39995
+pathadd() {
+  if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+    PATH="$1${PATH:+"$PATH:"}"
+  fi
+}
+pathadd "${PWD}/node_modules/@jmlopez-rod/m/bash/lib"
+
 set -euxo pipefail
 
 # Making sure we are releasing from the proper branch
