@@ -1,12 +1,13 @@
 #!/bin/bash
 set -xeuo pipefail
 
-target=.stage-npm
+target=.stage-github
+buildDir=./m/scripts/build/github
 
 rm -rf "$target"
 
 cp -r ./packages "./$target"
-cp ./package.json "./$target/package.json"
+cp "$buildDir/package.json" "./$target/package.json"
 
 find "./$target" | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 rm -rf "./$target/python/tests"

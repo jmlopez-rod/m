@@ -12,12 +12,14 @@ jobs:
     env:
       PYTHONPATH: ./packages/python
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TWINE_USERNAME: __token__
+      TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
-          pip install typing_extensions pycodestyle pylint mypy wemake-python-styleguide flake8 coverage bandit==1.7.2
+          pip install build twine typing_extensions pycodestyle pylint mypy wemake-python-styleguide flake8 coverage bandit==1.7.2
       - name: Checks
         run: |
           ./m/scripts/checks/ci.sh
