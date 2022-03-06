@@ -2,13 +2,15 @@
 import os
 import sys
 
-cwd = os.getcwd()
-py_path = f'{cwd}/node_modules/@jmlopez-rod/m/python'
+# This statement is only necessary for npm builds
+if 'PACKAGE_SCOPE'.startswith('jmlopez'):
+    cwd = os.getcwd()
+    py_path = f'{cwd}/node_modules/@PACKAGE_SCOPE/m/python'
 
-try:
-    sys.path.index(py_path)
-except ValueError:
-    sys.path.append(py_path)
+    try:
+        sys.path.index(py_path)
+    except ValueError:
+        sys.path.append(py_path)
 
 if __name__ == '__main__':
     from m.__main__ import main

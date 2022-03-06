@@ -1,8 +1,8 @@
-#!/bin/bash
+n#!/bin/bash
 set -xeuo pipefail
 
-target=.stage-github
-buildDir=./m/scripts/build/github
+target=.stage-npmjs
+buildDir=./m/scripts/build/npmjs
 
 rm -rf "$target"
 
@@ -17,7 +17,7 @@ sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" "./$target/package.json"
 sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" "./$target/python/m/version.py"
 
 # Replacing scope in executables
-SCOPE=jmlopez-rod
+SCOPE=jmlopez
 binDir="./$target/bash/lib"
 sed -i -e "s/PACKAGE_SCOPE/$SCOPE/g" "$binDir/m"
 sed -i -e "s/PACKAGE_SCOPE/$SCOPE/g" "$binDir/startHotfix.sh"
