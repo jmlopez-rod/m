@@ -6,7 +6,7 @@ pathadd() {
     PATH="$1${PATH:+":$PATH"}"
   fi
 }
-pathadd "${PWD}/node_modules/@jmlopez-rod/m/bash/lib"
+pathadd "${PWD}/node_modules/@PACKAGE_SCOPE/m/bash/lib"
 
 set -euxo pipefail
 
