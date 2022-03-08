@@ -8,6 +8,10 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.7.1] <a name="0.7.1" href="#0.7.1">-</a> March 07, 2022
+- Require `typing_extensions` on python installations.
+
+
 ## [0.7.0] <a name="0.7.0" href="#0.7.0">-</a> March 06, 2022
 *fixes*: `m ci celt` fails when project has no errors [669bc54](https://github.com/jmlopez-rod/m/commit/669bc5430a2fc8e343082165943e6f8b688eaaf0)
 
@@ -104,7 +108,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.7.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/jmlopez-rod/m/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/jmlopez-rod/m/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/jmlopez-rod/m/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/jmlopez-rod/m/compare/0.4.0...0.5.0
