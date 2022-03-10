@@ -10,6 +10,17 @@ def validate_json_payload(file_path: str):
 
     This is a string that tell us to read from a file, stdin or just
     plain json data.
+
+    Args:
+        file_path: A string with the json payload. If it starts with `@` then
+            the name of a valid json file from where the payload will be read.
+
+    Raises:
+        ArgumentTypeError: If the file_path is meant to be a valid path and it
+            does not exist.
+
+    Returns:
+        A parsed json payload
     """
     if file_path == '@-':
         res = read_json(None)
@@ -35,6 +46,17 @@ def validate_payload(file_path: str) -> str:
     """Return the raw payload.
 
     This allows us to read from a file or the stdin stream.
+
+    Args:
+        file_path: A string with the payload. If it starts with `@` then the
+            name of a valid file from where the payload will be read.
+
+    Raises:
+        ArgumentTypeError: If the file_path is meant to be a valid path and it
+            does not exist.
+
+    Returns:
+        The payload found in the file.
     """
     if file_path.startswith(r'\@'):
         # escape @ with \ to let the cli know that the payload starts with @
@@ -50,8 +72,18 @@ def validate_payload(file_path: str) -> str:
     return file_path
 
 
-def validate_non_empty_str(value):
-    """Return the value as long as its not empty."""
-    if not value:
+def validate_non_empty_str(arg_value: str) -> str:
+    """Return the value as long as its not empty.
+
+    Args:
+        arg_value: The input provided by argparse.
+
+    Raises:
+        ArgumentTypeError: If the input is not provided.
+
+    Returns:
+        The value if non empty.
+    """
+    if not arg_value:
         raise ArgumentTypeError('empty value not allowed')
-    return value
+    return arg_value

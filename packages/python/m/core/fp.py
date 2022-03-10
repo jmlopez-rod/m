@@ -73,7 +73,14 @@ class OneOf(Generic[B, G]):
         return self if self.is_bad else Good(fct(self.value))
 
     def flat_map_bad(self, fct: Callable[[B], 'OneOf']) -> 'OneOf':
-        """The given function is applied if this is a `Bad` value."""
+        """Apply the input function if this is a `Bad` value.
+
+        Args:
+            fct: The function to apply to the "Bad" value.
+
+        Returns:
+            Itself if its a `Good` otherwise another instance of `Bad`.
+        """
         return fct(cast(B, self.value)) if self.is_bad else self
 
     def get_or_else(self, or_: LazyArg[G]) -> G:
