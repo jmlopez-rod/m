@@ -177,9 +177,7 @@ def run_cli(
     """
     mod = get_cli_command_modules(file_path)
     arg = main_parser(mod, main_args)
-    if arg == 1:
-        sys.exit(1)
-    elif hasattr(arg, 'subcommand_name'):
+    if hasattr(arg, 'subcommand_name'):
         sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
         sys.exit(sub_mod[arg.subcommand_name].run(arg))
     else:
