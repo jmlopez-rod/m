@@ -1,7 +1,4 @@
 {
-  "allowedPylintRules": {
-    "consider-using-f-string": 1
-  },
   "allowedFlake8Rules": {
     "WPS505": 1,
     "WPS359": 1,
