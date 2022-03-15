@@ -8,6 +8,11 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.8.0] <a name="0.8.0" href="#0.8.0">-</a> March 15, 2022
+- Make `m` [`mypy` comptabible](https://mypy.readthedocs.io/en/stable/installed_packages.html#creating-pep-561-compatible-packages)
+- Linting and tests added.
+
+
 ## [0.7.1] <a name="0.7.1" href="#0.7.1">-</a> March 07, 2022
 - Require `typing_extensions` on python installations.
 
@@ -108,7 +113,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.7.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/jmlopez-rod/m/compare/0.7.1...0.8.0
 [0.7.1]: https://github.com/jmlopez-rod/m/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/jmlopez-rod/m/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/jmlopez-rod/m/compare/0.5.0...0.6.0
