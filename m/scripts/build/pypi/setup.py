@@ -29,6 +29,7 @@ setuptools.setup(
         'bin/endRelease',
     ],
     install_requires=['typing_extensions'],
+    package_data={'m': ['py.typed']},
     packages=setuptools.find_packages(where='src'),
     python_requires='>=3.8',
 )
