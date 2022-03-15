@@ -1,10 +1,10 @@
 def commit_query(include_pr: bool, include_author: bool) -> str:
-    """Helper function to build a graphql query for github.
+    """Build a graphql query for github.
 
     The output of this function is meant to go inside the repository
     field.
     """
-    author = '''
+    author = """
       author {
         name
         email
@@ -13,8 +13,8 @@ def commit_query(include_pr: bool, include_author: bool) -> str:
         }
       }
       oid
-    ''' if include_author else ''
-    pr = '''
+    """ if include_author else ''
+    pr = """
       associatedPullRequests(first: 1) {
         nodes {
           author {
@@ -34,8 +34,8 @@ def commit_query(include_pr: bool, include_author: bool) -> str:
           merged
         }
       }
-    ''' if include_pr else ''
-    return '''
+    """ if include_pr else ''
+    query = """
       commit: object(expression: $sha) {
         ... on Commit {
           message
@@ -43,7 +43,8 @@ def commit_query(include_pr: bool, include_author: bool) -> str:
           %s
         }
       }
-    ''' % (author, pr)
+    """
+    return query % (author, pr)
 
 
 LATEST_RELEASE = """

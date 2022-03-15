@@ -1,14 +1,15 @@
 import json
 import sys
 from collections.abc import Mapping
+from contextlib import suppress
 from typing import Any, List
 from typing import Mapping as Map
 from typing import Optional, Union, cast
 
-from . import issue
 from .fp import Good, OneOf
 from .io import CITool
 from .issue import Issue
+from .one_of import issue
 
 
 def read_json(
@@ -58,10 +59,8 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
     current = obj
     for num, key in enumerate(keys):
         new_key: Union[str, int] = key
-        try:
+        with suppress(ValueError):
             new_key = int(key)
-        except ValueError:
-            pass
         try:
             current = current[new_key]
         except KeyError:
@@ -70,7 +69,8 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
         except Exception as ex:
             pth = '.'.join(keys[:num])
             if not isinstance(current, Mapping):
-                return issue(f'`{pth or current}` is not a dict')
+                context = pth or current
+                return issue(f'`{context}` is not a dict')
             return issue(f'{pth} resulted in an error', cause=ex)
     return Good(current)
 

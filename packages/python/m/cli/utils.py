@@ -20,11 +20,10 @@ class CmdModule:
 
     @staticmethod
     def add_arguments(_parser: argparse.ArgumentParser) -> None:
-        """Should be defined if we want to manipulate the argument parser
-        object.
+        """Define options that may apply to the subparsers.
 
-        This will allow us to define options that may apply to the
-        subparsers.
+        Should be defined if we want to manipulate the argument parser
+        object.
         """
         ...
 
@@ -33,14 +32,16 @@ class CmdModule:
         _subparser: argparse._SubParsersAction,  # noqa pylint: disable=protected-access
         _raw: Type[argparse.RawTextHelpFormatter],
     ) -> None:
-        """This function is required for commands so that we may be able to
-        define arguments."""
+        """Define cli arguments for a command."""
         ...
 
     @staticmethod
     def run(_arg: argparse.Namespace) -> int:
-        """This function needs to call a library function and return 0 if
-        successful or non-zero if there is a failure."""
+        """Entry point for the cli.
+
+        Call a library function and return 0 if successful or non-zero if there
+        is a failure.
+        """
         ...
 
 
@@ -177,9 +178,7 @@ def run_cli(
     """
     mod = get_cli_command_modules(file_path)
     arg = main_parser(mod, main_args)
-    if arg == 1:
-        sys.exit(1)
-    elif hasattr(arg, 'subcommand_name'):
+    if hasattr(arg, 'subcommand_name'):
         sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
         sys.exit(sub_mod[arg.subcommand_name].run(arg))
     else:

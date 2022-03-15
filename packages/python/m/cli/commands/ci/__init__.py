@@ -1,9 +1,11 @@
-import inspect
+from inspect import cleandoc
+
+_DESC = """
+    The following commands provide local support in the continuous
+    integration flow.
+"""
 
 meta = {
     'help': 'continuous integration utilities',
-    'description': inspect.cleandoc('''
-        The following commands provide local support in the continuous
-        integration flow.
-    '''),
+    'description': cleandoc(_DESC),
 }
