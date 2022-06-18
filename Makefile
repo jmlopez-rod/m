@@ -18,3 +18,6 @@ localPublish:
 
 devDocs:
 	cd packages/website && pnpm start
+
+deployDocs:
+	cd packages/website && USE_SSH=true pnpm deploy
