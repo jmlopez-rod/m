@@ -107,6 +107,12 @@ class GitEnv(JsonStr):
         It is a release pr as far as the pull request should see it but
         from the context of the git environment we need to label it as a
         hotfix pr.
+
+        Args:
+            config: The m configuration object.
+
+        Returns:
+            True if the we are dealing with hotfix pr.
         """
         if not self.pull_request:
             return False
@@ -164,19 +170,34 @@ class GitEnv(JsonStr):
 
 
 def get_pr_number(branch: str) -> Optional[int]:
-    """Retrieve the pull request number from the branch name."""
+    """Retrieve the pull request number from the branch name.
+
+    Args:
+        branch: The branch name from where the pr number is extracted.py
+
+    Returns:
+        The pr number if the branch is a pull request otherwise `None`.
+    """
     if 'pull/' in branch:
         parts = branch.split('/')
         return int(parts[parts.index('pull') + 1])
     return None
 
 
-def _remove_strings(content: str, words: List[str]) -> str:
-    return re.sub('|'.join(words), '', content)
+def _remove_strings(str_content: str, words: List[str]) -> str:
+    return re.sub('|'.join(words), '', str_content)
 
 
 def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
-    """Obtain the git environment by asking Github's API."""
+    """Obtain the git environment by asking Github's API.
+
+    Args:
+        config: The m configuration object.
+        env_vars: The environment variables.
+
+    Returns:
+        The git environment object or an issue.
+    """
     branch = _remove_strings(env_vars.git_branch, ['refs/heads/', 'heads/'])
     sha = env_vars.git_sha
     git_env = GitEnv(sha, branch, branch)

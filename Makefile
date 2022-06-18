@@ -15,3 +15,6 @@ bashTest:
 
 localPublish:
 	m/scripts/publish.sh
+
+devDocs:
+	cd packages/website && pnpm start
