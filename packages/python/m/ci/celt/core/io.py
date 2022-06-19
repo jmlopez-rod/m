@@ -123,11 +123,11 @@ def project_status_str(
     ])
     buffer.append('')
 
-    c1_w = max([len(x) for x in keys])
+    c1_w = max((len(x) for x in keys))
     c1_w = max([c1_w, len('rules')])
-    c2_w = max([len(str(s.found)) for s in rules])
+    c2_w = max((len(str(s.found)) for s in rules))
     c2_w = max([c2_w, len('found')])
-    c3_w = max([len(str(s.allowed)) for s in rules])
+    c3_w = max((len(str(s.allowed)) for s in rules))
     c3_w = max([c3_w, len('allowed')])
     widths = [c1_w, c2_w, c3_w]
 
