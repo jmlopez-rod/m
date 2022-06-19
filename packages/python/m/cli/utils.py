@@ -25,7 +25,6 @@ class CmdModule:
         Should be defined if we want to manipulate the argument parser
         object.
         """
-        ...
 
     @staticmethod
     def add_parser(
@@ -33,7 +32,6 @@ class CmdModule:
         _raw: Type[argparse.RawTextHelpFormatter],
     ) -> None:
         """Define cli arguments for a command."""
-        ...
 
     @staticmethod
     def run(_arg: argparse.Namespace) -> int:
@@ -42,7 +40,6 @@ class CmdModule:
         Call a library function and return 0 if successful or non-zero if there
         is a failure.
         """
-        ...
 
 
 def import_mod(name: str) -> CmdModule:

@@ -58,16 +58,16 @@ class ProjectStatus:
     def __post_init__(self):
         """Compute the rest of non initialized variables."""
         rules = self.rules.values()
-        total_found = sum([s.found for s in rules if not s.ignored])
-        total_allowed = sum([s.allowed for s in rules if not s.ignored])
+        total_found = sum((s.found for s in rules if not s.ignored))
+        total_allowed = sum((s.allowed for s in rules if not s.ignored))
         error_msg = ''
         if self.status == ExitCode.error:
-            diff = sum([
+            diff = sum((
                 d
                 for s in rules
                 for d in (s.found - s.allowed,)
                 if d > 0 and not s.ignored
-            ])
+            ))
             error_msg = f'{diff} extra errors were introduced'
         elif self.status == ExitCode.needs_readjustment:
             diff = total_allowed - total_found

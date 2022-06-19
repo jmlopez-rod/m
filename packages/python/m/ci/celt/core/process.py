@@ -41,7 +41,8 @@ def replace_filenames(
     return Good(re.sub(
         fr'({old})(.*?)\.([a-z]+)',
         lambda x: [
-            f'{prefix}{filename}.{ext}'
+            # Not sure how fix this mypy issue
+            f'{prefix}{filename}.{ext}'  # type: ignore
             for _, filename, ext in (x.groups(),)
         ][0],
         payload,
