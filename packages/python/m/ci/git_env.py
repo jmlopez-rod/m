@@ -170,7 +170,7 @@ class GitEnv(JsonStr):
 
 
 def _build_tag_prefix(config: Config) -> str:
-    if config.develop_versioning:
+    if config.build_tag_with_version:
         return f'{config.version}-'
     return '0.0.0-'
 

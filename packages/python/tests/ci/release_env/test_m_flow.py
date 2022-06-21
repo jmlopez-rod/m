@@ -107,7 +107,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
     def test_pr_1_dev_versioning(self):
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'
-        self.config.develop_versioning = True
+        self.config.build_tag_with_version = True
         self.env_vars.git_branch = 'refs/pull/1'
         self.env_vars.run_id = '404'
         with patch('m.core.http.fetch') as graphql_mock:

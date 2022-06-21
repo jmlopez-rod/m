@@ -41,7 +41,7 @@ class Config(JsonStr):
     workflow: Workflow
     git_flow: GitFlowConfig
     m_flow: MFlowConfig
-    develop_versioning: bool = False
+    build_tag_with_version: bool = False
 
     def uses_git_flow(self):
         """Check if configuration is using the git flow.
@@ -133,7 +133,7 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
             workflow,
             git_flow,
             m_flow,
-            dev_versioning,
+            build_tag_with_version=with_version,
         )
         for m_cfg in json.read_json(f'{m_dir}/m.json')
         for owner, repo in json.multi_get(m_cfg, 'owner', 'repo')
@@ -141,5 +141,5 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
         for workflow in read_workflow(m_cfg.get('workflow', 'free-flow'))
         for git_flow in read_git_flow(m_cfg.get('gitFlow', {}))
         for m_flow in read_m_flow(m_cfg.get('mFlow', {}))
-        for dev_versioning in (m_cfg.get('develop_versioning', False),)
+        for with_version in (m_cfg.get('build_tag_with_version', False),)
     ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))
