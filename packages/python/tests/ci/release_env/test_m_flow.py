@@ -104,6 +104,27 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 workflow=Workflow.m_flow
             ))
 
+    def test_pr_1_dev_versioning(self):
+        self.env_vars.ci_env = True
+        self.config.version = '1.1.1'
+        self.config.develop_versioning = True
+        self.env_vars.git_branch = 'refs/pull/1'
+        self.env_vars.run_id = '404'
+        with patch('m.core.http.fetch') as graphql_mock:
+            graphql_mock.side_effect = [
+                Good(mock_commit_sha('sha')),
+                Good(read_fixture('pr1.json')),
+            ]
+            result = self._get_env()
+            self.assert_ok(result)
+            self.assertEqual(result.value.__dict__, dict(
+                build_tag='1.1.1-pr1.b404',
+                is_release=False,
+                is_release_pr=False,
+                is_hotfix_pr=False,
+                workflow=Workflow.m_flow
+            ))
+
     def test_release_pr_no_update(self):
         """Make sure that the developer updates the version to be greater than
         the current one in github."""

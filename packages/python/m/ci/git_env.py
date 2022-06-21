@@ -151,7 +151,7 @@ class GitEnv(JsonStr):
         if config.uses_git_flow() and is_dev_branch:
             if is_release or is_release_pr or is_hotfix_pr:
                 return Good('SKIP')
-        prefix = '' if config.uses_free_flow() else '0.0.0-'
+        prefix = '' if config.uses_free_flow() else _build_tag_prefix(config)
         if not run_id:
             return Good(f'{prefix}local.{self.sha}')
         if is_release:
@@ -167,6 +167,12 @@ class GitEnv(JsonStr):
                 return Good(f'{config.version}-{nprefix}{pr_number}.b{run_id}')
             return Good(f'{prefix}pr{pr_number}.b{run_id}')
         return Good(f'{prefix}{self.target_branch}.b{run_id}')
+
+
+def _build_tag_prefix(config: Config) -> str:
+    if config.develop_versioning:
+        return f'{config.version}-'
+    return '0.0.0-'
 
 
 def get_pr_number(branch: str) -> Optional[int]:
