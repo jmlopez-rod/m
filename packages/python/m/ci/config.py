@@ -33,6 +33,7 @@ def _handle_non_release(ver_lt_latest: bool, ver_gt_latest: bool) -> str:
 class Config(JsonStr):
     """Object to store the m project configuration."""
 
+    # pylint: disable=too-many-instance-attributes
     owner: str
     repo: str
     version: str
@@ -40,6 +41,7 @@ class Config(JsonStr):
     workflow: Workflow
     git_flow: GitFlowConfig
     m_flow: MFlowConfig
+    build_tag_with_version: bool = False
 
     def uses_git_flow(self):
         """Check if configuration is using the git flow.
@@ -123,11 +125,21 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
         A `OneOf` containing the `m` configuration or an `Issue`.
     """
     return one_of(lambda: [
-        Config(owner, repo, version, m_dir, workflow, git_flow, m_flow)
+        Config(
+            owner,
+            repo,
+            version,
+            m_dir,
+            workflow,
+            git_flow,
+            m_flow,
+            build_tag_with_version=with_version,
+        )
         for m_cfg in json.read_json(f'{m_dir}/m.json')
         for owner, repo in json.multi_get(m_cfg, 'owner', 'repo')
         for version in (m_cfg.get('version', '0.0.0'),)
         for workflow in read_workflow(m_cfg.get('workflow', 'free-flow'))
         for git_flow in read_git_flow(m_cfg.get('gitFlow', {}))
         for m_flow in read_m_flow(m_cfg.get('mFlow', {}))
+        for with_version in (m_cfg.get('build_tag_with_version', False),)
     ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))
