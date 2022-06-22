@@ -8,6 +8,13 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.9.0] <a name="0.9.0" href="#0.9.0">-</a> June 21, 2022
+- Add `build_tag_with_version` to `m` configuration: Allows build tags to
+  use the current version instead of `0.0.0`.
+- Docusaurus have been introduced. There is no docs yet but the static site
+  can be accessed at https://jmlopez-rod.github.io/m/
+
+
 ## [0.8.0] <a name="0.8.0" href="#0.8.0">-</a> March 15, 2022
 - Make `m` [`mypy` comptabible](https://mypy.readthedocs.io/en/stable/installed_packages.html#creating-pep-561-compatible-packages)
 - Linting and tests added.
@@ -113,7 +120,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.8.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.9.0...HEAD
+[0.9.0]: https://github.com/jmlopez-rod/m/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/jmlopez-rod/m/compare/0.7.1...0.8.0
 [0.7.1]: https://github.com/jmlopez-rod/m/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/jmlopez-rod/m/compare/0.6.0...0.7.0
