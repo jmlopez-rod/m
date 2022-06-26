@@ -400,15 +400,15 @@ def get_ci_tool() -> Type[CITool]:
 CiTool = get_ci_tool()
 
 
-def error_block(issue_: str, stream: TextIO = sys.stderr) -> None:
+def error_block(issue_: str, stream: Optional[TextIO] = None) -> None:
     """Print an issue within an error block."""
     CiTool.open_block('error', '')
-    print(issue_, file=stream)
+    print(issue_, file=stream or sys.stderr)
     CiTool.close_block('error')
 
 
-def warn_block(issue_: str, stream: TextIO = sys.stderr) -> None:
+def warn_block(issue_: str, stream: Optional[TextIO] = None) -> None:
     """Print an issue within a warning block."""
     CiTool.open_block('warning', '')
-    print(issue_, file=stream)
+    print(issue_, file=stream or sys.stderr)
     CiTool.close_block('warning')
