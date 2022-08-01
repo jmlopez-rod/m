@@ -36,16 +36,28 @@ def format_seconds(number_of_seconds: Union[int, float]) -> str:
     return ':'.join([x for x in entries if x]) or '0s'
 
 
-def env(name: str, def_val='') -> str:
+def env(name: str, def_val: str = '') -> str:
     """Access an environment variable.
 
-    Return empty string if not defined.
+    Args:
+        name: The name of the environment variable.
+        def_val: The default value to return if not set. Defaults to empty.
+
+    Returns:
+        The value of the environment variable if set otherwise the `def_val`.
     """
     return os.environ.get(name, def_val)
 
 
 def renv(key: str) -> OneOf[Issue, str]:
-    """Require an environment variable to be defined."""
+    """Require an environment variable to be defined.
+
+    Args:
+        key: The environment variable required to be defined.
+
+    Returns:
+        A `OneOf` with the value of the environment variable or an issue.
+    """
     value = os.environ.get(key)
     # Value may still be an empty string, checking against None
     if value is not None:
@@ -54,7 +66,14 @@ def renv(key: str) -> OneOf[Issue, str]:
 
 
 def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
-    """Require multiple env vars to be defined."""
+    """Require multiple env vars to be defined.
+
+    Args:
+        keys: The environment variables required to be defined.
+
+    Returns:
+        A `OneOf` with the values of the environment variables or an issue.
+    """
     result: List[str] = []
     missing: List[str] = []
     for key in keys:
