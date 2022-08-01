@@ -1,0 +1,59 @@
+# `clean_tags`
+
+## Usage
+
+```shell
+$ m npm clean_tags [@scope/name]
+[]
+```
+
+The command will use `npm` to find all the tags that point to non-existing
+versions of an npm package and remove them. The output will be a a json
+list of the output of the removal command provided by `npm`.
+
+An output of an empty array means that no npm tags were removed.
+
+## Procedure
+
+Removes empty `npm` tags. The implementation roughly does the following.
+It calls npm to find out the tags of a package
+
+```shell
+~$ npm info @jmlopez-rod/m dist-tags --json
+{
+  "latest": "0.9.0",
+  "master": "0.0.0-master.b2539220687",
+  "next": "0.9.0-rc33.b2539239601",
+  "pr11": "0.0.0-pr11.b1166903590",
+  "pr13": "0.0.0-pr13.b1192723950",
+  "pr16": "0.0.0-pr16.b1194720134",
+  "pr18": "0.0.0-pr18.b1224379867",
+  "pr20": "0.0.0-pr20.b1232422923",
+  "pr22": "0.0.0-pr22.b1314622335",
+  "pr23": "0.0.0-pr23.b1937141978",
+  "pr24": "0.0.0-pr24.b1940124881",
+  "pr25": "0.0.0-pr25.b1940346281",
+  "pr26": "0.0.0-pr26.b1940501816",
+  "pr29": "0.0.0-pr29.b1989548181",
+  "pr3": "0.0.0-pr3.b1077117146",
+  "pr31": "0.0.0-pr31.b2524897625",
+  "pr32": "0.0.0-pr32.b2538930170",
+  "pr5": "0.0.0-pr5.b1106124757",
+  "pr6": "0.0.0-pr6.b1129695767",
+  "pr7": "0.0.0-pr7.b1130710538",
+  "pr1": "",
+  "pr9": "0.0.0-pr9.b1154924094"
+}
+```
+
+In this case we removed all versions that were generated during `pr1` so there
+is no version present, thus it has resulted in an empty tag.
+
+Once all tags are identified we make a call on each tag to be removed
+
+
+```shell
+npm dist-tag rm @jmlopez-rod pr1 --json
+-pr1:
+```
+
