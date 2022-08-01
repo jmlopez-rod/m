@@ -20,7 +20,7 @@ jobs:
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
-          pip install -r requirements.txt
+          pip install wemake-python-styleguide coverage mypy pylint
       - name: Checks
         run: |
           ./m/scripts/checks/ci.sh
