@@ -28,7 +28,7 @@ def _filter_data(data: Mapping[str, Any]) -> OneOf[Issue, Any]:
         return Good(data['data'])
     return issue(
         'github response missing data field',
-        context={'response': data}
+        context={'response': data},
     )
 
 
