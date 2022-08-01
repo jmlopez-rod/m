@@ -25,7 +25,7 @@ def _verify_version(
     gh_latest: str,
     is_release_pr: bool,
     is_hotfix_pr: bool,
-    is_release: bool
+    is_release: bool,
 ) -> OneOf[Issue, int]:
     if config.workflow in [Workflow.git_flow, Workflow.m_flow]:
         if config.uses_git_flow():
@@ -41,7 +41,7 @@ def _verify_version(
         return config.verify_version(
             gh_latest,
             is_release_pr=(is_release_pr or is_hotfix_pr),
-            is_release=is_release
+            is_release=is_release,
         )
     # Covers Workflow.free_flow
     return Good(0)
@@ -102,7 +102,7 @@ def get_release_env(
             is_release=is_release,
             is_release_pr=is_release_pr,
             is_hotfix_pr=is_hotfix_pr,
-            workflow=config.workflow
+            workflow=config.workflow,
         )
         for _ in _verify_version(
             config,

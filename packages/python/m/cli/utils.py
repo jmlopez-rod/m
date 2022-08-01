@@ -102,10 +102,9 @@ def get_cli_command_modules(
 
 def main_parser(
     mod: Map[str, Union[CmdModule, Map[str, CmdModule]]],
-    add_args=None,
+    add_args: Optional[Callable[[argparse.ArgumentParser], None]] = None,
 ):
-    """Creates an argp parser and returns the result calling its parse_arg
-    method.
+    """Create an argp and return the result calling its parse_arg method.
 
     The `add_args` param may be provided as a function that takes in an
     `argparse.ArgumentParser` instance to be able to take additional
@@ -225,36 +224,6 @@ def run_main(
     except Exception as ex:
         issue = Issue('unknown caught exception', cause=ex)
         handle_issue(issue)
-        return 1
-    return 0
-
-
-def call_main(fun, args, print_raw=False) -> int:
-    """
-    @deprecated: Use run_main
-
-    The `fun` param will be called by providing the list of values in
-    `args`. By default, the result of calling `fun` will be JSON stringified
-    but we can avoid this by providing `print_raw` set to True. """
-    try:
-        res = fun(*args)
-        val = res.value
-        if res.is_bad:
-            if isinstance(val, Issue):
-                return error(val.message, val)
-            issue = Issue('non-issue exception', cause=val)
-            return error(issue.message, issue)
-        if val is not None or isinstance(val, list):
-            if print_raw:
-                print(val)
-            else:
-                try:
-                    print(json.dumps(val, separators=(',', ':')))
-                except Exception:
-                    print(val, file=sys.stderr)
-    except Exception as ex:
-        CiTool.error('unknown caught exception')
-        error_block(repr(ex))
         return 1
     return 0
 
