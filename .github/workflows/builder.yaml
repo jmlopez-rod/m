@@ -20,7 +20,7 @@ jobs:
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
-          pip install build twine typing_extensions pycodestyle pylint mypy wemake-python-styleguide flake8 coverage bandit
+          pip install build twine typing_extensions pylint mypy wemake-python-styleguide coverage bandit
       - name: Checks
         run: |
           ./m/scripts/checks/ci.sh
