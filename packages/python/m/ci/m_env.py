@@ -59,7 +59,8 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         'M_IS_RELEASE_PR': release.is_release_pr,
         'M_IS_HOTFIX_PR': release.is_hotfix_pr,
     }
-    return fp.Good('\n'.join([f'{key}={val}' for key, val in env.items()]))
+    lines = [f'{env_key}={env_val}' for env_key, env_val in env.items()]
+    return fp.Good('\n'.join(lines))
 
 
 def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:

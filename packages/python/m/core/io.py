@@ -3,8 +3,8 @@ import math
 import os
 import sys
 from abc import ABC
-from dataclasses import dataclass
 from enum import Enum
+from pydantic import BaseModel
 from typing import Any, List, Optional, TextIO, Type, Union, cast
 
 from .. import git
@@ -163,8 +163,7 @@ class JsonStr:
         return json.dumps(self.__dict__, default=serialize)
 
 
-@dataclass
-class EnvVars(JsonStr):
+class EnvVars(BaseModel):
     """Class to store the values of the environment variables."""
 
     # pylint: disable=too-many-instance-attributes

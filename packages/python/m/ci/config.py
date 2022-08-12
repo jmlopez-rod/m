@@ -1,8 +1,7 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 from distutils.version import StrictVersion
 
 from ..core import Good, Issue, OneOf, issue, json, one_of
-from ..core.io import JsonStr
 from .types import (
     GitFlowConfig,
     MFlowConfig,
@@ -29,8 +28,7 @@ def _handle_non_release(ver_lt_latest: bool, ver_gt_latest: bool) -> str:
     return ''
 
 
-@dataclass
-class Config(JsonStr):
+class Config(BaseModel):
     """Object to store the m project configuration."""
 
     # pylint: disable=too-many-instance-attributes
@@ -126,13 +124,13 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """
     return one_of(lambda: [
         Config(
-            owner,
-            repo,
-            version,
-            m_dir,
-            workflow,
-            git_flow,
-            m_flow,
+            owner=owner,
+            repo=repo,
+            version=version,
+            m_dir=m_dir,
+            workflow=workflow,
+            git_flow=git_flow,
+            m_flow=m_flow,
             build_tag_with_version=with_version,
         )
         for m_cfg in json.read_json(f'{m_dir}/m.json')

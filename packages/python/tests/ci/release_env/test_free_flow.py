@@ -1,4 +1,3 @@
-from dataclasses import replace as copy
 from unittest.mock import patch
 
 from m.ci.config import Workflow
@@ -12,8 +11,8 @@ from .util import CONFIG, ENV_VARS, mock_commit_sha
 
 
 class ReleaseEnvFreeFlowTest(FpTestCase):
-    config = copy(CONFIG)
-    env_vars = copy(ENV_VARS)
+    config = CONFIG.copy()
+    env_vars = ENV_VARS.copy()
 
     def _get_env(self):
         return one_of(lambda: [
