@@ -4,18 +4,18 @@ from typing import Any, Callable, List, Tuple
 from .types import Configuration, ExitCode, ProjectStatus, RuleInfo
 
 
-def _compare_rules(x: RuleInfo, y: RuleInfo) -> int:
-    diff = x.found - y.found or x.allowed - y.allowed
+def _compare_rules(rule_a: RuleInfo, rule_b: RuleInfo) -> int:
+    diff = rule_a.found - rule_b.found or rule_a.allowed - rule_b.allowed
     if not diff:
-        return 1 if x.rule_id < y.rule_id else -1
+        return 1 if rule_a.rule_id < rule_b.rule_id else -1
     return diff
 
 
 def _compare_rule_items(
-    x: Tuple[str, RuleInfo],
-    y: Tuple[str, RuleInfo],
+    rule_a: Tuple[str, RuleInfo],
+    rule_b: Tuple[str, RuleInfo],
 ) -> int:
-    return _compare_rules(x[1], y[1])
+    return _compare_rules(rule_a[1], rule_b[1])
 
 
 def _align(token: Any, alignment: str) -> Callable[[int], str]:

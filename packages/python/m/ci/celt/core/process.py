@@ -66,9 +66,9 @@ def filter_reports(
         matching the provided regex.
     """
     return [
-        x
-        for x in reports
-        if x.violations and (not regex or re.match(regex, x.file_path))
+        rpt
+        for rpt in reports
+        if rpt.violations and (not regex or re.match(regex, rpt.file_path))
     ]
 
 

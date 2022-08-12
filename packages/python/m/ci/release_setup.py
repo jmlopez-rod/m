@@ -65,12 +65,22 @@ def update_changelog_file(
     first_sha: str,
     filename: str = 'CHANGELOG.md',
 ) -> OneOf[Issue, int]:
-    """Add an entry to the CHANGELOG file with the new version to be
-    released."""
+    """Add the new version entry to be released to the CHANGELOG.
+
+    Args:
+        owner: The repo owner.
+        repo: The repo name.
+        new_ver: The version that is being released.
+        first_sha: The first sha ever commited on the repo.
+        filename: Specify the CHANGELOG file (defaults to CHANGELOG.md)
+
+    Returns:
+        0 if successful, an issue otherwise.
+    """
     return one_of(lambda: [
         0
-        for data in read_file(filename)
-        for new_data in new_changelog(data, owner, repo, new_ver, first_sha)
+        for text in read_file(filename)
+        for new_data in new_changelog(text, owner, repo, new_ver, first_sha)
         for _ in write_file(filename, new_data)
     ])
 
@@ -89,9 +99,22 @@ def _update_config_version(contents: str, ver: str) -> OneOf[Issue, str]:
     return Good('\n'.join(new_lines))
 
 
-def update_version(root: str, version: str) -> OneOf[Issue, int]:
-    """Update the version property in m.json configuration file."""
-    filename = f'{root}/m.json'
+def update_version(
+    root: str,
+    version: str,
+    m_file: str,
+) -> OneOf[Issue, int]:
+    """Update the version property in m configuration file.
+
+    Args:
+        root: The directory with the m configuration file.
+        version: The new version to write in the m configuration.
+        m_file: Specify either `m.json` or `m.yaml`.
+
+    Returns:
+        0 if successful or an issue.
+    """
+    filename = f'{root}/{m_file}'
     return one_of(lambda: [
         0
         for data in read_file(filename)
@@ -110,14 +133,27 @@ def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
 def release_setup(
     m_dir: str,
     new_ver: str,
+    m_file: str,
     changelog: str = 'CHANGELOG.md',
 ) -> OneOf[Issue, None]:
-    """Modify all the necessary files to create a release."""
+    """Modify all the necessary files to create a release.
+
+    These include: CHANGELOG.md and the m configuration file.
+
+    Args:
+        m_dir: The directory with the m configuration.
+        new_ver: The new version to write in the m configuration.
+        m_file: The name of the m configuration file (m.json, m.yaml).
+        changelog: The name of the changelog file (defaults to CHANGELOG.md)
+
+    Returns:
+        None if successul, otherwise an issue.
+    """
     return one_of(lambda: [
         None
         for config in read_config(m_dir)
         for first_sha in get_first_commit_sha()
-        for _ in update_version(m_dir, new_ver)
+        for _ in update_version(m_dir, new_ver, m_file)
         for _ in update_changelog_file(
             config.owner,
             config.repo,

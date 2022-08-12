@@ -18,13 +18,13 @@ def read_payload(payload: str) -> OneOf[Issue, List[FileReport]]:
         return res
     violations = cast(List[Any], res.value)
     report: Dict[str, List[Violation]] = {}
-    for x in violations:
+    for v_item in violations:
         violation = Violation(
-            rule_id=x['symbol'],
-            message=x['message'],
-            line=int(x['line']),
-            column=int(x['column']),
-            file_path=x['path'],
+            rule_id=v_item['symbol'],
+            message=v_item['message'],
+            line=int(v_item['line']),
+            column=int(v_item['column']),
+            file_path=v_item['path'],
         )
         if violation.file_path not in report:
             report[violation.file_path] = []

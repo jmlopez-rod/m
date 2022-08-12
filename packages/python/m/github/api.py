@@ -11,7 +11,7 @@ def request(
     token: str,
     endpoint: str,
     method: str = 'GET',
-    data: Optional[Any] = None,
+    dict_data: Optional[Any] = None,
 ) -> OneOf[Issue, Any]:
     """Make an api request to github. See:
 
@@ -20,15 +20,15 @@ def request(
     """  # noqa
     url = f'https://api.github.com{endpoint}'
     headers = {'authorization': f'Bearer {token}'}
-    return fetch_json(url, headers, method, data)
+    return fetch_json(url, headers, method, dict_data)
 
 
-def _filter_data(data: Mapping[str, Any]) -> OneOf[Issue, Any]:
-    if data.get('data'):
-        return Good(data['data'])
+def _filter_data(dict_data: Mapping[str, Any]) -> OneOf[Issue, Any]:
+    if dict_data.get('data'):
+        return Good(dict_data['data'])
     return issue(
         'github response missing data field',
-        context={'response': data},
+        context={'response': dict_data},
     )
 
 
