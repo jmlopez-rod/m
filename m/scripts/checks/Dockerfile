@@ -1,5 +1,7 @@
-FROM python:3.8.7-alpine
+FROM python:3.8.13-slim-buster
 
-RUN apk update && apk add bash
+WORKDIR /workspace
 
-RUN pip install pycodestyle pydantic pylint mypy pyyaml wemake-python-styleguide flake8 pyformat isort add-trailing-comma coverage bandit==1.7.2
+COPY ./requirements.txt .
+
+RUN pip install -r requirements.txt

@@ -45,7 +45,8 @@ def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
         A `OneOf` with the value returned from `comp`.
     """
     try:
-        return Good(comp()[0])
+        res = comp()
+        return Good(res[0])
     except StopBadIteration as ex:
         return cast(Bad, ex.bad)
     except Exception as ex:
@@ -60,7 +61,7 @@ def to_one_of(
     """Wrap a python call in a `OneOf`.
 
     Args:
-        callback: A lambda function with a simple python statement.py
+        callback: A lambda function with a simple python statement.
         message: An error message in case the statment raises an exception.
         context: Additional error context.
 

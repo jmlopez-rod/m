@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from distutils.version import StrictVersion
+
+from pydantic import BaseModel
 
 from ..core import Good, Issue, OneOf, issue, json, one_of
 from .types import (

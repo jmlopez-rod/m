@@ -2,13 +2,13 @@ import re
 from datetime import datetime
 from typing import List
 
-from ..ci.config import Config, read_config
-from ..core import issue, one_of
-from ..core.fp import Good, OneOf
-from ..core.io import read_file, write_file
-from ..core.issue import Issue
-from ..git import get_first_commit_sha
-from ..github import compare_sha_url
+from m.ci.config import Config, read_config
+from m.core import issue, one_of
+from m.core.fp import Good, OneOf
+from m.core.issue import Issue
+from m.core import rw
+from m.git import get_first_commit_sha
+from m.github import compare_sha_url
 
 
 def _get_versions(lines: List[str], new_ver: str, first_sha: str) -> List[str]:
@@ -79,9 +79,9 @@ def update_changelog_file(
     """
     return one_of(lambda: [
         0
-        for text in read_file(filename)
+        for text in rw.read_file(filename)
         for new_data in new_changelog(text, owner, repo, new_ver, first_sha)
-        for _ in write_file(filename, new_data)
+        for _ in rw.write_file(filename, new_data)
     ])
 
 
@@ -117,9 +117,9 @@ def update_version(
     filename = f'{root}/{m_file}'
     return one_of(lambda: [
         0
-        for data in read_file(filename)
+        for data in rw.read_file(filename)
         for new_data in _update_config_version(data, version)
-        for _ in write_file(filename, new_data)
+        for _ in rw.write_file(filename, new_data)
     ])
 
 
@@ -127,6 +127,7 @@ def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
     link = compare_sha_url(config.owner, config.repo, config.version, 'HEAD')
     print(f'\nSetup for version {new_ver} is complete.')
     print(f'Unreleased changes: {link}\n')
+    print('what')
     return Good(0)
 
 

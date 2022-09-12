@@ -1,6 +1,6 @@
-from .core import one_of, subprocess
-from .core.fp import OneOf
-from .core.issue import Issue
+from m.core import one_of, subprocess
+from m.core.fp import OneOf
+from m.core.issue import Issue
 
 
 def get_branch() -> OneOf[Issue, str]:

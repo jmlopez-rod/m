@@ -21,3 +21,6 @@ devDocs:
 
 deployDocs:
 	cd packages/website && USE_SSH=true pnpm deploy
+
+install:
+	pip install -r m/scripts/checks/requirements.txt --user

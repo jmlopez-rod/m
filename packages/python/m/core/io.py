@@ -4,8 +4,9 @@ import os
 import sys
 from abc import ABC
 from enum import Enum
-from pydantic import BaseModel
 from typing import Any, List, Optional, TextIO, Type, Union, cast
+
+from pydantic import BaseModel
 
 from .. import git
 from . import issue, one_of
@@ -86,33 +87,6 @@ def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
         mstr = ', '.join(missing)
         return issue(f'missing [{mstr}] in env')
     return Good(result)
-
-
-def read_file(filename: str) -> OneOf[Issue, str]:
-    """Return a `Good` containing the contents of the file."""
-    try:
-        with open(filename, encoding='UTF-8') as fp:
-            return Good(fp.read())
-    except Exception as ex:
-        return issue(
-            'failed to read file',
-            context={'filename': filename},
-            cause=ex,
-        )
-
-
-def write_file(filename: str, contents: str) -> OneOf[Issue, int]:
-    """Return a `Good` containing 0 if the file was written."""
-    try:
-        with open(filename, 'w', encoding='UTF-8') as fp:
-            fp.write(contents)
-        return Good(0)
-    except Exception as ex:
-        return issue(
-            'failed to write file',
-            context={'filename': filename},
-            cause=ex,
-        )
 
 
 def _ver_str(major: int, minor: int, patch: int) -> str:
@@ -216,11 +190,10 @@ class CITool(ABC):
         stream: Optional[TextIO] = None,
     ) -> None:
         """Print an error message."""
-        stream = stream or sys.stderr
         parts = [x for x in [file, line, col] if x]
         loc = ':'.join(parts)
         info = f'[{loc}]' if loc else ''
-        print(f'error{info}: {description}', file=stream)
+        print(f'error{info}: {description}', file=stream or sys.stderr)
 
     @staticmethod
     def warn(

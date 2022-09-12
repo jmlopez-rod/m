@@ -7,10 +7,11 @@ from typing import Any, Callable, Dict
 from typing import MutableMapping as Map
 from typing import Optional, Type, Union, cast
 
-from ..core.fp import OneOf
-from ..core.io import CiTool, env, error_block
-from ..core.issue import Issue
-from .validators import validate_non_empty_str
+from m.cli.validators import validate_non_empty_str
+from m.core.fp import OneOf
+from m.core.io import CiTool, env, error_block
+from m.core.issue import Issue
+import importlib
 
 
 class CmdModule:
@@ -44,9 +45,9 @@ class CmdModule:
 
 def import_mod(name: str) -> CmdModule:
     """Import a module by string."""
-    module = __import__(name)
-    for part in name.split('.')[1:]:
-        module = getattr(module, part)
+    module = importlib.import_module(name)
+    # for part in name.split('.')[1:]:
+    #     module = getattr(module, part)
     return cast(CmdModule, module)
 
 
@@ -174,11 +175,13 @@ def run_cli(
     """
     mod = get_cli_command_modules(file_path)
     arg = main_parser(mod, main_args)
+    exit_code = 0
     if hasattr(arg, 'subcommand_name'):
         sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
-        sys.exit(sub_mod[arg.subcommand_name].run(arg))
+        exit_code = sub_mod[arg.subcommand_name].run(arg)
     else:
-        sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg))
+        exit_code = cast(CmdModule, mod[arg.command_name]).run(arg)
+    sys.exit(exit_code)
 
 
 def display_issue(issue: Issue) -> None:

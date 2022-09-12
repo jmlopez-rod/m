@@ -4,10 +4,11 @@ from inspect import cleandoc as cdoc
 from pathlib import Path
 from typing import List, Tuple
 
-from ..core import Good, Issue, OneOf, issue, one_of
-from ..core.io import CiTool, read_file, write_file
-from ..core.subprocess import eval_cmd
-from ..git import get_remote_url
+from m.core import Good, Issue, OneOf, issue, one_of
+from m.core.io import CiTool
+from m.core.rw import read_file, write_file
+from m.core.subprocess import eval_cmd
+from m.git import get_remote_url
 
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
