@@ -1,5 +1,6 @@
 {
   "allowedFlake8Rules": {
+    "B024": 1,
     "WPS359": 1,
     "WPS323": 1,
     "WPS301": 1,
