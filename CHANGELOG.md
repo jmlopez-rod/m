@@ -8,6 +8,10 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.10.1] <a name="0.10.1" href="#0.10.1">-</a> September 12, 2022
+- Add python 3.7 as a supported version.
+
+
 ## [0.10.0] <a name="0.10.0" href="#0.10.0">-</a> August 01, 2022
 - Add `npm` cli command which allows the use of `clean_tag` subcommand.
 - Remove deprecated function `call_main`, use `run_main`.
@@ -125,7 +129,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.10.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.10.1...HEAD
+[0.10.1]: https://github.com/jmlopez-rod/m/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/jmlopez-rod/m/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/jmlopez-rod/m/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/jmlopez-rod/m/compare/0.7.1...0.8.0
