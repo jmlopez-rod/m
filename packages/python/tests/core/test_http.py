@@ -17,7 +17,7 @@ class HttpTest(FpTestCase):
         http_inst = mock_http.return_value
         http_inst.getresponse.return_value = response
         response.getcode.return_value = 200
-        response.read.return_value = 'content'
+        response.read.return_value = b'content'
         fetch_result = fetch('http://google.com', {})
         mock_http.assert_called_once_with('google.com')
         mock_https.assert_not_called()
@@ -32,7 +32,7 @@ class HttpTest(FpTestCase):
         https_inst = mock_https.return_value
         https_inst.getresponse.return_value = response
         response.getcode.return_value = 200
-        response.read.return_value = 'content'
+        response.read.return_value = b'content'
         fetch_result = fetch('https://google.com', {})
         mock_https.assert_called_once_with('google.com')
         mock_http.assert_not_called()
@@ -80,7 +80,7 @@ class HttpTest(FpTestCase):
         https_inst = mock_https.return_value
         https_inst.getresponse.return_value = response
         response.getcode.return_value = 200
-        response.read.return_value = 'content'
+        response.read.return_value = b'content'
         fetch_result = fetch('https://google.com', {}, body='{"a":1}')
         mock_https.assert_called_once_with('google.com')
         https_inst.request.assert_called_once_with(
@@ -99,7 +99,7 @@ class HttpTest(FpTestCase):
         https_inst = mock_https.return_value
         https_inst.getresponse.return_value = response
         response.getcode.return_value = 500
-        response.read.return_value = 'server error'
+        response.read.return_value = b'server error'
         fetch_result = fetch('https://google.com', {})
         mock_https.assert_called_once_with('google.com')
         mock_http.assert_not_called()
