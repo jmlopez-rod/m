@@ -172,7 +172,8 @@ class GitEnv(JsonStr):
 def _build_tag_prefix(config: Config) -> str:
     if config.build_tag_with_version:
         return f'{config.version}-'
-    return '0.0.0-'
+    # TODO: Allow to set a specific build tag prefix
+    return '999.0.0-'
 
 
 def get_pr_number(branch: str) -> Optional[int]:
