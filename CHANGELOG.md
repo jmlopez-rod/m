@@ -8,6 +8,12 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.11.1] <a name="0.11.1" href="#0.11.1">-</a> September 30, 2022
+
+- Revert version prefix. To specify prereleases in npm we need to do
+  `>0.0.0-b <0.0.1`. Using version `999.0.0-` would not target pre-releases so
+  using `0.0.0` is a shorter string.
+
 ## [0.11.0] <a name="0.11.0" href="#0.11.0">-</a> September 30, 2022
 - Version prefix for non releases are now `999.0.0-`. This is done so that
   the semver may work when installing pull request builds.
@@ -136,7 +142,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.11.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.11.1...HEAD
+[0.11.1]: https://github.com/jmlopez-rod/m/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/jmlopez-rod/m/compare/0.10.1...0.11.0
 [0.10.1]: https://github.com/jmlopez-rod/m/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/jmlopez-rod/m/compare/0.9.0...0.10.0
