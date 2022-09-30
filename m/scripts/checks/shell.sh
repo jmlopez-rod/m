@@ -2,7 +2,6 @@
 set -xeuo pipefail
 
 docker run \
-  -it \
   --env PYTHONPATH="/checkout/packages/python" \
   --rm \
   -v "${PWD}":/checkout:z \
