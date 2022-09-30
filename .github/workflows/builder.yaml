@@ -22,7 +22,7 @@ jobs:
           echo "./packages/bash/lib" >> $GITHUB_PATH
           pip3 install build twine
       - name: Image
-        run: docker build -t pyenv -f m/scripts/checks/Dockerfile
+        run: docker build -t pyenv -f m/scripts/checks/Dockerfile .
       - name: Checks
         run: 	./m/scripts/checks/run.sh ci
       # - name: Checks
