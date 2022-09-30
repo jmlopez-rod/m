@@ -88,7 +88,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             self.assert_ok(result)
             self.assertEqual(
                 result.value.__dict__, dict(
-                    build_tag='0.0.0-master.b404',
+                    build_tag='999.0.0-master.b404',
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
@@ -110,7 +110,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             self.assert_ok(result)
             self.assertEqual(
                 result.value.__dict__, dict(
-                    build_tag='0.0.0-pr1.b404',
+                    build_tag='999.0.0-pr1.b404',
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
@@ -240,7 +240,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             self.assert_ok(result)
             self.assertEqual(
                 result.value.__dict__, dict(
-                    build_tag='0.0.0-develop.b404',
+                    build_tag='999.0.0-develop.b404',
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
@@ -374,7 +374,7 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             self.assert_ok(result)
             self.assertEqual(
                 result.value.__dict__, dict(
-                    build_tag='0.0.0-develop.b404',
+                    build_tag='999.0.0-develop.b404',
                     is_release=False,
                     is_release_pr=False,
                     is_hotfix_pr=False,
