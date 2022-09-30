@@ -172,7 +172,7 @@ class GitEnv(JsonStr):
 def _build_tag_prefix(config: Config) -> str:
     if config.build_tag_with_version:
         return f'{config.version}-'
-    # TODO: Allow to set a specific build tag prefix
+    # Need to allow to set a specific build tag prefix
     return '999.0.0-'
 
 
