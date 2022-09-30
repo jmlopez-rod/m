@@ -8,6 +8,13 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.11.0] <a name="0.11.0" href="#0.11.0">-</a> September 30, 2022
+- Version prefix for non releases are now `999.0.0-`. This is done so that
+  the semver may work when installing pull request builds.
+- `fetch_response` has been added so that we may have access to the response
+  object as well. This is helpful when we need to inspect response headers.
+
+
 ## [0.10.1] <a name="0.10.1" href="#0.10.1">-</a> September 12, 2022
 - Add python 3.7 as a supported version.
 
@@ -129,7 +136,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.10.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.11.0...HEAD
+[0.11.0]: https://github.com/jmlopez-rod/m/compare/0.10.1...0.11.0
 [0.10.1]: https://github.com/jmlopez-rod/m/compare/0.10.0...0.10.1
 [0.10.0]: https://github.com/jmlopez-rod/m/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/jmlopez-rod/m/compare/0.8.0...0.9.0
