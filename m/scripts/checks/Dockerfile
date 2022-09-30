@@ -1,5 +1,3 @@
-FROM python:3.8.7-alpine
+FROM python:3.8.14-bullseye
 
-RUN apk update && apk add bash
-
-RUN pip install pycodestyle pylint mypy pyyaml wemake-python-styleguide flake8 pyformat isort add-trailing-comma coverage bandit==1.7.2
+RUN pip install wemake-python-styleguide coverage mypy pylint build twine
