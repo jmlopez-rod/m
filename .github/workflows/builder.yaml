@@ -20,7 +20,8 @@ jobs:
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
-          pip3 install requests wemake-python-styleguide coverage mypy pylint build twine
+          pip3 install --upgrade requests
+          pip3 install wemake-python-styleguide coverage mypy pylint build twine
       - name: Checks
         run: |
           ./m/scripts/checks/ci.sh
