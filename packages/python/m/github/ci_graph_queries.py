@@ -48,7 +48,7 @@ def commit_query(include_pr: bool, include_author: bool) -> str:
 
 
 LATEST_RELEASE = """
-  releases(last: 1) {
+  releases(last: 1, orderBy: {field: CREATED_AT, direction: ASC}) {
     nodes {
       name
       tagName
