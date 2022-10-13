@@ -8,6 +8,11 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.11.2] <a name="0.5.1" href="#0.5.1">-</a> October 13, 2022
+
+- Github graphql changed the order of releases. This hotfix is
+  explicit about the order in which we want them to obtain the latest release.
+
 ## [0.11.1] <a name="0.11.1" href="#0.11.1">-</a> September 30, 2022
 
 - Revert version prefix. To specify prereleases in npm we need to do
@@ -142,7 +147,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.11.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.11.2...HEAD
+[0.11.2]: https://github.com/jmlopez-rod/m/compare/0.11.1...0.11.2
 [0.11.1]: https://github.com/jmlopez-rod/m/compare/0.11.0...0.11.1
 [0.11.0]: https://github.com/jmlopez-rod/m/compare/0.10.1...0.11.0
 [0.10.1]: https://github.com/jmlopez-rod/m/compare/0.10.0...0.10.1

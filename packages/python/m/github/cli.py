@@ -40,7 +40,7 @@ def get_latest_release(
     """Retrieve the latest release for a repo."""
     query = """query ($owner: String!, $repo: String!) {
       repository(owner:$owner, name:$repo) {
-         releases(last: 1) {
+         releases(last: 1, orderBy: {field: CREATED_AT, direction: ASC}) {
             nodes {
                 name
                 tagName
