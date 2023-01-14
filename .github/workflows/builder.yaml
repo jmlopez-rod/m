@@ -6,15 +6,14 @@ on:
   pull_request:
     branches: [ master ]
 
-permissions:
-  contents: write
-  packages: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer
+      image: ghcr.io/jmlopez-rod/m-devcontainer:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -27,10 +26,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
+
       - name: Checks
         run: ./m/scripts/checks/ci.sh
+
       - name: Publish
         run: ./m/scripts/publish.sh
