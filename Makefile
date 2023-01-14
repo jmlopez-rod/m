@@ -1,13 +1,8 @@
-
-
 ciChecks:
 	m/scripts/checks/ci.sh
 
 tests:
 	packages/python/tests/run.sh
-
-shell:
-	m/scripts/checks/shell.sh
 
 bashTest:
 	cd packages/bash/tests && ./run.sh
