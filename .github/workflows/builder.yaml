@@ -9,25 +9,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      PYTHONPATH: ./packages/python
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NPMJS_TOKEN: ${{ secrets.NPMJS_TOKEN }}
-      TWINE_USERNAME: __token__
-      TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
+      env:
+        PYTHONPATH: ./packages/python
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPMJS_TOKEN: ${{ secrets.NPMJS_TOKEN }}
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
-          pip3 install build twine
-      - name: Image
-        run: docker build -t pyenv -f m/scripts/checks/Dockerfile .
       - name: Checks
-        run: 	./m/scripts/checks/run.sh ci
-      # - name: Checks
-      #   run: |
-      #     ./m/scripts/checks/ci.sh
+        run: ./m/scripts/checks/ci.sh
       - name: Publish
-        run: |
-          ./m/scripts/publish.sh
+        run: ./m/scripts/publish.sh
