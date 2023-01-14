@@ -1,11 +1,10 @@
-image:
-	docker build -t pyenv -f m/scripts/checks/Dockerfile
+
 
 ciChecks:
-	m/scripts/checks/run.sh ci
+	m/scripts/checks/ci.sh
 
 tests:
-	m/scripts/checks/run.sh tests
+	packages/python/tests/run.sh
 
 shell:
 	m/scripts/checks/shell.sh
@@ -21,3 +20,11 @@ devDocs:
 
 deployDocs:
 	cd packages/website && USE_SSH=true pnpm deploy
+
+## Manual docker maintenance
+
+buildDevContainer:
+	m/bash/build.sh
+
+publishDevContainer:
+	m/bash/publish.sh

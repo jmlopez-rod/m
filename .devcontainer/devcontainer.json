@@ -1,0 +1,30 @@
+{
+  "name": "M DevContainer",
+  "image": "ghcr.io/jmlopez-rod/m-devcontainer",
+  "runArgs": ["--rm", "--network=host"],
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+  "containerEnv": {
+    "CONTAINER_WORKSPACE": "${containerWorkspaceFolder}"
+  },
+  "mounts": [
+    "source=m-vscode-server-extensions,target=/root/.vscode-server/extensions,type=volume",
+    "source=m-vscode-server-extensions-insiders,target=/root/.vscode-server-insiders/extensions,type=volume"
+  ],
+  "settings": {
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[json][jsonc][markdown]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    }
+  },
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-python.python",
+    "streetsidesoftware.code-spell-checker"
+  ],
+  "shutdownAction": "stopContainer"
+}

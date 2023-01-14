@@ -40,6 +40,7 @@ class CmdModule:
         Call a library function and return 0 if successful or non-zero if there
         is a failure.
         """
+        return 0
 
 
 def import_mod(name: str) -> CmdModule:

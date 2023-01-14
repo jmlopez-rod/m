@@ -1,48 +1,53 @@
 import sys
-import unittest
 from inspect import cleandoc as cdoc
 from io import StringIO
-from unittest.mock import patch
 
+import pytest
 from m.__main__ import main
 
 
-class CliJsonTest(unittest.TestCase):
-
-    @patch('sys.argv', ['m', 'json', '[]'])
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch.object(sys, 'exit')
-    def test_normal(self, mock_exit, mock_stdout):
+def run_main(exit_value=0):
+    prog = None
+    with pytest.raises(SystemExit) as prog_block:
+        prog = prog_block
         main()
-        self.assertEqual(mock_stdout.getvalue(), '[]\n')
-        mock_exit.assert_called_with(0)
+    assert prog is not None and prog.value.code == exit_value
 
-    @patch('sys.argv', [
+
+def test_m_json_error(mocker):
+    std_err = StringIO()
+    mocker.patch.object(sys, 'argv', ['m', 'json', 'oops'])
+    mocker.patch.object(sys, 'stderr', std_err)
+
+    run_main(2)
+    errors = std_err.getvalue()
+    assert 'failed to parse the json data' in errors
+    assert 'json.decoder.JSONDecodeError:' in errors
+
+
+def test_m_json_normal(mocker):
+    std_out = StringIO()
+    mocker.patch.object(sys, 'argv', ['m', 'json', '[]'])
+    mocker.patch.object(sys, 'stdout', std_out)
+    run_main()
+    assert std_out.getvalue() == '[]\n'
+
+
+def test_m_json_sort(mocker):
+    std_out = StringIO()
+    mocker.patch.object(sys, 'argv', [
         'm',
         'json',
         '--sort-keys',
         '{"c": 3, "z": 99, "a": 1}',
     ])
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch.object(sys, 'exit')
-    def test_sort(self, mock_exit, mock_stdout):
-        expected = """
-        {
-          "a": 1,
-          "c": 3,
-          "z": 99
-        }
-        """
-        main()
-        self.assertEqual(mock_stdout.getvalue(), f'{cdoc(expected)}\n')
-        mock_exit.assert_called_with(0)
-
-    @patch('sys.argv', ['m', 'json', 'oops'])
-    @patch('sys.stderr', new_callable=StringIO)
-    @patch.object(sys, 'exit')
-    def test_error(self, mock_exit, mock_stderr):
-        self.assertRaises(Exception, main)
-        errors = mock_stderr.getvalue()
-        self.assertIn('failed to parse the json data', errors)
-        self.assertIn('json.decoder.JSONDecodeError:', errors)
-        mock_exit.assert_called_with(2)
+    mocker.patch.object(sys, 'stdout', std_out)
+    run_main()
+    expected = """
+    {
+      "a": 1,
+      "c": 3,
+      "z": 99
+    }
+    """
+    assert std_out.getvalue() == f'{cdoc(expected)}\n'

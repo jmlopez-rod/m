@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from distutils.version import StrictVersion
+
+from packaging.version import Version
 
 from ..core import Good, Issue, OneOf, issue, json, one_of
 from ..core.io import JsonStr
@@ -96,11 +97,11 @@ class Config(JsonStr):
             'is_release_pr': is_release_pr,
         }
         try:
-            p_ver = StrictVersion(self.version)
+            p_ver = Version(self.version)
         except Exception as ex:
             return issue('error parsing version', cause=ex, context=err_data)
         try:
-            p_latest = StrictVersion(gh_latest)
+            p_latest = Version(gh_latest)
         except Exception as ex:  # noqa: WPS440
             return issue('error parsing latest', cause=ex, context=err_data)
         ver_gt_latest = p_ver > p_latest

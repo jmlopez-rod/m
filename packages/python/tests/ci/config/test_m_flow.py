@@ -104,7 +104,7 @@ class ConfigMFlowTest(FpTestCase):
         )
         # Should not be possible but just in case...
         config.version = '0.0.1'
-        gh_latest = '1.0.0-rc123'  # <- unparsable latest
+        gh_latest = '1.0.0-rc123.b123'  # <- unparsable latest
         self.assert_issue(
             _test(gh_latest, False, True),
             'error parsing latest',
