@@ -17,7 +17,7 @@ jobs:
       image: ghcr.io/jmlopez-rod/m-devcontainer
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.github_token }}
+        password: ${{ secrets.GITHUB_TOKEN }}
       env:
         PYTHONPATH: ./packages/python
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
