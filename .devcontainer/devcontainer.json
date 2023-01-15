@@ -1,9 +1,10 @@
 {
   "name": "M DevContainer",
-  "image": "ghcr.io/jmlopez-rod/m-devcontainer",
-  "runArgs": ["--rm", "--network=host"],
+  "image": "ghcr.io/jmlopez-rod/m-devcontainer:latest",
+  "runArgs": ["--rm", "--network=host", "--name=m-devcontainer"],
   "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
   "containerEnv": {
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "CONTAINER_WORKSPACE": "${containerWorkspaceFolder}"
   },
   "mounts": [
@@ -11,19 +12,32 @@
     "source=m-vscode-server-extensions-insiders,target=/root/.vscode-server-insiders/extensions,type=volume"
   ],
   "settings": {
-    "[typescript]": {
+    "[json][jsonc][markdown][mdx][yaml]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
       "editor.formatOnSave": true
     },
-    "[json][jsonc][markdown]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.formatOnSave": true
-    }
+    "editor.renderWhitespace": "all",
+    "files.associations": {
+      "Makefile.*": "makefile"
+    },
+    "emeraldwalk.runonsave": {
+      "commands": [
+        {
+          "match": "\\.py$",
+          "cmd": "isort ${file}"
+        }
+      ]
+    },
+    "editor.minimap.enabled": false,
+    "editor.rulers": [80, 120]
   },
   "extensions": [
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
     "ms-python.python",
+    "EditorConfig.EditorConfig",
+    "unifiedjs.vscode-mdx",
+    "emeraldwalk.RunOnSave",
     "streetsidesoftware.code-spell-checker"
   ],
   "shutdownAction": "stopContainer"

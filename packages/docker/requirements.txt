@@ -9,3 +9,4 @@ build
 twine
 pytest
 pytest-mock
+pydantic
