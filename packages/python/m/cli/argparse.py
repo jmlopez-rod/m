@@ -1,15 +1,17 @@
 import argparse
 from inspect import cleandoc
 from types import MappingProxyType
+from inspect import signature
 from typing import Any, List, Tuple, TypeVar
 
-import pydantic
+from pydantic import BaseModel
+
 
 STORE_TRUE = MappingProxyType({'action': 'store_true'})
 
 Arg = Tuple[List[str], str, Any]
 
-BaseModelT = TypeVar('BaseModelT', bound=pydantic.BaseModel)
+BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
 MISSING = TypeVar('MISSING')
 
 
@@ -63,7 +65,7 @@ def argument_description(
 
 def add_model(
     parser: argparse.ArgumentParser,
-    model: type[pydantic.BaseModel],
+    model: type[BaseModel],
 ) -> None:
     """Add a pydantic model to an argparse ArgumentParser.
 
@@ -143,3 +145,36 @@ def cli_options(
 ) -> BaseModelT:
     arg_dict = namespace_to_dict(namespace)
     return model.parse_obj(arg_dict)
+
+def params_count(func) -> int:
+    sig = signature(func)
+    return len(sig.parameters)
+
+
+
+def command(
+    name: str,
+    help: str,
+    model: type[BaseModel],
+):
+    def Inner(run_func):
+        def wrapper(
+            arg: argparse.Namespace | None,
+            parser: argparse._SubParsersAction | None = None,
+        ) -> int:
+            if parser:
+                subp = parser.add_parser(name, help=help)
+                add_model(subp, model)
+                return 0
+            else:
+                opt = cli_options(model, arg)
+                len_run_params = params_count(run_func)
+                if len_run_params == 2:
+                    return run_func(opt, arg)
+                elif len_run_params == 1:
+                    return run_func(opt)
+                else:
+                    return run_func()
+
+        return wrapper
+    return Inner

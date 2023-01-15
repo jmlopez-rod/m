@@ -3,9 +3,11 @@ import json
 import os.path as pth
 import sys
 from glob import iglob
+from inspect import signature
 from typing import Any, Callable, Dict
 from typing import MutableMapping as Map
 from typing import Optional, Type, Union, cast
+from pydantic import BaseModel
 
 from ..core.fp import OneOf
 from ..core.io import CiTool, env, error_block
@@ -34,7 +36,7 @@ class CmdModule:
         """Define cli arguments for a command."""
 
     @staticmethod
-    def run(_arg: argparse.Namespace) -> int:
+    def run(_arg: argparse.Namespace, _boo: int | None = None) -> int:
         """Entry point for the cli.
 
         Call a library function and return 0 if successful or non-zero if there
@@ -68,7 +70,7 @@ def get_command_modules(
     for name in mod_names:
         tname = pth.split(name)[1][:-3]
         tmod = import_mod(f'{commands_module}.{tname}')
-        if hasattr(tmod, 'add_parser'):
+        if hasattr(tmod, 'run'):
             mod[tname] = tmod
     return mod
 
@@ -99,6 +101,11 @@ def get_cli_command_modules(
         mod[tname] = get_command_modules(root, f'{cli_root}.commands.{tname}')
         mod[f'{tname}.meta'] = import_mod(f'{cli_root}.commands.{tname}')
     return mod
+
+
+def params_count(func) -> int:
+    sig = signature(func)
+    return len(sig.parameters)
 
 
 def main_parser(
@@ -153,9 +160,18 @@ def main_parser(
             )
             sub_mod = cast(Dict[str, CmdModule], mod[name])
             for subname in sorted(sub_mod.keys()):
-                sub_mod[subname].add_parser(subsubp, raw)
+                run_func = sub_mod[subname].run
+                if params_count(run_func) == 2:
+                    run_func(None, subsubp)
+                else:
+                    sub_mod[subname].add_parser(subsubp, raw)
         else:
-            cast(CmdModule, mod[name]).add_parser(subp, raw)
+            mod_inst = cast(CmdModule, mod[name])
+            run_func = mod_inst.run
+            if params_count(run_func) == 2:
+                run_func(None, subp)
+            else:
+                mod_inst.add_parser(subp, raw)
     return argp.parse_args()
 
 
@@ -175,6 +191,7 @@ def run_cli(
     """
     mod = get_cli_command_modules(file_path)
     arg = main_parser(mod, main_args)
+
     if hasattr(arg, 'subcommand_name'):
         sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
         sys.exit(sub_mod[arg.subcommand_name].run(arg))
@@ -204,7 +221,7 @@ def run_main(
     handle_issue: Callable[[Issue], None] = display_issue,
 ):
     """Run the callback and print the returned value as a JSON string. Set the
-    print_raw param to True to bypass the JSON stringnification. To change how
+    print_raw param to True to bypass the JSON stringification. To change how
     the result or an issue should be display then provide the optional
     arguments handle_result and handle_issue. For instance, to display the raw
     value simply provide the `print` function.

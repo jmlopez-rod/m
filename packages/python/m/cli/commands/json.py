@@ -1,24 +1,22 @@
 from typing import Any
 
+from m.cli import command, validate_json_payload
 from pydantic import BaseModel, Field
-
-from ..argparse import add_model, cli_options
-from ..validators import validate_json_payload
 
 
 class Arguments(BaseModel):
     """Format a json payload.
+
+    similar to `python -m json.tool` but instead it uses 2 spaces
+    for indentation::
 
         $ echo '{"a":99}' | m json
         {
           "a": 99
         }
 
-    similar to `python -m json.tool` but instead it uses 2 spaces
-    for indentation.
-
     It is worth noting that if you have access to `jq` or `yq` then
-    it should be used instead of `m json`.
+    it should be used instead of `m json`::
 
         $ echo '{"a":99}' | jq
         {
@@ -27,32 +25,31 @@ class Arguments(BaseModel):
 
     - jq: https://stedolan.github.io/jq/manual/
     - yq: https://mikefarah.gitbook.io/yq/
-    """  # noqa
+    """
 
     payload: Any | None = Field(
-        '@-',
+        default='@-',
         description='json data: @- (stdin), @filename (file), string',
         validator=validate_json_payload,
         positional=True,
     )
 
     sort_keys: bool = Field(
-        False,
+        default=False,
         description='sort the output of dictionaries alphabetically by key',
     )
 
 
-def add_parser(sub_parser, _raw):
-    parser = sub_parser.add_parser('json', help='format json data')
-    add_model(parser, Arguments)
-
-
-def run(arg):
+@command(
+    name='json',
+    help='format json data',
+    model=Arguments,
+)
+def run(arg: Arguments) -> int:
     # pylint: disable=import-outside-toplevel
     import json
     import sys
 
-    opt = cli_options(Arguments, arg)
-    json.dump(opt.payload, sys.stdout, indent=2, sort_keys=opt.sort_keys)
+    json.dump(arg.payload, sys.stdout, indent=2, sort_keys=arg.sort_keys)
     sys.stdout.write('\n')
     return 0
