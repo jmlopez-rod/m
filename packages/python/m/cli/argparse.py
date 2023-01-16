@@ -131,13 +131,15 @@ def _run_wrapper(
         subp = parser.add_parser(name, help=help_str)
         add_model(subp, model)
         return 0
-    opt = cli_options(model, arg)
-    len_run_params = params_count(run_func)
-    if len_run_params == 2:
-        return run_func(opt, arg)
-    elif len_run_params == 1:
-        return run_func(opt)
-    return run_func()
+    if isinstance(arg, argparse.Namespace):
+        opt = cli_options(model, arg)
+        len_run_params = params_count(run_func)
+        if len_run_params == 2:
+            return run_func(opt, arg)
+        if len_run_params == 1:
+            return run_func(opt)
+        return run_func()
+    raise NotImplementedError('m dev error: provide either arg or parser')
 
 
 def handle_decorated_func(
