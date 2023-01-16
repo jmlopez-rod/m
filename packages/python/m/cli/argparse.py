@@ -134,10 +134,10 @@ def command(
     model: type[BaseModel],
 ):
     def inner(run_func):
-        # return partial(run_wrapper, name=name, help=help, model=model, run_func=run_func)
+        # return partial(run_wrapper, run_func=run_func, name=name, help=help, model=model)
         def wrapper(
             arg: argparse.Namespace | None,
-            parser: argparse._SubParsersAction | None = None,
+            parser: argparse._SubParsersAction | None,
         ) -> int:
             if parser:
                 subp = parser.add_parser(name, help=help)

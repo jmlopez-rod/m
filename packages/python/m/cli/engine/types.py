@@ -22,7 +22,7 @@ class CmdModule:
 
     @staticmethod
     def run(  # noqa: WPS602
-        _arg: argparse.Namespace | None,
+        _arg: argparse.Namespace | None = None,
         _parser: argparse._SubParsersAction | None = None,  # noqa: WPS437
     ) -> int:
         """Entry point for the cli.

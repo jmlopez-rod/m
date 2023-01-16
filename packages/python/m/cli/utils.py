@@ -96,11 +96,23 @@ def run_cli(
     mod = get_cli_command_modules(file_path)
     arg = main_parser(mod, main_args)
 
+    exit_code = 0
+    run_func = None
+
     if hasattr(arg, 'subcommand_name'):
         sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
-        sys.exit(sub_mod[arg.subcommand_name].run(arg, None))
+        run_func = sub_mod[arg.subcommand_name].run
     else:
-        sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg, None))
+        run_func = cast(CmdModule, mod[arg.command_name]).run
+
+    len_run_args = params_count(run_func)
+    if len_run_args == 2:
+        exit_code = run_func(arg, None)
+    elif len_run_args == 1:
+        exit_code = run_func(arg)
+    else:
+        exit_code = run_func()
+    sys.exit(exit_code)
 
 
 def display_issue(issue: Issue) -> None:
