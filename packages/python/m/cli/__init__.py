@@ -1,7 +1,8 @@
 from .argparse import command
 from .validators import validate_json_payload
 
-__all__ = (
+# using as barrel file to export convenience functions
+__all__ = (  # noqa: WPS410
     'command',
     'validate_json_payload',
 )

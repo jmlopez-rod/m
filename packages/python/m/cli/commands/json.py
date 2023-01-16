@@ -46,7 +46,6 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments) -> int:
-    # pylint: disable=import-outside-toplevel
     import json
     import sys
 

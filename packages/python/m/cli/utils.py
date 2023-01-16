@@ -1,116 +1,19 @@
 import argparse
 import json
-import os.path as pth
 import sys
-from glob import iglob
-from inspect import signature
-from typing import Any, Callable, Dict
-from typing import MutableMapping as Map
-from typing import Optional, Type, Union, cast
-
-from pydantic import BaseModel
+from typing import Any, Callable, Dict, Optional, cast
 
 from ..core.fp import OneOf
 from ..core.io import CiTool, env, error_block
 from ..core.issue import Issue
+from .engine.misc import params_count
+from .engine.sys import get_cli_command_modules
+from .engine.types import CmdModule
 from .validators import validate_non_empty_str
 
 
-class CmdModule:
-    """Interface for command modules."""
-
-    meta: Dict[str, str]
-
-    @staticmethod
-    def add_arguments(_parser: argparse.ArgumentParser) -> None:
-        """Define options that may apply to the subparsers.
-
-        Should be defined if we want to manipulate the argument parser
-        object.
-        """
-
-    @staticmethod
-    def add_parser(
-        _subparser: argparse._SubParsersAction,  # noqa pylint: disable=protected-access
-        _raw: Type[argparse.RawTextHelpFormatter],
-    ) -> None:
-        """Define cli arguments for a command."""
-
-    @staticmethod
-    def run(_arg: argparse.Namespace, _boo: int | None = None) -> int:
-        """Entry point for the cli.
-
-        Call a library function and return 0 if successful or non-zero if there
-        is a failure.
-        """
-        return 0
-
-
-def import_mod(name: str) -> CmdModule:
-    """Import a module by string."""
-    module = __import__(name)
-    for part in name.split('.')[1:]:
-        module = getattr(module, part)
-    return cast(CmdModule, module)
-
-
-def get_command_modules(
-    root: str,
-    commands_module: str,
-) -> Map[str, CmdModule]:
-    """Return a dictionary mapping command names to modules that define an
-    `add_parser` method.
-
-    root: The absolute path of the directory containing the __main__.py that
-          activates the cli.
-    commands_module: The full module resolution. For instance `m.cli.commands`.
-    """
-    dir_name = '/'.join(commands_module.split('.')[1:])
-    mod_names = list(iglob(f'{root}/{dir_name}/*.py'))
-    mod = {}
-    for name in mod_names:
-        tname = pth.split(name)[1][:-3]
-        tmod = import_mod(f'{commands_module}.{tname}')
-        if hasattr(tmod, 'run'):
-            mod[tname] = tmod
-    return mod
-
-
-def get_cli_command_modules(
-    file_path: str,
-) -> Map[str, Union[CmdModule, Map[str, CmdModule]]]:
-    """Return a dictionary containing the commands and subcommands for the cli.
-
-    Note that file_path is expected to be the absolute path to the
-    __main__.py file. Another restriction is that the __main__.py file
-    must have the `cli.commands` module as its sibling.
-    """
-    root = pth.split(pth.abspath(file_path))[0]
-    main_mod = pth.split(root)[1]
-    cli_root = f'{main_mod}.cli'
-    root_cmd = get_command_modules(root, f'{cli_root}.commands')
-    mod: Map[str, Union[CmdModule, Map[str, CmdModule]]] = {}
-    for key, val in root_cmd.items():
-        mod[key] = val
-
-    mod['.meta'] = import_mod(f'{cli_root}.commands')
-    subcommands = list(iglob(f'{root}/cli/commands/*'))
-    for name in subcommands:
-        if name.endswith('.py') or name.endswith('__'):
-            continue
-        tname = pth.split(name)[1]
-        mod[tname] = get_command_modules(root, f'{cli_root}.commands.{tname}')
-        mod[f'{tname}.meta'] = import_mod(f'{cli_root}.commands.{tname}')
-    return mod
-
-
-def params_count(func) -> int:
-    sig = signature(func)
-    return len(sig.parameters)
-
-
 def main_parser(
-    mod: Map[str, Union[CmdModule, Map[str, CmdModule]]],
+    mod: dict[str, CmdModule | dict[str, CmdModule]],
     add_args: Optional[Callable[[argparse.ArgumentParser], None]] = None,
 ):
     """Create an argp and return the result calling its parse_arg method.
@@ -195,9 +98,9 @@ def run_cli(
 
     if hasattr(arg, 'subcommand_name'):
         sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
-        sys.exit(sub_mod[arg.subcommand_name].run(arg))
+        sys.exit(sub_mod[arg.subcommand_name].run(arg, None))
     else:
-        sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg))
+        sys.exit(cast(CmdModule, mod[arg.command_name]).run(arg, None))
 
 
 def display_issue(issue: Issue) -> None:

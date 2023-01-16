@@ -1,16 +1,24 @@
 import argparse
-from inspect import cleandoc, signature
+from functools import partial
+from inspect import cleandoc
 from types import MappingProxyType
-from typing import Any, List, Tuple, TypeVar
+from typing import Any, Callable, List, Tuple, TypeVar
 
 from pydantic import BaseModel
+
+from .engine.misc import (
+    argument_description,
+    argument_name,
+    namespace_to_dict,
+    params_count,
+)
+from .engine.types import MISSING
 
 STORE_TRUE = MappingProxyType({'action': 'store_true'})
 
 Arg = Tuple[List[str], str, Any]
 
 BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
-MISSING = TypeVar('MISSING')
 
 
 def add_arguments(
@@ -30,35 +38,6 @@ def add_arguments(
     """
     for names, help_str, extra in args:
         parser.add_argument(*names, help=cleandoc(help_str), **extra)
-
-
-def argument_name(name: str) -> str:
-    """Normalize an argument name.
-
-    Args:
-        name: Name of the argument.
-
-    Returns:
-        Normalized name of the argument.
-    """
-    return f"--{name.replace('_', '-')}"
-
-
-def argument_description(
-    description: str,
-    default: Any | None = MISSING,
-) -> str:
-    """Append default value to argument description.
-
-    Args:
-        description: argument description.
-        default: Argument's default value.
-
-    Returns:
-        The description of the argument.
-    """
-    default = f'(default: {default})' if default is not MISSING else ''
-    return f'{description} {default}'.strip()
 
 
 def add_model(
@@ -121,22 +100,6 @@ def _handle_boolean(args: dict, field: dict, name: str) -> str:
     return argument_name(name)
 
 
-def namespace_to_dict(namespace: argparse.Namespace) -> dict[str, Any]:
-    """Convert a namespace to a dictionary.
-
-    Args:
-        namespace: Namespace instance to convert.
-
-    Returns:
-        A dictionary generated from namespace.
-    """
-    dictionary = vars(namespace)
-    for (key, value) in dictionary.items():
-        if isinstance(value, argparse.Namespace):
-            dictionary[key] = namespace_to_dict(value)
-    return dictionary
-
-
 def cli_options(
     model: type[BaseModelT],
     namespace: argparse.Namespace,
@@ -144,18 +107,34 @@ def cli_options(
     arg_dict = namespace_to_dict(namespace)
     return model.parse_obj(arg_dict)
 
-def params_count(func) -> int:
-    sig = signature(func)
-    return len(sig.parameters)
 
-
+def run_wrapper(
+    arg: argparse.Namespace | None,
+    parser: argparse._SubParsersAction | None,
+    run_func: Callable,
+    name: str,
+    help: str,  # noqa: WPS125
+    model: type[BaseModel],
+) -> int:
+    if parser:
+        subp = parser.add_parser(name, help=help)
+        add_model(subp, model)
+        return 0
+    opt = cli_options(model, arg)
+    len_run_params = params_count(run_func)
+    if len_run_params == 2:
+        return run_func(opt, arg)
+    elif len_run_params == 1:
+        return run_func(opt)
+    return run_func()
 
 def command(
     name: str,
-    help: str,
+    help: str,  # noqa: WPS125
     model: type[BaseModel],
 ):
-    def Inner(run_func):
+    def inner(run_func):
+        # return partial(run_wrapper, name=name, help=help, model=model, run_func=run_func)
         def wrapper(
             arg: argparse.Namespace | None,
             parser: argparse._SubParsersAction | None = None,
@@ -164,15 +143,12 @@ def command(
                 subp = parser.add_parser(name, help=help)
                 add_model(subp, model)
                 return 0
-            else:
-                opt = cli_options(model, arg)
-                len_run_params = params_count(run_func)
-                if len_run_params == 2:
-                    return run_func(opt, arg)
-                elif len_run_params == 1:
-                    return run_func(opt)
-                else:
-                    return run_func()
-
+            opt = cli_options(model, arg)
+            len_run_params = params_count(run_func)
+            if len_run_params == 2:
+                return run_func(opt, arg)
+            elif len_run_params == 1:
+                return run_func(opt)
+            return run_func()
         return wrapper
-    return Inner
+    return inner

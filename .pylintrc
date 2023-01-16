@@ -4,6 +4,8 @@ init-hook="import sys; sys.path.append('/workspaces/m/packages/python')"
 disable=
   invalid-name,
   too-few-public-methods,
+  wrong-import-order,
+  redefined-builtin,
   missing-class-docstring,
   unexpected-keyword-arg,
   import-outside-toplevel,
