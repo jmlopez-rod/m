@@ -1,4 +1,5 @@
 import argparse
+from dataclasses import dataclass
 from functools import partial
 from inspect import cleandoc
 from types import MappingProxyType
@@ -108,16 +109,26 @@ def cli_options(
     return model.parse_obj(arg_dict)
 
 
-def run_wrapper(
+@dataclass
+class CommandInputs:
+    """Inputs to command decorator."""
+
+    name: str
+    help: str
+    model: type[BaseModel]
+
+
+def _run_wrapper(
+    run_func: Callable[..., int],
+    cmd_inputs: CommandInputs,
     arg: argparse.Namespace | None,
-    parser: argparse._SubParsersAction | None,
-    run_func: Callable,
-    name: str,
-    help: str,  # noqa: WPS125
-    model: type[BaseModel],
+    parser: argparse._SubParsersAction | None,  # noqa: WPS437
 ) -> int:
+    name = cmd_inputs.name
+    help_str = cmd_inputs.help
+    model = cmd_inputs.model
     if parser:
-        subp = parser.add_parser(name, help=help)
+        subp = parser.add_parser(name, help=help_str)
         add_model(subp, model)
         return 0
     opt = cli_options(model, arg)
@@ -128,27 +139,17 @@ def run_wrapper(
         return run_func(opt)
     return run_func()
 
+
+def handle_decorated_func(
+    cmd_inputs: CommandInputs,
+    func: Callable,
+):
+    return partial(_run_wrapper, func, cmd_inputs)
+
+
 def command(
     name: str,
     help: str,  # noqa: WPS125
     model: type[BaseModel],
 ):
-    def inner(run_func):
-        # return partial(run_wrapper, run_func=run_func, name=name, help=help, model=model)
-        def wrapper(
-            arg: argparse.Namespace | None,
-            parser: argparse._SubParsersAction | None,
-        ) -> int:
-            if parser:
-                subp = parser.add_parser(name, help=help)
-                add_model(subp, model)
-                return 0
-            opt = cli_options(model, arg)
-            len_run_params = params_count(run_func)
-            if len_run_params == 2:
-                return run_func(opt, arg)
-            elif len_run_params == 1:
-                return run_func(opt)
-            return run_func()
-        return wrapper
-    return inner
+    return partial(handle_decorated_func, CommandInputs(name, help, model))
