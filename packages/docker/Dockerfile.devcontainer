@@ -16,10 +16,11 @@ RUN apt-get update \
 ## PNPM
 RUN npm install -g pnpm
 
-WORKDIR /workspace
+ENV WORKSPACE=/workspace
+WORKDIR $WORKSPACE
 
 ## Python env
-RUN python -m venv /workspace/venv
+RUN python -m venv $WORKSPACE/venv
 ENV PATH=$WORKSPACE/venv/bin:$PATH
 
 ## Libraries

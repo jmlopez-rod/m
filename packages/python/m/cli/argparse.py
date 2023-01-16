@@ -1,11 +1,9 @@
 import argparse
-from inspect import cleandoc
+from inspect import cleandoc, signature
 from types import MappingProxyType
-from inspect import signature
 from typing import Any, List, Tuple, TypeVar
 
 from pydantic import BaseModel
-
 
 STORE_TRUE = MappingProxyType({'action': 'store_true'})
 
