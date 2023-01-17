@@ -1,8 +1,6 @@
 import argparse
 from functools import partial
-from inspect import cleandoc
-from types import MappingProxyType
-from typing import Any, Callable, List, Tuple, TypeVar
+from typing import Callable, TypeVar
 
 from pydantic import BaseModel
 
@@ -10,30 +8,7 @@ from .engine.misc import namespace_to_dict, params_count
 from .engine.parsers import boolean, positional, proxy, standard
 from .engine.types import AnyMap, CommandInputs, FuncArgs
 
-STORE_TRUE = MappingProxyType({'action': 'store_true'})
-
-Arg = Tuple[List[str], str, Any]
-
 BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
-
-
-def add_arguments(
-    parser: argparse.ArgumentParser,
-    args: Tuple[Arg, ...],
-) -> None:
-    """Add arguments to the parser.
-
-    Args:
-        parser:
-            An argparse ArgumentParser instance.
-        args:
-            A list of arguments. Each entry is composed of 3 items:
-                - The names of the arguments ([-s, '--long'])
-                - The help string (may be multilined)
-                - A dictionary with extra options to `add_argument`.
-    """
-    for names, help_str, extra in args:
-        parser.add_argument(*names, help=cleandoc(help_str), **extra)
 
 
 def _parse_field(name: str, field: AnyMap) -> FuncArgs:
