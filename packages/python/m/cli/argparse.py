@@ -1,5 +1,4 @@
 import argparse
-from dataclasses import dataclass
 from functools import partial
 from inspect import cleandoc
 from types import MappingProxyType
@@ -7,13 +6,9 @@ from typing import Any, Callable, List, Tuple, TypeVar
 
 from pydantic import BaseModel
 
-from .engine.misc import (
-    argument_description,
-    argument_name,
-    namespace_to_dict,
-    params_count,
-)
-from .engine.types import MISSING
+from .engine.misc import namespace_to_dict, params_count
+from .engine.parsers import boolean, positional, proxy, standard
+from .engine.types import AnyMap, CommandInputs, FuncArgs
 
 STORE_TRUE = MappingProxyType({'action': 'store_true'})
 
@@ -41,6 +36,16 @@ def add_arguments(
         parser.add_argument(*names, help=cleandoc(help_str), **extra)
 
 
+def _parse_field(name: str, field: AnyMap) -> FuncArgs:
+    if positional.should_handle(field):
+        return positional.handle_field(name, field)
+    if boolean.should_handle(field):
+        return boolean.handle_field(name, field)
+    if proxy.should_handle(field):
+        return proxy.handle_field(field)
+    return standard.handle_field(name, field)
+
+
 def add_model(
     parser: argparse.ArgumentParser,
     model: type[BaseModel],
@@ -54,51 +59,9 @@ def add_model(
     schema = model.schema()
     parser.description = schema['description']
     parser.formatter_class = argparse.RawTextHelpFormatter
-
     for name, field in schema['properties'].items():
-        field_default = field.get('default', MISSING)
-        is_positional = field.get('positional', False)
-        field_type = field.get('type', None)
-        args: dict[str, Any] = {
-            'help': argument_description(
-                field['description'],
-                MISSING if field_type == 'boolean' else field_default,
-            ),
-        }
-        _add_validator(args, field)
-
-        if is_positional:
-            _handle_positional(args, field)
-        else:
-            field_name = argument_name(name)
-            args['required'] = field.get('required', False)
-            args['type'] = str
-
-        field_name = name
-        if field_type == 'boolean':
-            field_name = _handle_boolean(args, field, name)
-        parser.add_argument(field_name, **args)
-
-
-def _add_validator(args: dict, field: dict) -> None:
-    if field.get('validator', None):
-        args['type'] = field['validator']
-
-
-def _handle_positional(args: dict, field: dict) -> None:
-    is_required = field.get('required', False)
-    if not is_required:
-        args['nargs'] = '?'
-
-
-def _handle_boolean(args: dict, field: dict, name: str) -> str:
-    args.pop('type')
-    if field.get('default', False):
-        args['action'] = 'store_false'
-        args['dest'] = name
-        return argument_name(f'no-{name}')
-    args['action'] = 'store_true'
-    return argument_name(name)
+        arg_inputs = _parse_field(name, field)
+        parser.add_argument(*arg_inputs.args, **arg_inputs.kwargs)
 
 
 def cli_options(
@@ -109,30 +72,18 @@ def cli_options(
     return model.parse_obj(arg_dict)
 
 
-@dataclass
-class CommandInputs:
-    """Inputs to command decorator."""
-
-    name: str
-    help: str
-    model: type[BaseModel]
-
-
 def _run_wrapper(
     run_func: Callable[..., int],
     cmd_inputs: CommandInputs,
     arg: argparse.Namespace | None,
     parser: argparse._SubParsersAction | None,  # noqa: WPS437
 ) -> int:
-    name = cmd_inputs.name
-    help_str = cmd_inputs.help
-    model = cmd_inputs.model
     if parser:
-        subp = parser.add_parser(name, help=help_str)
-        add_model(subp, model)
+        sub_parser = parser.add_parser(cmd_inputs.name, help=cmd_inputs.help)
+        add_model(sub_parser, cmd_inputs.model)
         return 0
     if isinstance(arg, argparse.Namespace):
-        opt = cli_options(model, arg)
+        opt = cli_options(cmd_inputs.model, arg)
         len_run_params = params_count(run_func)
         if len_run_params == 2:
             return run_func(opt, arg)

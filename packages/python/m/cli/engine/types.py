@@ -1,5 +1,25 @@
 import argparse
+from dataclasses import dataclass
 from typing import Any, TypeVar
+
+from pydantic import BaseModel
+
+
+@dataclass
+class CommandInputs:
+    """Inputs to command decorator."""
+
+    name: str
+    help: str
+    model: type[BaseModel]
+
+
+@dataclass
+class FuncArgs:
+    """Stores function arguments."""
+
+    args: list[Any]
+    kwargs: dict[str, Any]
 
 
 class CmdModule:
@@ -46,3 +66,4 @@ class CmdModule:
 CmdMap = dict[str, CmdModule]
 NestedCmdMap = dict[str, CmdModule | CmdMap]
 MISSING = TypeVar('MISSING')
+AnyMap = dict[str, Any]

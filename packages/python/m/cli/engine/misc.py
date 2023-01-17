@@ -44,7 +44,8 @@ def argument_name(name: str) -> str:
         Normalized name of the argument.
     """
     cli_arg_name = name.replace('_', '-')
-    return f'--{cli_arg_name}'
+    dashes = '-' if len(cli_arg_name) == 1 else '--'
+    return f'{dashes}{cli_arg_name}'
 
 
 def argument_description(
