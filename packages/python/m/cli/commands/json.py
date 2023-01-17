@@ -27,7 +27,7 @@ class Arguments(BaseModel):
     - yq: https://mikefarah.gitbook.io/yq/
     """
 
-    payload: Any | None = Field(
+    payload: Any = Field(
         default='@-',
         description='json data: @- (stdin), @filename (file), string',
         validator=validate_json_payload,

@@ -29,9 +29,12 @@ def handle_field(name: str, field: AnyMap) -> FuncArgs:
     is_required = field.get('required', False)
     nargs = field.get('nargs', None)
 
+    arg_default = default if default is MISSING else repr(default)
     args: AnyMap = {
-        'help': argument_description(field['description'], repr(default)),
+        'help': argument_description(field['description'], arg_default),
     }
+    if default is not MISSING:
+        args['default'] = default
 
     if validator:
         args['type'] = validator

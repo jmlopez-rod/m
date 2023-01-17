@@ -19,8 +19,9 @@ def handle_field(name: str, field: AnyMap) -> FuncArgs:
     required = field.get('required', False)
     aliases = cast(list[str], field.get('aliases', None))
 
+    arg_default = default if default is MISSING else repr(default)
     args: AnyMap = {
-        'help': argument_description(field['description'], repr(default)),
+        'help': argument_description(field['description'], arg_default),
         'required': required,
         'type': str,
     }
