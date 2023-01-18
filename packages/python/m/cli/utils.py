@@ -8,12 +8,13 @@ from ..core.io import CiTool, env, error_block
 from ..core.issue import Issue
 from .engine.misc import params_count
 from .engine.sys import get_cli_command_modules
-from .engine.types import CmdMap, CommandModule, NestedCmdMap
+from .engine.types import CmdMap, CommandModule, MetaMap, NestedCmdMap
 from .validators import validate_non_empty_str
 
 
 def main_parser(
     mod: NestedCmdMap,
+    meta: MetaMap,
     add_args: Callable[[argparse.ArgumentParser], None] | None = None,
 ):
     """Create an argp and return the result calling its parse_arg method.
@@ -22,8 +23,7 @@ def main_parser(
     `argparse.ArgumentParser` instance to be able to take additional
     actions.
     """
-    meta_mod = cast(CommandModule, mod['.meta'])
-    main_meta = meta_mod.meta  # type: ignore
+    main_meta = meta['_root'].meta
     raw = argparse.RawTextHelpFormatter
     # NOTE: In the future we will need to extend from this class to be able to
     #   override the error method to be able to print CI environment messages.
@@ -42,16 +42,14 @@ def main_parser(
     )
     names = sorted(mod.keys())
     for name in names:
-        if name.endswith('.meta'):
-            continue
         if isinstance(mod[name], dict):
-            meta_mod = cast(CommandModule, mod[f'{name}.meta'])
-            meta = meta_mod.meta or {}
+            meta_mod = meta[name]
+            meta_dict = meta_mod.meta
             parser = subp.add_parser(
                 name,
-                help=meta['help'],
+                help=meta_dict['help'],
                 formatter_class=raw,
-                description=meta['description'],
+                description=meta_dict['description'],
             )
             if meta_mod.add_arguments:
                 meta_mod.add_arguments(parser)
@@ -95,8 +93,8 @@ def run_cli(
     We only need `main_args` if we need to gain access to the
     `argparse.ArgumentParser` instance.
     """
-    mod = get_cli_command_modules(file_path)
-    arg = main_parser(mod, main_args)
+    mod, meta = get_cli_command_modules(file_path)
+    arg = main_parser(mod, meta, main_args)
 
     run_func = None
 

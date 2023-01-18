@@ -1,4 +1,4 @@
-from argparse import ArgumentParser, Namespace, _SubParsersAction
+import argparse as ap
 from dataclasses import dataclass
 from typing import Any, Callable, TypeVar
 
@@ -24,14 +24,24 @@ class FuncArgs:
 
 @dataclass
 class CommandModule:
-    """Container to store special objects from a module."""
+    """Container to store the run function from a "command" module."""
 
-    run: Callable[[Namespace | None, _SubParsersAction | None], int] | None
-    add_arguments: Callable[[ArgumentParser], None] | None
+    run: Callable[
+        [ap.Namespace | None, ap._SubParsersAction | None],  # noqa: WPS437
+        int,
+    ]
     add_parser: Callable[[Any, Any], None] | None
-    meta: dict[str, str] | None
 
 
+@dataclass
+class MetaModule:
+    """Container to store a metadata dictionary from a "meta" module."""
+
+    meta: dict[str, str]
+    add_arguments: Callable[[ap.ArgumentParser], None] | None
+
+
+MetaMap = dict[str, MetaModule]
 CmdMap = dict[str, CommandModule]
 NestedCmdMap = dict[str, CommandModule | CmdMap]
 MISSING = TypeVar('MISSING')

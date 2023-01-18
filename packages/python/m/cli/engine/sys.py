@@ -1,26 +1,29 @@
 from glob import iglob
 from importlib import import_module
 from os import path as pth
+from typing import Tuple
 
-from .types import CmdMap, CommandModule, NestedCmdMap
+from .types import CmdMap, CommandModule, MetaMap, MetaModule, NestedCmdMap
 
 
-def _get_module(name: str) -> CommandModule | None:
-    """Import a module by a string and transform it to a CommandModule.
-
-    Args:
-        name: The module name.
-
-    Returns:
-        A CommandModule.
-    """
+def _get_command_module(name: str) -> CommandModule | None:
     cmd_mod = import_module(name).__dict__
-    if 'run' in cmd_mod or 'meta' in cmd_mod:
+    run_func = cmd_mod.get('run')
+    if run_func:
         return CommandModule(
-            run=cmd_mod.get('run', None),
-            add_arguments=cmd_mod.get('add_arguments', None),
-            add_parser=cmd_mod.get('add_parser', None),
-            meta=cmd_mod.get('meta', None),
+            run=run_func,
+            add_parser=cmd_mod.get('add_parser'),
+        )
+    return None
+
+
+def _get_meta_module(name: str) -> MetaModule | None:
+    meta_mod = import_module(name).__dict__
+    meta_obj = meta_mod.get('meta')
+    if meta_obj:
+        return MetaModule(
+            meta=meta_obj,
+            add_arguments=meta_mod.get('add_arguments'),
         )
     return None
 
@@ -44,13 +47,13 @@ def get_command_modules(root: str, commands_module: str) -> CmdMap:
     mod = {}
     for mod_name in mod_names:
         name = pth.split(mod_name)[1][:-3]
-        cmd_mod = _get_module(f'{commands_module}.{name}')
-        if cmd_mod and cmd_mod.run:
+        cmd_mod = _get_command_module(f'{commands_module}.{name}')
+        if cmd_mod:
             mod[name] = cmd_mod
     return mod
 
 
-def get_cli_command_modules(file_path: str) -> NestedCmdMap:
+def get_cli_command_modules(file_path: str) -> Tuple[NestedCmdMap, MetaMap]:
     """Return a dictionary containing the commands and subcommands for the cli.
 
     `file_path` is expected to be the absolute path to the __main__.py file.
@@ -61,26 +64,27 @@ def get_cli_command_modules(file_path: str) -> NestedCmdMap:
         file_path: Absolute path to the `__main__.py` file.
 
     Returns:
-        A map containing all the modules that have the commands for the cli.
+        A tuple with a map containing all the modules that have the commands
+        for the cli and a map with the meta data related to each command.
     """
     root = pth.split(pth.abspath(file_path))[0]
     main_mod = pth.split(root)[1]
     cli_root = f'{main_mod}.cli'
     root_cmd = get_command_modules(root, f'{cli_root}.commands')
     mod: NestedCmdMap = {}
+    meta: MetaMap = {}
     for key, cmd_mod in root_cmd.items():
         mod[key] = cmd_mod
-
-    meta_mod = _get_module(f'{cli_root}.commands')
+    meta_mod = _get_meta_module(f'{cli_root}.commands')
     if meta_mod:
-        mod['.meta'] = meta_mod
+        meta['_root'] = meta_mod
     subcommands = list(iglob(f'{root}/cli/commands/*'))
     for cmd_name in subcommands:
         if cmd_name.endswith('.py') or cmd_name.endswith('__'):
             continue
         name = pth.split(cmd_name)[1]
         mod[name] = get_command_modules(root, f'{cli_root}.commands.{name}')
-        meta_mod = _get_module(f'{cli_root}.commands.{name}')
+        meta_mod = _get_meta_module(f'{cli_root}.commands.{name}')
         if meta_mod:
-            mod[f'{name}.meta'] = meta_mod
-    return mod
+            meta[name] = meta_mod
+    return mod, meta
