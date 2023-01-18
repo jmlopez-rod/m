@@ -1,4 +1,4 @@
-from m.cli.argparse import add_model, cli_options
+from m.cli import command
 from m.cli.utils import run_main
 from pydantic import BaseModel, Field
 
@@ -18,13 +18,12 @@ class Arguments(BaseModel):
     )
 
 
-def add_parser(sub_parser, _raw):
-    parser = sub_parser.add_parser('clean_tags', help='remove empty npm tags')
-    add_model(parser, Arguments)
-
-
-def run(arg):
-    # pylint: disable=import-outside-toplevel
+@command(
+    name='clean_tags',
+    help='remove empty npm tags',
+    model=Arguments,
+)
+def run(arg: Arguments):
     from ....npm.clean_tags import clean_tags
-    opt = cli_options(Arguments, arg)
-    return run_main(lambda: clean_tags(opt.package_name))
+
+    return run_main(lambda: clean_tags(arg.package_name))

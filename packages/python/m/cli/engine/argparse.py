@@ -4,9 +4,9 @@ from typing import Callable, TypeVar
 
 from pydantic import BaseModel
 
-from .engine.misc import namespace_to_dict, params_count
-from .engine.parsers import boolean, positional, proxy, standard
-from .engine.types import AnyMap, CommandInputs, FuncArgs
+from .misc import namespace_to_dict, params_count
+from .parsers import boolean, positional, proxy, standard
+from .types import AnyMap, CommandInputs, FuncArgs
 
 BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
 
@@ -39,14 +39,6 @@ def add_model(
         parser.add_argument(*arg_inputs.args, **arg_inputs.kwargs)
 
 
-def cli_options(
-    model: type[BaseModelT],
-    namespace: argparse.Namespace,
-) -> BaseModelT:
-    arg_dict = namespace_to_dict(namespace)
-    return model.parse_obj(arg_dict)
-
-
 def _run_wrapper(
     run_func: Callable[..., int],
     cmd_inputs: CommandInputs,
@@ -58,20 +50,15 @@ def _run_wrapper(
         add_model(sub_parser, cmd_inputs.model)
         return 0
     if isinstance(arg, argparse.Namespace):
-        opt = cli_options(cmd_inputs.model, arg)
+        arg_dict = namespace_to_dict(arg)
+        opt = cmd_inputs.model.parse_obj(arg_dict)
         len_run_params = params_count(run_func)
-        if len_run_params == 2:
-            return run_func(opt, arg)
-        if len_run_params == 1:
-            return run_func(opt)
-        return run_func()
+        args = [opt, arg][:len_run_params]
+        return run_func(*args)
     raise NotImplementedError('m dev error: provide either arg or parser')
 
 
-def handle_decorated_func(
-    cmd_inputs: CommandInputs,
-    func: Callable,
-):
+def _handle_decorated_func(cmd_inputs: CommandInputs, func: Callable):
     return partial(_run_wrapper, func, cmd_inputs)
 
 
@@ -79,5 +66,15 @@ def command(
     name: str,
     help: str,  # noqa: WPS125
     model: type[BaseModel],
-):
-    return partial(handle_decorated_func, CommandInputs(name, help, model))
+) -> partial[partial[int]]:
+    """Apply a decorator to the `run` function to make it into a command.
+
+    Args:
+        name: The command name.
+        help: A short description of the command.
+        model: A pydantic model to describe the cli arguments.
+
+    Returns:
+        A transformed run function aware of the arguments model.
+    """
+    return partial(_handle_decorated_func, CommandInputs(name, help, model))

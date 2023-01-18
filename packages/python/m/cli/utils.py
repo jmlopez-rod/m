@@ -1,20 +1,20 @@
 import argparse
 import json
 import sys
-from typing import Any, Callable, Dict, Optional, cast
+from typing import Any, Callable, Optional, cast
 
 from ..core.fp import OneOf
 from ..core.io import CiTool, env, error_block
 from ..core.issue import Issue
 from .engine.misc import params_count
 from .engine.sys import get_cli_command_modules
-from .engine.types import CmdModule
+from .engine.types import CmdMap, CommandModule, NestedCmdMap
 from .validators import validate_non_empty_str
 
 
 def main_parser(
-    mod: dict[str, CmdModule | dict[str, CmdModule]],
-    add_args: Optional[Callable[[argparse.ArgumentParser], None]] = None,
+    mod: NestedCmdMap,
+    add_args: Callable[[argparse.ArgumentParser], None] | None = None,
 ):
     """Create an argp and return the result calling its parse_arg method.
 
@@ -22,14 +22,14 @@ def main_parser(
     `argparse.ArgumentParser` instance to be able to take additional
     actions.
     """
-    meta_mod = cast(CmdModule, mod['.meta'])
+    meta_mod = cast(CommandModule, mod['.meta'])
     main_meta = meta_mod.meta  # type: ignore
     raw = argparse.RawTextHelpFormatter
     # NOTE: In the future we will need to extend from this class to be able to
     #   override the error method to be able to print CI environment messages.
     argp = argparse.ArgumentParser(
         formatter_class=raw,
-        description=main_meta['description'],
+        description=main_meta['description'] if main_meta else '...',
     )
     if add_args:
         add_args(argp)
@@ -45,15 +45,15 @@ def main_parser(
         if name.endswith('.meta'):
             continue
         if isinstance(mod[name], dict):
-            meta_mod = cast(CmdModule, mod[f'{name}.meta'])
-            meta = meta_mod.meta  # type: ignore
+            meta_mod = cast(CommandModule, mod[f'{name}.meta'])
+            meta = meta_mod.meta or {}
             parser = subp.add_parser(
                 name,
                 help=meta['help'],
                 formatter_class=raw,
                 description=meta['description'],
             )
-            if hasattr(meta_mod, 'add_arguments'):
+            if meta_mod.add_arguments:
                 meta_mod.add_arguments(parser)
             subsubp = parser.add_subparsers(
                 title='commands',
@@ -62,20 +62,22 @@ def main_parser(
                 help='additional help',
                 metavar='<command>',
             )
-            sub_mod = cast(Dict[str, CmdModule], mod[name])
+            sub_mod = cast(CmdMap, mod[name])
             for subname in sorted(sub_mod.keys()):
                 run_func = sub_mod[subname].run
+                add_parser = sub_mod[subname].add_parser
                 if params_count(run_func) == 2:
                     run_func(None, subsubp)
-                else:
-                    sub_mod[subname].add_parser(subsubp, raw)
+                elif add_parser:
+                    add_parser(subsubp, raw)
         else:
-            mod_inst = cast(CmdModule, mod[name])
+            mod_inst = cast(CommandModule, mod[name])
             run_func = mod_inst.run
+            add_parser = mod_inst.add_parser
             if params_count(run_func) == 2:
                 run_func(None, subp)
-            else:
-                mod_inst.add_parser(subp, raw)
+            elif add_parser:
+                add_parser(subp, raw)
     return argp.parse_args()
 
 
@@ -96,23 +98,17 @@ def run_cli(
     mod = get_cli_command_modules(file_path)
     arg = main_parser(mod, main_args)
 
-    exit_code = 0
     run_func = None
 
     if hasattr(arg, 'subcommand_name'):
-        sub_mod = cast(Dict[str, CmdModule], mod[arg.command_name])
+        sub_mod = cast(CmdMap, mod[arg.command_name])
         run_func = sub_mod[arg.subcommand_name].run
     else:
-        run_func = cast(CmdModule, mod[arg.command_name]).run
+        run_func = cast(CommandModule, mod[arg.command_name]).run
 
     len_run_args = params_count(run_func)
-    if len_run_args == 2:
-        exit_code = run_func(arg, None)
-    elif len_run_args == 1:
-        exit_code = run_func(arg)
-    else:
-        exit_code = run_func()
-    sys.exit(exit_code)
+    run_args = [arg, None][:len_run_args]
+    sys.exit(run_func(*run_args))
 
 
 def display_issue(issue: Issue) -> None:

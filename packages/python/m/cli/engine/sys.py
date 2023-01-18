@@ -1,22 +1,28 @@
 from glob import iglob
 from importlib import import_module
 from os import path as pth
-from typing import cast
 
-from .types import CmdMap, CmdModule, NestedCmdMap
+from .types import CmdMap, CommandModule, NestedCmdMap
 
 
-def import_mod(name: str) -> CmdModule:
-    """Import a module by string.
+def _get_module(name: str) -> CommandModule | None:
+    """Import a module by a string and transform it to a CommandModule.
 
     Args:
-        name: The full module name, i.e path.to.module
+        name: The module name.
 
     Returns:
-        A module that we hope has the shape of CmdModule.
+        A CommandModule.
     """
-    module = import_module(name)
-    return cast(CmdModule, module)
+    cmd_mod = import_module(name).__dict__
+    if 'run' in cmd_mod or 'meta' in cmd_mod:
+        return CommandModule(
+            run=cmd_mod.get('run', None),
+            add_arguments=cmd_mod.get('add_arguments', None),
+            add_parser=cmd_mod.get('add_parser', None),
+            meta=cmd_mod.get('meta', None),
+        )
+    return None
 
 
 def get_command_modules(root: str, commands_module: str) -> CmdMap:
@@ -38,10 +44,8 @@ def get_command_modules(root: str, commands_module: str) -> CmdMap:
     mod = {}
     for mod_name in mod_names:
         name = pth.split(mod_name)[1][:-3]
-        cmd_mod = import_mod(f'{commands_module}.{name}')
-
-        # https://github.com/wemake-services/wemake-python-styleguide/issues/2228
-        if hasattr(cmd_mod, 'run'):  # noqa: WPS421
+        cmd_mod = _get_module(f'{commands_module}.{name}')
+        if cmd_mod and cmd_mod.run:
             mod[name] = cmd_mod
     return mod
 
@@ -63,16 +67,20 @@ def get_cli_command_modules(file_path: str) -> NestedCmdMap:
     main_mod = pth.split(root)[1]
     cli_root = f'{main_mod}.cli'
     root_cmd = get_command_modules(root, f'{cli_root}.commands')
-    mod: dict[str, CmdModule | dict[str, CmdModule]] = {}
+    mod: NestedCmdMap = {}
     for key, cmd_mod in root_cmd.items():
         mod[key] = cmd_mod
 
-    mod['.meta'] = import_mod(f'{cli_root}.commands')
+    meta_mod = _get_module(f'{cli_root}.commands')
+    if meta_mod:
+        mod['.meta'] = meta_mod
     subcommands = list(iglob(f'{root}/cli/commands/*'))
     for cmd_name in subcommands:
         if cmd_name.endswith('.py') or cmd_name.endswith('__'):
             continue
         name = pth.split(cmd_name)[1]
         mod[name] = get_command_modules(root, f'{cli_root}.commands.{name}')
-        mod[f'{name}.meta'] = import_mod(f'{cli_root}.commands.{name}')
+        meta_mod = _get_module(f'{cli_root}.commands.{name}')
+        if meta_mod:
+            mod[f'{name}.meta'] = meta_mod
     return mod
