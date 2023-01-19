@@ -13,7 +13,7 @@ from .conftest import (
     TCaseErr,
     assert_err,
     assert_result,
-    r_fixture,
+    get_fixture,
     read_file_fake,
 )
 
@@ -100,7 +100,7 @@ def test_cases(mocker: MockerFixture, capsys, tcase: TCase):
     })
     mocker.patch.object(mio, 'read_file', fake)
     mocker.patch('m.core.json.read_json').return_value = Good(
-        json.loads(r_fixture(tcase.m_file)),
+        json.loads(get_fixture(tcase.m_file)),
     )
     write_file_mock = mocker.patch('m.core.rw.write_file')
     write_file_mock.return_value = Good(None)
@@ -120,8 +120,8 @@ def test_cases(mocker: MockerFixture, capsys, tcase: TCase):
     print('after main...')
     captured = capsys.readouterr()
 
-    print('out|||||:',captured.out)
-    print('err|||||:',captured.err)
+    print('out|||||:', captured.out)
+    print('err|||||:', captured.err)
     print('---')
     # assert 1 == 0
     assert_result(prog, captured.out, write_file_mock, tcase)

@@ -1,14 +1,33 @@
 [MESSAGES CONTROL]
-init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(f'{os.path.dirname(find_pylintrc())}/packages/python')"
+init-hook="import sys; sys.path.append('/workspaces/m/packages/python')"
 
 disable=
-	missing-class-docstring,
-	missing-function-docstring,
-	missing-module-docstring,
-	import-error,
-  duplicate-code,
+  invalid-name,
+  too-few-public-methods,
+  wrong-import-order,
+  redefined-builtin,
+  missing-class-docstring,
+  unexpected-keyword-arg,
+  import-outside-toplevel,
+  missing-module-docstring,
+  broad-except
+
+extension-pkg-whitelist=pydantic
+
+no-docstring-rgx=^_|run|add_parser|main|add_arguments|^test|(.*)Test$
 
 good-names=_,
   i, j, k,
   x, y, z,
   ex, pr, fp
+
+class-const-naming-style=snake_case
+
+max-args=7
+
+
+min-similarity-lines=10
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=no
+ignore-signatures=yes

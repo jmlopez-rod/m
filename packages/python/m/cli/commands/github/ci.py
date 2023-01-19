@@ -33,7 +33,7 @@ def add_parser(sub_parser, raw):
     """  # noqa
     parser = sub_parser.add_parser(
         'ci',
-        help='continous integration information',
+        help='continuous integration information',
         formatter_class=raw,
         description=inspect.cleandoc(desc),
     )

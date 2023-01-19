@@ -3,10 +3,9 @@ from datetime import datetime
 from typing import List
 
 from m.ci.config import Config, read_config
-from m.core import issue, one_of
+from m.core import issue, one_of, rw
 from m.core.fp import Good, OneOf
 from m.core.issue import Issue
-from m.core import rw
 from m.git import get_first_commit_sha
 from m.github import compare_sha_url
 

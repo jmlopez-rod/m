@@ -1,6 +1,5 @@
-from dataclasses import dataclass
-
 from packaging.version import Version
+from pydantic import BaseModel
 
 from ..core import Good, Issue, OneOf, issue, json, one_of
 from .types import (

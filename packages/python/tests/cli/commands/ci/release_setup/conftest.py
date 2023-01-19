@@ -10,7 +10,6 @@ from pydantic import BaseModel
 from pytest import ExceptionInfo
 from tests.fixture_utils import read_fixture
 
-
 get_fixture = partial(
     read_fixture,
     path='cli/commands/ci/release_setup/fixtures'
@@ -20,7 +19,7 @@ get_fixture = partial(
 def read_file_fake(filename: str, f_map: dict) -> OneOf[Issue, str]:
     fname = f_map.get(filename)
     if not fname:
-        return issue('filename not mapped', context={ 'filename': filename })
+        return issue('filename not mapped', context={'filename': filename})
     return Good(get_fixture(fname))
 
 
@@ -85,6 +84,5 @@ def assert_result(
     # date = datetime.now().strftime('%B %d, %Y')
     m_file_call = write_file_mock.call_args_list[0]
     # changelog_call = write_file_mock.call_args_list[1]
-    actual_diff_mf = _get_diffs(r_fixture(tcase.m_file), m_file_call.args[1])
+    actual_diff_mf = _get_diffs(get_fixture(tcase.m_file), m_file_call.args[1])
     assert actual_diff_mf == tcase.diff_mf
-

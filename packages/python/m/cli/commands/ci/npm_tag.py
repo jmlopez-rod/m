@@ -35,5 +35,5 @@ class Arguments(BaseModel):
 def run(arg: Arguments):
     from m.npm.tag import npm_tags
 
-    print(npm_tags(arg.npm_tag)[0])
+    print(npm_tags(arg.npm_tag)[0])  # noqa: WPS421
     return 0
