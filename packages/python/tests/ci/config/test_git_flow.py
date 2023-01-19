@@ -1,4 +1,3 @@
-from dataclasses import replace as copy
 from typing import cast
 from unittest.mock import patch
 
@@ -52,5 +51,5 @@ class ConfigGitFlowTest(FpTestCase):
 
     def test_verify_version(self):
         """Test is already covered by the m_flow tests."""
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         self.assertEqual(config.workflow, Workflow.git_flow)

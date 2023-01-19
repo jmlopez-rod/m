@@ -1,4 +1,3 @@
-from dataclasses import replace as copy
 from typing import cast
 from unittest.mock import patch
 
@@ -51,7 +50,7 @@ class ConfigMFlowTest(FpTestCase):
             )
 
     def test_verify_version(self):
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         _test = config.verify_version
         # Init Repo
         config.version = '0.0.0'

@@ -1,5 +1,5 @@
-from .cli.utils import run_cli
-from .version import VERSION
+from m.cli.utils import run_cli
+from m.version import VERSION
 
 
 def main_args(argp):

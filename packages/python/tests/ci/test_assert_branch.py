@@ -1,4 +1,3 @@
-from dataclasses import replace as copy
 from typing import cast
 from unittest.mock import patch
 
@@ -13,19 +12,19 @@ from ..util import FpTestCase
 
 class AssertBranchTest(FpTestCase):
     base_config = Config(
-        'owner',
-        'repo',
-        '0.0.0',
-        'm',
-        Workflow.free_flow,
-        GitFlowConfig(),
-        MFlowConfig(),
+        owner='owner',
+        repo='repo',
+        version='0.0.0',
+        m_dir='m',
+        workflow=Workflow.free_flow,
+        git_flow=GitFlowConfig(),
+        m_flow=MFlowConfig(),
     )
 
     @patch.object(git, 'get_branch')
     @patch('m.ci.assert_branch.read_config')
     def test_invalid_flow(self, read_config_mock, get_branch_mock):
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         config.workflow = cast(Workflow, 'oops')
         get_branch_mock.return_value = Good('master')
         read_config_mock.return_value = Good(config)
@@ -47,7 +46,7 @@ class AssertBranchTest(FpTestCase):
     @patch('m.ci.assert_branch.read_config')
     def test_m_flow(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('master')
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         config.workflow = Workflow.m_flow
         read_config_mock.return_value = Good(config)
         res = assert_branch('release', 'm')
@@ -64,7 +63,7 @@ class AssertBranchTest(FpTestCase):
     @patch('m.ci.assert_branch.read_config')
     def test_git_flow(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('develop')
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         config.workflow = Workflow.git_flow
         read_config_mock.return_value = Good(config)
         res = assert_branch('release', 'm')
@@ -85,7 +84,7 @@ class AssertBranchTest(FpTestCase):
     @patch('m.ci.assert_branch.read_config')
     def test_m_flow_error(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('topic/active-branch')
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         config.workflow = Workflow.m_flow
         read_config_mock.return_value = Good(config)
         res = assert_branch('release', 'm')

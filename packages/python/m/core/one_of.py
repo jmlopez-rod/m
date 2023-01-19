@@ -45,7 +45,8 @@ def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
         A `OneOf` with the value returned from `comp`.
     """
     try:
-        return Good(comp()[0])
+        res = comp()
+        return Good(res[0])
     except StopBadIteration as ex:
         return cast(Bad, ex.bad)
     except Exception as ex:
