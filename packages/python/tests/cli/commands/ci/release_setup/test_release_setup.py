@@ -94,7 +94,7 @@ def test_cases(mocker: MockerFixture, capsys, tcase: TCase):
     #         'CHANGELOG.md': tcase.changelog,
     #     },
     # )
-    fake = lambda f: read_file_fake(f, {
+    fake = partial(read_file_fake, f_map={
         'm/m.json': tcase.m_file,
         'CHANGELOG.md': tcase.changelog,
     })
