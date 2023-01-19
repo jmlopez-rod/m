@@ -15,6 +15,6 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....core.io import CiTool
-    CiTool.open_block(arg.name, arg.description)
+    from ....core.io import get_ci_tool
+    get_ci_tool().open_block(arg.name, arg.description)
     return 0

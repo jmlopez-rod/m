@@ -28,7 +28,7 @@ from .conftest import (
     ),
     TCaseErr(
         exit_code=1,
-        std_out='error: \n',
+        std_out='error: \n\n',
         std_err='missing "Unreleased" link',
         args=['m', '1.2.3'],
         changelog='cl_invalid.md',

@@ -180,6 +180,7 @@ class CITool(ABC):
     @staticmethod
     def close_block(_name: str) -> None:
         """Define how a block is closed."""
+        print('')
 
     @staticmethod
     def error(
