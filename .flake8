@@ -17,3 +17,4 @@ ignore =
 per-file-ignores =
   # There are multiple `assert`s in tests, we allow them:
   tests/*.py:S101
+  packages/python/m/core/fp.py:WPS110

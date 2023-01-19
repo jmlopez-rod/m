@@ -22,7 +22,7 @@ def issue(  # noqa: WPS211
         cause: Optional exception that caused the issue.
         context: Optional dictionary to provide extra information.
         data: deprecated, use context instead.
-        include_traceback: Defaults to true to provde the stack trace.
+        include_traceback: Defaults to true to provide the stack trace.
 
     Returns:
         An instance of an `Issue`.
@@ -61,7 +61,7 @@ def to_one_of(
 
     Args:
         callback: A lambda function with a simple python statement.py
-        message: An error message in case the statment raises an exception.
+        message: An error message in case the statement raises an exception.
         context: Additional error context.
 
     Returns:

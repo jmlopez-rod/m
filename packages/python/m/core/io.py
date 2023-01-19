@@ -305,7 +305,11 @@ class GithubActions(CITool):
         https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
         """
         stream = stream or sys.stderr
-        loc = f'file={file},line={line},col={col}' if file else ''
+        file_entry = f'file={file}' if file else ''
+        line_entry = f'line={line}' if line else ''
+        col_entry = f'col={col}' if col else ''
+        parts = [x for x in [file_entry, line_entry, col_entry] if x]
+        loc = ','.join(parts)
         info = f' {loc}' if loc else ''
         print(f'::error{info}::{description}', file=stream)
 
@@ -320,9 +324,13 @@ class GithubActions(CITool):
         """Print a warning message.
 
         https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
-        """  # noqa
+        """
         stream = stream or sys.stderr
-        loc = f'file={file},line={line},col={col}' if file else ''
+        file_entry = f'file={file}' if file else ''
+        line_entry = f'line={line}' if line else ''
+        col_entry = f'col={col}' if col else ''
+        parts = [x for x in [file_entry, line_entry, col_entry] if x]
+        loc = ','.join(parts)
         info = f' {loc}' if loc else ''
         print(f'::warning{info}::{description}', file=stream)
 

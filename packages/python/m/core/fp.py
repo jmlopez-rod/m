@@ -1,5 +1,7 @@
 from typing import Callable, Generic, Iterator, TypeVar, Union, cast
 
+# Note: disabling WPS110 in .flake8 for this file.
+#   Reason for this, the variable name "value".
 A = TypeVar('A')  # pylint: disable=invalid-name
 B = TypeVar('B')  # pylint: disable=invalid-name
 G = TypeVar('G')  # pylint: disable=invalid-name
@@ -36,27 +38,42 @@ class StopBadIteration(Exception):  # noqa: N818 - This is for internal use
 class OneOf(Generic[B, G]):
     """An instance of `OneOf` is an instance of either `Bad` or `Good`."""
 
-    def __init__(self, bad: bool, one_of_value: Union[B, G]):
+    is_bad: bool
+    value: B | G
+
+    def __init__(self, is_bad: bool, value: B | G):
         """Initialize a `OneOf`.
 
         Args:
-            bad:
+            is_bad:
                 Set to `True` if the instance holds a `Bad` value.
-            one_of_value:
+            value:
                 The value of the instance.
         """
-        self.is_bad = bad
-        self.value = one_of_value  # noqa: WPS110
+        self.is_bad = is_bad
+        self.value = value
 
     def __iter__(self) -> Iterator[G]:
+        """Iterate over instances that contain a "good" value.
+
+        Yields:
+            The value if the instance is a "Good" value.
+
+        Raises:
+            StopBadIteration: If the instance has a "Bad" value.
+        """
         if self.is_bad:
             raise StopBadIteration(self)
         yield cast(G, self.value)
 
     def iter(self):
-        """Shortcut to transform to a list: list(x.iter()).
+        """Shortcut to transform to a list.
 
-        It will either contain a value or be an empty list.
+        Can be used as `list(x.iter())`. It will either contain a value or be
+        an empty list.
+
+        Yields:
+            The value if the instance is a "Good" value.
         """
         if not self.is_bad:
             yield self.value
@@ -83,13 +100,23 @@ class OneOf(Generic[B, G]):
         """
         return fct(cast(B, self.value)) if self.is_bad else self
 
-    def get_or_else(self, or_: LazyArg[G]) -> G:
-        """Returns the value if its Good or the given argument if its a Bad."""
-        return lazy_arg(or_) if self.is_bad else cast(G, self.value)
+    def get_or_else(self, default: LazyArg[G]) -> G:
+        """Return the value if its Good or the given argument if its a Bad.
+
+        Args:
+            default: The default value in case the instance is "Bad".
+
+        Returns:
+            Either the value or the default specified by "default".
+        """
+        return lazy_arg(default) if self.is_bad else cast(G, self.value)
 
 
 class Bad(OneOf[B, G]):
     """The bad side of the disjoint union."""
+
+    is_bad: bool = False
+    value: B
 
     def __init__(self, one_of_value):
         """Initialize a `Bad` instance.
@@ -97,16 +124,19 @@ class Bad(OneOf[B, G]):
         Args:
             one_of_value: The "bad" value.
         """
-        super().__init__(bad=True, one_of_value=one_of_value)
+        super().__init__(is_bad=True, value=one_of_value)
 
 
 class Good(OneOf[B, G]):
     """The good side of the disjoint union."""
 
+    is_bad: bool = False
+    value: G
+
     def __init__(self, one_of_value):
-        """Initialize a `Good` instance.
+        """Initialize a `Bad` instance.
 
         Args:
-            one_of_value: The "good" value.
+            one_of_value: The "bad" value.
         """
-        super().__init__(bad=False, one_of_value=one_of_value)
+        super().__init__(is_bad=False, value=one_of_value)

@@ -1,43 +1,46 @@
-from io import StringIO
+from typing import Any
 
-import sys
 import pytest
-from m.__main__ import main
 from m.core import Bad, Good
+from pytest_mock import MockerFixture
+from tests.cli.conftest import TCase as CliTestCase
+from tests.cli.conftest import assert_streams, run_cli
 
 
-def run_main(exit_value=0):
-    prog = None
-    with pytest.raises(SystemExit) as prog_block:
-        prog = prog_block
-        main()
-    assert prog is not None and prog.value.code == exit_value
+class TCase(CliTestCase):
+    """Test case for `m npm clean_tags`."""
+
+    eval_cmd_side_effects: list[Any]  # list[OneOf[Issue, str]]
 
 
-def test_m_npm_clean_tags(mocker):
-    std_out = StringIO()
-    mocker.patch.object(sys, 'argv', 'm npm clean_tags scope/pkg'.split(' '))
-    mocker.patch.object(sys, 'stdout', std_out)
-    mocker.patch('m.core.subprocess.eval_cmd').side_effect = [
-        Good('{"tag1":"","tag2":"","tag3":"v3"}'),
-        Good('- tag1'),
-        Good('- tag2'),
-    ]
-    run_main()
-    assert std_out.getvalue() == '["- tag1","- tag2"]\n'
+@pytest.mark.parametrize('tcase', [
+    TCase(
+        cmd='m npm clean_tags scope/pkg',
+        eval_cmd_side_effects=[
+            Good('{"tag1":"","tag2":"","tag3":"v3"}'),
+            Good('- tag1'),
+            Good('- tag2'),
+        ],
+        expected='["- tag1","- tag2"]'
 
-
-def test_m_npm_clean_tags_fail(mocker):
-    std_err = StringIO()
-    mocker.patch.object(sys, 'argv', 'm npm clean_tags scope/pkg'.split(' '))
-    mocker.patch.object(sys, 'stderr', std_err)
-    mocker.patch('m.core.subprocess.eval_cmd').side_effect = [
-        Good('{"tag1":"","tag2":"","tag3":"v3"}'),
-        Good('- tag1'),
-        Bad('some_error_tag2'),
-    ]
-    run_main(1)
-    errors = std_err.getvalue()
-    assert 'dist-tag rm issues' in errors
-    assert 'some_error_tag2' in errors
-    assert '- tag1' in errors
+    ),
+    TCase(
+        cmd='m npm clean_tags scope/pkg',
+        eval_cmd_side_effects=[
+            Good('{"tag1":"","tag2":"","tag3":"v3"}'),
+            Good('- tag1'),
+            Bad('some_error_tag2'),
+        ],
+        errors=[
+            'dist-tag rm issues',
+            'some_error_tag2',
+            '- tag1',
+        ],
+        exit_code=1,
+    ),
+])
+def test_m_npm_clean_tags(tcase: TCase, mocker: MockerFixture) -> None:
+    eval_cmd = mocker.patch('m.core.subprocess.eval_cmd')
+    eval_cmd.side_effect = tcase.eval_cmd_side_effects
+    std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
+    assert_streams(std_out, std_err, tcase)
