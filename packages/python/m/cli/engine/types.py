@@ -22,6 +22,19 @@ class FuncArgs:
     kwargs: dict[str, Any]
 
 
+def add_arg(*args, **kwargs) -> FuncArgs:
+    """Wrap FuncArgs arguments in a function.
+
+    Args:
+        args: The arguments to argparse add_arguments.
+        kwargs: The keyword arguments to argparse add arguments.
+
+    Returns:
+        A FuncArgs instance.
+    """
+    return FuncArgs(args=list(args), kwargs=kwargs)
+
+
 @dataclass
 class CommandModule:
     """Container to store the run function from a "command" module."""

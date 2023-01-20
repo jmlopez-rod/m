@@ -1,23 +1,32 @@
-def add_parser(sub_parser, raw):
-    parser = sub_parser.add_parser(
-        'bump_version',
-        help='prompt for the next version',
-        formatter_class=raw,
-        description='Prompt user for the next valid semantic version',
+from m.cli import add_arg, command
+from pydantic import BaseModel, Field
+
+
+class Arguments(BaseModel):
+    """Prompt user for the next valid semantic version."""
+
+    type: str = Field(
+        proxy=add_arg(
+            '--type',
+            required=True,
+            choices=['release', 'hotfix'],
+            help='verification type',
+        ),
     )
-    add = parser.add_argument
-    add(
-        '--type',
+    version: str = Field(
+        description='version to bump',
+        positional=True,
         required=True,
-        choices=['release', 'hotfix'],
-        help='verification type',
     )
-    add('version', help='version to bump')
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....core.io import prompt_next_version
+@command(
+    name='bump_version',
+    help='prompt for the next version',
+    model=Arguments,
+)
+def run(arg: Arguments):
+    from m.core.io import prompt_next_version
     next_ver = prompt_next_version(arg.version, arg.type)
     print(next_ver)  # noqa: WPS421
     return 0

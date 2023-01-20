@@ -16,6 +16,7 @@ class TCase(BaseModel):
     expected: str = ''
     errors: list[str] = []
     exit_code: int = 0
+    cleandoc: bool = True
 
 
 def run_cli(
@@ -51,5 +52,9 @@ def assert_streams(
         for error in tcase.errors:
             assert error in err_str
     else:
-        expected = cleandoc(tcase.expected)
+        expected = (
+            cleandoc(tcase.expected)
+            if tcase.cleandoc
+            else tcase.expected
+        )
         assert out.getvalue() == f'{expected}\n'

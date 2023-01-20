@@ -1,23 +1,35 @@
-import inspect
+from m.cli import command
+from pydantic import BaseModel, Field
 
 
-def add_parser(sub_parser, raw):
-    desc = 'close and immediately open another block'
-    parser = sub_parser.add_parser(
-        'sibling_block',
-        help='close and open a sibling block',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
+class Arguments(BaseModel):
+    """Close and immediately open another block."""
+
+    to_close: str = Field(
+        description='block name to close',
+        positional=True,
+        required=True,
     )
-    add = parser.add_argument
-    add('to_close', help='block name to close')
-    add('name', help='block name to open')
-    add('description', help='new block description')
+    name: str = Field(
+        description='block name to open',
+        positional=True,
+        required=True,
+    )
+    description: str = Field(
+        description='block description',
+        positional=True,
+        required=True,
+    )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....core.io import CiTool
-    CiTool.close_block(arg.to_close)
-    CiTool.open_block(arg.name, arg.description)
+@command(
+    name='sibling_block',
+    help='close and open a sibling block',
+    model=Arguments,
+)
+def run(arg: Arguments):
+    from m.core.io import get_ci_tool
+    tool = get_ci_tool()
+    tool.close_block(arg.to_close)
+    tool.open_block(arg.name, arg.description)
     return 0
