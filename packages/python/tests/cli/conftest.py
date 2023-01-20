@@ -1,7 +1,7 @@
 import sys
 from inspect import cleandoc
 from io import StringIO
-from typing import Tuple
+from typing import Any, Tuple
 
 import pytest
 from m.__main__ import main
@@ -15,6 +15,7 @@ class TCase(BaseModel):
     cmd: str | list[str]
     expected: str = ''
     errors: list[str] = []
+    eval_cmd_side_effects: list[Any] = []
     exit_code: int = 0
     cleandoc: bool = True
 
@@ -22,11 +23,12 @@ class TCase(BaseModel):
 def run_cli(
     cmd: str | list[str],
     exit_code: int,
-    mocker: MockerFixture
+    mocker: MockerFixture,
 ) -> Tuple[StringIO, StringIO]:
     std_out = StringIO()
     std_err = StringIO()
     argv = cmd if isinstance(cmd, list) else cmd.split(' ')
+    og_std_err = sys.stderr
 
     mocker.patch.object(sys, 'argv', argv)
     mocker.patch.object(sys, 'stdout', std_out)
@@ -37,6 +39,8 @@ def run_cli(
         prog = prog_block
         main()
     assert prog is not None
+    if prog.value.code != exit_code:
+        print(std_err.getvalue(), file=og_std_err)
     assert prog.value.code == exit_code
 
     return std_out, std_err

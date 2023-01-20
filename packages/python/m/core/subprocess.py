@@ -1,5 +1,6 @@
 import shlex
-from subprocess import STDOUT, CalledProcessError, check_output  # noqa: S404
+import subprocess as sub  # noqa: S404
+from subprocess import STDOUT, CalledProcessError  # noqa: S404
 
 from . import Issue, issue
 from .fp import Good, OneOf
@@ -16,7 +17,7 @@ def eval_cmd(cmd: str) -> OneOf[Issue, str]:
     """
     command = shlex.split(cmd)
     try:
-        out = check_output(command, stderr=STDOUT, shell=False).decode()  # noqa: S603,E501
+        out = sub.check_output(command, stderr=STDOUT, shell=False).decode()  # noqa: S603,E501
     except CalledProcessError as ex:
         out = ex.output.decode()
         return issue(
