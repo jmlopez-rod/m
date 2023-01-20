@@ -1,15 +1,23 @@
 import subprocess
+from m.core import rw as mio
+from functools import partial
 
 
-def fake_check_output(*_popen_args, _timeout=None, **_kwargs):
+def needs_mocking(func_name: str, *args, **kwargs):
     """"Raise an exception asking developer to mock a function.
 
     Args:
-        _popen_args: ...
-        _timeout: ...
-        _kwargs: ...
+        func_name: name of the function
+        args: ...
+        kwargs: ...
     """
-    raise RuntimeError('DEV ERROR: Need to mock m.core.subprocess.eval_cmd!!!')
+    raise RuntimeError(f'DEV ERROR: Need to mock {func_name}!!!')
 
 
-subprocess.check_output = fake_check_output
+def mock(func_name: str):
+    """Assign a function that raises an error if its not mocked."""
+    return partial(needs_mocking, func_name)
+
+
+mio.write_file = mock('mock m.core.rw.write_file')
+subprocess.check_output = mock('m.core.subprocess.eval_cmd')

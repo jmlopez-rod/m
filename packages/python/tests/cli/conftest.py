@@ -25,13 +25,10 @@ def run_cli(
     cmd: str | list[str],
     exit_code: int,
     mocker: MockerFixture,
-) -> Tuple[StringIO, StringIO]:
+) -> Tuple[str, str]:
     std_out = StringIO()
     std_err = StringIO()
     argv = cmd if isinstance(cmd, list) else cmd.split(' ')
-    og_std_err = sys.stderr
-    og_std_out = sys.stdout
-
     mocker.patch.object(sys, 'argv', argv)
     mocker.patch.object(sys, 'stdout', std_out)
     mocker.patch.object(sys, 'stderr', std_err)
@@ -40,26 +37,28 @@ def run_cli(
     with pytest.raises(SystemExit) as prog_block:
         prog = prog_block
         main()
+    # Would be nice to be able to reset via a the mocker
+    sys.stdout = sys.__stdout__
+    sys.stderr = sys.__stderr__
     assert prog is not None
 
     if prog.value.code != exit_code:
         # display the captured stderr to debug
-        print(std_out.getvalue(), file=og_std_out)
-        print(std_err.getvalue(), file=og_std_err)
+        print(std_out.getvalue(), file=sys.stdout)
+        print(std_err.getvalue(), file=sys.stderr)
     assert prog.value.code == exit_code
 
-    return std_out, std_err
+    return std_out.getvalue(), std_err.getvalue()
 
 
 def assert_streams(
-    out: StringIO,
-    err: StringIO,
+    out: str,
+    err: str,
     tcase: TCase,
 ) -> None:
     if tcase.errors:
-        err_str = err.getvalue()
         for error in tcase.errors:
-            assert error in err_str
+            assert error in err
     else:
         expected = (
             cleandoc(tcase.expected)
@@ -67,4 +66,4 @@ def assert_streams(
             else tcase.expected
         )
         expected_str = f'{expected}\n' if tcase.new_line else expected
-        assert out.getvalue() == expected_str
+        assert out == expected_str
