@@ -11,4 +11,5 @@ def fake_check_output(*_popen_args, _timeout=None, **_kwargs):
     """
     raise RuntimeError('DEV ERROR: Need to mock m.core.subprocess.eval_cmd!!!')
 
+
 subprocess.check_output = fake_check_output

@@ -1,36 +1,35 @@
-import inspect
+from m.cli import command, run_main
+from pydantic import BaseModel
 
-from ...utils import run_main
 
+class Arguments(BaseModel):
+    """Display a single word representing the current git status.
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Display a single word representing the current git status.
+    example::
 
-            $ m git status
-            clean
+        $ m git status
+        clean
 
-        Statuses:
+    statuses::
 
-            unknown
-            untracked
-            stash
-            clean
-            ahead
-            behind
-            staged
-            dirty
-            diverged
-            ?
+        unknown
+        untracked
+        stash
+        clean
+        ahead
+        behind
+        staged
+        dirty
+        diverged
+        ?
     """
-    sub_parser.add_parser(
-        'status',
-        help='display the current git status',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
 
 
-def run(_):
+@command(
+    name='status',
+    help='display the current git status',
+    model=Arguments,
+)
+def run():
     from m import git
     return run_main(git.get_status, print)
