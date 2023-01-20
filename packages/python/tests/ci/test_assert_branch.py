@@ -22,7 +22,7 @@ class AssertBranchTest(FpTestCase):
     )
 
     @patch.object(git, 'get_branch')
-    @patch('m.ci.assert_branch.read_config')
+    @patch('m.ci.config.read_config')
     def test_invalid_flow(self, read_config_mock, get_branch_mock):
         config = self.base_config.copy()
         config.workflow = cast(Workflow, 'oops')
@@ -32,7 +32,7 @@ class AssertBranchTest(FpTestCase):
         self.assert_issue(res, 'invalid m workflow')
 
     @patch.object(git, 'get_branch')
-    @patch('m.ci.assert_branch.read_config')
+    @patch('m.ci.config.read_config')
     def test_free_flow(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('master')
         read_config_mock.return_value = Good(self.base_config)
@@ -43,7 +43,7 @@ class AssertBranchTest(FpTestCase):
         )
 
     @patch.object(git, 'get_branch')
-    @patch('m.ci.assert_branch.read_config')
+    @patch('m.ci.config.read_config')
     def test_m_flow(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('master')
         config = self.base_config.copy()
@@ -60,7 +60,7 @@ class AssertBranchTest(FpTestCase):
         self.assert_ok(res)
 
     @patch.object(git, 'get_branch')
-    @patch('m.ci.assert_branch.read_config')
+    @patch('m.ci.config.read_config')
     def test_git_flow(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('develop')
         config = self.base_config.copy()
@@ -81,7 +81,7 @@ class AssertBranchTest(FpTestCase):
         self.assert_ok(res)
 
     @patch.object(git, 'get_branch')
-    @patch('m.ci.assert_branch.read_config')
+    @patch('m.ci.config.read_config')
     def test_m_flow_error(self, read_config_mock, get_branch_mock):
         get_branch_mock.return_value = Good('topic/active-branch')
         config = self.base_config.copy()

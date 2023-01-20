@@ -1,5 +1,4 @@
-from m.cli import command
-from m.cli.utils import run_main
+from m.cli import command, run_main
 from pydantic import BaseModel, Field
 
 
@@ -24,6 +23,5 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from ....npm.clean_tags import clean_tags
-
+    from m.npm.clean_tags import clean_tags
     return run_main(lambda: clean_tags(arg.package_name))

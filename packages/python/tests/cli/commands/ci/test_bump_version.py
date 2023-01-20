@@ -1,7 +1,4 @@
-from typing import Any
-
 import pytest
-from m.core import Bad, Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
 from tests.cli.conftest import assert_streams, run_cli

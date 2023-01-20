@@ -29,6 +29,7 @@ def run_cli(
     std_err = StringIO()
     argv = cmd if isinstance(cmd, list) else cmd.split(' ')
     og_std_err = sys.stderr
+    og_std_out = sys.stdout
 
     mocker.patch.object(sys, 'argv', argv)
     mocker.patch.object(sys, 'stdout', std_out)
@@ -39,7 +40,10 @@ def run_cli(
         prog = prog_block
         main()
     assert prog is not None
+
     if prog.value.code != exit_code:
+        # display the captured stderr to debug
+        print(std_out.getvalue(), file=og_std_out)
         print(std_err.getvalue(), file=og_std_err)
     assert prog.value.code == exit_code
 
