@@ -19,7 +19,8 @@ m/scripts/build/pypi.sh || m message error 'pypi build failure'
 
 # Only publishing to github on every pr and master branch
 npmTag=$(m ci npm_tag "$M_TAG")
-npm publish .stage-github/*.tgz --tag "$npmTag"
+# issues with GITHUB_TOKEN
+# npm publish .stage-github/*.tgz --tag "$npmTag"
 
 # Only on release
 [ "$M_IS_RELEASE" == "True" ] || exit 0
