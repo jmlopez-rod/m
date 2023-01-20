@@ -18,6 +18,7 @@ class TCase(BaseModel):
     eval_cmd_side_effects: list[Any] = []
     exit_code: int = 0
     cleandoc: bool = True
+    new_line: bool = True
 
 
 def run_cli(
@@ -65,4 +66,5 @@ def assert_streams(
             if tcase.cleandoc
             else tcase.expected
         )
-        assert out.getvalue() == f'{expected}\n'
+        expected_str = f'{expected}\n' if tcase.new_line else expected
+        assert out.getvalue() == expected_str
