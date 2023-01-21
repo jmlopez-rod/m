@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from typing import Any, Mapping, Optional
 
+from m.core import http
+
 from ..core import issue, one_of
 from ..core.fp import Good, OneOf
-from ..core.http import fetch_json
 from ..core.issue import Issue
 
 
@@ -20,10 +21,15 @@ def request(
     """  # noqa
     url = f'https://api.github.com{endpoint}'
     headers = {'authorization': f'Bearer {token}'}
-    return fetch_json(url, headers, method, dict_data)
+    return http.fetch_json(url, headers, method, dict_data)
 
 
 def _filter_data(dict_data: Mapping[str, Any]) -> OneOf[Issue, Any]:
+    if dict_data.get('errors'):
+        return issue(
+            'github graphql errors',
+            context={'response': dict_data},
+        )
     if dict_data.get('data'):
         return Good(dict_data['data'])
     return issue(

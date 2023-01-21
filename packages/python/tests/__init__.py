@@ -1,6 +1,7 @@
 import subprocess
-from m.core import rw as mio
 from functools import partial
+
+from m.core import rw as mio
 
 
 def needs_mocking(func_name: str, *args, **kwargs):

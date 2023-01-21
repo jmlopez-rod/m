@@ -68,9 +68,10 @@ def get_build_sha(
         return Good(sha)
     params = ['$owner: String!', '$repo: String!', '$sha: String!']
     params_str = ', '.join(params)
+    commit_query_str = commit_query(include_pr=False, include_author=False)
     query = f'''query ({params_str}) {{
       repository(owner:$owner, name:$repo) {{
-        {commit_query(False, False)}
+        {commit_query_str}
       }}
     }}'''
     variables = {

@@ -52,8 +52,15 @@ def get_latest_release(
     variables = {'owner': owner, 'repo': repo}
     return one_of(
         lambda: [
-            data
+            tag_name
             for res in graphql(token, query, variables)
-            for data in get(res, 'repository.releases.nodes.0.tagName')
+            for releases in get(res, 'repository.releases.nodes')
+            for tag_name in _get_latest_release(releases)
         ],
-    ).flat_map_bad(lambda _: Good('0.0.0'))
+    )
+
+
+def _get_latest_release(releases: list[dict[str, str]]) -> OneOf:
+    if releases:
+        return get(releases[0], 'tagName')
+    return Good('0.0.0')

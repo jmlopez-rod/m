@@ -1,0 +1,22 @@
+{
+  "response": {
+    "data": {
+      "repository": null
+    },
+    "errors": [
+      {
+        "type": "NOT_FOUND",
+        "path": [
+          "repository"
+        ],
+        "locations": [
+          {
+            "line": 2,
+            "column": 7
+          }
+        ],
+        "message": "Could not resolve to a Repository with the name 'fake/hotdog'."
+      }
+    ]
+  }
+}
