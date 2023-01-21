@@ -1,4 +1,4 @@
-n#!/bin/bash
+#!/bin/bash
 set -xeuo pipefail
 
 target=.stage-npmjs

@@ -23,7 +23,8 @@ rm -rf "./$target/src/tests"
 sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" "./$target/setup.py"
 sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" "./$target/src/m/version.py"
 
-(
-  cd "$target"
-  python3 -m build
-)
+# Skipping python build for now - need to provie $M_PY_TAG
+# (
+  # cd "$target"
+  # python3 -m build
+# )
