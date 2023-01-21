@@ -84,6 +84,6 @@ WITH_COL = [
     ),
 ])
 def test_m_message_warn(tcase: TCase, mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, tcase.environ)
+    mocker.patch.dict(os.environ, tcase.environ, clear=True)
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)

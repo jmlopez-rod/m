@@ -16,5 +16,5 @@ ignore =
   WPS224   # Found a comprehension with too many `for` statements
 per-file-ignores =
   # There are multiple `assert`s in tests, we allow them:
-  tests/*.py:S101
+  packages/python/tests/*.py:S101
   packages/python/m/core/fp.py:WPS110

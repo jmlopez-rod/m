@@ -1,106 +1,102 @@
 from typing import cast
-from unittest.mock import patch
 
+import pytest
 from m.core import Issue
 from m.core.http import fetch
+from pytest_mock import MockerFixture
+from tests.conftest import assert_issue, assert_ok
 
-from ..util import FpTestCase
+HOST = 'hotdog.com'
 
 
-class HttpTest(FpTestCase):
+def mock_http_connection(mocker: MockerFixture):
+    """Generate mocks for https, http and response objects.
 
-    @patch('http.client.HTTPSConnection')
-    @patch('http.client.HTTPConnection')
-    @patch('http.client.HTTPResponse')
-    def test_fetch_http(self, mock_res, mock_http, mock_https):
-        response = mock_res.return_value
-        http_inst = mock_http.return_value
-        http_inst.getresponse.return_value = response
-        response.getcode.return_value = 200
-        response.read.return_value = b'content'
-        fetch_result = fetch('http://google.com', {})
-        mock_http.assert_called_once_with('google.com')
-        mock_https.assert_not_called()
-        fetch_content = cast(str, self.assert_ok(fetch_result))
-        self.assertEqual(fetch_content, 'content')
+    Args:
+        mocker: A mocker fixture.
 
-    @patch('http.client.HTTPSConnection')
-    @patch('http.client.HTTPConnection')
-    @patch('http.client.HTTPResponse')
-    def test_fetch_https(self, mock_res, mock_http, mock_https):
-        response = mock_res.return_value
-        https_inst = mock_https.return_value
-        https_inst.getresponse.return_value = response
-        response.getcode.return_value = 200
-        response.read.return_value = b'content'
-        fetch_result = fetch('https://google.com', {})
-        mock_https.assert_called_once_with('google.com')
-        mock_http.assert_not_called()
-        fetch_content = cast(str, self.assert_ok(fetch_result))
-        self.assertEqual(fetch_content, 'content')
+    Returns:
+        A tuple with https, http, response mocks.
+    """
+    https_mock = mocker.patch('http.client.HTTPSConnection')
+    http_mock = mocker.patch('http.client.HTTPConnection')
+    res_mock = mocker.patch('http.client.HTTPResponse')
+    return https_mock, http_mock, res_mock
 
-    @patch('http.client.HTTPSConnection')
-    def test_fetch_response_ex(self, mock_https):
-        http_inst = mock_https.return_value
-        http_inst.getresponse.side_effect = Exception('fail getresponse')
-        fetch_result = fetch('https://google.com', {})
-        self.assert_issue(fetch_result, 'https response failure')
-        ex = cast(Issue, fetch_result.value).cause
-        self.assertIsInstance(ex, Exception)
-        self.assertEqual(str(ex), 'fail getresponse')
 
-    @patch('http.client.HTTPSConnection')
-    def test_fetch_request_ex(self, mock_https):
-        http_inst = mock_https.return_value
-        http_inst.request.side_effect = Exception('fail request')
-        fetch_result = fetch('https://google.com', {})
-        self.assert_issue(fetch_result, 'https request failure')
-        ex = cast(Issue, fetch_result.value).cause
-        self.assertIsInstance(ex, Exception)
-        self.assertEqual(str(ex), 'fail request')
+@pytest.mark.parametrize('protocol', ['http', 'https'])
+def test_http_vs_https_fetch(mocker: MockerFixture, protocol) -> None:
+    https_mock, http_mock, res_mock = mock_http_connection(mocker)
+    response = res_mock.return_value
 
-    @patch('http.client.HTTPSConnection')
-    @patch('http.client.HTTPResponse')
-    def test_fetch_read_ex(self, mock_res, mock_https):
-        response = mock_res.return_value
-        https_inst = mock_https.return_value
-        https_inst.getresponse.return_value = response
-        response.getcode.return_value = 200
-        response.read.side_effect = Exception('fail read')
-        fetch_result = fetch('https://google.com', {})
-        self.assert_issue(fetch_result, 'https read failure')
-        ex = cast(Issue, fetch_result.value).cause
-        self.assertIsInstance(ex, Exception)
-        self.assertEqual(str(ex), 'fail read')
+    in_use_mock = https_mock if protocol == 'https' else http_mock
+    other_mock = http_mock if protocol == 'https' else https_mock
 
-    @patch('http.client.HTTPSConnection')
-    @patch('http.client.HTTPResponse')
-    def test_fetch_https_body(self, mock_res, mock_https):
-        response = mock_res.return_value
-        https_inst = mock_https.return_value
-        https_inst.getresponse.return_value = response
-        response.getcode.return_value = 200
-        response.read.return_value = b'content'
-        fetch_result = fetch('https://google.com', {}, body='{"a":1}')
-        mock_https.assert_called_once_with('google.com')
-        https_inst.request.assert_called_once_with(
-            'GET',
-            '',
-            '{"a":1}',
-            {'user-agent': 'm', 'content-length': '7'},
-        )
-        self.assert_ok(fetch_result)
+    in_use_mock.return_value.getresponse.return_value = response
+    response.getcode.return_value = 200
+    response.read.return_value = b'content'
 
-    @patch('http.client.HTTPSConnection')
-    @patch('http.client.HTTPConnection')
-    @patch('http.client.HTTPResponse')
-    def test_fetch_https_server_err(self, mock_res, mock_http, mock_https):
-        response = mock_res.return_value
-        https_inst = mock_https.return_value
-        https_inst.getresponse.return_value = response
-        response.getcode.return_value = 500
-        response.read.return_value = b'server error'
-        fetch_result = fetch('https://google.com', {})
-        mock_https.assert_called_once_with('google.com')
-        mock_http.assert_not_called()
-        self.assert_issue(fetch_result, 'https request failure (500)')
+    fetch_result = fetch(f'{protocol}://{HOST}', {})
+
+    in_use_mock.assert_called_once_with(HOST)
+    other_mock.assert_not_called()
+
+    fetch_content = cast(str, assert_ok(fetch_result))
+    assert fetch_content == 'content'
+
+
+@pytest.mark.parametrize('tcase', ['getresponse', 'request'])
+def test_http_fail_req_vs_res(mocker: MockerFixture, tcase: str):
+    https_mock, _, _ = mock_http_connection(mocker)
+    http_inst = https_mock.return_value
+    getattr(http_inst, tcase).side_effect = Exception(f'fail {tcase}')
+    fetch_result = fetch(f'https://{HOST}', {})
+    failure_type = 'response' if tcase == 'getresponse' else 'request'
+    assert_issue(fetch_result, f'https {failure_type} failure')
+    ex = cast(Issue, fetch_result.value).cause
+    assert isinstance(ex, Exception)
+    assert str(ex) == f'fail {tcase}'
+
+
+def test_http_fetch_read_fail(mocker: MockerFixture):
+    https_mock, _, res_mock = mock_http_connection(mocker)
+    response = res_mock.return_value
+    https_inst = https_mock.return_value
+    https_inst.getresponse.return_value = response
+    response.getcode.return_value = 200
+    response.read.side_effect = Exception('fail read')
+    fetch_result = fetch(f'https://{HOST}', {})
+    assert_issue(fetch_result, 'https read failure')
+    ex = cast(Issue, fetch_result.value).cause
+    assert isinstance(ex, Exception)
+    assert str(ex) == 'fail read'
+
+
+def test_fetch_https_body(mocker: MockerFixture):
+    https_mock, _, res_mock = mock_http_connection(mocker)
+    response = res_mock.return_value
+    https_inst = https_mock.return_value
+    https_inst.getresponse.return_value = response
+    response.getcode.return_value = 200
+    response.read.return_value = b'content'
+    fetch_result = fetch(f'https://{HOST}', {}, body='{"a":1}')
+    https_mock.assert_called_once_with(HOST)
+    https_inst.request.assert_called_once_with(
+        'GET',
+        '',
+        '{"a":1}',
+        {'user-agent': 'm', 'content-length': '7'},
+    )
+    assert_ok(fetch_result)
+
+
+def test_fetch_https_server_err(mocker: MockerFixture):
+    https_mock, _, res_mock = mock_http_connection(mocker)
+    response = res_mock.return_value
+    https_inst = https_mock.return_value
+    https_inst.getresponse.return_value = response
+    response.getcode.return_value = 500
+    response.read.return_value = b'server error'
+    fetch_result = fetch(f'https://{HOST}', {})
+    https_mock.assert_called_once_with(HOST)
+    assert_issue(fetch_result, 'https request failure (500)')
