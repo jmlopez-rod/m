@@ -9,7 +9,7 @@ def add_parser(sub_parser, raw):
 
         - https://docs.github.com/en/rest/reference/repos#create-a-commit-status
 
-        example:
+        example::
 
             $ m github status \\
                 --owner jmlopez-rod \\
@@ -17,7 +17,7 @@ def add_parser(sub_parser, raw):
                 --sha [sha] \\
                 --context github-check \\
                 --state pending \\
-                --decription 'running checks'
+                --description 'running checks'
     """  # noqa
     parser = sub_parser.add_parser(
         'status',
