@@ -1,0 +1,32 @@
+{
+  "data": {
+    "repository": {
+      "commit": {
+        "message": "COMMIT_MSG",
+        "author": {
+          "name": "Manuel Lopez"
+        },
+        "oid": "5d0a41d34f5b12cfbf42440c7f3d20e5916666e2",
+        "associatedPullRequests": {
+          "nodes": [
+            {
+              "author": {
+                "login": "jmlopez-rod",
+                "avatarUrl": "https://avatars.githubusercontent.com/u/yolo",
+                "email": ""
+              },
+              "number": 34,
+              "title": "PR TITLE",
+              "body": "",
+              "baseRefName": "master",
+              "baseRefOid": "7c1017d38a5081f1987420ef3962f2e9cb592c63",
+              "headRefName": "topic/branch-name",
+              "headRefOid": "a29c161432da5534f58989cbf4d8f8399f70e145",
+              "merged": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}

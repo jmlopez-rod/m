@@ -87,5 +87,5 @@ def run(arg):
         arg.pr,
         arg.file_count,
         arg.include_release,
-        arg.merge_commit,
+        get_sha=arg.merge_commit,
     ))

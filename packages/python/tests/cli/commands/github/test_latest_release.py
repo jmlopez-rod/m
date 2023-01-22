@@ -1,9 +1,17 @@
 import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
+from tests.cli.conftest import TCase as CliTestCase
 from tests.cli.conftest import assert_streams, run_cli
 
-from .conftest import TCase, get_json_fixture
+from .conftest import get_json_fixture
+
+
+class TCase(CliTestCase):
+    """Unit test case for github latests_release."""
+
+    cmd: str = 'm github latest_release --owner fake --repo hotdog'
+    response_file: str
 
 
 @pytest.mark.parametrize('tcase', [

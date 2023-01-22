@@ -1,3 +1,4 @@
+import socket
 import subprocess
 from functools import partial
 
@@ -22,3 +23,12 @@ def mock(func_name: str):
 
 mio.write_file = mock('mock m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
+
+
+class BlockNetwork(socket.socket):
+    def __init__(self, *args, **kwargs):
+        raise Exception("Network call blocked")
+
+
+# making sure that no calls to the internet are done
+socket.socket = BlockNetwork  # type: ignore

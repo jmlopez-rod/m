@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+export DEBUG_HTTP_INCLUDE_BODY=1
+
 coverage run --source packages/python/m -m pytest
 coverage report -m --fail-under 85
 

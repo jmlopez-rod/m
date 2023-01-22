@@ -1,0 +1,37 @@
+{
+  "commit": {
+    "message": "Merge pull request #1 from fake/branch-name - PR TITLE",
+    "author": {
+      "name": "Manuel Lopez",
+      "user": null
+    },
+    "oid": "4538b2a2556efcbdfc1e7df80c4f71ade45f3958"
+  },
+  "pullRequest": {
+    "headRefName": "branch-name",
+    "headRefOid": "08da6a4b626994640c2baea6b227dc3e3822cb7d",
+    "baseRefName": "master",
+    "baseRefOid": "3018cca16ff57b1d21f7fc02912b84debee04ba3",
+    "title": "PR TITLE",
+    "body": "PR BODY",
+    "url": "https://github.com/fake/hotdog/pull/1",
+    "author": {
+      "login": "fake",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/yolo",
+      "email": ""
+    },
+    "files": {
+      "totalCount": 1,
+      "nodes": [
+        {
+          "path": ".editorconfig"
+        }
+      ]
+    },
+    "merged": true,
+    "isDraft": false
+  },
+  "releases": {
+    "nodes": []
+  }
+}

@@ -1,4 +1,5 @@
 import json as builtin_json
+import os
 from dataclasses import dataclass
 from http import client as httplib
 from typing import Any, Mapping, Optional
@@ -52,10 +53,12 @@ def fetch_response(
     protocol, hostname, path = [parts.scheme, parts.netloc, parts.path]
     path = f'{path}?{parts.query}' if parts.query else path
     fetch_headers = {'user-agent': 'm', **headers}
+    ctxt: dict[str, str] = {'url': f'{hostname}{path}'}
     if body:
         fetch_headers['content-length'] = str(len(body))
+        if 'DEBUG_HTTP_INCLUDE_BODY' in os.environ:
+            ctxt['body'] = body
     connection = _get_connection(protocol, hostname)
-    ctxt = {'url': f'{hostname}{path}'}
     # See the next link for explanation disabling WPS440:
     #  https://github.com/wemake-services/wemake-python-styleguide/issues/1416
     try:
