@@ -47,8 +47,7 @@ def add_parser(sub_parser, raw):
 
 
 def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.cli import get_pr_info
+    from m.github.cli import get_pr_info
     return run_main(lambda: get_pr_info(
         arg.token,
         arg.owner,

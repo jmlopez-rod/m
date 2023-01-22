@@ -44,8 +44,7 @@ class TCase(CliTestCase):
 ])
 def test_github_latest_release(tcase: TCase, mocker: MockerFixture) -> None:
     fetch_json = mocker.patch('m.core.http.fetch_json')
-    if tcase.response_file != 'skip':
-        fetch_json.side_effect = [Good(get_json_fixture(tcase.response_file))]
+    fetch_json.side_effect = [Good(get_json_fixture(tcase.response_file))]
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
 
