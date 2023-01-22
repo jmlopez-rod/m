@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
@@ -10,7 +12,7 @@ from .conftest import get_json_fixture
 class TCase(CliTestCase):
     """Unit test case for github latests_release."""
 
-    cmd: str = 'm github latest_release --owner fake --repo hotdog'
+    cmd: str | list[str] = 'm github latest_release --owner fake --repo hotdog'
     response_file: str
 
 
@@ -41,8 +43,21 @@ class TCase(CliTestCase):
     ),
 ])
 def test_github_latest_release(tcase: TCase, mocker: MockerFixture) -> None:
-    tcase.cmd = 'm github latest_release --owner fake --repo hotdog'
     fetch_json = mocker.patch('m.core.http.fetch_json')
-    fetch_json.side_effect = [Good(get_json_fixture(tcase.response_file))]
+    if tcase.response_file != 'skip':
+        fetch_json.side_effect = [Good(get_json_fixture(tcase.response_file))]
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
+
+
+def test_github_latest_release_access(mocker: MockerFixture) -> None:
+    mocker.patch.dict(os.environ, {}, clear=True)
+    cmd=[
+        'm', 'github',
+        '--token', '',
+        'latest_release',
+        '--owner', 'fake',
+        '--repo', 'hotdog',
+    ]
+    _, std_err = run_cli(cmd, 2, mocker)
+    assert 'argument -t/--token: empty value not allowed' in std_err
