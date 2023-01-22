@@ -29,6 +29,39 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
             'key lookup failure: `a.b.d.0`',
         ],
         exit_code=1,
+    ),
+    TCase(
+        cmd=[
+            'm',
+            'jsonq',
+            '{"a":{"b":{"c":["hello"] } } }',
+            'a.b.c.1',
+        ],
+        errors=[
+            'multi_get key retrieval failure',
+            '`a.b.c` is not a dict',
+        ],
+        exit_code=1,
+    ),
+    TCase(
+        cmd=[
+            'm',
+            'jsonq',
+            '--warn',
+            '{"a":{"b":{"c":["hello"] } } }',
+            'a.b.c.1',
+        ],
+        exit_code=1,
+        errors=['warn']
+    ),
+    TCase(
+        cmd=[
+            'm',
+            'jsonq',
+            '[null, true, false, { }]',
+            '0', '1', '3'
+        ],
+        expected='null\ntrue\n{}'
     )
 ])
 def test_m_jsonq(tcase: TCase, mocker: MockerFixture) -> None:

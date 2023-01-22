@@ -8,7 +8,7 @@ from typing import Mapping as Map
 from typing import Optional, Union, cast
 
 from .fp import Good, OneOf
-from .io import CITool
+from .io import get_ci_tool
 from .issue import Issue
 from .one_of import issue
 
@@ -72,7 +72,11 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
             if not isinstance(current, Mapping):
                 context = pth or current
                 return issue(f'`{context}` is not a dict')
-            return issue(f'{pth} resulted in an error', cause=ex)
+            # catch unknown issue
+            return issue(  # pragma: no cover
+                f'{pth} resulted in an error',
+                cause=ex,
+            )
     return Good(current)
 
 
@@ -111,7 +115,7 @@ def multi_get(
 def _to_str(obj):
     if isinstance(obj, bool):
         return f'{obj}'.lower()
-    if not obj:
+    if obj is None:
         return 'null'
     return f'{obj}'
 
@@ -127,13 +131,14 @@ def jsonq(
     Returns 0 if all the keys are available. Returns non-zero if there
     are problems.
     """
+    tool = get_ci_tool()
     result = multi_get(obj, *key_str)
     if result.is_bad:
         val = cast(Issue, result.value)
         if display_warning:
-            CITool.warn(val.message)
+            tool.warn(val.message)
         else:
-            CITool.error(val.message)
+            tool.error(val.message)
         print(result.value, file=sys.stderr)
         return 1
     values = [_to_str(obj) for obj in cast(List[Any], result.value)]

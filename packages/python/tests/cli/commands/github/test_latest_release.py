@@ -52,7 +52,7 @@ def test_github_latest_release(tcase: TCase, mocker: MockerFixture) -> None:
 
 def test_github_latest_release_access(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {}, clear=True)
-    cmd=[
+    cmd = [
         'm', 'github',
         '--token', '',
         'latest_release',
