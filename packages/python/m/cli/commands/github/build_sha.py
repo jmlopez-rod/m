@@ -9,8 +9,16 @@ def add_parser(sub_parser, raw):
         and we will get the sha of the actual commit we thought we were
         building.
 
-        example:
+        example::
 
+            $ m github build_sha \
+                --owner jmlopez-rod \
+                --repo m \
+                --sha 6bf3a8095891c551043877b922050d5b01d20284
+            fa6a600729ffbe1dfd7fece76ef4566e45fbfe40
+
+        The sha can be obtained in Github by looking at the output of the
+        checkout action.
     """  # noqa
     parser = sub_parser.add_parser(
         'build_sha',
