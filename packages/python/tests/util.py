@@ -1,8 +1,10 @@
 import unittest
+from os import path as pth
 from typing import Any, List, cast
 
 from m.core.fp import OneOf
 from m.core.issue import Issue
+from pytest_mock import MockerFixture
 
 
 def read_fixture(name: str, path: str = 'ci/fixtures') -> str:
@@ -17,6 +19,40 @@ def read_fixture(name: str, path: str = 'ci/fixtures') -> str:
     """
     with open(f'packages/python/tests/{path}/{name}', encoding='UTF-8') as fp:
         return fp.read()
+
+
+def read_fixture_mock(
+    name: str,
+    path: str,
+    mocker: MockerFixture,
+    **kwargs,
+):
+    """Mock the return value of `open`.
+
+    Args:
+        name: The name of the fixture file.
+        path: The directory of the fixture (defaults to ci/fixtures).
+        mocker: The mocker instance.
+        _kwargs: Any other argument that may be passed to the open function.
+
+    Returns:
+        A value to use as a mock for the `open` function.
+    """
+    mock = mocker.mock_open(read_data=read_fixture(name, path))
+    return mock.return_value
+
+
+def file_exists_mock(name: str, path: str) -> bool:
+    """Check if a file exists in the given path.
+
+    Args:
+        name: The name of the fixture file.
+        path: The directory of the fixture.
+
+    Returns:
+        True if it exists.
+    """
+    return pth.exists(f'packages/python/tests/{path}/{name}')
 
 
 def compare_values(test_case, tests: List[Any]) -> None:

@@ -19,6 +19,7 @@ class TCase(BaseModel):
     exit_code: int = 0
     cleandoc: bool = True
     new_line: bool = True
+    std_in: str | None = None
 
 
 def run_cli(

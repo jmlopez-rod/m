@@ -2,6 +2,7 @@ import json
 import sys
 from collections.abc import Mapping
 from contextlib import suppress
+from pathlib import Path
 from typing import Any, List
 from typing import Mapping as Map
 from typing import Optional, Union, cast
@@ -21,7 +22,7 @@ def read_json(
         empty: str = '' if error_if_empty else 'null'
         if filename is None:
             return Good(json.loads(sys.stdin.read() or empty))
-        with open(filename, encoding='UTF-8') as file_handle:
+        with Path.open(Path(filename), encoding='UTF-8') as file_handle:
             return Good(json.loads(file_handle.read() or empty))
     except Exception as ex:
         return issue(
