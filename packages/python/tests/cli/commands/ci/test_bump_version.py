@@ -34,7 +34,7 @@ class TCase(CliTestCase):
     ),
 ])
 def test_m_ci_bump_version(tcase: TCase, mocker: MockerFixture) -> None:
-    eval_cmd = mocker.patch('builtins.input')
-    eval_cmd.side_effect = tcase.input_side_effects
+    input_mock = mocker.patch('builtins.input')
+    input_mock.side_effect = tcase.input_side_effects
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
