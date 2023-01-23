@@ -7,7 +7,7 @@ def add_parser(sub_parser, raw):
     desc = """
         Retrieve the information required for continuous integration.
 
-        example:
+        example::
 
             $ m github ci \\
                 --owner jmlopez-rod \\
@@ -30,7 +30,7 @@ def add_parser(sub_parser, raw):
 
         NOTE: Use the --merge-commit flag if you are providing a sha from
         github actions.
-    """  # noqa
+    """  # noqa: E501
     parser = sub_parser.add_parser(
         'ci',
         help='continuous integration information',
@@ -80,7 +80,7 @@ def add_parser(sub_parser, raw):
 
 def run(arg):
     # pylint: disable=import-outside-toplevel
-    from ....github.ci import CommitInfo, get_raw_ci_run_info
+    from m.github.ci import CommitInfo, get_raw_ci_run_info
     return run_main(lambda: get_raw_ci_run_info(
         arg.token,
         CommitInfo(arg.owner, arg.repo, arg.sha),

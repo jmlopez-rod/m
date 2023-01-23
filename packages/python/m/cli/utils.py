@@ -129,7 +129,7 @@ def run_main(
     callback: Callable[[], OneOf[Issue, Any]],
     handle_result: Callable[[Any], None] = display_result,
     handle_issue: Callable[[Issue], None] = display_issue,
-):
+) -> int:
     """Run the callback and print the returned value as a JSON string. Set the
     print_raw param to True to bypass the JSON stringification. To change how
     the result or an issue should be display then provide the optional

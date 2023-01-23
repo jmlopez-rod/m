@@ -137,8 +137,7 @@ def init_repo() -> OneOf[Issue, int]:
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
-    obra_path = Path('m/m.json').resolve()
-    if obra_path.exists():
+    if Path.exists(Path('m/m.json')):
         CiTool.warn('delete m/m.json to restart the init process.')
         return Good(0)
     return one_of(lambda: [
