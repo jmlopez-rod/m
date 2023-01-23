@@ -63,19 +63,13 @@ def main_parser(
             sub_mod = cast(CmdMap, mod[name])
             for subname in sorted(sub_mod.keys()):
                 run_func = sub_mod[subname].run
-                add_parser = sub_mod[subname].add_parser
                 if params_count(run_func) == 2:
                     run_func(None, subsubp)
-                elif add_parser:
-                    add_parser(subsubp, raw)
         else:
             mod_inst = cast(CommandModule, mod[name])
             run_func = mod_inst.run
-            add_parser = mod_inst.add_parser
             if params_count(run_func) == 2:
                 run_func(None, subp)
-            elif add_parser:
-                add_parser(subp, raw)
     return argp.parse_args()
 
 

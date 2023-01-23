@@ -43,7 +43,6 @@ class CommandModule:
         [ap.Namespace | None, ap._SubParsersAction | None],  # noqa: WPS437
         int,
     ]
-    add_parser: Callable[[Any, Any], None] | None
 
 
 @dataclass

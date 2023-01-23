@@ -10,10 +10,7 @@ def _get_command_module(name: str) -> CommandModule | None:
     cmd_mod = import_module(name).__dict__
     run_func = cmd_mod.get('run')
     if run_func:
-        return CommandModule(
-            run=run_func,
-            add_parser=cmd_mod.get('add_parser'),
-        )
+        return CommandModule(run=run_func)
     return None
 
 
