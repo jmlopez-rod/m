@@ -2,8 +2,8 @@ import os
 from dataclasses import dataclass
 from typing import Any, cast
 
-from m.core.io import CiTool, EnvVars, JsonStr
-from m.core.rw import write_file
+from m.core import rw as mio
+from m.core.io import EnvVars, JsonStr, get_ci_tool
 
 from ..core import Issue, fp, issue, one_of
 from .config import Config, read_config
@@ -23,10 +23,11 @@ class MEnv(JsonStr):
 
 def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
     """Obtain the M Environment object."""
+    ci_tool = get_ci_tool()
     return one_of(lambda: [
         MEnv(config, env_vars, git_env, release_env)
         for config in read_config(m_dir)
-        for env_vars in CiTool.env_vars()
+        for env_vars in ci_tool.env_vars()
         for git_env in get_git_env(config, env_vars)
         for release_env in get_release_env(config, env_vars, git_env)
     ]).flat_map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
@@ -74,5 +75,5 @@ def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
         m_env
         for m_env in get_m_env(m_dir)
         for env_list in _m_env_vars(m_env)
-        for _ in write_file(f'{m_dir}/.m/env.list', env_list)
+        for _ in mio.write_file(f'{m_dir}/.m/env.list', env_list)
     ])

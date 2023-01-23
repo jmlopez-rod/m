@@ -13,7 +13,7 @@ def needs_mocking(func_name: str, *args, **kwargs):
         args: ...
         kwargs: ...
     """
-    raise RuntimeError(f'DEV ERROR: Need to mock {func_name}!!!')
+    raise RuntimeError(f'DEV ERROR: Need to mock {func_name}({args})')
 
 
 def mock(func_name: str):

@@ -1,0 +1,17 @@
+M_DIR=m_dir_local
+M_OWNER=fake
+M_REPO=hotdog
+M_CI=False
+M_WORKFLOW=m_flow
+M_RUN_ID=
+M_RUN_NUMBER=
+M_SHA=abc123
+M_BRANCH=master
+M_TARGET_BRANCH=master
+M_ASSOCIATED_PR_NUMBER=
+M_PR_BRANCH=
+M_PR_NUMBER=0
+M_TAG=0.0.0-local.abc123
+M_IS_RELEASE=False
+M_IS_RELEASE_PR=False
+M_IS_HOTFIX_PR=False
