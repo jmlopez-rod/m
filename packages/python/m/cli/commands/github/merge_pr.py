@@ -9,13 +9,13 @@ def add_parser(sub_parser, raw):
 
         https://docs.github.com/en/rest/reference/pulls#merge-a-pull-request
 
-        example:
+        example::
 
             $ m github merge_pr \\
                 --owner owner \\
                 --repo repo \\
-                --pr pr_number \\
-                'commit_title' | m json
+                --commit-title 'commit_title' \\
+                99
     """
     parser = sub_parser.add_parser(
         'merge_pr',
