@@ -8,7 +8,7 @@ SINGLE=false
 
 if [ "$SINGLE" = 'false' ]; then
   coverage run --source packages/python/m -m pytest
-  coverage report -m --fail-under 90
+  coverage report -m --fail-under 92
 else
 # To run specific tests:
 # python -m unittest discover -s packages/python -v -k tests.cli.commands.test_json.CliJsonTest
