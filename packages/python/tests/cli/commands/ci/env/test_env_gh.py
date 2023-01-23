@@ -20,6 +20,7 @@ def _get_fixture(name: str):
 def get_json_fixture(name: str) -> Any:
     return json.loads(_get_fixture(name))
 
+
 GH_ENV = {
     'DEBUG_HTTP_INCLUDE_BODY': '1',
     'GITHUB_ACTIONS': 'true',

@@ -1,31 +1,36 @@
-from m.cli.utils import run_main
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
 
-def add_parser(sub_parser, raw):
-    parser = sub_parser.add_parser(
-        'release_setup',
-        help='modify the config and changelog files',
-        formatter_class=raw,
-        description='Update the config and changelog files',
-    )
-    add = parser.add_argument
-    add(
-        '--changelog',
-        type=str,
+class Arguments(BaseModel):
+    """Update the config and changelog files."""
+
+    changelog: str = Field(
         default='CHANGELOG.md',
-        help='CHANGELOG filename',
+        description='CHANGELOG filename',
     )
-    add(
-        '--m_file',
-        type=str,
+    m_file: str = Field(
         default='m.json',
-        help='m file name (defaults to m.json)',
+        description='m file name',
     )
-    add('m_dir', type=str, help='m project directory')
-    add('new_ver', type=str, help='the new version')
+    m_dir: str = Field(
+        description='m project directory',
+        positional=True,
+        required=True,
+    )
+    new_ver: str = Field(
+        description='the new version',
+        positional=True,
+        required=True,
+    )
 
 
-def run(arg):
+@command(
+    name='release_setup',
+    help='modify the config and changelog files',
+    model=Arguments,
+)
+def run(arg: Arguments) -> int:
     from m.ci.release_setup import release_setup
     return run_main(
         lambda: release_setup(

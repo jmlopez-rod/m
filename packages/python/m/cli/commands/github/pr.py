@@ -1,55 +1,52 @@
-import inspect
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Retrieve a pull request information.
+class Arguments(BaseModel):
+    """Retrieve a pull request information.
 
-        example:
+    example::
 
-            $ m github pr --owner microsoft --repo typescript 44710 | m json
-            {
-              "headRefName": "ReduceExceptions",
-              "headRefOid": "d9ae52cf49732a2d45b6cb7f4069205c88af39eb",
-              "baseRefName": "main",
-              "baseRefOid": "6452cfbad0afcc6d09b75e0a1e32da1d07e0b7ca",
-              "title": "Reduce exceptions",
-              "body": "...
+        $ m github pr --owner microsoft --repo typescript 44710 | m json
+        {
+            "headRefName": "ReduceExceptions",
+            "headRefOid": "d9ae52cf49732a2d45b6cb7f4069205c88af39eb",
+            "baseRefName": "main",
+            "baseRefOid": "6452cfbad0afcc6d09b75e0a1e32da1d07e0b7ca",
+            "title": "Reduce exceptions",
+            "body": "...
     """
-    parser = sub_parser.add_parser(
-        'pr',
-        help='get information on a pull request',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
-        type=str,
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
-        type=str,
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
-    add(
-        '--files',
-        type=int,
+    files: int = Field(
         default=10,
-        help='max number of files to retrieve (default: 10)',
+        description='max number of files to retrieve',
     )
-    add('pr_number', type=int, help='pull request number')
+    pr_number: int = Field(
+        description='the pr number',
+        positional=True,
+        required=True,
+    )
 
 
-def run(arg):
+@command(
+    name='pr',
+    help='get information on a pull request',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
     from m.github.cli import get_pr_info
     return run_main(lambda: get_pr_info(
-        arg.token,
+        arg_ns.token,
         arg.owner,
         arg.repo,
         arg.pr_number,

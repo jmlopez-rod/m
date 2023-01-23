@@ -136,8 +136,10 @@ def commit_status(
     owner: str,
     repo: str,
     sha_info: GithubShaStatus,
-):
-    """Set a status for a sha. The valid states are:
+) -> OneOf[Issue, Any]:
+    """Set a status for a sha.
+
+    The valid states are:
 
     - pending
     - success

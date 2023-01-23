@@ -1,18 +1,22 @@
-from ...utils import run_main
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
 
-def add_parser(sub_parser, raw):
-    parser = sub_parser.add_parser(
-        'env',
-        help='create a list of env variables',
-        formatter_class=raw,
-        description='Create the [m_dir]/.m/env.list file',
+class Arguments(BaseModel):
+    """Create the [m_dir]/.m/env.list file."""
+
+    m_dir: str = Field(
+        description='m project directory',
+        positional=True,
+        required=True,
     )
-    add = parser.add_argument
-    add('m_dir', type=str, help='m project directory')
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
+@command(
+    name='env',
+    help='create a list of env variables',
+    model=Arguments,
+)
+def run(arg: Arguments) -> int:
     from m.ci.m_env import write_m_env_vars
     return run_main(lambda: write_m_env_vars(arg.m_dir))
