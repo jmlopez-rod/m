@@ -22,7 +22,7 @@ def mock(func_name: str):
     return partial(needs_mocking, func_name)
 
 
-mio.write_file = mock('mock m.core.rw.write_file')
+mio.write_file = mock('m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
 Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
 

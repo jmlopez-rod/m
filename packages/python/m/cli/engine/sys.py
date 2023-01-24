@@ -14,15 +14,12 @@ def _get_command_module(name: str) -> CommandModule | None:
     return None
 
 
-def _get_meta_module(name: str) -> MetaModule | None:
+def _get_meta_module(name: str) -> MetaModule:
     meta_mod = import_module(name).__dict__
-    meta_obj = meta_mod.get('meta')
-    if meta_obj:
-        return MetaModule(
-            meta=meta_obj,
-            add_arguments=meta_mod.get('add_arguments'),
-        )
-    return None
+    return MetaModule(
+        meta=meta_mod['meta'],
+        add_arguments=meta_mod.get('add_arguments'),
+    )
 
 
 def get_command_modules(root: str, commands_module: str) -> CmdMap:
@@ -72,16 +69,12 @@ def get_cli_command_modules(file_path: str) -> Tuple[NestedCmdMap, MetaMap]:
     meta: MetaMap = {}
     for key, cmd_mod in root_cmd.items():
         mod[key] = cmd_mod
-    meta_mod = _get_meta_module(f'{cli_root}.commands')
-    if meta_mod:
-        meta['_root'] = meta_mod
+    meta['_root'] = _get_meta_module(f'{cli_root}.commands')
     subcommands = list(iglob(f'{root}/cli/commands/*'))
     for cmd_name in subcommands:
         if cmd_name.endswith('.py') or cmd_name.endswith('__'):
             continue
         name = pth.split(cmd_name)[1]
         mod[name] = get_command_modules(root, f'{cli_root}.commands.{name}')
-        meta_mod = _get_meta_module(f'{cli_root}.commands.{name}')
-        if meta_mod:
-            meta[name] = meta_mod
+        meta[name] = _get_meta_module(f'{cli_root}.commands.{name}')
     return mod, meta

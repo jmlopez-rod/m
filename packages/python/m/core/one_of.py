@@ -44,13 +44,17 @@ def one_of(comp: Callable[[], List[G]]) -> OneOf[Any, G]:
     Returns:
         A `OneOf` with the value returned from `comp`.
     """
+    res = None
     try:
         res = comp()
-        return Good(res[0])
     except StopBadIteration as ex:
         return cast(Bad, ex.bad)
     except Exception as ex:
         return issue('one_of caught exception', cause=ex)
+    if res:
+        return Good(res[0])
+    # LOOK AT ME - you may be here because a mock is not returning a OneOf.
+    return issue('one_of empty response - iteration missing a OneOf')
 
 
 def to_one_of(

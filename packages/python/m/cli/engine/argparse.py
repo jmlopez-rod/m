@@ -55,7 +55,11 @@ def _run_wrapper(
         len_run_params = params_count(run_func)
         args = [opt, arg][:len_run_params]
         return run_func(*args)
-    raise NotImplementedError('m dev error: provide either arg or parser')
+    # Should not be reachable during a normal run - only checking
+    # to make sure we provide at least one argument.
+    raise NotImplementedError(  # pragma: no cover
+        'm dev error: provide either arg or parser',
+    )
 
 
 def _handle_decorated_func(cmd_inputs: CommandInputs, func: Callable):
