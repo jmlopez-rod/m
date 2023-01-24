@@ -1,11 +1,10 @@
-import os
 import re
 from inspect import cleandoc as cdoc
 from pathlib import Path
 from typing import List, Tuple
 
 from m.core import Good, Issue, OneOf, issue, one_of
-from m.core.ci_tools import Message, get_ci_tool
+from m.core.ci_tools import get_ci_tool
 from m.core.rw import read_file, write_file
 from m.core.subprocess import eval_cmd
 from m.git import get_remote_url
@@ -69,8 +68,9 @@ def create_m_config() -> OneOf[Issue, int]:
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
-    if not os.path.exists('m'):
-        os.makedirs('m')
+    m_dir = Path('m')
+    if not Path.exists(m_dir):
+        Path.mkdir(m_dir, parents=True)
     return one_of(lambda: [
         0
         for owner, repo in get_repo_info()
@@ -138,8 +138,7 @@ def init_repo() -> OneOf[Issue, int]:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
     if Path.exists(Path('m/m.json')):
-        msg = Message(message='delete m/m.json to restart the init process.')
-        get_ci_tool().warn(msg)
+        get_ci_tool().warn('delete m/m.json to restart the init process.')
         return Good(0)
     return one_of(lambda: [
         0

@@ -6,6 +6,10 @@ from m.core.io import renv_vars
 
 from ..types import EnvVars, Message, ProviderModule
 
+# Do not use outside of module. This is done here to avoid
+# disabling a flake8 for every ci tool method.
+_print = print
+
 
 def env_vars() -> OneOf[Issue, EnvVars]:
     """Read the environment variables from Github Actions."""
@@ -53,7 +57,7 @@ def open_block(name: str, _description: str) -> None:
         name: The name of the block to open.
         _description: Not supported.
     """
-    print(f'::group::{name}')
+    _print(f'::group::{name}')
 
 
 def close_block(_name: str) -> None:
@@ -65,10 +69,10 @@ def close_block(_name: str) -> None:
     Args:
         _name: Has no effect.
     """
-    print('::endgroup::')
+    _print('::endgroup::')
 
 
-def error(msg: Message) -> None:
+def error(msg: Message | str) -> None:
     """Print an error message.
 
     https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
@@ -76,6 +80,9 @@ def error(msg: Message) -> None:
     Args:
         msg: The message to display.
     """
+    if isinstance(msg, str):
+        _print(f'::error::{msg}', file=sys.stderr)
+        return
     stream = msg.stream or sys.stderr
     file_entry = f'file={msg.file}' if msg.file else ''
     line_entry = f'line={msg.line}' if msg.line else ''
@@ -83,10 +90,10 @@ def error(msg: Message) -> None:
     parts = [x for x in (file_entry, line_entry, col_entry) if x]
     loc = ','.join(parts)
     info = f' {loc}' if loc else ''
-    print(f'::error{info}::{msg.message}', file=stream)
+    _print(f'::error{info}::{msg.message}', file=stream)
 
 
-def warn(msg: Message) -> None:
+def warn(msg: Message | str) -> None:
     """Print an warning message.
 
     https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
@@ -94,6 +101,9 @@ def warn(msg: Message) -> None:
     Args:
         msg: The message to display.
     """
+    if isinstance(msg, str):
+        _print(f'::warning::{msg}', file=sys.stderr)
+        return
     stream = msg.stream or sys.stderr
     file_entry = f'file={msg.file}' if msg.file else ''
     line_entry = f'line={msg.line}' if msg.line else ''
@@ -101,7 +111,7 @@ def warn(msg: Message) -> None:
     parts = [x for x in (file_entry, line_entry, col_entry) if x]
     loc = ','.join(parts)
     info = f' {loc}' if loc else ''
-    print(f'::warning{info}::{msg.message}', file=stream)
+    _print(f'::warning{info}::{msg.message}', file=stream)
 
 
 tool = ProviderModule(

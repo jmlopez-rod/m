@@ -27,7 +27,10 @@ class Message(BaseModel):
 
     message: str = Field(description='message to display')
     title: str | None = Field(default=None, description='custom title')
-    file: str | None = Field(default=None, description='filename')
+    file: str | None = Field(  # noqa: WPS110 - required by Github
+        default=None,
+        description='filename',
+    )
     line: str | None = Field(
         default=None,
         description='line number, starting at 1',
@@ -56,5 +59,5 @@ class ProviderModule:
     env_vars: Callable[[], OneOf[Issue, EnvVars]]
     open_block: Callable[[str, str], None]
     close_block: Callable[[str], None]
-    error: Callable[[Message], None]
-    warn: Callable[[Message], None]
+    error: Callable[[Message | str], None]
+    warn: Callable[[Message | str], None]

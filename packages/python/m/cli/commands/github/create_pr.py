@@ -5,7 +5,7 @@ from ...utils import env
 
 
 class Arguments(BaseModel):
-    r"""Create a pull request
+    r"""Create a pull request.
 
     https://docs.github.com/en/rest/reference/pulls#create-a-pull-request
 

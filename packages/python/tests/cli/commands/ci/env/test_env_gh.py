@@ -56,6 +56,7 @@ class TCase(CliTestCase):
 def test_m_ci_env_gh(tcase: TCase, mocker: MockerFixture) -> None:
     # clear env vars to avoid ci tool specific messages
     mocker.patch.dict(os.environ, tcase.env_vars, clear=True)
+    mocker.patch('pathlib.Path.exists').return_value = True
     mocker.patch(
         'pathlib.Path.open',
         partial(

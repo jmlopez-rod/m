@@ -146,7 +146,7 @@ def release_setup(
         changelog: The name of the changelog file (defaults to CHANGELOG.md)
 
     Returns:
-        None if successul, otherwise an issue.
+        None if successful, otherwise an issue.
     """
     return one_of(lambda: [
         None

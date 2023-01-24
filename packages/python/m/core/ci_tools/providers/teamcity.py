@@ -57,7 +57,7 @@ def close_block(name: str) -> None:
     _print(f"##teamcity[blockClosed name='{name}']")
 
 
-def error(msg: Message) -> None:
+def error(msg: Message | str) -> None:
     """Print an error message.
 
     Doing so will make Teamcity abort the job.
@@ -66,6 +66,12 @@ def error(msg: Message) -> None:
     Args:
         msg: The message to display.
     """
+    if isinstance(msg, str):
+        _print(
+            f"##teamcity[buildProblem description='{msg}']",
+            file=sys.stderr,
+        )
+        return
     stream = msg.stream or sys.stderr
     parts = [x for x in [msg.file, msg.line, msg.col] if x]
     loc = ':'.join(parts)
@@ -77,7 +83,7 @@ def error(msg: Message) -> None:
     )
 
 
-def warn(msg: Message) -> None:
+def warn(msg: Message | str) -> None:
     """Print an warning message to Teamcity.
 
     Supports file, line and col properties of Message.
@@ -85,6 +91,12 @@ def warn(msg: Message) -> None:
     Args:
         msg: The message to display.
     """
+    if isinstance(msg, str):
+        print(
+            f"##teamcity[message status='WARNING' text='{msg}']",
+            file=sys.stderr,
+        )
+        return
     stream = msg.stream or sys.stderr
     parts = [x for x in [msg.file, msg.line, msg.col] if x]
     loc = ':'.join(parts)

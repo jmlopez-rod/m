@@ -31,9 +31,11 @@ class TCase(CliTestCase):
         m_list_contents='m_dir_local/m_expected.list',
     ),
 ])
-def test_m_ci_env(tcase: TCase, mocker: MockerFixture) -> None:
+def test_m_ci_env_local(tcase: TCase, mocker: MockerFixture) -> None:
     # clear env vars to avoid ci tool specific messages
     mocker.patch.dict(os.environ, {}, clear=True)
+    mocker.patch('pathlib.Path.exists').return_value = False
+    mocker.patch('pathlib.Path.mkdir')
     mocker.patch(
         'pathlib.Path.open',
         partial(

@@ -7,7 +7,7 @@ from typing import Any, List
 from typing import Mapping as Map
 from typing import Optional, Union, cast
 
-from .ci_tools import Message, get_ci_tool
+from .ci_tools import get_ci_tool
 from .fp import Good, OneOf
 from .issue import Issue
 from .one_of import issue
@@ -135,11 +135,10 @@ def jsonq(
     result = multi_get(obj, *key_str)
     if result.is_bad:
         val = cast(Issue, result.value)
-        msg = Message(message=val.message)
         if display_warning:
-            tool.warn(msg)
+            tool.warn(val.message)
         else:
-            tool.error(msg)
+            tool.error(val.message)
         print(result.value, file=sys.stderr)
         return 1
     values = [_to_str(obj) for obj in cast(List[Any], result.value)]

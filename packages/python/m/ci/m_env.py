@@ -1,5 +1,5 @@
-import os
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, cast
 
 from m.core import rw as mio
@@ -76,9 +76,10 @@ def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
     Returns:
         An issue of the m environment instance.
     """
-    target_dir = f'{m_dir}/.m'
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
+    target_dir = Path(f'{m_dir}/.m')
+
+    if not Path.exists(target_dir):
+        Path.mkdir(target_dir, parents=True)
     return one_of(lambda: [
         m_env
         for m_env in get_m_env(m_dir)

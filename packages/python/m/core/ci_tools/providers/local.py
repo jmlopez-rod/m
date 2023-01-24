@@ -6,6 +6,10 @@ from m import git
 
 from ..types import EnvVars, Message, ProviderModule
 
+# Do not use outside of module. This is done here to avoid
+# disabling a flake8 for every ci tool method.
+_print = print
+
 
 def env_vars() -> OneOf[Issue, EnvVars]:
     """Obtain basic environment variables in a local environment."""
@@ -28,7 +32,7 @@ def open_block(name: str, description: str) -> None:
         name: Name of the block.
         description: The block description.
     """
-    print(f'{name}: {description}')
+    _print(f'{name}: {description}')
 
 
 def close_block(_name: str) -> None:
@@ -37,10 +41,10 @@ def close_block(_name: str) -> None:
     Args:
         _name: The name of the block to close.
     """
-    print('')
+    _print('')
 
 
-def error(msg: Message) -> None:
+def error(msg: Message | str) -> None:
     """Print an error message.
 
     Supports file, line and col properties of Message.
@@ -48,14 +52,17 @@ def error(msg: Message) -> None:
     Args:
         msg: The message to display.
     """
+    if isinstance(msg, str):
+        _print(f'error: {msg}', file=sys.stderr)
+        return
     stream = msg.stream or sys.stderr
     parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
     info = f'[{loc}]' if loc else ''
-    print(f'error{info}: {msg.message}', file=stream or sys.stderr)
+    _print(f'error{info}: {msg.message}', file=stream or sys.stderr)
 
 
-def warn(msg: Message) -> None:
+def warn(msg: Message | str) -> None:
     """Print an warning message.
 
     Supports file, line and col properties of Message.
@@ -63,11 +70,14 @@ def warn(msg: Message) -> None:
     Args:
         msg: The message to display.
     """
+    if isinstance(msg, str):
+        _print(f'warn: {msg}', file=sys.stderr)
+        return
     stream = msg.stream or sys.stderr
     parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
     info = f'[{loc}]' if loc else ''
-    print(f'warn{info}: {msg.message}', file=stream)
+    _print(f'warn{info}: {msg.message}', file=stream)
 
 
 tool = ProviderModule(

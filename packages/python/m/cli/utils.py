@@ -3,7 +3,7 @@ import json
 import sys
 from typing import Any, Callable, Optional, cast
 
-from m.core.ci_tools import Message, error_block, get_ci_tool
+from m.core.ci_tools import error_block, get_ci_tool
 
 from ..core.fp import OneOf
 from ..core.io import env
@@ -107,7 +107,7 @@ def run_cli(
 
 def display_issue(issue: Issue) -> None:
     """print an error message."""
-    get_ci_tool().error(Message(message=issue.message))
+    get_ci_tool().error(issue.message)
     error_block(str(issue))
 
 
@@ -154,7 +154,7 @@ def run_main(
 
 def error(msg: str, issue: Optional[Issue] = None) -> int:
     """print an error message."""
-    get_ci_tool().error(Message(message=msg))
+    get_ci_tool().error(msg)
     if issue:
         error_block(str(issue))
     return 1

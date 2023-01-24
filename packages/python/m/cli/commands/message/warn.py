@@ -16,7 +16,7 @@ class Arguments(BaseModel):
         positional=True,
         required=True,
     )
-    file: str | None = Field(
+    file: str | None = Field(  # noqa: WPS110 - required by Github
         aliases=['f', 'file'],
         description='filename where warning occurred',
     )
