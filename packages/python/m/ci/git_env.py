@@ -1,12 +1,11 @@
 import re
-from dataclasses import dataclass
 from typing import List, Optional, cast
 
 from m.core.ci_tools import EnvVars
+from pydantic import BaseModel
 
 from ..core import Issue, issue
 from ..core.fp import Good, OneOf
-from ..core.io import JsonStr
 from ..github.ci import (
     Commit,
     CommitInfo,
@@ -52,8 +51,7 @@ def get_hotfix_prefix(config: Config) -> Optional[str]:
     return None
 
 
-@dataclass
-class GitEnv(JsonStr):
+class GitEnv(BaseModel):
     """Object to store the git configuration."""
 
     sha: str
@@ -208,7 +206,7 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
     """
     branch = _remove_strings(env_vars.git_branch, ['refs/heads/', 'heads/'])
     sha = env_vars.git_sha
-    git_env = GitEnv(sha, branch, branch)
+    git_env = GitEnv(sha=sha, branch=branch, target_branch=branch)
 
     # quick exit for local environment
     if not env_vars.ci_env:

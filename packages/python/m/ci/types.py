@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Mapping
 
+from pydantic import BaseModel
+
 from ..core import Good, Issue, OneOf, issue
-from ..core.io import JsonStr
 
 
 class Branches(Enum):
@@ -39,8 +39,7 @@ class Workflow(Enum):
         return str(self.value)
 
 
-@dataclass
-class GitFlowConfig(JsonStr):
+class GitFlowConfig(BaseModel):
     """An object mapping branches for the git_flow workflow."""
 
     master_branch: str = str(Branches.master)
@@ -49,8 +48,7 @@ class GitFlowConfig(JsonStr):
     hotfix_prefix: str = str(Branches.hotfix)
 
 
-@dataclass
-class MFlowConfig(JsonStr):
+class MFlowConfig(BaseModel):
     """An object mapping branches for the m_flow workflow."""
 
     master_branch: str = str(Branches.master)

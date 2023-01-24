@@ -1,10 +1,9 @@
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
 from m.core import rw as mio
 from m.core.ci_tools import EnvVars, get_ci_tool
-from m.core.io import JsonStr
+from pydantic import BaseModel
 
 from ..core import Issue, fp, issue, one_of
 from .config import Config, read_config
@@ -12,8 +11,7 @@ from .git_env import GitEnv, get_git_env
 from .release_env import ReleaseEnv, get_release_env
 
 
-@dataclass
-class MEnv(JsonStr):
+class MEnv(BaseModel):
     """Contains all the information required for a CI run."""
 
     config: Config
@@ -26,7 +24,7 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
     """Obtain the M Environment object."""
     ci_tool = get_ci_tool()
     return one_of(lambda: [
-        MEnv(config, env_vars, git_env, release_env)
+        MEnv(config=config, env_vars=env_vars, git_env=git_env, release_env=release_env)
         for config in read_config(m_dir)
         for env_vars in ci_tool.env_vars()
         for git_env in get_git_env(config, env_vars)

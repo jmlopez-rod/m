@@ -1,16 +1,13 @@
-import json
 import math
 import os
 import sys
-from enum import Enum
-from typing import Any, List, Union
 
 from . import issue
 from .fp import Good, OneOf
 from .issue import Issue
 
 
-def format_seconds(number_of_seconds: Union[int, float]) -> str:
+def format_seconds(number_of_seconds: int | float) -> str:
     """Return a string representing the number of seconds in a friendly
     format: Xd:Xh:Xm:Xs:Xms. """
     milliseconds = int(math.floor(number_of_seconds * 1000))
@@ -62,7 +59,7 @@ def renv(key: str) -> OneOf[Issue, str]:
     return issue(f'missing {key} in env')
 
 
-def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
+def renv_vars(keys: list[str]) -> OneOf[Issue, list[str]]:
     """Require multiple env vars to be defined.
 
     Args:
@@ -71,8 +68,8 @@ def renv_vars(keys: List[str]) -> OneOf[Issue, List[str]]:
     Returns:
         A `OneOf` with the values of the environment variables or an issue.
     """
-    result: List[str] = []
-    missing: List[str] = []
+    result: list[str] = []
+    missing: list[str] = []
     for key in keys:
         value = os.environ.get(key)
         if value is None:
@@ -114,20 +111,3 @@ def prompt_next_version(version: str, release_type: str) -> str:
         if result in options:
             valid = True
     return result
-
-
-def serialize(obj: Any) -> Any:
-    """Return a serializable version of an object."""
-    if isinstance(obj, Enum):
-        return obj.value
-    if hasattr(obj, '__dict__'):
-        return obj.__dict__
-    return f'[Non-Serializable {repr(obj)}]'
-
-
-class JsonStr:
-    """Base class to stringify dataclasses."""
-
-    # pylint: disable=too-few-public-methods
-    def __str__(self) -> str:
-        return json.dumps(self.__dict__, default=serialize)

@@ -1,20 +1,17 @@
-from dataclasses import dataclass
 from typing import List, Optional
 
-from ..core.io import JsonStr
+from pydantic import BaseModel
 
 
-@dataclass
-class Author(JsonStr):
-    """An object representing a commiter."""
+class Author(BaseModel):
+    """An object representing a committer."""
 
     login: str
     avatar_url: str
     email: str
 
 
-@dataclass
-class AssociatedPullRequest(JsonStr):
+class AssociatedPullRequest(BaseModel):
     """Information for commits that are associated with a pull request."""
 
     # pylint: disable=too-many-instance-attributes
@@ -29,8 +26,7 @@ class AssociatedPullRequest(JsonStr):
     body: str
 
 
-@dataclass
-class Commit(JsonStr):
+class Commit(BaseModel):
     """The git commit info."""
 
     author_login: str
@@ -54,8 +50,7 @@ class Commit(JsonStr):
         return self.get_pr_branch().startswith(release_prefix)
 
 
-@dataclass
-class PullRequest(JsonStr):
+class PullRequest(BaseModel):
     """Pull request information."""
 
     # pylint: disable=too-many-instance-attributes
@@ -78,8 +73,7 @@ class PullRequest(JsonStr):
         return self.pr_branch.startswith(release_prefix)
 
 
-@dataclass
-class Release(JsonStr):
+class Release(BaseModel):
     """Github release <==> Git tag."""
 
     name: str
@@ -87,8 +81,7 @@ class Release(JsonStr):
     published_at: str
 
 
-@dataclass
-class GithubCiRunInfo(JsonStr):
+class GithubCiRunInfo(BaseModel):
     """The main information we need for a ci run."""
 
     commit: Commit
@@ -96,8 +89,7 @@ class GithubCiRunInfo(JsonStr):
     release: Optional[Release] = None
 
 
-@dataclass
-class CommitInfo(JsonStr):
+class CommitInfo(BaseModel):
     """A commit can be tracked with the following properties."""
 
     owner: str

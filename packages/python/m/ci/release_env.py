@@ -1,17 +1,14 @@
-from dataclasses import dataclass
-
 from m.core.ci_tools import EnvVars
+from pydantic import BaseModel
 
 from ..core import issue, one_of
 from ..core.fp import Good, OneOf
-from ..core.io import JsonStr
 from ..core.issue import Issue
 from .config import Config, Workflow
 from .git_env import GitEnv
 
 
-@dataclass
-class ReleaseEnv(JsonStr):
+class ReleaseEnv(BaseModel):
     """Object to store the release configuration."""
 
     build_tag: str

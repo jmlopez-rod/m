@@ -67,7 +67,7 @@ def run(arg: Arguments, arg_ns) -> int:
     from m.github.ci import CommitInfo, get_raw_ci_run_info
     return run_main(lambda: get_raw_ci_run_info(
         arg_ns.token,
-        CommitInfo(arg.owner, arg.repo, arg.sha),
+        CommitInfo(owner=arg.owner, repo=arg.repo, sha=arg.sha),
         arg.pr,
         arg.file_count,
         arg.include_release,

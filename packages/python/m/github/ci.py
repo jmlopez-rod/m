@@ -118,9 +118,9 @@ def _get_release(raw: Any) -> OneOf[Issue, Optional[Release]]:
             node = nodes[0]
             return Good(
                 Release(
-                    node['name'],
-                    node['tagName'],
-                    node['publishedAt'],
+                    name=node['name'],
+                    tag_name=node['tagName'],
+                    published_at=node['publishedAt'],
                 ),
             )
     return Good(None)
@@ -204,7 +204,7 @@ def get_ci_run_info(
     )
     return one_of(
         lambda: [
-            GithubCiRunInfo(commit, pr, release)
+            GithubCiRunInfo(commit=commit, pull_request=pr, release=release)
             for raw in raw_res
             for release in _get_release(raw)
             for commit in _get_commit(commit_info.owner, commit_info.repo, raw)

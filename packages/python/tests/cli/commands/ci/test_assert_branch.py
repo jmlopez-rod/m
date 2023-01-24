@@ -60,7 +60,7 @@ class TCase(CliTestCase):
         cmd='m ci assert_branch --type release m',
         config_mock=base_config.copy(
             update={
-                'm_flow': MFlowConfig('prod'),
+                'm_flow': MFlowConfig(master_branch='prod'),
                 'workflow': Workflow.m_flow,
             },
         ),
@@ -80,7 +80,10 @@ class TCase(CliTestCase):
         cmd='m ci assert_branch --type release m',
         config_mock=base_config.copy(
             update={
-                'git_flow': GitFlowConfig('prod', 'dev'),
+                'git_flow': GitFlowConfig(
+                    master_branch='prod',
+                    develop_branch='dev',
+                ),
                 'workflow': Workflow.git_flow,
             },
         ),
@@ -90,7 +93,10 @@ class TCase(CliTestCase):
         cmd='m ci assert_branch --type hotfix m',
         config_mock=base_config.copy(
             update={
-                'git_flow': GitFlowConfig('prod', 'dev'),
+                'git_flow': GitFlowConfig(
+                    master_branch='prod',
+                    develop_branch='dev',
+                ),
                 'workflow': Workflow.git_flow,
             },
         ),
