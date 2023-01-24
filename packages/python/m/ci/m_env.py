@@ -24,7 +24,12 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
     """Obtain the M Environment object."""
     ci_tool = get_ci_tool()
     return one_of(lambda: [
-        MEnv(config=config, env_vars=env_vars, git_env=git_env, release_env=release_env)
+        MEnv(
+            config=config,
+            env_vars=env_vars,
+            git_env=git_env,
+            release_env=release_env,
+        )
         for config in read_config(m_dir)
         for env_vars in ci_tool.env_vars()
         for git_env in get_git_env(config, env_vars)
