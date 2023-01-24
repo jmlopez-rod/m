@@ -36,6 +36,12 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from m.core.io import get_ci_tool
-    get_ci_tool().warn(arg.message, arg.file, arg.line, arg.col)
+    from m.core.ci_tools import Message, get_ci_tool
+    msg = Message(
+        message=arg.message,
+        file=arg.file,
+        line=arg.line,
+        col=arg.col,
+    )
+    get_ci_tool().warn(msg)
     return 0

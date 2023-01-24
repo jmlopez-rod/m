@@ -3,7 +3,8 @@ from dataclasses import dataclass
 from typing import Any, cast
 
 from m.core import rw as mio
-from m.core.io import EnvVars, JsonStr, get_ci_tool
+from m.core.ci_tools import EnvVars, get_ci_tool
+from m.core.io import JsonStr
 
 from ..core import Issue, fp, issue, one_of
 from .config import Config, read_config
@@ -67,7 +68,14 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
 
 
 def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
-    """Write a file with the M environment variables."""
+    """Write a file with the M environment variables.
+
+    Args:
+        m_dir: The directory with the m configuration.
+
+    Returns:
+        An issue of the m environment instance.
+    """
     target_dir = f'{m_dir}/.m'
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List, Tuple
 
 from m.core import Good, Issue, OneOf, issue, one_of
-from m.core.io import CiTool
+from m.core.ci_tools import Message, get_ci_tool
 from m.core.rw import read_file, write_file
 from m.core.subprocess import eval_cmd
 from m.git import get_remote_url
@@ -138,7 +138,8 @@ def init_repo() -> OneOf[Issue, int]:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
     if Path.exists(Path('m/m.json')):
-        CiTool.warn('delete m/m.json to restart the init process.')
+        msg = Message(message='delete m/m.json to restart the init process.')
+        get_ci_tool().warn(msg)
         return Good(0)
     return one_of(lambda: [
         0

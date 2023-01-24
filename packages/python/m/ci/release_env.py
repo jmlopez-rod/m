@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 
+from m.core.ci_tools import EnvVars
+
 from ..core import issue, one_of
 from ..core.fp import Good, OneOf
-from ..core.io import EnvVars, JsonStr
+from ..core.io import JsonStr
 from ..core.issue import Issue
 from .config import Config, Workflow
 from .git_env import GitEnv

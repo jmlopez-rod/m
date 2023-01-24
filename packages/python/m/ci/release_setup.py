@@ -126,7 +126,6 @@ def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
     link = compare_sha_url(config.owner, config.repo, config.version, 'HEAD')
     print(f'\nSetup for version {new_ver} is complete.')
     print(f'Unreleased changes: {link}\n')
-    print('what')
     return Good(0)
 
 

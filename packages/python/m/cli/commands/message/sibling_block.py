@@ -28,7 +28,7 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from m.core.io import get_ci_tool
+    from m.core.ci_tools import get_ci_tool
     tool = get_ci_tool()
     tool.close_block(arg.to_close)
     tool.open_block(arg.name, arg.description)

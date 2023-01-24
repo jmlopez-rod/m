@@ -2,9 +2,11 @@ import re
 from dataclasses import dataclass
 from typing import List, Optional, cast
 
+from m.core.ci_tools import EnvVars
+
 from ..core import Issue, issue
 from ..core.fp import Good, OneOf
-from ..core.io import EnvVars, JsonStr
+from ..core.io import JsonStr
 from ..github.ci import (
     Commit,
     CommitInfo,

@@ -118,10 +118,11 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
+    from m.core.ci_tools import Message, get_ci_tool
+
     from ....ci.celt.core.process import PostProcessor
     from ....ci.celt.core.types import Configuration, ProjectStatus
     from ....ci.celt.post_processor import get_post_processor
-    from ....core.io import CiTool
     from ....core.issue import Issue
 
     config = Configuration(
@@ -150,5 +151,6 @@ def run(arg: Arguments):
     )
     print(output, file=sys.stderr)  # noqa: WPS421
     if project.error_msg:
-        CiTool.error(project.error_msg)
+        msg = Message(message=project.error_msg)
+        get_ci_tool().error(msg)
     return project.status.value
