@@ -21,7 +21,14 @@ class MEnv(BaseModel):
 
 
 def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
-    """Obtain the M Environment object."""
+    """Obtain the M Environment object.
+
+    Args:
+        m_dir: The directory containing the m configuration.
+
+    Returns:
+        The M Environment if it exists otherwise an issue.
+    """
     ci_tool = get_ci_tool()
     return one_of(lambda: [
         MEnv(

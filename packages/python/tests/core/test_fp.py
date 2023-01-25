@@ -2,6 +2,7 @@ import unittest
 
 from m.core import one_of
 from m.core.fp import Bad, Good
+from tests.conftest import assert_issue
 
 from ..util import compare_values
 
@@ -25,3 +26,17 @@ class OneOfTest(unittest.TestCase):
         self.assertIsInstance(right, Good)
         self.assertEqual(left.value, 'error')
         self.assertEqual(right.value, 99)
+
+
+def test_empty_one_of():
+    bad = one_of(lambda: [])
+    assert_issue(bad, 'one_of empty response - iteration missing a OneOf')
+
+
+def test_fp_map():
+    bad = Bad('to the bone').map(lambda _: 'not reachable')
+    assert bad.is_bad
+    assert bad.value == 'to the bone'
+    good = Good('x').map(lambda msg: msg + '^2')
+    assert not good.is_bad
+    assert good.value == 'x^2'

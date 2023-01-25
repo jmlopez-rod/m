@@ -59,5 +59,10 @@ def run(arg: Arguments, arg_ns) -> int:
         arg_ns.token,
         arg.owner,
         arg.repo,
-        GithubPullRequest(arg.title, arg.body, arg.head, arg.base),
+        GithubPullRequest(
+            title=arg.title,
+            body=arg.body,
+            head=arg.head,
+            base=arg.base,
+        ),
     ))

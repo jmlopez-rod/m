@@ -47,11 +47,10 @@ def _verify_version(
 
 
 def _get_master_branch(config: Config) -> str:
+    # to be used if not using the free flow
     if config.uses_git_flow():
         return config.git_flow.master_branch
-    if config.uses_m_flow():
-        return config.m_flow.master_branch
-    return 'master'
+    return config.m_flow.master_branch
 
 
 def _get_develop_branch(config: Config) -> str:
@@ -65,7 +64,16 @@ def get_release_env(
     env_vars: EnvVars,
     git_env: GitEnv,
 ) -> OneOf[Issue, ReleaseEnv]:
-    """Provide the release environment information."""
+    """Provide the release environment information.
+
+    Args:
+        config: The m configuration.
+        env_vars: The environment variables.
+        git_env: The git environment.
+
+    Returns:
+        A `ReleaseEnv` instance.
+    """
     is_release = git_env.is_release(config)
     is_release_pr = git_env.is_release_pr(config)
     is_hotfix_pr = git_env.is_hotfix_pr(config)

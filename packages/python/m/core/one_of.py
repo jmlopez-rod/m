@@ -65,7 +65,7 @@ def to_one_of(
     """Wrap a python call in a `OneOf`.
 
     Args:
-        callback: A lambda function with a simple python statement.py
+        callback: A lambda function with a simple python statement.
         message: An error message in case the statement raises an exception.
         context: Additional error context.
 

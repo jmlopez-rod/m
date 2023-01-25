@@ -4,7 +4,7 @@ from typing import Callable, TypeVar
 
 from pydantic import BaseModel
 
-from .misc import namespace_to_dict, params_count
+from .misc import params_count
 from .parsers import boolean, positional, proxy, standard
 from .types import AnyMap, CommandInputs, FuncArgs
 
@@ -50,7 +50,7 @@ def _run_wrapper(
         add_model(sub_parser, cmd_inputs.model)
         return 0
     if isinstance(arg, argparse.Namespace):
-        arg_dict = namespace_to_dict(arg)
+        arg_dict = arg.__dict__
         opt = cmd_inputs.model.parse_obj(arg_dict)
         len_run_params = params_count(run_func)
         args = [opt, arg][:len_run_params]

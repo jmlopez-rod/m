@@ -1,4 +1,3 @@
-import argparse
 from inspect import signature
 from typing import Any, Callable
 
@@ -16,22 +15,6 @@ def params_count(func: Callable) -> int:
     """
     sig = signature(func)
     return len(sig.parameters)
-
-
-def namespace_to_dict(namespace: argparse.Namespace) -> dict[str, Any]:
-    """Convert a namespace to a dictionary.
-
-    Args:
-        namespace: Namespace instance to convert.
-
-    Returns:
-        A dictionary generated from namespace.
-    """
-    dictionary = namespace.__dict__
-    for (key, arg_value) in dictionary.items():
-        if isinstance(arg_value, argparse.Namespace):
-            dictionary[key] = namespace_to_dict(arg_value)
-    return dictionary
 
 
 def argument_name(name: str) -> str:

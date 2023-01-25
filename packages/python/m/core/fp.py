@@ -78,7 +78,7 @@ class OneOf(Generic[B, G]):
         if not self.is_bad:
             yield self.value
 
-    def map(self, fct):
+    def map(self, fct: Callable[[G], G]) -> 'OneOf':
         """Apply the function to its value if this is a `Good` instance.
 
         Args:
@@ -87,7 +87,7 @@ class OneOf(Generic[B, G]):
         Returns:
             Itself if its a `Bad` otherwise another instance of `Good`.
         """
-        return self if self.is_bad else Good(fct(self.value))
+        return self if self.is_bad else Good(fct(cast(G, self.value)))
 
     def flat_map_bad(self, fct: Callable[[B], 'OneOf']) -> 'OneOf':
         """Apply the input function if this is a `Bad` value.

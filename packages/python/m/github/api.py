@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping, Optional
 
 from m.core import http
+from pydantic import BaseModel
 
 from ..core import issue, one_of
 from ..core.fp import Good, OneOf
@@ -14,10 +15,21 @@ def request(
     method: str = 'GET',
     dict_data: Optional[Any] = None,
 ) -> OneOf[Issue, Any]:
-    """Make an api request to github. See:
+    """Make an api request to github.
 
-    - https://docs.github.com/en/rest/overview/resources-in-the-rest-api
-    - https://docs.github.com/en/rest/overview/endpoints-available-for-github-apps
+    See::
+
+        - https://docs.github.com/en/rest/overview/resources-in-the-rest-api
+        - https://docs.github.com/en/rest/overview/endpoints-available-for-github-apps
+
+    Args:
+        token: A github personal access token.
+        endpoint: A github api endpoint.
+        method: The http method to use. (default 'GET')
+        dict_data: A payload if th method if `POST` or `GET`.
+
+    Returns:
+        A response from Github.
     """  # noqa
     url = f'https://api.github.com{endpoint}'
     headers = {'authorization': f'Bearer {token}'}
@@ -80,8 +92,7 @@ def create_release(
     return request(token, endpoint, 'POST', data)
 
 
-@dataclass
-class GithubPullRequest:
+class GithubPullRequest(BaseModel):
     """Data needed to create a pull request."""
 
     title: str
@@ -98,13 +109,7 @@ def create_pr(
 ) -> OneOf[Issue, Any]:
     """Send a payload to create a pull request in github."""
     endpoint = f'/repos/{owner}/{repo}/pulls'
-    data = {
-        'title': pr_info.title,
-        'body': pr_info.body,
-        'head': pr_info.head,
-        'base': pr_info.base,
-    }
-    return request(token, endpoint, 'POST', data)
+    return request(token, endpoint, 'POST', pr_info.dict())
 
 
 def merge_pr(
@@ -112,7 +117,7 @@ def merge_pr(
     owner: str,
     repo: str,
     pr_number: int,
-    commit_title: Optional[str],
+    commit_title: str | None,
 ) -> OneOf[Issue, Any]:
     """Send a payload to merge a pull request in github."""
     endpoint = f'/repos/{owner}/{repo}/pulls/{pr_number}/merge'

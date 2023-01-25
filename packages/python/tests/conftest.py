@@ -9,8 +9,12 @@ def assert_ok(either: OneOf[Issue, Any]) -> Any:
     return either.value
 
 
-def assert_issue(error: OneOf[Issue, Any], message: str) -> Any:
+def assert_issue(error: OneOf[Issue, Any], message: str | list[str]) -> Any:
     assert error.is_bad is True, 'expecting issue'
     err = cast(Issue, error.value)
-    assert err.message == message
+    if isinstance(message, list):
+        for err_msg in message:
+            assert err_msg in err.message
+    else:
+        assert err.message == message
     return err

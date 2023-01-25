@@ -5,7 +5,7 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any, List
 from typing import Mapping as Map
-from typing import Optional, Union, cast
+from typing import Union, cast
 
 from .ci_tools import get_ci_tool
 from .fp import Good, OneOf
@@ -14,12 +14,20 @@ from .one_of import issue
 
 
 def read_json(
-    filename: Optional[str],
+    filename: str | None,
     error_if_empty: bool = False,
 ) -> OneOf[Issue, Any]:
-    """Return a `Good` containing the parsed contents of the json file."""
+    """Read a json object from a json file.
+
+    Args:
+        filename: The filename to read from, if `None` it reads from stdin.
+        error_if_empty: The json parser may throw an error if `True`.
+
+    Returns:
+        A `Good` containing the parsed contents of the json file.
+    """
+    empty: str = '' if error_if_empty else 'null'
     try:
-        empty: str = '' if error_if_empty else 'null'
         if filename is None:
             return Good(json.loads(sys.stdin.read() or empty))
         with Path.open(Path(filename), encoding='UTF-8') as file_handle:
@@ -33,31 +41,44 @@ def read_json(
 
 
 def parse_json(
-    data: str,
+    json_str: str,
     error_if_empty: bool = False,
 ) -> OneOf[Issue, Any]:
-    """Return a `Good` containing the parsed contents of the json string."""
+    """Parse a string as json.
+
+    Args:
+        json_str: The string to parse.
+        error_if_empty: The json parser may throw an error if `True`.
+
+    Returns:
+        A `Good` containing the parsed contents of the json string.
+    """
     try:
         empty = '' if error_if_empty else 'null'
-        return Good(json.loads(data or empty))
+        return Good(json.loads(json_str or empty))
     except Exception as ex:
         return issue('failed to parse the json data', cause=ex)
 
 
-def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
-    """Return the value based on the `key_str` specified. The following
-    are equivalent:
+def get(dict_inst: Any, key_str: str) -> OneOf[Issue, Any]:
+    """Return the value based on the `key_str` specified.
 
-    ```
-    obj['a']['b']['c'] <=> get(obj, 'a.b.c').value
-    ```
+    The following are equivalent::
 
-    provided that the keys `a`, `b` and `c` are valid. Returns a `Good` if
-    the value we want is available, otherwise it returns a `Bad` with the
-    path that returned `None`.
+        obj['a']['b']['c'] <=> get(obj, 'a.b.c').value
+
+    provided that the keys `a`, `b` and `c` are valid.
+
+    Args:
+        dict_inst: The dictionary instance to query.
+        key_str: A simple query to fetch from the dict_inst.
+
+    Returns:
+        A `Good` if the value we want is available, otherwise it returns a
+        `Bad` with the path that returned `None`.
     """
     keys = key_str.split('.')
-    current = obj
+    current = dict_inst
     for num, key in enumerate(keys):
         new_key: Union[str, int] = key
         with suppress(ValueError):
@@ -81,18 +102,27 @@ def get(obj: Any, key_str: str) -> OneOf[Issue, Any]:
 
 
 def multi_get(
-    obj: object,
+    dict_inst: object,
     *keys: str,
 ) -> OneOf[Issue, List[Any]]:
-    """Call `get` for every input specified by `keys`. It collects the invalid
-    keys and returns an `Issue`.
+    """Call `get` for every input specified by `keys`.
 
-    multi_get(obj, 'a', 'a.b', 'a.b.c')
+    It collects the invalid keys and returns an `Issue`::
+
+        multi_get(obj, 'a', 'a.b', 'a.b.c')
+
+    Args:
+        dict_inst: The dictionary instance to query.
+        keys: The queries to apply.
+
+    Returns:
+        A `Good` with a list of the results if successful, otherwise a `Bad`
+        with the list of failures.
     """
-    result = []
+    result_items = []
     failures = []
     for key in keys:
-        res = get(obj, key)
+        res = get(dict_inst, key)
         if res.is_bad:
             failures.append(
                 Issue(
@@ -102,45 +132,53 @@ def multi_get(
                 ),
             )
         else:
-            result.append(res.value)
+            result_items.append(res.value)
     if failures:
         return issue(
             'multi_get key retrieval failure',
             context=[x.to_dict() for x in failures],
             include_traceback=False,
         )
-    return Good(result)
+    return Good(result_items)
 
 
-def _to_str(obj):
-    if isinstance(obj, bool):
-        return f'{obj}'.lower()
-    if obj is None:
+def _to_str(inst: Any):
+    if isinstance(inst, bool):
+        return f'{inst}'.lower()
+    if inst is None:
         return 'null'
-    return f'{obj}'
+    return f'{inst}'
 
 
 def jsonq(
-    obj: Map[str, Any],
+    dict_inst: Map[str, Any],
     separator: str,
     display_warning: bool,
     *key_str: str,
 ) -> int:
     """Print the values obtained from `multi_get` to stdout.
 
-    Returns 0 if all the keys are available. Returns non-zero if there
-    are problems.
+    Args:
+        dict_inst: The dictionary instance to query.
+        separator: A string to use to separate the results.
+        display_warning: Print a warning if true.
+            The process will still exit with 1 but the ci tool
+            will not exit when it sees the error message.
+        key_str: The queries to apply.
+
+    Returns:
+        0 if all the keys are available, non-zero if there are problems.
     """
     tool = get_ci_tool()
-    result = multi_get(obj, *key_str)
-    if result.is_bad:
-        val = cast(Issue, result.value)
+    either = multi_get(dict_inst, *key_str)
+    if either.is_bad:
+        problem = cast(Issue, either.value)
         if display_warning:
-            tool.warn(val.message)
+            tool.warn(problem.message)
         else:
-            tool.error(val.message)
-        print(result.value, file=sys.stderr)
+            tool.error(problem.message)
+        print(either.value, file=sys.stderr)  # noqa: WPS421
         return 1
-    values = [_to_str(obj) for obj in cast(List[Any], result.value)]
-    print(separator.join(values))
+    strings = [_to_str(res_item) for res_item in cast(List[Any], either.value)]
+    print(separator.join(strings))  # noqa: WPS421 - meant to use on cli
     return 0
