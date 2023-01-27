@@ -2,9 +2,18 @@ import unittest
 
 from m.core import one_of
 from m.core.fp import Bad, Good
+from m.core.one_of import to_one_of
 from tests.conftest import assert_issue
 
 from ..util import compare_values
+
+
+def success_func():
+    print('does nothing')
+
+
+def failure_func():
+    raise Exception('fails')
 
 
 class OneOfTest(unittest.TestCase):
@@ -40,3 +49,11 @@ def test_fp_map():
     good = Good('x').map(lambda msg: msg + '^2')
     assert not good.is_bad
     assert good.value == 'x^2'
+
+
+def test_to_one_of():
+    good = to_one_of(success_func, 'will not fail')
+    assert not good.is_bad
+    assert good.value == 0
+    bad = to_one_of(failure_func, 'failure message', {'data': 'helpful'})
+    assert_issue(bad, 'failure message')

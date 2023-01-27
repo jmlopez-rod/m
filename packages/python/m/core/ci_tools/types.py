@@ -4,24 +4,25 @@ from typing import Callable, Protocol, TextIO
 from m.core import Issue, OneOf
 from pydantic import BaseModel, Field
 
+# The following disables on these next two classes is because we cannot
+# use a simple Callable type:  https://stackoverflow.com/a/68392079
 
-class OpenBlock(Protocol):  # noqa: D101 Meant to be used a a type
-    def __call__(  # noqa: D102 Meant to be used a a type
+
+class OpenBlock(Protocol):  # noqa: D101
+    def __call__(  # noqa: D102,E704
         self,
         name: str,
         description: str,
         stream: TextIO | None = None,
-    ) -> None:
-        ...  # noqa: WPS428 - https://stackoverflow.com/a/68392079
+    ) -> None: ...  # noqa: WPS428
 
 
-class CloseBlock(Protocol):  # noqa: D101 Meant to be used a a type
-    def __call__(  # noqa: D102 Meant to be used a a type
+class CloseBlock(Protocol):  # noqa: D101
+    def __call__(  # noqa: D102,E704
         self,
         name: str,
         stream: TextIO | None = None,
-    ) -> None:
-        ...  # noqa: WPS428 - https://stackoverflow.com/a/68392079
+    ) -> None: ...  # noqa: WPS428
 
 
 class EnvVars(BaseModel):

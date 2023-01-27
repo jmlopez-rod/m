@@ -25,6 +25,20 @@ class TCase(CliTestCase):
         response_files=['build_sha.json'],
         expected='fa6a600729ffbe1dfd7fece76ef4566e45fbfe40'
     ),
+    TCase(
+        cmd=[
+            'm', 'github', 'build_sha',
+            '--owner', 'jmlopez-rod',
+            '--repo', 'unknown-repo',
+            '--sha', 'unknown',
+        ],
+        response_files=['build_sha_error.json'],
+        errors=[
+            'github graphql errors',
+            'some error message'
+        ],
+        exit_code=1,
+    ),
 ])
 def test_github_build_sha(tcase: TCase, mocker: MockerFixture) -> None:
     fetch_json = mocker.patch('m.core.http.fetch_json')
