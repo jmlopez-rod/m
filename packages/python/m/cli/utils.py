@@ -156,7 +156,7 @@ def error(msg: str, issue: Optional[Issue] = None) -> int:
     """print an error message."""
     get_ci_tool().error(msg)
     if issue:
-        error_block(str(issue))
+        error_block(str(issue), sys.stderr)
     return 1
 
 

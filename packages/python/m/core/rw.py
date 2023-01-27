@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from m.core.one_of import Good, Issue, OneOf, issue
 
 
@@ -11,7 +13,7 @@ def read_file(filename: str) -> OneOf[Issue, str]:
         A `Good` containing the contents of the file.
     """
     try:
-        with open(filename, encoding='UTF-8') as fp:
+        with Path.open(Path(filename), encoding='UTF-8') as fp:
             return Good(fp.read())
     except Exception as ex:
         return issue(
@@ -32,7 +34,7 @@ def write_file(filename: str, text: str) -> OneOf[Issue, int]:
         A `Good` containing 0 if the file was written.
     """
     try:
-        with open(filename, 'w', encoding='UTF-8') as fp:
+        with Path.open(Path(filename), 'w', encoding='UTF-8') as fp:
             fp.write(text)
     except Exception as ex:
         return issue(
