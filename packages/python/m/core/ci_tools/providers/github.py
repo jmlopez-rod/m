@@ -1,5 +1,5 @@
 import sys
-from typing import cast
+from typing import TextIO, cast
 
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import renv_vars
@@ -46,7 +46,11 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     ))
 
 
-def open_block(name: str, _description: str) -> None:
+def open_block(
+    name: str,
+    description: str,
+    stream: TextIO | None = None,
+) -> None:
     """Group log lines.
 
     There is no description field and it does not support nesting.
@@ -55,21 +59,25 @@ def open_block(name: str, _description: str) -> None:
 
     Args:
         name: The name of the block to open.
-        _description: Not supported.
+        description: Not supported.
+        stream: Defaults to sys.stdout.
     """
-    _print(f'::group::{name}')
+    # pylint: disable=unused-argument
+    _print(f'::group::{name}', file=stream or sys.stdout)
 
 
-def close_block(_name: str) -> None:
+def close_block(name: str, stream: TextIO | None = None) -> None:
     """Close the current block.
 
     Github Actions does not support nesting blocks, all this does is close
     the current block.
 
     Args:
-        _name: Has no effect.
+        name: Has no effect.
+        stream: Defaults to sys.stdout.
     """
-    _print('::endgroup::')
+    # pylint: disable=unused-argument
+    _print('::endgroup::', file=stream or sys.stdout)
 
 
 def error(msg: Message | str) -> None:

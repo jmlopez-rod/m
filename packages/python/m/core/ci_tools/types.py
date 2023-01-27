@@ -1,8 +1,27 @@
 from dataclasses import dataclass
-from typing import Callable, TextIO
+from typing import Callable, Protocol, TextIO
 
 from m.core import Issue, OneOf
 from pydantic import BaseModel, Field
+
+
+class OpenBlock(Protocol):  # noqa: D101 Meant to be used a a type
+    def __call__(  # noqa: D102 Meant to be used a a type
+        self,
+        name: str,
+        description: str,
+        stream: TextIO | None = None,
+    ) -> None:
+        ...  # noqa: WPS428 - https://stackoverflow.com/a/68392079
+
+
+class CloseBlock(Protocol):  # noqa: D101 Meant to be used a a type
+    def __call__(  # noqa: D102 Meant to be used a a type
+        self,
+        name: str,
+        stream: TextIO | None = None,
+    ) -> None:
+        ...  # noqa: WPS428 - https://stackoverflow.com/a/68392079
 
 
 class EnvVars(BaseModel):
@@ -57,7 +76,7 @@ class ProviderModule:
     """Container to store functions from the providers."""
 
     env_vars: Callable[[], OneOf[Issue, EnvVars]]
-    open_block: Callable[[str, str], None]
-    close_block: Callable[[str], None]
+    open_block: OpenBlock
+    close_block: CloseBlock
     error: Callable[[Message | str], None]
     warn: Callable[[Message | str], None]

@@ -23,4 +23,4 @@ E203       1        0
 E202       1        0
 E201       1        0
 
-error: 5 extra errors were introduced
+::error::5 extra errors were introduced

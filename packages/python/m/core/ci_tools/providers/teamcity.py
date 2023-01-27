@@ -1,4 +1,5 @@
 import sys
+from typing import TextIO
 
 from m.core import Good, Issue, OneOf
 
@@ -35,7 +36,11 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     return Good(EnvVars(ci_env=True))
 
 
-def open_block(name: str, description: str) -> None:
+def open_block(
+    name: str,
+    description: str,
+    stream: TextIO | None = None,
+) -> None:
     """Display the name and description of a block.
 
     https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html#BuildScriptInteractionwithTeamCity-BlocksofServiceMessages
@@ -43,18 +48,23 @@ def open_block(name: str, description: str) -> None:
     Args:
         name: Name of the block.
         description: The block description.
+        stream: Defaults to sys.stdout.
     """
     desc = escape_msg(description)
-    _print(f"##teamcity[blockOpened name='{name}' description='{desc}']")
+    _print(
+        f"##teamcity[blockOpened name='{name}' description='{desc}']",
+        file=stream or sys.stdout,
+    )
 
 
-def close_block(name: str) -> None:
+def close_block(name: str, stream: TextIO | None = None) -> None:
     """Closes a previously defined block.
 
     Args:
         name: The name of the block to close.
+        stream: Defaults to sys.stdout.
     """
-    _print(f"##teamcity[blockClosed name='{name}']")
+    _print(f"##teamcity[blockClosed name='{name}']", file=stream or sys.stdout)
 
 
 def error(msg: Message | str) -> None:

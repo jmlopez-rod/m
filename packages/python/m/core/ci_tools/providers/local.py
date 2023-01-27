@@ -1,4 +1,5 @@
 import sys
+from typing import TextIO
 
 from m.core import Issue, OneOf, one_of
 
@@ -23,7 +24,11 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     )
 
 
-def open_block(name: str, description: str) -> None:
+def open_block(
+    name: str,
+    description: str,
+    stream: TextIO | None = None,
+) -> None:
     """Display the name and description of a block.
 
     Local environments do not support blocks like Github and Teamcity.
@@ -31,17 +36,21 @@ def open_block(name: str, description: str) -> None:
     Args:
         name: Name of the block.
         description: The block description.
+        stream: Defaults to sys.stdout.
     """
-    _print(f'{name}: {description}')
+    desc = f' {description}' if description else ''
+    _print(f'{name}:{desc}', file=stream or sys.stdout)
 
 
-def close_block(_name: str) -> None:
+def close_block(name: str, stream: TextIO | None = None) -> None:
     """Display an empty line to denote the end of a block.
 
     Args:
-        _name: The name of the block to close.
+        name: The name of the block to close.
+        stream: Defaults to sys.stdout.
     """
-    _print('')
+    # pylint: disable=unused-argument
+    _print('', file=stream or sys.stdout)
 
 
 def error(msg: Message | str) -> None:
