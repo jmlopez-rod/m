@@ -66,5 +66,4 @@ def assert_result(
         get_fixture(tcase.changelog),
         changelog_call.args[1]
     )
-    print(actual_diff_cl)
     assert actual_diff_cl == tcase.diff_cl
