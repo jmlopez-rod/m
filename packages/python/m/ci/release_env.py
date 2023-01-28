@@ -1,3 +1,5 @@
+from typing import cast
+
 from m.core.ci_tools import EnvVars
 from pydantic import BaseModel
 
@@ -59,6 +61,35 @@ def _get_develop_branch(config: Config) -> str:
     return 'develop'
 
 
+def _extra_checks(
+    config: Config,
+    git_env: GitEnv,
+    is_release_pr: bool,
+    is_hotfix_pr: bool,
+) -> OneOf[Issue, int]:
+    master_branch = _get_master_branch(config)
+    develop_branch = _get_develop_branch(config)
+    if config.uses_git_flow():
+        if (
+            (is_release_pr or is_hotfix_pr) and
+            git_env.target_branch not in (master_branch, develop_branch)
+        ):
+            return issue(f'??? hotfix and releases prs to {master_branch}')
+        # is_release implies git_env.branch == master_branch
+    if config.uses_m_flow():
+        if (
+            (is_release_pr or is_hotfix_pr) and
+            git_env.target_branch != master_branch
+        ):
+            error_type = 'release' if is_release_pr else 'hotfix'
+            return issue(f'invalid {error_type}-pr', data={
+                'expected_target_branch': master_branch,
+                'current_target_branch': git_env.target_branch,
+            })
+        # is_release being true implies git_env.branch == master_branch
+    return Good(0)
+
+
 def get_release_env(
     config: Config,
     env_vars: EnvVars,
@@ -79,30 +110,15 @@ def get_release_env(
     is_hotfix_pr = git_env.is_hotfix_pr(config)
     gh_latest = git_env.release.tag_name if git_env.release else ''
     if not config.uses_free_flow():
-        master_branch = _get_master_branch(config)
-        develop_branch = _get_develop_branch(config)
-        if config.uses_git_flow():
-            if (
-                (is_release_pr or is_hotfix_pr) and
-                git_env.target_branch not in (master_branch, develop_branch)
-            ):
-                return issue(f'hotfix and releases prs to {master_branch}')
-            if (
-                is_release and
-                git_env.branch not in (master_branch, develop_branch)
-            ):
-                return issue(f'hotfix and releases only on {master_branch}')
-        if config.uses_m_flow():
-            if (
-                is_release_pr and
-                git_env.target_branch != master_branch
-            ):
-                return issue(f'release prs to {master_branch}')
-            if (
-                is_release and
-                git_env.branch != master_branch
-            ):
-                return issue(f'releases only on {master_branch}')
+        check_result = _extra_checks(
+            config,
+            git_env,
+            is_release_pr=is_release_pr,
+            is_hotfix_pr=is_hotfix_pr,
+        )
+        if check_result.is_bad:
+            # casting is done since it contains a bad value.
+            return cast(OneOf[Issue, ReleaseEnv], check_result)
     return one_of(lambda: [
         ReleaseEnv(
             build_tag=build_tag,

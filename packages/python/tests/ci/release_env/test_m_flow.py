@@ -138,6 +138,19 @@ class ReleaseEnvMFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_issue(result, 'version needs to be bumped')
 
+    def test_release_hotfix_pr_wrong_target(self):
+        """Hotfix prs should be done to the master branch."""
+        self.env_vars.ci_env = True
+        self.config.version = '1.1.1'
+        self.env_vars.git_branch = 'refs/pull/2'
+        with patch('m.core.http.fetch') as graphql_mock:
+            graphql_mock.side_effect = [
+                Good(mock_commit_sha('sha')),
+                Good(read_fixture('hotfix-pr-wrong-baseref.json')),
+            ]
+            result = self._get_env()
+            self.assert_issue(result, 'invalid hotfix-pr')
+
     def test_release_pr(self):
         """Make sure that the developer updates the version to be greater than
         the current one in github."""
@@ -159,6 +172,23 @@ class ReleaseEnvMFlowTest(FpTestCase):
                 is_hotfix_pr=False,
                 workflow=Workflow.m_flow
             ))
+
+    def test_release_pr_wrong_target(self):
+        """In case we make a release pr to the wrong target branch.
+        This is also making sure that checking the target branch takes priority
+        over the version bump checking.
+        """
+        self.env_vars.ci_env = True
+        self.config.version = '1.1.1'
+        self.env_vars.git_branch = 'refs/pull/2'
+        self.env_vars.run_id = '404'
+        with patch('m.core.http.fetch') as graphql_mock:
+            graphql_mock.side_effect = [
+                Good(mock_commit_sha('sha')),
+                Good(read_fixture('release-pr-wrong-baseref.json')),
+            ]
+            result = self._get_env()
+            self.assert_issue(result, 'invalid release-pr')
 
     def test_release_merge(self):
         """Should use the proper version number."""
