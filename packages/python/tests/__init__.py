@@ -5,6 +5,9 @@ from pathlib import Path
 
 from m.core import rw as mio
 
+original_write_file = mio.write_file
+original_mkdir = Path.mkdir
+
 
 def needs_mocking(func_name: str, *args, **kwargs):
     """"Raise an exception asking developer to mock a function.
@@ -14,6 +17,8 @@ def needs_mocking(func_name: str, *args, **kwargs):
         args: ...
         kwargs: ...
     """
+    if not args:
+        return original_mkdir(*args, **kwargs)
     raise Exception(f'DEV ERROR: Need to mock {func_name}({args},{kwargs})')
 
 
@@ -22,7 +27,7 @@ def mock(func_name: str):
     return partial(needs_mocking, func_name)
 
 
-original_write_file = mio.write_file
+
 mio.write_file = mock('m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
 Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
