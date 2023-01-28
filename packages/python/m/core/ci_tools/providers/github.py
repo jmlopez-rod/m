@@ -2,7 +2,8 @@ import sys
 from typing import TextIO, cast
 
 from m.core import Issue, OneOf, issue, one_of
-from m.core.io import renv_vars
+from m.core.io import env_model
+from pydantic import BaseModel, Field
 
 from ..types import EnvVars, Message, ProviderModule
 
@@ -11,38 +12,36 @@ from ..types import EnvVars, Message, ProviderModule
 _print = print
 
 
+class GithubEnvVars(BaseModel):
+    """Environment variables required when running in Github."""
+
+    repo: str = Field('GITHUB_REPOSITORY')
+    run_id: str = Field('GITHUB_RUN_ID')
+    run_number: str = Field('GITHUB_RUN_NUMBER')
+    github_token: str = Field('GITHUB_TOKEN')
+    git_branch: str = Field('GITHUB_REF')
+    git_sha: str = Field('GITHUB_SHA')
+    triggered_by: str = Field('GITHUB_ACTOR')
+
+
 def env_vars() -> OneOf[Issue, EnvVars]:
     """Read the environment variables from Github Actions.
 
     Returns:
         An `EnvVars` instance or an Issue.
     """
-    res = EnvVars(
-        ci_env=True,
-        server_url='https://github.com',
-    )
+    server_url = 'https://github.com'
     return one_of(
         lambda: [
-            res
-            for [
-                repo,
-                res.run_id,
-                res.run_number,
-                res.github_token,
-                res.git_branch,
-                res.git_sha,
-                res.triggered_by,
-            ] in renv_vars([
-                'GITHUB_REPOSITORY',
-                'GITHUB_RUN_ID',
-                'GITHUB_RUN_NUMBER',
-                'GITHUB_TOKEN',
-                'GITHUB_REF',
-                'GITHUB_SHA',
-                'GITHUB_ACTOR',
-            ])
-            for res.run_url in (
-                f'{res.server_url}/{repo}/actions/runs/{res.run_id}',
+            EnvVars(
+                **env.dict(),
+                ci_env=True,
+                server_url=server_url,
+                run_url=run_url,
+            )
+            for env in env_model(GithubEnvVars)
+            for run_url in (
+                f'{server_url}/{env.repo}/actions/runs/{env.run_id}',
             )
         ],
     ).flat_map_bad(lambda x: issue(

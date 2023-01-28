@@ -22,6 +22,12 @@ def escape_msg(msg: str) -> str:
     """Escapes characters so Teamcity can print correctly.
 
     https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html#BuildScriptInteractionwithTeamCity-Escapedvalues
+
+    Args:
+        msg: The message to process.
+
+    Returns:
+        A message that can be provided to Teamcity.
     """
     message = msg
     for target, replacement in REPLACEMENTS:
@@ -30,7 +36,11 @@ def escape_msg(msg: str) -> str:
 
 
 def env_vars() -> OneOf[Issue, EnvVars]:
-    """Read basic environment variables from Teamcity."""
+    """Read basic environment variables from Teamcity.
+
+    Returns:
+        An EnvVar instance.
+    """
     # WIP: Need to map other variables here. Not willing to do
     # at the moment since I'm using Github.
     return Good(EnvVars(ci_env=True))
@@ -58,7 +68,7 @@ def open_block(
 
 
 def close_block(name: str, stream: TextIO | None = None) -> None:
-    """Closes a previously defined block.
+    """Close a previously defined block.
 
     Args:
         name: The name of the block to close.
@@ -83,10 +93,10 @@ def error(msg: Message | str) -> None:
         )
         return
     stream = msg.stream or sys.stderr
-    parts = [x for x in [msg.file, msg.line, msg.col] if x]
+    parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
-    info = f'[{loc}]: ' if loc else ''
-    desc = escape_msg(f'{info}{msg.message}' or '')
+    msg_info = f'[{loc}]: ' if loc else ''
+    desc = escape_msg(f'{msg_info}{msg.message}' or '')
     _print(
         f"##teamcity[buildProblem description='{desc}']",
         file=stream,
@@ -102,16 +112,16 @@ def warn(msg: Message | str) -> None:
         msg: The message to display.
     """
     if isinstance(msg, str):
-        print(
+        _print(
             f"##teamcity[message status='WARNING' text='{msg}']",
             file=sys.stderr,
         )
         return
     stream = msg.stream or sys.stderr
-    parts = [x for x in [msg.file, msg.line, msg.col] if x]
+    parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
-    info = f'[{loc}]: ' if loc else ''
-    desc = escape_msg(f'{info}{msg.message}' or '')
+    msg_info = f'[{loc}]: ' if loc else ''
+    desc = escape_msg(f'{msg_info}{msg.message}' or '')
     _print(
         f"##teamcity[message status='WARNING' text='{desc}']",
         file=stream,

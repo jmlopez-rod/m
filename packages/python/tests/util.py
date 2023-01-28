@@ -1,11 +1,12 @@
 import unittest
 from os import path as pth
-from typing import Any, List, cast
+from typing import Any, List, TypeVar, cast
 
 from m.core.fp import OneOf
 from m.core.issue import Issue
 from pytest_mock import MockerFixture
 
+T = TypeVar('T')
 
 def read_fixture(name: str, path: str = 'ci/fixtures') -> str:
     """Read a json file from the given path.
@@ -87,6 +88,6 @@ class FpTestCase(unittest.TestCase):
         self.assertEqual(err.message, message)
         return err
 
-    def assert_ok(self, either: OneOf[Issue, Any]) -> Any:
+    def assert_ok(self, either: OneOf[Issue, T]) -> T:
         self.assertFalse(either.is_bad, 'expecting ok')
-        return either.value
+        return cast(T, either.value)

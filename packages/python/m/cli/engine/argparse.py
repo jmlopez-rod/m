@@ -1,14 +1,12 @@
 import argparse
 from functools import partial
-from typing import Callable, TypeVar
+from typing import Callable
 
 from pydantic import BaseModel
 
 from .misc import params_count
 from .parsers import boolean, positional, proxy, standard
 from .types import AnyMap, CommandInputs, FuncArgs
-
-BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
 
 
 def _parse_field(name: str, field: AnyMap) -> FuncArgs:

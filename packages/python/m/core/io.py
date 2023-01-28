@@ -1,10 +1,12 @@
 import math
 import os
 import sys
+from typing import TypeVar
 
-from . import issue
-from .fp import Good, OneOf
-from .issue import Issue
+from m.core import Good, Issue, OneOf, issue
+from pydantic import BaseModel
+
+BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
 
 
 def format_seconds(number_of_seconds: int | float) -> str:
@@ -59,27 +61,39 @@ def renv(key: str) -> OneOf[Issue, str]:
     return issue(f'missing {key} in env')
 
 
-def renv_vars(keys: list[str]) -> OneOf[Issue, list[str]]:
+def env_model(model: type[BaseModelT]) -> OneOf[Issue, BaseModelT]:
     """Require multiple env vars to be defined.
 
+    This can be done by defining a model::
+
+        class GithubEnvVars(BaseModel):
+            repo: str = Field('GITHUB_REPOSITORY')
+            run_id: str = Field('GITHUB_RUN_ID')
+
+    Then we use it::
+
+        print(env.repo for env in env_model(GithubEnvVars)])
+
     Args:
-        keys: The environment variables required to be defined.
+        model: A pydantic model specifying the environment variables to fetch.
 
     Returns:
         A `OneOf` with the values of the environment variables or an issue.
     """
-    result: list[str] = []
+    schema = model.schema()
     missing: list[str] = []
-    for key in keys:
-        value = os.environ.get(key)
-        if value is None:
-            missing.append(key)
+    env_values: dict[str, str] = {}
+    for name, field in schema['properties'].items():
+        env_name = field.get('default')
+        env_value = os.environ.get(env_name)
+        if env_value is None:
+            missing.append(env_name)
         else:
-            result.append(value)
+            env_values[name] = env_value
     if missing:
-        mstr = ', '.join(missing)
-        return issue(f'missing [{mstr}] in env')
-    return Good(result)
+        missing_str = ', '.join(missing)
+        return issue(f'missing [{missing_str}] in env')
+    return Good(model(**env_values))
 
 
 def _ver_str(major: int, minor: int, patch: int) -> str:
