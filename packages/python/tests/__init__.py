@@ -26,11 +26,15 @@ def mock(func_name: str):
     return partial(needs_mocking, func_name)
 
 
-
 mio.write_file = mock('m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
 
 if not os.environ.get('CI'):
+    # LOOK AT ME!!! If you are running this locally you'll have to
+    # do a first run with this line disabled. Pytest uses mkdir to
+    # create some directories and doing this messes it up. So if its
+    # the first time, disable and then enable. Only doing this so that
+    # we are reminded that during tests we should mock making directories.
     Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
 
 
