@@ -1,7 +1,9 @@
 import re
-from typing import List, Optional, cast
+from typing import cast
 
+from m.ci.versioning import VersionInputs, build_m_tag
 from m.core.ci_tools import EnvVars
+from m.core.maybe import maybe
 from pydantic import BaseModel
 
 from ..core import Issue, issue
@@ -17,7 +19,7 @@ from ..github.ci_dataclasses import GithubCiRunInfo
 from .config import Config
 
 
-def get_release_prefix(config: Config) -> Optional[str]:
+def get_release_prefix(config: Config) -> str | None:
     """Find out the release prefix.
 
     Args:
@@ -34,7 +36,7 @@ def get_release_prefix(config: Config) -> Optional[str]:
     return None
 
 
-def get_hotfix_prefix(config: Config) -> Optional[str]:
+def get_hotfix_prefix(config: Config) -> str | None:
     """Find out the hotfix prefix.
 
     Args:
@@ -57,9 +59,9 @@ class GitEnv(BaseModel):
     sha: str
     branch: str
     target_branch: str
-    commit: Optional[Commit] = None
-    pull_request: Optional[PullRequest] = None
-    release: Optional[Release] = None
+    commit: Commit | None = None
+    pull_request: PullRequest | None = None
+    release: Release | None = None
 
     def get_pr_branch(self) -> str:
         """Get the pull request branch or empty string.
@@ -79,7 +81,14 @@ class GitEnv(BaseModel):
         return self.pull_request.pr_number if self.pull_request else 0
 
     def is_release(self, config: Config) -> bool:
-        """Determine if the current commit should create a release."""
+        """Determine if the current commit should create a release.
+
+        Args:
+            config: The `m` configuration.
+
+        Returns:
+            True if we are dealing with a release.
+        """
         if not self.commit:
             return False
         release_prefix = get_release_prefix(config)
@@ -95,7 +104,14 @@ class GitEnv(BaseModel):
         )
 
     def is_release_pr(self, config: Config) -> bool:
-        """Determine if the the current pr is a release pr."""
+        """Determine if the the current pr is a release pr.
+
+        Args:
+            config: The `m` configuration.
+
+        Returns:
+            True if we are dealing with a release pr.
+        """
         if not self.pull_request:
             return False
         release_prefix = get_release_prefix(config)
@@ -120,7 +136,7 @@ class GitEnv(BaseModel):
         return self.pull_request.is_release_pr(hotfix_prefix)
 
     def get_build_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
-        """Obtain the build tag for the current commit.
+        """Create a build tag for the current commit.
 
         It is tempting to use the config_version when creating a build tag for
         pull requests or branches. This will only be annoying when testing.
@@ -143,6 +159,14 @@ class GitEnv(BaseModel):
 
         Git flow will generate a special build tag: SKIP. This will happen when
         we try to merge a release or hotfix branch to the develop branch.
+
+        Args:
+            config: The `m` configuration.
+            run_id: A unique identifier for the run/job.
+
+        Returns:
+            A unique identifier for the build. This tag is compatible with
+            both `npm` and `docker`.
         """
         is_release = self.is_release(config)
         is_release_pr = self.is_release_pr(config)
@@ -151,31 +175,32 @@ class GitEnv(BaseModel):
         if config.uses_git_flow() and is_dev_branch:
             if is_release or is_release_pr or is_hotfix_pr:
                 return Good('SKIP')
-        prefix = '' if config.uses_free_flow() else _build_tag_prefix(config)
-        if not run_id:
-            return Good(f'{prefix}local.{self.sha}')
-        if is_release:
-            return Good(config.version)
-        if self.pull_request:
-            pr_number = self.pull_request.pr_number
-            nprefix = ''
-            if is_release_pr:
-                nprefix = 'rc'
-            elif is_hotfix_pr:
-                nprefix = 'hotfix'
-            if nprefix:
-                return Good(f'{config.version}-{nprefix}{pr_number}.b{run_id}')
-            return Good(f'{prefix}pr{pr_number}.b{run_id}')
-        return Good(f'{prefix}{self.target_branch}.b{run_id}')
+        pr_number = maybe(
+            lambda: self.pull_request.pr_number,  # type: ignore[union-attr]
+        )
+        ver_input = VersionInputs(
+            version=config.version,
+            version_prefix=_build_tag_prefix(config),
+            run_id=run_id,
+            sha=self.sha,
+            pr_number=pr_number,
+            branch=self.target_branch,
+            is_release=is_release,
+            is_release_pr=is_release_pr,
+            is_hotfix_pr=is_hotfix_pr,
+        )
+        return Good(build_m_tag(ver_input))
 
 
 def _build_tag_prefix(config: Config) -> str:
+    if config.uses_free_flow():
+        return ''
     if config.build_tag_with_version:
         return f'{config.version}-'
     return '0.0.0-'
 
 
-def get_pr_number(branch: str) -> Optional[int]:
+def get_pr_number(branch: str) -> int | None:
     """Retrieve the pull request number from the branch name.
 
     Args:
@@ -190,7 +215,7 @@ def get_pr_number(branch: str) -> Optional[int]:
     return None
 
 
-def _remove_strings(str_content: str, words: List[str]) -> str:
+def _remove_strings(str_content: str, words: list[str]) -> str:
     return re.sub('|'.join(words), '', str_content)
 
 

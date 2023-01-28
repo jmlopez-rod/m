@@ -37,14 +37,25 @@ class Commit(BaseModel):
     associated_pull_request: Optional[AssociatedPullRequest] = None
 
     def get_pr_branch(self) -> str:
-        """Return the pr branch if the commit has an associated pr or empty
-        string."""
+        """Find the git branch if commit has an associated pr.
+
+        Returns:
+            The pr branch if the commit has an associated pr or empty
+            string.
+        """
         if not self.associated_pull_request:
             return ''
         return self.associated_pull_request.pr_branch
 
-    def is_release(self, release_prefix: Optional[str]) -> bool:
-        """Determine if the current commit should create a release."""
+    def is_release(self, release_prefix: str | None) -> bool:
+        """Determine if the current commit should create a release.
+
+        Args:
+            release_prefix: The prefix used to flag a release.
+
+        Returns:
+            True if we are dealing with a release branch.
+        """
         if not release_prefix:
             return False
         return self.get_pr_branch().startswith(release_prefix)
@@ -66,8 +77,15 @@ class PullRequest(BaseModel):
     files: List[str]
     is_draft: bool
 
-    def is_release_pr(self, release_prefix: Optional[str]) -> bool:
-        """Determine if the pull request is a release pull request."""
+    def is_release_pr(self, release_prefix: str | None) -> bool:
+        """Determine if the pull request is a release pull request.
+
+        Args:
+            release_prefix: The prefix used to flag a release.
+
+        Returns:
+            True if we are dealing with a release branch.
+        """
         if not release_prefix:
             return False
         return self.pr_branch.startswith(release_prefix)

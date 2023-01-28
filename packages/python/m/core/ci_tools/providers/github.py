@@ -12,7 +12,11 @@ _print = print
 
 
 def env_vars() -> OneOf[Issue, EnvVars]:
-    """Read the environment variables from Github Actions."""
+    """Read the environment variables from Github Actions.
+
+    Returns:
+        An `EnvVars` instance or an Issue.
+    """
     res = EnvVars(
         ci_env=True,
         server_url='https://github.com',
@@ -37,9 +41,9 @@ def env_vars() -> OneOf[Issue, EnvVars]:
                 'GITHUB_SHA',
                 'GITHUB_ACTOR',
             ])
-            for res.run_url in [
+            for res.run_url in (
                 f'{res.server_url}/{repo}/actions/runs/{res.run_id}',
-            ]
+            )
         ],
     ).flat_map_bad(lambda x: issue(
         'GH Actions env_vars failure', cause=cast(Issue, x),
@@ -97,8 +101,8 @@ def error(msg: Message | str) -> None:
     col_entry = f'col={msg.col}' if msg.col else ''
     parts = [x for x in (file_entry, line_entry, col_entry) if x]
     loc = ','.join(parts)
-    info = f' {loc}' if loc else ''
-    _print(f'::error{info}::{msg.message}', file=stream)
+    msg_info = f' {loc}' if loc else ''
+    _print(f'::error{msg_info}::{msg.message}', file=stream)
 
 
 def warn(msg: Message | str) -> None:
@@ -118,8 +122,8 @@ def warn(msg: Message | str) -> None:
     col_entry = f'col={msg.col}' if msg.col else ''
     parts = [x for x in (file_entry, line_entry, col_entry) if x]
     loc = ','.join(parts)
-    info = f' {loc}' if loc else ''
-    _print(f'::warning{info}::{msg.message}', file=stream)
+    msg_info = f' {loc}' if loc else ''
+    _print(f'::warning{msg_info}::{msg.message}', file=stream)
 
 
 tool = ProviderModule(
