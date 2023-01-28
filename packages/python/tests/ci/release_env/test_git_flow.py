@@ -146,7 +146,6 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_issue(result, 'invalid release-pr')
 
-
     def test_pr_release_no_update_develop(self):
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'

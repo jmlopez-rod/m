@@ -1,6 +1,16 @@
 from m.cli import run_main
+from m.cli.engine.parsers.boolean import handle_field
 from m.core import Bad, Good, Issue, issue
+from pydantic import BaseModel, Field
 from pytest_mock import MockerFixture
+
+
+class SampleModel(BaseModel):
+    sort: bool = Field(
+        default=True,
+        aliases=['s', 'sort'],
+        description='some description',
+    )
 
 
 def failure_func():
@@ -51,3 +61,11 @@ def test_run_main_issue(mocker: MockerFixture):
     assert isinstance(args[0], Issue)
     assert args[0].message == 'oops'
     on_success.assert_not_called()
+
+
+def test_boolean_arg():
+    """We can use `--no-[x]` in arguments."""
+    schema = SampleModel.schema()
+    field = schema['properties']['sort']
+    arg_inputs = handle_field('sort', field)
+    assert arg_inputs.args == ['--no-s', '--no-sort']
