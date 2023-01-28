@@ -18,6 +18,7 @@ def mock_streams(mocker: MockerFixture):
 
 
 def test_ci_tool_warn_block(mocker: MockerFixture) -> None:
+    mocker.patch.dict(os.environ, {}, clear=True)
     std_out, std_err = mock_streams(mocker)
     warn_block('message to stdout', sys.stdout)
     assert std_out.getvalue() == 'warning:\nmessage to stdout\n\n'
@@ -25,6 +26,7 @@ def test_ci_tool_warn_block(mocker: MockerFixture) -> None:
 
 
 def test_ci_tool_warn_block_err(mocker: MockerFixture) -> None:
+    mocker.patch.dict(os.environ, {}, clear=True)
     std_out, std_err = mock_streams(mocker)
     warn_block('message to stderr', sys.stderr)
     assert std_out.getvalue() == ''
