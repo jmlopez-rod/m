@@ -74,7 +74,12 @@ def _extra_checks(
             (is_release_pr or is_hotfix_pr) and
             git_env.target_branch not in (master_branch, develop_branch)
         ):
-            return issue(f'??? hotfix and releases prs to {master_branch}')
+            error_type = 'release' if is_release_pr else 'hotfix'
+            return issue(f'invalid {error_type}-pr', data={
+                'expected_target_branch': master_branch,
+                'current_target_branch': git_env.target_branch,
+                'workflow': str(config.workflow),
+            })
         # is_release implies git_env.branch == master_branch
     if config.uses_m_flow():
         if (
@@ -85,6 +90,7 @@ def _extra_checks(
             return issue(f'invalid {error_type}-pr', data={
                 'expected_target_branch': master_branch,
                 'current_target_branch': git_env.target_branch,
+                'workflow': str(config.workflow),
             })
         # is_release being true implies git_env.branch == master_branch
     return Good(0)

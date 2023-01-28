@@ -131,6 +131,22 @@ class ReleaseEnvGitFlowTest(FpTestCase):
             result = self._get_env()
             self.assert_issue(result, 'version needs to be bumped')
 
+    def test_release_pr_wrong_target(self):
+        """Nothing stops developers from making a "release" branch.
+        Lets make sure these are made only to the "master" branch.
+        """
+        self.env_vars.ci_env = True
+        self.config.version = '1.1.1'
+        self.env_vars.git_branch = 'refs/pull/2'
+        with patch('m.core.http.fetch') as graphql_mock:
+            graphql_mock.side_effect = [
+                Good(mock_commit_sha('sha')),
+                Good(read_fixture('release-pr-wrong-baseref.json')),
+            ]
+            result = self._get_env()
+            self.assert_issue(result, 'invalid release-pr')
+
+
     def test_pr_release_no_update_develop(self):
         self.env_vars.ci_env = True
         self.config.version = '1.1.1'
@@ -306,6 +322,21 @@ class ReleaseEnvGitFlowTest(FpTestCase):
                     workflow=Workflow.git_flow,
                 ),
             )
+
+    def test_hotfix_pr_wrong_target(self):
+        """Nothing prevents a developer from starting a branch with the
+        `hotfix` prefix. This makes sure we see the issue in the log."""
+        self.env_vars.ci_env = True
+        self.config.version = '1.1.1'
+        self.env_vars.git_branch = 'refs/pull/2'
+        self.env_vars.run_id = '404'
+        with patch('m.core.http.fetch') as graphql_mock:
+            graphql_mock.side_effect = [
+                Good(mock_commit_sha('sha')),
+                Good(read_fixture('hotfix-pr-wrong-baseref.json')),
+            ]
+            result = self._get_env()
+            self.assert_issue(result, 'invalid hotfix-pr')
 
     def test_hotfix_pr_develop(self):
         """Proper PR made to develop."""
