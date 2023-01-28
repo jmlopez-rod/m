@@ -1,3 +1,4 @@
+import os
 import socket
 import subprocess
 from functools import partial
@@ -17,8 +18,6 @@ def needs_mocking(func_name: str, *args, **kwargs):
         args: ...
         kwargs: ...
     """
-    if not args:
-        return original_mkdir(*args, **kwargs)
     raise Exception(f'DEV ERROR: Need to mock {func_name}({args},{kwargs})')
 
 
@@ -30,7 +29,9 @@ def mock(func_name: str):
 
 mio.write_file = mock('m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
-Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
+
+if not os.environ.get('CI'):
+    Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
 
 
 class BlockNetwork(socket.socket):
