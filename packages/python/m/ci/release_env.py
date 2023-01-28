@@ -69,30 +69,21 @@ def _extra_checks(
 ) -> OneOf[Issue, int]:
     master_branch = _get_master_branch(config)
     develop_branch = _get_develop_branch(config)
-    if config.uses_git_flow():
-        if (
-            (is_release_pr or is_hotfix_pr) and
-            git_env.target_branch not in (master_branch, develop_branch)
-        ):
-            error_type = 'release' if is_release_pr else 'hotfix'
-            return issue(f'invalid {error_type}-pr', data={
-                'expected_target_branch': master_branch,
-                'current_target_branch': git_env.target_branch,
-                'workflow': str(config.workflow),
-            })
-        # is_release implies git_env.branch == master_branch
-    if config.uses_m_flow():
-        if (
-            (is_release_pr or is_hotfix_pr) and
-            git_env.target_branch != master_branch
-        ):
-            error_type = 'release' if is_release_pr else 'hotfix'
-            return issue(f'invalid {error_type}-pr', data={
-                'expected_target_branch': master_branch,
-                'current_target_branch': git_env.target_branch,
-                'workflow': str(config.workflow),
-            })
-        # is_release being true implies git_env.branch == master_branch
+    valid_branches = (
+        (master_branch,)
+        if config.uses_m_flow()
+        else (master_branch, develop_branch)
+    )
+    if (
+        (is_release_pr or is_hotfix_pr) and
+        git_env.target_branch not in valid_branches
+    ):
+        error_type = 'release' if is_release_pr else 'hotfix'
+        return issue(f'invalid {error_type}-pr', data={
+            'expected_target_branch': master_branch,
+            'current_target_branch': git_env.target_branch,
+            'workflow': str(config.workflow),
+        })
     return Good(0)
 
 
