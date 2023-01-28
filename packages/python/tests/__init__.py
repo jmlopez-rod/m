@@ -14,7 +14,7 @@ def needs_mocking(func_name: str, *args, **kwargs):
         args: ...
         kwargs: ...
     """
-    raise Exception(f'DEV ERROR: Need to mock {func_name}({args})')
+    raise Exception(f'DEV ERROR: Need to mock {func_name}({args},{kwargs})')
 
 
 def mock(func_name: str):
