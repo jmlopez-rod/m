@@ -77,7 +77,7 @@ def _extra_checks(
         and git_env.target_branch not in valid_branches
     ):
         error_type = 'release' if is_release_pr else 'hotfix'
-        return issue(f'invalid {error_type}-pr', data={
+        return issue(f'invalid {error_type}-pr', context={
             'expected_target_branch': master_branch,
             'current_target_branch': git_env.target_branch,
             'workflow': str(config.workflow),

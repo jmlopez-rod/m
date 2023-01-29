@@ -22,7 +22,7 @@ def request(
         token: A github personal access token.
         endpoint: A github api endpoint.
         method: The http method to use. (default 'GET')
-        dict_data: A payload if th method if `POST` or `GET`.
+        dict_data: A payload if the method if `POST` or `GET`.
 
     Returns:
         A response from Github.

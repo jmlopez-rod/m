@@ -1,7 +1,7 @@
 import re
 from typing import Any, Optional
 
-from m.core import Good, Issue, OneOf, one_of
+from m.core import Good, Issue, OneOf, non_issue, one_of
 
 from ..core.json import get
 from . import api
@@ -34,20 +34,20 @@ def create_ci_query(
     Returns:
         A string with the graphql query.
     """
-    items: list[str] = []
-    params: list[str] = ['$owner: String!', '$repo: String!']
+    query_items: list[str] = []
+    query_params: list[str] = ['$owner: String!', '$repo: String!']
     if include_commit:
         include_pr = pr_number is None
-        items.append(commit_query(include_pr, include_author=True))
-        params.append('$sha: String')
+        query_items.append(commit_query(include_pr, include_author=True))
+        query_params.append('$sha: String')
     if pr_number:
-        items.append(PULL_REQUEST)
-        params.append('$pr: Int!')
-        params.append('$fc: Int!')
+        query_items.append(PULL_REQUEST)
+        query_params.append('$pr: Int!')
+        query_params.append('$fc: Int!')
     if include_release:
-        items.append(LATEST_RELEASE)
-    items_str = '\n'.join(items)
-    params_str = ', '.join(params)
+        query_items.append(LATEST_RELEASE)
+    items_str = '\n'.join(query_items)
+    params_str = ', '.join(query_params)
     return f"""query ({params_str}) {{
       repository(owner:$owner, name:$repo) {{
         {items_str}
@@ -67,15 +67,23 @@ def get_build_sha(
     owner: str,
     repo: str,
     sha: str,
-    get_sha: bool = True,
 ) -> OneOf[Issue, str]:
-    """When building prs, we are not given the actual sha of the commit.
+    """Obtain the commit sha in a pull request.
+
+    When building prs, we are not given the actual sha of the commit.
 
     Instead, we get the sha of the merge commit. This will give us the
     sha that we are looking for.
+
+    Args:
+        token: A Github PAT.
+        owner: The owner of the repo.
+        repo: The name of the repo.
+        sha: The merge sha provided by github.
+
+    Returns:
+        The actual sha of the commit.
     """
-    if not get_sha:
-        return Good(sha)
     query_params = ['$owner: String!', '$repo: String!', '$sha: String!']
     params_str = ', '.join(query_params)
     commit_query_str = commit_query(include_pr=False, include_author=False)
@@ -101,12 +109,24 @@ def get_build_sha(
 def get_raw_ci_run_info(
     token: str,
     commit_info: CommitInfo,
-    pr_number: Optional[int],
+    pr_number: int | None,
     file_count: int,
     include_release: bool,
     get_sha: bool = True,
 ) -> OneOf[Issue, Any]:
-    """Retrieve the information of the given Github PR."""
+    """Retrieve the information of the given Github PR.
+
+    Args:
+        token: A Github PAT.
+        commit_info: The owner, repo and sha.
+        pr_number: The pull request number.
+        file_count:  The maximum number of files in the pr to retrieve.
+        include_release: If true it will provide release information.
+        get_sha: If true, it will obtain the actual sha of the commit.
+
+    Returns:
+        The Github payload with the raw information.
+    """
     query = create_ci_query(
         pr_number,
         include_commit=True,
@@ -116,9 +136,13 @@ def get_raw_ci_run_info(
     variables = {'owner': owner, 'repo': repo, 'sha': sha, 'fc': file_count}
     if pr_number:
         variables['pr'] = pr_number
+    if get_sha:
+        build_sha = get_build_sha(token, owner, repo, sha)
+        if build_sha.is_bad:
+            return build_sha
+        variables['sha'] = non_issue(build_sha)
     return one_of(lambda: [
         repo_data
-        for variables['sha'] in get_build_sha(token, owner, repo, sha, get_sha)
         for res in api.graphql(token, query, variables)
         for repo_data in get(res, 'repository')
     ])

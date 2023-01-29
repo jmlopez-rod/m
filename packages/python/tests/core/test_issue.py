@@ -25,12 +25,12 @@ class IssueTest(unittest.TestCase):
             description='desc',
             message='message',
             cause=ValueError('cause'),
-            data=dict(x=100),
+            context=dict(x=100),
         ).to_dict()
         self.assertEqual(obj.get('message'), 'message')
         self.assertEqual(obj.get('description'), 'desc')
         self.assertIsNotNone(obj.get('cause'))
-        self.assertIsNotNone(obj.get('data'))
+        self.assertIsNotNone(obj.get('context'))
 
     def test_one_of(self):
         obj = issue('message')
@@ -48,7 +48,7 @@ def test_issue_remove_traceback():
         description='desc',
         message='message',
         cause=sub,
-        data=dict(x=100),
+        context=dict(x=100),
     )
     str_obj = obj.to_str(show_traceback=False)
     assert 'traceback' not in str_obj

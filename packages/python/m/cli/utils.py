@@ -19,12 +19,6 @@ def _main_parser(
     meta: MetaMap,
     add_args: Callable[[argparse.ArgumentParser], None] | None = None,
 ) -> argparse.Namespace:
-    """Create an argp and return the result calling its parse_arg method.
-
-    The `add_args` param may be provided as a function that takes in an
-    `argparse.ArgumentParser` instance to be able to take additional
-    actions.
-    """
     main_meta = meta['_root'].meta
     raw = argparse.RawTextHelpFormatter
     # NOTE: In the future we will need to extend from this class to be able to

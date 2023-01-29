@@ -53,8 +53,8 @@ class ConfigFreeFlowTest(FpTestCase):
             self.assert_issue(result, 'read_config failure')
             err = cast(Issue, cast(Issue, result.value).cause)
             self.assertEqual(err.message, 'multi_get key retrieval failure')
-            if isinstance(err.data, list):
-                msgs = {x['cause']['message'] for x in err.data}
+            if isinstance(err.context, list):
+                msgs = {x['cause']['message'] for x in err.context}
                 self.assertSetEqual(
                     msgs, set([
                         '`owner` path was not found',

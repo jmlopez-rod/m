@@ -3,7 +3,7 @@ import json
 import sys
 import traceback
 from collections import OrderedDict
-from typing import List, Optional, cast
+from typing import cast
 
 from typing_extensions import TypedDict
 
@@ -13,25 +13,25 @@ IssueDict = TypedDict(
         'message': str,
         'description': str,
         'cause': object,
-        'data': object,
-        'traceback': List[str],
+        'context': object,
+        'traceback': list[str],
     },
     total=False,
 )
 
 
-def remove_traceback(dict_inst: object) -> None:
+def remove_traceback(issue_dict: object) -> None:
     """Remove the `traceback` key from a dictionary if it exists.
 
     It will recursively remove the `traceback` from its cause.
 
     Args:
-        dict_inst: A dictionary.
+        issue_dict: A dictionary representation of an `Issue`.
     """
-    if isinstance(dict_inst, dict):
-        if 'traceback' in dict_inst:
-            dict_inst.pop('traceback')
-        cause = dict_inst.get('cause')
+    if isinstance(issue_dict, dict):
+        if 'traceback' in issue_dict:
+            issue_dict.pop('traceback')
+        cause = issue_dict.get('cause')
         if cause:
             remove_traceback(cause)
 
@@ -46,27 +46,28 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
     show_traceback = True
 
     message: str
-    description: Optional[str]
-    cause: Optional[Exception]
-    data: Optional[object]
+    description: str | None
+    cause: Exception | None
+    context: object | None
     include_traceback: bool
-    cause_tb: Optional[List[str]]
+    cause_tb: list[str] | None
 
     def __init__(
         self,
         message: str,
-        description: Optional[str] = None,
-        cause: Optional[Exception] = None,
-        data: Optional[object] = None,
+        description: str | None = None,
+        cause: Exception | None = None,
+        context: object | None = None,
         include_traceback: bool = True,
     ):
         """Create an Issue.
 
-        - description: More in depth detail on the issue
-        - cause: The exception that or Issue that is responsible for this
-                 Issue instance.
-        - data: Provide a dictionary with any useful data related to the issue.
-        - include_traceback: If False, it skips computing the traceback.
+        Args:
+            message: Simple description of the issue.
+            description: More in depth detail on the issue
+            cause: The exception/Issue that is responsible for this instance.
+            context: Dictionary with any useful data related to the issue.
+            include_traceback: If False, it skips computing the traceback.
         """
         super().__init__()
         self.message = message
@@ -89,7 +90,7 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
                 ]
             finally:
                 pass
-        self.data = data
+        self.context = context
         self.include_traceback = include_traceback
         if self.include_traceback:
             frame = inspect.currentframe()
@@ -111,23 +112,23 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
         Returns:
             An `IssueDict` instance.
         """
-        obj = cast(IssueDict, OrderedDict())
-        obj['message'] = self.message
+        issue_dict = cast(IssueDict, OrderedDict())
+        issue_dict['message'] = self.message
         if self.description:
-            obj['description'] = self.description
-        if self.data:
-            obj['data'] = self.data
+            issue_dict['description'] = self.description
+        if self.context:
+            issue_dict['context'] = self.context
         if self.include_traceback:
-            obj['traceback'] = self.traceback
+            issue_dict['traceback'] = self.traceback
         if self.cause:
             if isinstance(self.cause, Issue):
-                obj['cause'] = self.cause.to_dict()
+                issue_dict['cause'] = self.cause.to_dict()
             else:
-                obj['cause'] = {
+                issue_dict['cause'] = {
                     'message': str(self.cause),
                     'traceback': self.cause_tb,
                 }
-        return obj
+        return issue_dict
 
     def to_str(self, show_traceback: bool) -> str:
         """Convert the instance to string.
@@ -138,10 +139,15 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
         Returns:
             A string representation of the Issue instance.
         """
-        obj = self.to_dict()
+        issue_dict = self.to_dict()
         if not show_traceback:
-            remove_traceback(obj)
-        return json.dumps(obj, indent=2)
+            remove_traceback(issue_dict)
+        return json.dumps(issue_dict, indent=2)
 
     def __str__(self) -> str:
+        """Convert the instance to a string.
+
+        Returns:
+            A string representation of the Issue instance.
+        """
         return self.to_str(Issue.show_traceback)
