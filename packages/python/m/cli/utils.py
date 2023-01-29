@@ -1,24 +1,24 @@
 import argparse
 import json
 import sys
+from contextlib import suppress
 from typing import Any, Callable, Optional, cast
 
+from m.core import Issue, OneOf
 from m.core.ci_tools import error_block, get_ci_tool
 
-from ..core.fp import OneOf
 from ..core.io import env
-from ..core.issue import Issue
 from .engine.misc import params_count
 from .engine.sys import get_cli_command_modules
 from .engine.types import CmdMap, CommandModule, MetaMap, NestedCmdMap
 from .validators import validate_non_empty_str
 
 
-def main_parser(
+def _main_parser(
     mod: NestedCmdMap,
     meta: MetaMap,
     add_args: Callable[[argparse.ArgumentParser], None] | None = None,
-):
+) -> argparse.Namespace:
     """Create an argp and return the result calling its parse_arg method.
 
     The `add_args` param may be provided as a function that takes in an
@@ -77,20 +77,26 @@ def main_parser(
 
 def run_cli(
     file_path: str,
-    main_args=None,
+    add_args: Callable[[argparse.ArgumentParser], None] | None = None,
 ) -> None:
-    """Helper function to create a cli application.
+    """Run the cli application.
 
-        def main_args(argp):
+    usage::
+
+        def add_args(argp):
             argp.add_argument(...)
         def main():
-            run_cli(__file__, main_args)
+            run_cli(__file__, add_args)
 
-    We only need `main_args` if we need to gain access to the
+    We only need `add_args` if we need to gain access to the
     `argparse.ArgumentParser` instance.
+
+    Args:
+        file_path: The full name of the file: __file__.
+        add_args: Optional callback to gain access to the ArgumentParser.
     """
     mod, meta = get_cli_command_modules(file_path)
-    arg = main_parser(mod, meta, main_args)
+    arg = _main_parser(mod, meta, add_args)
 
     run_func = None
 
@@ -102,23 +108,34 @@ def run_cli(
 
     len_run_args = params_count(run_func)
     run_args = [arg, None][:len_run_args]
-    sys.exit(run_func(*run_args))
+    # mypy is having a hard time figuring out the type of run_args
+    exit_code = run_func(*run_args)  # type:ignore[arg-type]
+    sys.exit(exit_code)
 
 
 def display_issue(issue: Issue) -> None:
-    """print an error message."""
+    """Print an error message.
+
+    The error message is customize to the CI environment.
+
+    Args:
+        issue: An instance of an Issue.
+    """
     get_ci_tool().error(issue.message)
     error_block(str(issue))
 
 
-def display_result(val: Any) -> None:
-    """print the JSON stringification of the param `val` provided that val is
-    not `None`."""
-    if val is not None:
-        try:
-            print(json.dumps(val, separators=(',', ':')))
-        except Exception:
-            print(val)
+def display_result(inst: Any) -> None:
+    """Print the JSON stringification of a non-None parameter.
+
+    Args:
+        inst: The instance to stringify.
+    """
+    if inst is not None:
+        msg = inst
+        with suppress(Exception):
+            msg = json.dumps(inst, separators=(',', ':'))
+        print(msg)  # noqa: WPS421
 
 
 def run_main(
@@ -126,25 +143,34 @@ def run_main(
     handle_result: Callable[[Any], None] = display_result,
     handle_issue: Callable[[Issue], None] = display_issue,
 ) -> int:
-    """Run the callback and print the returned value as a JSON string. Set the
-    print_raw param to True to bypass the JSON stringification. To change how
-    the result or an issue should be display then provide the optional
-    arguments handle_result and handle_issue. For instance, to display the raw
-    value simply provide the `print` function.
+    """Run the callback and print the returned value.
 
-    Return 0 if the callback is a `Good` result otherwise return 1.
+    To change how the result or an issue should be display provide the optional
+    arguments `handle_result` and `handle_issue`. For instance, to display the
+    raw value provide the `print` function.
+
+    Args:
+        callback: A function that returns a `OneOf`.
+        handle_result: A function that takes in the Good result.
+        handle_issue: A function that takes in the Issue.
+
+    Returns:
+        0 if the callback is a `Good` result otherwise return 1.
     """
     try:
         res = callback()
-        val = res.value
+        result_value = res.value
         if res.is_bad:
-            if isinstance(val, Issue):
-                handle_issue(val)
+            if isinstance(result_value, Issue):
+                handle_issue(result_value)
             else:
-                issue = Issue('non-issue exception', cause=cast(Issue, val))
+                issue = Issue(
+                    'non-issue exception',
+                    cause=cast(Issue, result_value),
+                )
                 handle_issue(issue)
             return 1
-        handle_result(val)
+        handle_result(result_value)
     except Exception as ex:
         issue = Issue('unknown caught exception', cause=ex)
         handle_issue(issue)
@@ -153,18 +179,36 @@ def run_main(
 
 
 def error(msg: str, issue: Optional[Issue] = None) -> int:
-    """print an error message."""
+    """Print an error message.
+
+    Args:
+        msg: The error message.
+        issue: Optional `Issue` instance to go along with the error message.
+
+    Returns:
+        The integer 1.
+    """
     get_ci_tool().error(msg)
     if issue:
         error_block(str(issue), sys.stderr)
     return 1
 
 
-def cli_integration_token(integration: str, env_var: str):
+def cli_integration_token(
+    integration: str,
+    env_var: str,
+) -> Callable[[argparse.ArgumentParser], argparse.Action]:
     """Return a function that takes in a parser.
 
     This generated function registers a token argument in the parser
     which looks for its value in the environment variables.
+
+    Args:
+        integration: The name of the integration.
+        env_var: The environment variable name.
+
+    Returns:
+        A function that
     """
     return lambda parser: parser.add_argument(
         '-t',

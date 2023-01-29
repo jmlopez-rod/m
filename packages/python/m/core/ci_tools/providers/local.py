@@ -13,13 +13,19 @@ _print = print
 
 
 def env_vars() -> OneOf[Issue, EnvVars]:
-    """Obtain basic environment variables in a local environment."""
-    res = EnvVars()
+    """Obtain basic environment variables in a local environment.
+
+    Returns:
+        An `EnvVars` instance if successful.
+    """
     return one_of(
         lambda: [
-            res
-            for res.git_branch in git.get_branch()
-            for res.git_sha in git.get_current_commit_sha()
+            EnvVars(
+                git_branch=git_branch,
+                git_sha=git_sha,
+            )
+            for git_branch in git.get_branch()
+            for git_sha in git.get_current_commit_sha()
         ],
     )
 
@@ -67,8 +73,8 @@ def error(msg: Message | str) -> None:
     stream = msg.stream or sys.stderr
     parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
-    info = f'[{loc}]' if loc else ''
-    _print(f'error{info}: {msg.message}', file=stream or sys.stderr)
+    msg_info = f'[{loc}]' if loc else ''
+    _print(f'error{msg_info}: {msg.message}', file=stream or sys.stderr)
 
 
 def warn(msg: Message | str) -> None:
@@ -85,8 +91,8 @@ def warn(msg: Message | str) -> None:
     stream = msg.stream or sys.stderr
     parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
-    info = f'[{loc}]' if loc else ''
-    _print(f'warn{info}: {msg.message}', file=stream)
+    msg_info = f'[{loc}]' if loc else ''
+    _print(f'warn{msg_info}: {msg.message}', file=stream)
 
 
 tool = ProviderModule(

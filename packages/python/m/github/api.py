@@ -1,12 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Mapping, Optional
 
-from m.core import http
+from m.core import Good, Issue, OneOf, http, issue, one_of
 from pydantic import BaseModel
-
-from ..core import issue, one_of
-from ..core.fp import Good, OneOf
-from ..core.issue import Issue
 
 
 def request(
@@ -30,7 +26,7 @@ def request(
 
     Returns:
         A response from Github.
-    """  # noqa
+    """  # noqa: E501
     url = f'https://api.github.com{endpoint}'
     headers = {'authorization': f'Bearer {token}'}
     return http.fetch_json(url, headers, method, dict_data)
@@ -55,15 +51,23 @@ def graphql(
     query: str,
     variables: Mapping[str, Any],
 ) -> OneOf[Issue, Any]:
-    """Make a request to Github's graphql API:
+    """Make a request to Github's graphql API.
 
     https://docs.github.com/en/graphql/guides/forming-calls-with-graphql
+
+    Args:
+        token: A github PAT.
+        query: A graphql query.
+        variables: The variables to use in the query.
+
+    Returns:
+        The Github response.
     """
-    data = {'query': query, 'variables': variables or {}}
+    payload = {'query': query, 'variables': variables or {}}
     return one_of(
         lambda: [
             payload
-            for res in request(token, '/graphql', 'POST', data)
+            for res in request(token, '/graphql', 'POST', payload)
             for payload in _filter_data(res)
         ],
     )
@@ -74,13 +78,24 @@ def create_release(
     owner: str,
     repo: str,
     version: str,
-    branch: Optional[str] = None,
+    branch: str | None = None,
 ) -> OneOf[Issue, Any]:
-    """Send a payload to create a release in github."""
+    """Send a payload to create a release in github.
+
+    Args:
+        token: A github PAT.
+        owner: The owner of the repo.
+        repo: The name of the repo.
+        version: The version that marks the release.
+        branch: Optional branch to tag, defaults to the default branch.
+
+    Returns:
+        The Github response after a release is created.
+    """
     endpoint = f'/repos/{owner}/{repo}/releases'
     base = 'https://github.com'
     link = f'{base}/{owner}/{repo}/blob/master/CHANGELOG.md#{version}'
-    data = {
+    payload = {
         'tag_name': version,
         'name': f'{version}',
         'body': f'**See [CHANGELOG]({link}).**',
@@ -88,8 +103,8 @@ def create_release(
         'prerelease': False,
     }
     if branch:
-        data['target_commitish'] = branch
-    return request(token, endpoint, 'POST', data)
+        payload['target_commitish'] = branch
+    return request(token, endpoint, 'POST', payload)
 
 
 class GithubPullRequest(BaseModel):
@@ -107,7 +122,17 @@ def create_pr(
     repo: str,
     pr_info: GithubPullRequest,
 ) -> OneOf[Issue, Any]:
-    """Send a payload to create a pull request in github."""
+    """Send a payload to create a pull request in github.
+
+    Args:
+        token: A github PAT.
+        owner: The owner of the repo.
+        repo: The name of the repo.
+        pr_info: The pull request information.
+
+    Returns:
+        The Github response if successful.
+    """
     endpoint = f'/repos/{owner}/{repo}/pulls'
     return request(token, endpoint, 'POST', pr_info.dict())
 
@@ -119,10 +144,21 @@ def merge_pr(
     pr_number: int,
     commit_title: str | None,
 ) -> OneOf[Issue, Any]:
-    """Send a payload to merge a pull request in github."""
+    """Send a payload to merge a pull request in github.
+
+    Args:
+        token: A github PAT.
+        owner: The owner of the repo.
+        repo: The name of the repo.
+        pr_number: The number of the pull request.
+        commit_title: An optional commit title to use when merging.
+
+    Returns:
+        The payload provided by Github if successful.
+    """
     endpoint = f'/repos/{owner}/{repo}/pulls/{pr_number}/merge'
-    data = {'commit_title': commit_title} if commit_title else {}
-    return request(token, endpoint, 'PUT', data)
+    payload = {'commit_title': commit_title} if commit_title else {}
+    return request(token, endpoint, 'PUT', payload)
 
 
 @dataclass
@@ -144,19 +180,28 @@ def commit_status(
 ) -> OneOf[Issue, Any]:
     """Set a status for a sha.
 
-    The valid states are:
+    The valid states are::
 
     - pending
     - success
     - failure
     - error
+
+    Args:
+        token: A github PAT.
+        owner: The owner of the repo.
+        repo: The name of the repo.
+        sha_info: An instance of a `GithubShaStatus`.
+
+    Returns:
+        The response from Github after setting a commit status.
     """
     endpoint = f'/repos/{owner}/{repo}/statuses/{sha_info.sha}'
-    data = {
+    payload = {
         'context': sha_info.context,
         'state': sha_info.state,
         'description': sha_info.description,
     }
     if sha_info.url:
-        data['target_url'] = sha_info.url
-    return request(token, endpoint, 'POST', data)
+        payload['target_url'] = sha_info.url
+    return request(token, endpoint, 'POST', payload)

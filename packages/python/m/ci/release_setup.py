@@ -1,16 +1,13 @@
 import re
 from datetime import datetime
-from typing import List
 
 from m.ci.config import Config, read_config
-from m.core import issue, one_of, rw
-from m.core.fp import Good, OneOf
-from m.core.issue import Issue
+from m.core import Good, Issue, OneOf, issue, one_of, rw
 from m.git import get_first_commit_sha
-from m.github import compare_sha_url
+from m.github.ci import compare_sha_url
 
 
-def _get_versions(lines: List[str], new_ver: str, first_sha: str) -> List[str]:
+def _get_versions(lines: list[str], new_ver: str, first_sha: str) -> list[str]:
     versions = [new_ver]
     for line in lines:
         match = re.match(r'## \[(.*)]', line)
@@ -25,15 +22,27 @@ def _version_anchor(ver: str) -> str:
 
 
 def new_changelog(
-    content: str,
+    changelog_contents: str,
     owner: str,
     repo: str,
     new_ver: str,
     first_sha: str,
 ) -> OneOf[Issue, str]:
-    """Modify the contents of a CHANGELOG so that a new entry with the new
-    version is added to the new changelog contents."""
-    parts = content.split('## [Unreleased]')
+    """Modify the contents of a CHANGELOG.
+
+    It adds a new entry with the new version the new changelog contents.
+
+    Args:
+        changelog_contents: The current contents of the CHANGELOG file.
+        owner: The repo owner.
+        repo: The repo name.
+        new_ver: The new version.
+        first_sha: The very first commit sha of the repo.
+
+    Returns:
+        The new contents of the CHANGELOG.
+    """
+    parts = changelog_contents.split('## [Unreleased]')
     if len(parts) != 2:
         return issue('missing "Unreleased" link')
 
@@ -41,16 +50,18 @@ def new_changelog(
     entries = main.split('[unreleased]:')[0]
     versions = _get_versions(entries.split('\n'), new_ver, first_sha)
 
-    links = [f'[unreleased]: {compare_sha_url(owner, repo, new_ver, "HEAD")}']
+    compare_url = compare_sha_url(owner, repo, new_ver, 'HEAD')
+    links = [f'[unreleased]: {compare_url}']
     for i in range(len(versions) - 1):
         link = compare_sha_url(owner, repo, versions[i + 1], versions[i])
         links.append(f'[{versions[i]}]: {link}')
 
     date = datetime.now().strftime('%B %d, %Y')
+    ver_anchor = _version_anchor(new_ver)
     return Good(''.join([
         header,
         '## [Unreleased]\n\n',
-        f'## [{new_ver}] {_version_anchor(new_ver)} {date}\n\n',
+        f'## [{new_ver}] {ver_anchor} {date}\n\n',
         entries,
         '\n'.join(links),
         '\n',
@@ -85,15 +96,18 @@ def update_changelog_file(
 
 
 def _update_line_version(line: str, ver: str) -> str:
-    content = line.strip()
-    if not content.startswith('"version"'):
+    stripped_line = line.strip()
+    if not stripped_line.startswith('"version"'):
         return line
-    comma = ',' if content.endswith(',') else ''
+    comma = ',' if stripped_line.endswith(',') else ''
     return f'  "version": "{ver}"{comma}'
 
 
-def _update_config_version(contents: str, ver: str) -> OneOf[Issue, str]:
-    lines = contents.split('\n')
+def _update_config_version(
+    config_contents: str,
+    ver: str,
+) -> OneOf[Issue, str]:
+    lines = config_contents.split('\n')
     new_lines = [_update_line_version(line, ver) for line in lines]
     return Good('\n'.join(new_lines))
 
@@ -116,8 +130,8 @@ def update_version(
     filename = f'{root}/{m_file}'
     return one_of(lambda: [
         0
-        for data in rw.read_file(filename)
-        for new_data in _update_config_version(data, version)
+        for config_contents in rw.read_file(filename)
+        for new_data in _update_config_version(config_contents, version)
         for _ in rw.write_file(filename, new_data)
     ])
 
@@ -158,6 +172,7 @@ def release_setup(
             config.repo,
             new_ver,
             first_sha,
-            changelog)
+            changelog,
+        )
         for _ in _success_release_setup(config, new_ver)
     ])

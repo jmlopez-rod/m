@@ -8,6 +8,7 @@ from pytest_mock import MockerFixture
 
 T = TypeVar('T')
 
+
 def read_fixture(name: str, path: str = 'ci/fixtures') -> str:
     """Read a json file from the given path.
 

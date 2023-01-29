@@ -3,6 +3,13 @@ def commit_query(include_pr: bool, include_author: bool) -> str:
 
     The output of this function is meant to go inside the repository
     field.
+
+    Args:
+        include_pr: If true, it will include pull request information.
+        include_author: If true, it will include user information.
+
+    Returns:
+        A valid graphql query.
     """
     author = """
       author {
@@ -35,16 +42,15 @@ def commit_query(include_pr: bool, include_author: bool) -> str:
         }
       }
     """ if include_pr else ''
-    query = """
-      commit: object(expression: $sha) {
-        ... on Commit {
+    return f"""
+      commit: object(expression: $sha) {{
+        ... on Commit {{
           message
-          %s
-          %s
-        }
-      }
+          {author}
+          {pr}
+        }}
+      }}
     """
-    return query % (author, pr)
 
 
 LATEST_RELEASE = """

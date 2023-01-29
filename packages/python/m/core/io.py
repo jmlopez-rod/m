@@ -10,10 +10,18 @@ BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
 
 
 def format_seconds(number_of_seconds: int | float) -> str:
-    """Return a string representing the number of seconds in a friendly
-    format: Xd:Xh:Xm:Xs:Xms. """
+    """Return a string representing the number of seconds.
+
+    The format is Xd:Xh:Xm:Xs:Xms.
+
+    Args:
+        number_of_seconds: The number of seconds to format.
+
+    Returns:
+        A friendly representation of the number of seconds.
+    """
     milliseconds = int(math.floor(number_of_seconds * 1000))
-    _ms = milliseconds % 1000
+    milli_sec = milliseconds % 1000
     seconds = int(math.floor(milliseconds / 1000))
     sec = seconds % 60
     minutes = int(math.floor(seconds / 60))
@@ -27,7 +35,7 @@ def format_seconds(number_of_seconds: int | float) -> str:
         f'{hrs}h' if hours else '',
         f'{mins}m' if mins else '',
         f'{sec}s' if sec else '',
-        f'{_ms}ms' if _ms else '',
+        f'{milli_sec}ms' if milli_sec else '',
     ]
     return ':'.join([x for x in entries if x]) or '0s'
 
@@ -54,10 +62,10 @@ def renv(key: str) -> OneOf[Issue, str]:
     Returns:
         A `OneOf` with the value of the environment variable or an issue.
     """
-    value = os.environ.get(key)
+    env_value = os.environ.get(key)
     # Value may still be an empty string, checking against None
-    if value is not None:
-        return Good(value)
+    if env_value is not None:
+        return Good(env_value)
     return issue(f'missing {key} in env')
 
 
@@ -101,10 +109,17 @@ def _ver_str(major: int, minor: int, patch: int) -> str:
 
 
 def prompt_next_version(version: str, release_type: str) -> str:
-    """Display the possible major, minor and patch versions and prompt the user
-    to enter one of them. Return one of the versions.
+    """Prompt the developer to select the next version.
 
-    https://semver.org/
+    It displays the possible major, minor and patch versions and prompts the
+    developer to enter one of them. See https://semver.org/.
+
+    Args:
+        version: The current version.
+        release_type: If `hotfix` then it bumps the patch value.
+
+    Returns:
+        One of the versions.
     """
     ver = version.split('-')[0]
     parts = [int(x) for x in ver.split('.')]
@@ -118,10 +133,10 @@ def prompt_next_version(version: str, release_type: str) -> str:
     options = [minor, major]
     msg = f'Current version is {version}. Enter one of the following:\n  '
     msg += '\n  '.join(options)
-    result = ''
+    dev_input = ''
     while not valid:
         print(msg, file=sys.stderr)
-        result = input('')
-        if result in options:
+        dev_input = input('')
+        if dev_input in options:
             valid = True
-    return result
+    return dev_input

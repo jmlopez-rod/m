@@ -1,11 +1,9 @@
 from typing import cast
 
+from m.core import Good, Issue, OneOf, issue, one_of
 from m.core.ci_tools import EnvVars
 from pydantic import BaseModel
 
-from ..core import issue, one_of
-from ..core.fp import Good, OneOf
-from ..core.issue import Issue
 from .config import Config, Workflow
 from .git_env import GitEnv
 
@@ -28,15 +26,15 @@ def _verify_version(
     is_hotfix_pr: bool,
     is_release: bool,
 ) -> OneOf[Issue, int]:
-    if config.workflow in [Workflow.git_flow, Workflow.m_flow]:
+    if config.workflow in {Workflow.git_flow, Workflow.m_flow}:
         if config.uses_git_flow():
             pr_branch = git_env.get_pr_branch()
             flow = config.git_flow
             # Skip verification when release or hotfix are going to develop
             if git_env.target_branch == flow.develop_branch:
                 if (
-                    pr_branch.startswith(flow.release_prefix) or
-                    pr_branch.startswith(flow.hotfix_prefix)
+                    pr_branch.startswith(flow.release_prefix)
+                    or pr_branch.startswith(flow.hotfix_prefix)
                 ):
                     return Good(0)
         return config.verify_version(
@@ -75,8 +73,8 @@ def _extra_checks(
         else (master_branch, develop_branch)
     )
     if (
-        (is_release_pr or is_hotfix_pr) and
-        git_env.target_branch not in valid_branches
+        (is_release_pr or is_hotfix_pr)
+        and git_env.target_branch not in valid_branches
     ):
         error_type = 'release' if is_release_pr else 'hotfix'
         return issue(f'invalid {error_type}-pr', data={
@@ -130,6 +128,7 @@ def get_release_env(
             gh_latest,
             is_release_pr=is_release_pr,
             is_hotfix_pr=is_hotfix_pr,
-            is_release=is_release)
+            is_release=is_release,
+        )
         for build_tag in git_env.get_build_tag(config, env_vars.run_id)
     ])

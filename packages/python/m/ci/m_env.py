@@ -45,7 +45,14 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
 
 
 def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
-    """Serialize the m environment variables."""
+    """Serialize the m environment variables.
+
+    Args:
+        m_env: The `M` environment.
+
+    Returns:
+        A string if successful.
+    """
     config = m_env.config
     env_vars = m_env.env_vars
     git = m_env.git_env

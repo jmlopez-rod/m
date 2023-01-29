@@ -20,14 +20,20 @@ IssueDict = TypedDict(
 )
 
 
-def remove_traceback(obj: object) -> None:
-    """Remove the `traceback` key from a dictionary if it exists and
-    recursively remove the `traceback` from its cause."""
-    if isinstance(obj, dict):
-        if 'traceback' in obj:
-            del obj['traceback']
-        if 'cause' in obj:
-            remove_traceback(obj['cause'])
+def remove_traceback(dict_inst: object) -> None:
+    """Remove the `traceback` key from a dictionary if it exists.
+
+    It will recursively remove the `traceback` from its cause.
+
+    Args:
+        dict_inst: A dictionary.
+    """
+    if isinstance(dict_inst, dict):
+        if 'traceback' in dict_inst:
+            dict_inst.pop('traceback')
+        cause = dict_inst.get('cause')
+        if cause:
+            remove_traceback(cause)
 
 
 class Issue(Exception):  # noqa: N818 - Intention is not to raise
@@ -97,8 +103,13 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
                 del frame
 
     def to_dict(self) -> IssueDict:
-        """Convert to a ordered dictionary so that each of the properties are
-        written in an expected order.
+        """Convert to a ordered dictionary.
+
+        This is done so that each of the properties are written in an expected
+        order.
+
+        Returns:
+            An `IssueDict` instance.
         """
         obj = cast(IssueDict, OrderedDict())
         obj['message'] = self.message
@@ -121,7 +132,11 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
     def to_str(self, show_traceback: bool) -> str:
         """Convert the instance to string.
 
-        We have the option of not showing the traceback.
+        Args:
+            show_traceback: If false, it will remove the error traceback.
+
+        Returns:
+            A string representation of the Issue instance.
         """
         obj = self.to_dict()
         if not show_traceback:
