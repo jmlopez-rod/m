@@ -3,6 +3,7 @@ import json
 import sys
 import traceback
 from collections import OrderedDict
+from contextlib import suppress
 from typing import cast
 
 from typing_extensions import TypedDict
@@ -36,7 +37,10 @@ def remove_traceback(issue_dict: object) -> None:
             remove_traceback(cause)
 
 
-class Issue(Exception):  # noqa: N818 - Intention is not to raise
+# Rule WPS230 is suppressed here since I want to have a flat structure
+# with this class. In other places we can refactor and group attributes into
+# other classes.
+class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
     """Wrapper to keep track of all exceptions.
 
     It provides a 'cause' field so that we may know why an issue was
@@ -52,7 +56,7 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
     include_traceback: bool
     cause_tb: list[str] | None
 
-    def __init__(
+    def __init__(  # noqa: WPS211 - need to initialize the attributes
         self,
         message: str,
         description: str | None = None,
@@ -75,7 +79,7 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
         self.cause = cause
         if cause and not isinstance(cause, Issue):
             # https://stackoverflow.com/a/12539332/788553
-            try:
+            with suppress(BaseException):
                 exception_list = [
                     *traceback.format_tb(sys.exc_info()[2]),
                     *traceback.format_exception_only(
@@ -88,20 +92,15 @@ class Issue(Exception):  # noqa: N818 - Intention is not to raise
                     for x in exception_list
                     for y in x.splitlines()
                 ]
-            finally:
-                pass
         self.context = context
         self.include_traceback = include_traceback
         if self.include_traceback:
             frame = inspect.currentframe()
-            try:
-                self.traceback = [
-                    y
-                    for x in traceback.format_stack(frame)[:-1]
-                    for y in x.splitlines()
-                ]
-            finally:
-                del frame
+            self.traceback = [
+                y
+                for x in traceback.format_stack(frame)[:-1]
+                for y in x.splitlines()
+            ]
 
     def to_dict(self) -> IssueDict:
         """Convert to a ordered dictionary.

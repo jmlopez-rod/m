@@ -23,23 +23,20 @@ def _verify_version(
     git_env: GitEnv,
     gh_latest: str,
     is_release_pr: bool,
-    is_hotfix_pr: bool,
     is_release: bool,
 ) -> OneOf[Issue, int]:
     if config.workflow in {Workflow.git_flow, Workflow.m_flow}:
         if config.uses_git_flow():
             pr_branch = git_env.get_pr_branch()
             flow = config.git_flow
+            prefixes = (flow.release_prefix, flow.hotfix_prefix)
             # Skip verification when release or hotfix are going to develop
             if git_env.target_branch == flow.develop_branch:
-                if (
-                    pr_branch.startswith(flow.release_prefix)
-                    or pr_branch.startswith(flow.hotfix_prefix)
-                ):
+                if pr_branch.startswith(prefixes):
                     return Good(0)
         return config.verify_version(
             gh_latest,
-            is_release_pr=(is_release_pr or is_hotfix_pr),
+            is_release_pr=is_release_pr,
             is_release=is_release,
         )
     # Covers Workflow.free_flow
@@ -72,10 +69,8 @@ def _extra_checks(
         if config.uses_m_flow()
         else (master_branch, develop_branch)
     )
-    if (
-        (is_release_pr or is_hotfix_pr)
-        and git_env.target_branch not in valid_branches
-    ):
+    release_pr = is_release_pr or is_hotfix_pr
+    if release_pr and git_env.target_branch not in valid_branches:
         error_type = 'release' if is_release_pr else 'hotfix'
         return issue(f'invalid {error_type}-pr', context={
             'expected_target_branch': master_branch,
@@ -126,8 +121,7 @@ def get_release_env(
             config,
             git_env,
             gh_latest,
-            is_release_pr=is_release_pr,
-            is_hotfix_pr=is_hotfix_pr,
+            is_release_pr=is_release_pr or is_hotfix_pr,
             is_release=is_release,
         )
         for build_tag in git_env.get_build_tag(config, env_vars.run_id)
