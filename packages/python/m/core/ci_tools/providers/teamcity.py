@@ -13,6 +13,7 @@ REPLACEMENTS = (
     ('\n', '|n'),
 )
 
+
 # Do not use outside of module. This is done here to avoid
 # disabling a flake8 for every ci tool method.
 _print = print
@@ -33,6 +34,18 @@ def escape_msg(msg: str) -> str:
     for target, replacement in REPLACEMENTS:
         message = message.replace(target, replacement)
     return message
+
+
+def _escape(name: str, description: str) -> str:
+    desc = escape_msg(description)
+    return f"{name}='{desc}'"
+
+
+def _tc(msg: str, **kwargs) -> str:
+    key_items = ' '.join(
+        [_escape(name, desc) for name, desc in kwargs.items()],
+    ).strip()
+    return f'##teamcity[{msg} {key_items}]'
 
 
 def env_vars() -> OneOf[Issue, EnvVars]:
@@ -60,9 +73,8 @@ def open_block(
         description: The block description.
         stream: Defaults to sys.stdout.
     """
-    desc = escape_msg(description)
     _print(
-        f"##teamcity[blockOpened name='{name}' description='{desc}']",
+        _tc('blockOpened', name=name, description=description),
         file=stream or sys.stdout,
     )
 
@@ -74,7 +86,7 @@ def close_block(name: str, stream: TextIO | None = None) -> None:
         name: The name of the block to close.
         stream: Defaults to sys.stdout.
     """
-    _print(f"##teamcity[blockClosed name='{name}']", file=stream or sys.stdout)
+    _print(_tc('blockClosed', name=name), file=stream or sys.stdout)
 
 
 def error(msg: Message | str) -> None:
@@ -88,7 +100,7 @@ def error(msg: Message | str) -> None:
     """
     if isinstance(msg, str):
         _print(
-            f"##teamcity[buildProblem description='{msg}']",
+            _tc('buildProblem', description=msg),
             file=sys.stderr,
         )
         return
@@ -96,9 +108,9 @@ def error(msg: Message | str) -> None:
     parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
     msg_info = f'[{loc}]: ' if loc else ''
-    desc = escape_msg(f'{msg_info}{msg.message}' or '')
+    desc = f'{msg_info}{msg.message}' or ''
     _print(
-        f"##teamcity[buildProblem description='{desc}']",
+        _tc('buildProblem', description=desc),
         file=stream,
     )
 
@@ -113,7 +125,7 @@ def warn(msg: Message | str) -> None:
     """
     if isinstance(msg, str):
         _print(
-            f"##teamcity[message status='WARNING' text='{msg}']",
+            _tc('message', status='WARNING', text=msg),
             file=sys.stderr,
         )
         return
@@ -121,9 +133,9 @@ def warn(msg: Message | str) -> None:
     parts = [x for x in (msg.file, msg.line, msg.col) if x]
     loc = ':'.join(parts)
     msg_info = f'[{loc}]: ' if loc else ''
-    desc = escape_msg(f'{msg_info}{msg.message}' or '')
+    desc = f'{msg_info}{msg.message}' or ''
     _print(
-        f"##teamcity[message status='WARNING' text='{desc}']",
+        _tc('message', status='WARNING', text=desc),
         file=stream,
     )
 

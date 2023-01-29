@@ -81,7 +81,7 @@ def update_changelog_file(
         owner: The repo owner.
         repo: The repo name.
         new_ver: The version that is being released.
-        first_sha: The first sha ever commited on the repo.
+        first_sha: The first sha ever committed on the repo.
         filename: Specify the CHANGELOG file (defaults to CHANGELOG.md)
 
     Returns:

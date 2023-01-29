@@ -4,12 +4,11 @@
     "WPS211": 1,
     "WPS232": 1,
     "WPS100": 1,
-    "WPS425": 2,
     "WPS361": 2,
     "WPS231": 2,
     "WPS229": 3,
     "WPS421": 5,
-    "WPS226": 6
+    "WPS226": 5
   },
   "allowedPylintRules": {
     "too-many-locals": 2,

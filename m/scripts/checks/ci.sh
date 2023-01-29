@@ -5,7 +5,7 @@ export PYTHONPATH="${PWD}/packages/python"
 export PATH="${PWD}/packages/bash/lib:$PATH"
 
 # Use regex to filter files: --file-regex='.*(npm_tag|http)\.py$'
-m ci celt -m 15 -t flake8 -c @allowed_errors.json < <(flake8 packages/python/m)
+m ci celt -t flake8 -c @allowed_errors.json < <(flake8 packages/python/m)
 
 # static checks
 mypy ./packages/python/m

@@ -27,7 +27,11 @@ def get_pr_info(
     Returns:
         The pull request information.
     """
-    query = create_ci_query(pr_number, False, False)
+    query = create_ci_query(
+        pr_number,
+        include_commit=False,
+        include_release=False,
+    )
     variables = {
         'owner': owner,
         'repo': repo,
