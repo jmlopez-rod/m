@@ -8,5 +8,9 @@
     "reviewRelease": "./bash/lib/reviewRelease.sh",
     "endRelease": "./bash/lib/endRelease.sh",
     "m": "./bash/lib/m"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com/"
   }
 }
