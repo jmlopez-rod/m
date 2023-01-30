@@ -72,7 +72,7 @@ def fetch_response(
     # See the next link for explanation disabling WPS440:
     #  https://github.com/wemake-services/wemake-python-styleguide/issues/1416
     try:
-        connection.request(method, path, body, fetch_headers)
+        connection.request(str(method), path, body, fetch_headers)
     except Exception as ex:
         return issue(f'{protocol} request failure', cause=ex, context=ctxt)
     try:
