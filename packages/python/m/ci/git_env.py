@@ -175,9 +175,7 @@ class GitEnv(BaseModel):
         if config.uses_git_flow() and is_dev_branch:
             if is_release or is_release_pr or is_hotfix_pr:
                 return Good('SKIP')
-        pr_number = maybe(
-            lambda: self.pull_request.pr_number,  # type: ignore[union-attr]
-        )
+        pr_number = maybe(lambda: self.pull_request.pr_number)  # type: ignore[union-attr]
         ver_input = VersionInputs(
             version=config.version,
             version_prefix=_build_tag_prefix(config),

@@ -95,7 +95,7 @@ def create_changelog() -> OneOf[Issue, int]:
         > The public API should not be considered stable.
 
         ## [Unreleased]
-    """  # noqa: E501, E800
+    """
     cbody = cdoc(body)
     return mio.write_file('CHANGELOG.md', f'{cbody}\n')
 

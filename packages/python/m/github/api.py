@@ -4,11 +4,17 @@ from typing import Any, Mapping, Optional
 from m.core import Good, Issue, OneOf, http, issue, one_of
 from pydantic import BaseModel
 
+HttpMethod = http.HttpMethod
+
+
+def _repos(owner: str, repo: str, *endpoint: str) -> str:
+    return '/'.join(['', 'repos', owner, repo, *endpoint])
+
 
 def request(
     token: str,
     endpoint: str,
-    method: str = 'GET',
+    method: HttpMethod = HttpMethod.get,
     dict_data: Optional[Any] = None,
 ) -> OneOf[Issue, Any]:
     """Make an api request to github.
@@ -26,7 +32,7 @@ def request(
 
     Returns:
         A response from Github.
-    """  # noqa: E501
+    """
     url = f'https://api.github.com{endpoint}'
     headers = {'authorization': f'Bearer {token}'}
     return http.fetch_json(url, headers, method, dict_data)
@@ -67,7 +73,7 @@ def graphql(
     return one_of(
         lambda: [
             payload
-            for res in request(token, '/graphql', 'POST', payload)
+            for res in request(token, '/graphql', HttpMethod.post, payload)
             for payload in _filter_data(res)
         ],
     )
@@ -92,7 +98,7 @@ def create_release(
     Returns:
         The Github response after a release is created.
     """
-    endpoint = f'/repos/{owner}/{repo}/releases'
+    endpoint = _repos(owner, repo, 'releases')
     base = 'https://github.com'
     link = f'{base}/{owner}/{repo}/blob/master/CHANGELOG.md#{version}'
     payload = {
@@ -104,7 +110,7 @@ def create_release(
     }
     if branch:
         payload['target_commitish'] = branch
-    return request(token, endpoint, 'POST', payload)
+    return request(token, endpoint, HttpMethod.post, payload)
 
 
 class GithubPullRequest(BaseModel):
@@ -133,8 +139,8 @@ def create_pr(
     Returns:
         The Github response if successful.
     """
-    endpoint = f'/repos/{owner}/{repo}/pulls'
-    return request(token, endpoint, 'POST', pr_info.dict())
+    endpoint = _repos(owner, repo, 'pulls')
+    return request(token, endpoint, HttpMethod.post, pr_info.dict())
 
 
 def merge_pr(
@@ -156,9 +162,9 @@ def merge_pr(
     Returns:
         The payload provided by Github if successful.
     """
-    endpoint = f'/repos/{owner}/{repo}/pulls/{pr_number}/merge'
+    endpoint = _repos(owner, repo, 'pulls', str(pr_number), 'merge')
     payload = {'commit_title': commit_title} if commit_title else {}
-    return request(token, endpoint, 'PUT', payload)
+    return request(token, endpoint, HttpMethod.put, payload)
 
 
 @dataclass
@@ -196,7 +202,7 @@ def commit_status(
     Returns:
         The response from Github after setting a commit status.
     """
-    endpoint = f'/repos/{owner}/{repo}/statuses/{sha_info.sha}'
+    endpoint = _repos(owner, repo, 'statuses', sha_info.sha)
     payload = {
         'context': sha_info.context,
         'state': sha_info.state,
@@ -204,4 +210,4 @@ def commit_status(
     }
     if sha_info.url:
         payload['target_url'] = sha_info.url
-    return request(token, endpoint, 'POST', payload)
+    return request(token, endpoint, HttpMethod.post, payload)

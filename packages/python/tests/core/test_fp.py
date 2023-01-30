@@ -2,6 +2,7 @@ import unittest
 
 from m.core import one_of
 from m.core.fp import Bad, Good
+from m.core.maybe import non_null
 from m.core.one_of import to_one_of
 from tests.conftest import assert_issue
 
@@ -57,3 +58,14 @@ def test_to_one_of():
     assert good.value == 0
     bad = to_one_of(failure_func, 'failure message', {'data': 'helpful'})
     assert_issue(bad, 'failure message')
+
+def _possibly_none() -> str | None:
+    return 'some_value'
+
+
+def test_non_null() -> None:
+    possible_string = _possibly_none()
+    # non_null is `!` from typescript. At times we need to help python
+    # know that we have a non null value.
+    string_for_real = non_null(possible_string)
+    assert string_for_real == 'some_value'

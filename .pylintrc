@@ -15,6 +15,7 @@ disable=
 extension-pkg-whitelist=pydantic
 
 no-docstring-rgx=^_|run|add_parser|main|add_arguments|^test|(.*)Test$
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$|^.*# type: ignore\[union-attr\]$
 
 good-names=_,
   i, j, k,

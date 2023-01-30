@@ -6,6 +6,7 @@ ignore =
   D100,    # Missing docstring in public module
   D103,    # Missing docstring in public function
   D104,    # Missing docstring in public package
+  E501,    # pylint has a flexible configuration on long lines
   WPS300,  # Found local folder import
   WPS210,  # Found too many local variables: 8 > 5
   WPS221,  # Found line with high Jones Complexity: 15 > 14
@@ -15,7 +16,7 @@ ignore =
   WPS111,  # Found too short name: x < 2
   WPS224,  # Found a comprehension with too many `for` statements
   RST203,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
-  RST301   # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
+  RST301,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
 per-file-ignores =
   # There are multiple `assert`s in tests, we allow them:
   packages/python/tests/*.py:S101

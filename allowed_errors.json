@@ -8,7 +8,7 @@
     "WPS231": 2,
     "WPS229": 3,
     "WPS421": 5,
-    "WPS226": 5
+    "WPS226": 2
   },
   "allowedPylintRules": {
     "too-many-locals": 2,
