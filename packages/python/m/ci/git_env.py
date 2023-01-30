@@ -236,7 +236,6 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
         return Good(git_env)
 
     pr_number = get_pr_number(branch)
-    print('testing:', env_vars.github_token)  # noqa: WPS421
     git_env_box = get_ci_run_info(
         token=env_vars.github_token,
         commit_info=CommitInfo(

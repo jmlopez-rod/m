@@ -6,7 +6,7 @@ export PATH="${PWD}/packages/bash/lib:$PATH"
 set -xeuo pipefail
 
 # source the m environment
-m ci env m
+m ci env m > /dev/null
 source m/.m/env.list
 export $(cut -d= -f1 m/.m/env.list)
 

@@ -63,7 +63,7 @@ def fetch_response(
     protocol, hostname, path = [parts.scheme, parts.netloc, parts.path]
     path = f'{path}?{parts.query}' if parts.query else path
     fetch_headers = {'user-agent': 'm', **headers}
-    ctxt: dict[str, str] = {'url': f'{hostname}{path}'}
+    ctxt: dict[str, str] = {'url': f'{hostname}{path}', 'method': f'{method}'}
     if body:
         fetch_headers['content-length'] = str(len(body))
         if 'DEBUG_HTTP_INCLUDE_BODY' in os.environ:
@@ -72,7 +72,7 @@ def fetch_response(
     # See the next link for explanation disabling WPS440:
     #  https://github.com/wemake-services/wemake-python-styleguide/issues/1416
     try:
-        connection.request(str(method), path, body, fetch_headers)
+        connection.request(f'{method}', path, body, fetch_headers)
     except Exception as ex:
         return issue(f'{protocol} request failure', cause=ex, context=ctxt)
     try:
