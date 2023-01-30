@@ -70,6 +70,7 @@ def graphql(
         The Github response.
     """
     payload = {'query': query, 'variables': variables or {}}
+    print('method:', HttpMethod.post)
     return one_of(
         lambda: [
             payload
