@@ -8,10 +8,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
+    runs-on: ubuntu-22.04
+    permissions: write-all
     container:
       image: ghcr.io/jmlopez-rod/m-devcontainer:latest
       credentials:
@@ -30,6 +28,7 @@ jobs:
       - name: PATH setup
         run: |
           echo "./packages/bash/lib" >> $GITHUB_PATH
+
       - name: Checks
         run: ./m/scripts/checks/ci.sh
 
