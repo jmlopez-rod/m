@@ -1,27 +1,14 @@
-from typing import Any
+import pytest
 from m.ci.config import Workflow
 from m.ci.git_env import get_git_env
 from m.ci.release_env import ReleaseEnv, get_release_env
 from m.core import one_of
 from m.core.fp import Good
-from tests.conftest import assert_ok, assert_issue
-from pydantic import BaseModel
-import pytest
-
-from ...util import read_fixture
-from .util import CONFIG, ENV_VARS, mock_commit_sha
-
-
 from pytest_mock import MockerFixture
+from tests.conftest import assert_issue, assert_ok
+from tests.util import read_fixture
 
-
-class TCase(BaseModel):
-    desc: str
-    config: dict[str, Any]
-    env_vars: dict[str, Any]
-    gh_res: str
-    release_env: ReleaseEnv | None = None
-    err: str | None = None
+from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
 
 
 @pytest.mark.parametrize('tcase', [

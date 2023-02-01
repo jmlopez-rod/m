@@ -239,10 +239,10 @@ class CeltTest(FpTestCase):
             'missing-function-docstring (found 1, allowed 0)',
             'import-outside-toplevel (found 2, allowed 0)',
         ])
-        expected = inspect.cleandoc('''
+        expected = inspect.cleandoc("""
             missing-function-docstring      1        0
             import-outside-toplevel         2        0
-        ''').strip()
+        """).strip()
         self.assertIn(expected, output)
         self.assertEqual(
             project.error_msg,

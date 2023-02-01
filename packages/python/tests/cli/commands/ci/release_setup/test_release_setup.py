@@ -2,9 +2,9 @@ import json
 from datetime import datetime
 from functools import partial
 
-import m.core.rw as mio
 import pytest
 from m.core import Good
+from m.core import rw as mio
 from pytest_mock import MockerFixture
 from tests.cli.conftest import assert_streams, run_cli
 

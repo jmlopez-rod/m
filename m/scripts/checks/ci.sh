@@ -17,5 +17,6 @@ mypy ./packages/python/tests
 # pylint
 m ci celt -t pylint -m 10 -c @allowed_errors.json < <(pylint ./packages/python/m --rcfile=.pylintrc -f json)
 
-# need to update celt to get these issues in the allowed_errors.json file
-# pylint ./packages/python/tests --rcfile=packages/python/tests/.pylintrc
+# lint tests
+m ci celt -t flake8 -c @allowed_errors_tests.json < <(flake8 packages/python/tests)
+m ci celt -t pylint -m 10 -c @allowed_errors_tests.json < <(pylint ./packages/python/tests --rcfile=packages/python/tests/.pylintrc -f json)

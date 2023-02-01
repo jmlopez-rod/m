@@ -1,5 +1,9 @@
+from typing import Any
+
 from m.ci.config import Config, GitFlowConfig, MFlowConfig, Workflow
+from m.ci.release_env import ReleaseEnv
 from m.core.ci_tools import EnvVars
+from pydantic import BaseModel
 
 CONFIG = Config(
     owner='jmlopez-rod',
@@ -33,3 +37,13 @@ def mock_commit_sha(sha: str) -> str:
             }}
         }}
     }}"""
+
+
+class TCase(BaseModel):
+    desc: str
+    config: dict[str, Any]
+    env_vars: dict[str, Any]
+    gh_res: str
+    release_env: ReleaseEnv | None = None
+    err: str | None = None
+

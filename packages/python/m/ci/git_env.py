@@ -53,6 +53,32 @@ def get_hotfix_prefix(config: Config) -> str | None:
     return None
 
 
+def _version_inputs(
+    git_env: 'GitEnv',
+    config: Config,
+    run_id: str,
+) -> VersionInputs | None:
+    is_release = git_env.is_release(config)
+    is_release_pr = git_env.is_release_pr(config)
+    is_hotfix_pr = git_env.is_hotfix_pr(config)
+    is_dev_branch = git_env.target_branch == config.git_flow.develop_branch
+    if config.uses_git_flow() and is_dev_branch:
+        if is_release or is_release_pr or is_hotfix_pr:
+            return None
+    pr_number = maybe(lambda: git_env.pull_request.pr_number)  # type: ignore[union-attr]
+    return VersionInputs(
+        version=config.version,
+        version_prefix=_build_tag_prefix(config),
+        run_id=run_id,
+        sha=git_env.sha,
+        pr_number=pr_number,
+        branch=git_env.target_branch,
+        is_release=is_release,
+        is_release_pr=is_release_pr,
+        is_hotfix_pr=is_hotfix_pr,
+    )
+
+
 class GitEnv(BaseModel):
     """Object to store the git configuration."""
 
@@ -135,31 +161,6 @@ class GitEnv(BaseModel):
         hotfix_prefix = get_hotfix_prefix(config)
         return self.pull_request.is_release_pr(hotfix_prefix)
 
-    def _version_inputs(
-        self,
-        config: Config,
-        run_id: str,
-    ) -> VersionInputs | None:
-        is_release = self.is_release(config)
-        is_release_pr = self.is_release_pr(config)
-        is_hotfix_pr = self.is_hotfix_pr(config)
-        is_dev_branch = self.target_branch == config.git_flow.develop_branch
-        if config.uses_git_flow() and is_dev_branch:
-            if is_release or is_release_pr or is_hotfix_pr:
-                return None
-        pr_number = maybe(lambda: self.pull_request.pr_number)  # type: ignore[union-attr]
-        return VersionInputs(
-            version=config.version,
-            version_prefix=_build_tag_prefix(config),
-            run_id=run_id,
-            sha=self.sha,
-            pr_number=pr_number,
-            branch=self.target_branch,
-            is_release=is_release,
-            is_release_pr=is_release_pr,
-            is_hotfix_pr=is_hotfix_pr,
-        )
-
     def get_build_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
         """Create a build tag for the current commit.
 
@@ -193,7 +194,7 @@ class GitEnv(BaseModel):
             A unique identifier for the build. This tag is compatible with
             both `npm` and `docker`.
         """
-        ver_input = self._version_inputs(config, run_id)
+        ver_input = _version_inputs(self, config, run_id)
         if ver_input:
             return Good(build_m_tag(ver_input, config))
         return Good('SKIP')
@@ -209,7 +210,7 @@ class GitEnv(BaseModel):
             A unique identifier for the build. This tag is compatible with
             python.
         """
-        ver_input = self._version_inputs(config, run_id)
+        ver_input = _version_inputs(self, config, run_id)
         if ver_input:
             return Good(build_py_tag(ver_input, config))
         return Good('SKIP')

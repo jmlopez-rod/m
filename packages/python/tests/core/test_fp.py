@@ -47,7 +47,7 @@ def test_fp_map():
     bad = Bad('to the bone').map(lambda _: 'not reachable')
     assert bad.is_bad
     assert bad.value == 'to the bone'
-    good = Good('x').map(lambda msg: msg + '^2')
+    good = Good('x').map(lambda msg: f'{msg}^2')
     assert not good.is_bad
     assert good.value == 'x^2'
 
