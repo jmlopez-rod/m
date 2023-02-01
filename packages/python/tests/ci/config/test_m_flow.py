@@ -1,4 +1,3 @@
-from dataclasses import replace as copy
 from typing import cast
 from unittest.mock import patch
 
@@ -51,7 +50,7 @@ class ConfigMFlowTest(FpTestCase):
             )
 
     def test_verify_version(self):
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         _test = config.verify_version
         # Init Repo
         config.version = '0.0.0'
@@ -104,7 +103,7 @@ class ConfigMFlowTest(FpTestCase):
         )
         # Should not be possible but just in case...
         config.version = '0.0.1'
-        gh_latest = '1.0.0-rc123'  # <- unparsable latest
+        gh_latest = '1.0.0-rc123.b123'  # <- unparsable latest
         self.assert_issue(
             _test(gh_latest, False, True),
             'error parsing latest',

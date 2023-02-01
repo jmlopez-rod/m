@@ -1,0 +1,28 @@
+FROM python:3.10.9-slim-bullseye
+
+LABEL org.opencontainers.image.source="https://github.com/jmlopez-rod/m"
+
+ENV TZ=Etc/UTC
+
+WORKDIR /scratch
+
+## Base
+RUN apt-get update \
+  && apt-get install -y \
+    git make \
+    nodejs npm \
+    curl bash-completion
+
+## PNPM
+RUN npm install -g pnpm
+
+ENV WORKSPACE=/workspace
+WORKDIR $WORKSPACE
+
+## Python env
+RUN python -m venv $WORKSPACE/venv
+ENV PATH=$WORKSPACE/venv/bin:$PATH
+
+## Libraries
+COPY packages/docker/requirements.txt .
+RUN pip3 install -r requirements.txt

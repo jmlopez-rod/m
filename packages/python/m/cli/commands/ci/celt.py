@@ -1,17 +1,17 @@
-import inspect
 import sys
-from typing import Tuple, cast
+from typing import Any, cast
+
+from m.cli import command, validate_json_payload, validate_payload
+from pydantic import BaseModel, Field
 
 from ....core import one_of
-from ...argparse import STORE_TRUE, Arg, add_arguments
 from ...utils import display_issue
-from ...validators import validate_json_payload, validate_payload
 
-DESC = """
-    process the output of a compiler or linter to determine if the ci
-    process should stop.
 
-    examples:
+class Arguments(BaseModel):
+    """Process a compiler or linter output to determine if the cli should stop.
+
+    examples::
 
         ~$ m ci celt -t eslint -c @config.json < <(eslint [dir] -f json)
 
@@ -21,7 +21,7 @@ DESC = """
     Depending on the tool that is chosen the configuration should have an
     entry of the form "allowed[ToolName]Rules" or "ignored[ToolName]Rules".
     Only the first letter of the tool should be capitalized to conform to
-    the camelcase style.
+    the camel case style.
 
     The entry should define a map of rule ids to the number of allowed
     violations. In the case of `ignored[ToolName]Rules` we may define
@@ -35,93 +35,94 @@ DESC = """
     Each tool will have different outputs. See below information for each
     tool.
 
-    - eslint: expects json output.
+    - eslint: expects json output::
 
         eslint -f json [dir]
 
-    - pycodestyle: expects default output.
+    - pycodestyle: expects default output::
 
         pycodestyle --format=default [dir]
 
-    - flake8: expects default output.
+    - flake8: expects default output::
 
         flake8 [dir]
 
-    - pylint: expects json output
+    - pylint: expects json output::
 
         pylint -f json --rcfile=[file] [dir]
-"""
+    """
 
-ARGS: Tuple[Arg, ...] = (
-    (
-        ['payload'],
-        'data: @- (stdin), @filename (file), string. Defaults to @-',
-        {'type': validate_payload, 'nargs': '?', 'default': '@-'},
-    ),
-    (
-        ['-t', '--tool'],
-        'name of a supported compiler/linter',
-        {'required': True},
-    ),
-    (
-        ['-c', '--config'],
-        'config data: @filename (file), string',
-        {'type': validate_json_payload, 'default': '{}'},  # noqa: P103
-    ),
-    (
-        ['-m', '--max-lines'],
-        'max number of error lines to print (Defaults to 5, -1 for all)',
-        {'type': int, 'default': 5},
-    ),
-    (
-        ['-r', '--file-regex'],
-        'regex expression to filter files',
-        {},
-    ),
-    (
-        ['-p', '--file-prefix'],
-        "replace file prefix with 'old1|old2:new'",
-        {},
-    ),
-    (
-        ['-i', '--ignore-error-allowance'],
-        'set every error allowence to 0',
-        {**STORE_TRUE},
-    ),
-    (
-        ['-s', '--stats-only'],
-        'display a dictionary with current total violations',
-        {**STORE_TRUE},
-    ),
-    (
-        ['-f', '--full-message'],
-        'display the full error message',
-        {**STORE_TRUE},
-    ),
-    (
-        ['--traceback'],
-        'display the exception traceback if available',
-        {**STORE_TRUE},
-    ),
-)
-
-
-def add_parser(sub_parser, raw):
-    parser = sub_parser.add_parser(
-        'celt',
-        help='process the output of compiler/linter',
-        formatter_class=raw,
-        description=inspect.cleandoc(DESC),
+    payload: str = Field(
+        default='@-',
+        description='data: @- (stdin), @filename (file), string',
+        validator=validate_payload,
+        positional=True,
     )
-    add_arguments(parser, ARGS)
+
+    tool: str = Field(
+        aliases=['t', 'tool'],
+        description='name of a supported compiler/linter',
+        required=True,
+    )
+
+    config: Any = Field(
+        default='{}',  # noqa: P103 - json object, not attempting to format
+        aliases=['c', 'config'],
+        description='config data: @filename (file), string',
+        validator=validate_json_payload,
+    )
+
+    max_lines: int = Field(
+        default=5,
+        aliases=['m', 'max_lines'],
+        description='max number of error lines to print, use -1 for all',
+    )
+
+    file_regex: str | None = Field(
+        aliases=['r', 'file_regex'],
+        description='regex expression to filter files',
+    )
+
+    file_prefix: str | None = Field(
+        aliases=['p', 'file_prefix'],
+        description="replace file prefix with 'old1|old2:new'",
+    )
+
+    ignore_error_allowance: bool = Field(
+        default=False,
+        aliases=['i', 'ignore_error_allowance'],
+        description='set every error allowance to 0',
+    )
+
+    stats_only: bool = Field(
+        default=False,
+        aliases=['s', 'stats_only'],
+        description='display a dictionary with current total violations',
+    )
+
+    full_message: bool = Field(
+        default=False,
+        aliases=['f', 'full_message'],
+        description='display the full error message',
+    )
+
+    traceback: bool = Field(
+        default=False,
+        description='display the exception traceback if available',
+    )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
+@command(
+    name='celt',
+    help='process the output of compiler/linter',
+    model=Arguments,
+)
+def run(arg: Arguments):
+    from m.core.ci_tools import get_ci_tool
+
     from ....ci.celt.core.process import PostProcessor
     from ....ci.celt.core.types import Configuration, ProjectStatus
     from ....ci.celt.post_processor import get_post_processor
-    from ....core.io import CiTool
     from ....core.issue import Issue
 
     config = Configuration(
@@ -150,5 +151,5 @@ def run(arg):
     )
     print(output, file=sys.stderr)  # noqa: WPS421
     if project.error_msg:
-        CiTool.error(project.error_msg)
+        get_ci_tool().error(project.error_msg)
     return project.status.value

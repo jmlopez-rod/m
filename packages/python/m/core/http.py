@@ -1,5 +1,8 @@
 import json as builtin_json
+import os
 from dataclasses import dataclass
+from enum import Enum
+from http import HTTPStatus
 from http import client as httplib
 from typing import Any, Mapping, Optional
 from urllib.parse import urlparse
@@ -8,8 +11,16 @@ from . import Issue, issue, one_of
 from .fp import Good, OneOf
 from .json import parse_json
 
-STATUS_OK = 200
-STATUS_REDIRECT = 300
+
+class HttpMethod(str, Enum):  # noqa: WPS600
+    """Python 3.10 does not have this enum.
+
+    https://docs.python.org/3/library/http.html#http-methods
+    """
+
+    get = 'GET'
+    post = 'POST'
+    put = 'PUT'
 
 
 @dataclass
@@ -29,7 +40,7 @@ def _get_connection(protocol: str, hostname: str) -> httplib.HTTPConnection:
 def fetch_response(
     url: str,
     headers: Mapping[str, str],
-    method: str = 'GET',
+    method: HttpMethod = HttpMethod.get,
     body: Optional[str] = None,
 ) -> OneOf[Issue, FetchedResponse]:
     """Send an http(s) request.
@@ -52,14 +63,16 @@ def fetch_response(
     protocol, hostname, path = [parts.scheme, parts.netloc, parts.path]
     path = f'{path}?{parts.query}' if parts.query else path
     fetch_headers = {'user-agent': 'm', **headers}
+    ctxt: dict[str, str] = {'url': f'{hostname}{path}', 'method': f'{method}'}
     if body:
         fetch_headers['content-length'] = str(len(body))
+        if 'DEBUG_HTTP_INCLUDE_BODY' in os.environ:
+            ctxt['body'] = body
     connection = _get_connection(protocol, hostname)
-    ctxt = {'url': f'{hostname}{path}'}
     # See the next link for explanation disabling WPS440:
     #  https://github.com/wemake-services/wemake-python-styleguide/issues/1416
     try:
-        connection.request(method, path, body, fetch_headers)
+        connection.request(f'{method}', path, body, fetch_headers)
     except Exception as ex:
         return issue(f'{protocol} request failure', cause=ex, context=ctxt)
     try:
@@ -71,7 +84,7 @@ def fetch_response(
     except Exception as ex:  # noqa: WPS440
         return issue(f'{protocol} read failure', cause=ex, context=ctxt)
     code = res.getcode()
-    if STATUS_OK <= code < STATUS_REDIRECT:
+    if HTTPStatus.OK <= code < HTTPStatus.MULTIPLE_CHOICES:
         return Good(FetchedResponse(
             response=res,
             body=res_body,
@@ -90,7 +103,7 @@ def fetch_response(
 def fetch(
     url: str,
     headers: Mapping[str, str],
-    method: str = 'GET',
+    method: HttpMethod = HttpMethod.get,
     body: Optional[str] = None,
 ) -> OneOf[Issue, str]:
     """Send an http(s) request.
@@ -118,10 +131,10 @@ def fetch(
 def fetch_json(
     url: str,
     headers: Mapping[str, str],
-    method: str = 'GET',
+    method: HttpMethod = HttpMethod.get,
     body_json: Any = None,
 ) -> OneOf[Issue, Any]:
-    """Especialized fetch to deal with json data.
+    """Specialized fetch to deal with json data.
 
     Args:
         url:

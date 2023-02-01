@@ -1,20 +1,17 @@
-from dataclasses import dataclass
 from typing import List, Optional
 
-from ..core.io import JsonStr
+from pydantic import BaseModel
 
 
-@dataclass
-class Author(JsonStr):
-    """An object representing a commiter."""
+class Author(BaseModel):
+    """An object representing a committer."""
 
     login: str
     avatar_url: str
     email: str
 
 
-@dataclass
-class AssociatedPullRequest(JsonStr):
+class AssociatedPullRequest(BaseModel):
     """Information for commits that are associated with a pull request."""
 
     # pylint: disable=too-many-instance-attributes
@@ -29,8 +26,7 @@ class AssociatedPullRequest(JsonStr):
     body: str
 
 
-@dataclass
-class Commit(JsonStr):
+class Commit(BaseModel):
     """The git commit info."""
 
     author_login: str
@@ -41,21 +37,31 @@ class Commit(JsonStr):
     associated_pull_request: Optional[AssociatedPullRequest] = None
 
     def get_pr_branch(self) -> str:
-        """Return the pr branch if the commit has an associated pr or empty
-        string."""
+        """Find the git branch if commit has an associated pr.
+
+        Returns:
+            The pr branch if the commit has an associated pr or empty
+            string.
+        """
         if not self.associated_pull_request:
             return ''
         return self.associated_pull_request.pr_branch
 
-    def is_release(self, release_prefix: Optional[str]) -> bool:
-        """Determine if the current commit should create a release."""
+    def is_release(self, release_prefix: str | None) -> bool:
+        """Determine if the current commit should create a release.
+
+        Args:
+            release_prefix: The prefix used to flag a release.
+
+        Returns:
+            True if we are dealing with a release branch.
+        """
         if not release_prefix:
             return False
         return self.get_pr_branch().startswith(release_prefix)
 
 
-@dataclass
-class PullRequest(JsonStr):
+class PullRequest(BaseModel):
     """Pull request information."""
 
     # pylint: disable=too-many-instance-attributes
@@ -71,15 +77,21 @@ class PullRequest(JsonStr):
     files: List[str]
     is_draft: bool
 
-    def is_release_pr(self, release_prefix: Optional[str]) -> bool:
-        """Determine if the pull request is a release pull request."""
+    def is_release_pr(self, release_prefix: str | None) -> bool:
+        """Determine if the pull request is a release pull request.
+
+        Args:
+            release_prefix: The prefix used to flag a release.
+
+        Returns:
+            True if we are dealing with a release branch.
+        """
         if not release_prefix:
             return False
         return self.pr_branch.startswith(release_prefix)
 
 
-@dataclass
-class Release(JsonStr):
+class Release(BaseModel):
     """Github release <==> Git tag."""
 
     name: str
@@ -87,8 +99,7 @@ class Release(JsonStr):
     published_at: str
 
 
-@dataclass
-class GithubCiRunInfo(JsonStr):
+class GithubCiRunInfo(BaseModel):
     """The main information we need for a ci run."""
 
     commit: Commit
@@ -96,8 +107,7 @@ class GithubCiRunInfo(JsonStr):
     release: Optional[Release] = None
 
 
-@dataclass
-class CommitInfo(JsonStr):
+class CommitInfo(BaseModel):
     """A commit can be tracked with the following properties."""
 
     owner: str

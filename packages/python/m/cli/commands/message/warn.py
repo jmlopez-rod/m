@@ -1,30 +1,47 @@
-import inspect
+from m.cli import command
+from pydantic import BaseModel, Field
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        report an warning
+class Arguments(BaseModel):
+    """Report a warning.
 
-        example:
+    example::
 
-            ~$ m message warn 'this is a warning' -f app.js -l 1 -c 5
-            ::warning file=app.js,line=1,col=5::Missing semicolon
+        ~$ m message warn 'this is a warning' -f app.js -l 1 -c 5
+        ::warning file=app.js,line=1,col=5::Missing semicolon
     """
-    parser = sub_parser.add_parser(
-        'warn',
-        help='report a warning',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
+
+    message: str = Field(
+        description='warning message',
+        positional=True,
+        required=True,
     )
-    add = parser.add_argument
-    add('message', type=str, help='warning message')
-    add('-f', '--file', type=str, help='filename where warning occurred')
-    add('-l', '--line', type=str, help='line where warning occurred')
-    add('-c', '--col', type=str, help='column where warning occurred')
+    file: str | None = Field(  # noqa: WPS110 - required by Github
+        aliases=['f', 'file'],
+        description='filename where warning occurred',
+    )
+    line: str | None = Field(
+        aliases=['l', 'line'],
+        description='line where warning occurred',
+    )
+    col: str | None = Field(
+        aliases=['c', 'col'],
+        description='column where warning occurred',
+    )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....core.io import CiTool
-    CiTool.warn(arg.message, arg.file, arg.line, arg.col)
+@command(
+    name='warn',
+    help='report a warning',
+    model=Arguments,
+)
+def run(arg: Arguments):
+    from m.core.ci_tools import Message, get_ci_tool
+    msg = Message(
+        message=arg.message,
+        file=arg.file,
+        line=arg.line,
+        col=arg.col,
+    )
+    get_ci_tool().warn(msg)
     return 0

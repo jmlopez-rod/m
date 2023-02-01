@@ -1,43 +1,37 @@
-import inspect
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Retrieve the latest release.
+class Arguments(BaseModel):
+    """Retrieve the latest release.
 
-        example:
+    example::
 
-            $ m github latest_release --owner microsoft --repo typescript
-
+        $ m github latest_release --owner microsoft --repo typescript
     """
-    parser = sub_parser.add_parser(
-        'latest_release',
-        help='get the latest release for a repo',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
-        type=str,
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.cli import get_latest_release
+@command(
+    name='latest_release',
+    help='get the latest release for a repo',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
+    from m.github.cli import get_latest_release
     return run_main(
         lambda: get_latest_release(
-            arg.token,
+            arg_ns.token,
             arg.owner,
             arg.repo,
         ), print,

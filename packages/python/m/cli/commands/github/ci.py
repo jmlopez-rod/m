@@ -1,91 +1,75 @@
-import inspect
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Retrieve the information required for continuous integration.
+class Arguments(BaseModel):
+    r"""Retrieve the information required for continuous integration.
 
-        example:
+    example::
 
-            $ m github ci \\
-                --owner jmlopez-rod \\
-                --repo pysync \\
-                --sha 4538b2a2556efcbdfc1e7df80c4f71ade45f3958 \\
-                --pr 1 \\
-                --include-release \\
-            | m json
-            {
-            "commit": {
-                "associatedPullRequests": {
-                "nodes": [
-                    {
-                    "author": {
-                        "login": "jmlopez-rod",
-                        "avatarUrl": "https://avatars.githubusercontent.com/u/1810397?s=50&v=4",
-                        "email": ""
-                    },
-            ...
+        $ m github ci \
+            --owner jmlopez-rod \
+            --repo pysync \
+            --sha 4538b2a2556efcbdfc1e7df80c4f71ade45f3958 \
+            --pr 1 \
+            --include-release | m json
+        {
+        "commit": {
+            "associatedPullRequests": {
+            "nodes": [
+                {
+                "author": {
+                    "login": "jmlopez-rod",
+                    "avatarUrl": "https://avatars.githubusercontent.com/...",
+                    "email": ""
+                },
+        ...
 
-        NOTE: Use the --merge-commit flag if you are providing a sha from
-        github actions.
-    """  # noqa
-    parser = sub_parser.add_parser(
-        'ci',
-        help='continous integration information',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
+    NOTE: Use the --merge-commit flag if you are providing a sha from
+    github actions.
+    """
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
-    add(
-        '--sha',
+    sha: str = Field(
+        description='commit sha',
         required=True,
-        help='commit sha',
     )
-    add(
-        '--pr',
-        type=int,
-        help='pull request number',
-    )
-    add(
-        '--file-count',
+    pr: int | None = Field(description='pull request number')
+    file_count: int = Field(
         default=10,
-        type=int,
-        help='max number of files to retrieve',
+        description='max number of files to retrieve',
     )
-    add(
-        '--include-release',
+    include_release: bool = Field(
         default=False,
-        action='store_true',
-        help='include the last release information',
+        description='include the last release information',
     )
-    add(
-        '--merge-commit',
+    merge_commit: bool = Field(
         default=False,
-        action='store_true',
-        help='set if the sha is a merge commit sha (from github)',
+        description='set if the sha is a merge commit sha (from github)',
     )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.ci import CommitInfo, get_raw_ci_run_info
+@command(
+    name='ci',
+    help='continuous integration information',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
+    from m.github.ci import CommitInfo, get_raw_ci_run_info
     return run_main(lambda: get_raw_ci_run_info(
-        arg.token,
-        CommitInfo(arg.owner, arg.repo, arg.sha),
+        arg_ns.token,
+        CommitInfo(owner=arg.owner, repo=arg.repo, sha=arg.sha),
         arg.pr,
         arg.file_count,
         arg.include_release,
-        arg.merge_commit,
+        get_sha=arg.merge_commit,
     ))

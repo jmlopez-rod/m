@@ -1,22 +1,27 @@
-import inspect
+from m.cli import command
+from pydantic import BaseModel, Field
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        close a block. When a block is closed, all its inner blocks are
-        closed automatically. Note: Not all CI Tools support nesting.
+class Arguments(BaseModel):
+    """Close a block.
+
+    When a block is closed, all its inner blocks are closed automatically.
+    Not all CI Tools support nesting.
     """
-    parser = sub_parser.add_parser(
-        'close',
-        help='close block',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
+
+    name: str = Field(
+        description='block name to close',
+        positional=True,
+        required=True,
     )
-    parser.add_argument('name', type=str, help='block name to close')
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....core.io import CiTool
-    CiTool.close_block(arg.name)
+@command(
+    name='close',
+    help='close a block',
+    model=Arguments,
+)
+def run(arg: Arguments):
+    from m.core.ci_tools import get_ci_tool
+    get_ci_tool().close_block(arg.name)
     return 0

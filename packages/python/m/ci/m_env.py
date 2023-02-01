@@ -1,16 +1,17 @@
-import os
-from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, cast
 
+from m.core import rw as mio
+from m.core.ci_tools import EnvVars, get_ci_tool
+from pydantic import BaseModel
+
 from ..core import Issue, fp, issue, one_of
-from ..core.io import CiTool, EnvVars, JsonStr, write_file
 from .config import Config, read_config
 from .git_env import GitEnv, get_git_env
 from .release_env import ReleaseEnv, get_release_env
 
 
-@dataclass
-class MEnv(JsonStr):
+class MEnv(BaseModel):
     """Contains all the information required for a CI run."""
 
     config: Config
@@ -20,18 +21,38 @@ class MEnv(JsonStr):
 
 
 def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
-    """Obtain the M Environment object."""
+    """Obtain the M Environment object.
+
+    Args:
+        m_dir: The directory containing the m configuration.
+
+    Returns:
+        The M Environment if it exists otherwise an issue.
+    """
+    ci_tool = get_ci_tool()
     return one_of(lambda: [
-        MEnv(config, env_vars, git_env, release_env)
+        MEnv(
+            config=config,
+            env_vars=env_vars,
+            git_env=git_env,
+            release_env=release_env,
+        )
         for config in read_config(m_dir)
-        for env_vars in CiTool.env_vars()
+        for env_vars in ci_tool.env_vars()
         for git_env in get_git_env(config, env_vars)
         for release_env in get_release_env(config, env_vars, git_env)
     ]).flat_map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
 
 
 def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
-    """Serialize the m environment variables."""
+    """Serialize the m environment variables.
+
+    Args:
+        m_env: The `M` environment.
+
+    Returns:
+        A string if successful.
+    """
     config = m_env.config
     env_vars = m_env.env_vars
     git = m_env.git_env
@@ -55,21 +76,31 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         'M_PR_BRANCH': git.get_pr_branch(),
         'M_PR_NUMBER': git.get_pr_number(),
         'M_TAG': release.build_tag,
+        'M_PY_TAG': release.python_tag,
         'M_IS_RELEASE': release.is_release,
         'M_IS_RELEASE_PR': release.is_release_pr,
         'M_IS_HOTFIX_PR': release.is_hotfix_pr,
     }
-    return fp.Good('\n'.join([f'{key}={val}' for key, val in env.items()]))
+    lines = [f'{env_key}={env_val}' for env_key, env_val in env.items()]
+    return fp.Good('\n'.join(lines))
 
 
 def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
-    """Write a file with the M environment variables."""
-    target_dir = f'{m_dir}/.m'
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
+    """Write a file with the M environment variables.
+
+    Args:
+        m_dir: The directory with the m configuration.
+
+    Returns:
+        An issue of the m environment instance.
+    """
+    target_dir = Path(f'{m_dir}/.m')
+
+    if not Path.exists(target_dir):
+        Path.mkdir(target_dir, parents=True)
     return one_of(lambda: [
         m_env
         for m_env in get_m_env(m_dir)
         for env_list in _m_env_vars(m_env)
-        for _ in write_file(f'{m_dir}/.m/env.list', env_list)
+        for _ in mio.write_file(f'{m_dir}/.m/env.list', env_list)
     ])

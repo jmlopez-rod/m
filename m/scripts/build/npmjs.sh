@@ -1,12 +1,14 @@
-n#!/bin/bash
+#!/bin/bash
 set -xeuo pipefail
 
 target=.stage-npmjs
 buildDir=./m/scripts/build/npmjs
 
 rm -rf "$target"
+mkdir -p "$target"
 
-cp -r ./packages "./$target"
+cp -r ./packages/bash "./$target/bash"
+cp -r ./packages/python "./$target/python"
 cp "$buildDir/package.json" "./$target/package.json"
 cp LICENSE README.md "./$target"
 

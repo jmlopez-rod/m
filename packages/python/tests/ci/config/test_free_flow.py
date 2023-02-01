@@ -1,4 +1,3 @@
-from dataclasses import replace as copy
 from typing import cast
 from unittest.mock import patch
 
@@ -54,8 +53,8 @@ class ConfigFreeFlowTest(FpTestCase):
             self.assert_issue(result, 'read_config failure')
             err = cast(Issue, cast(Issue, result.value).cause)
             self.assertEqual(err.message, 'multi_get key retrieval failure')
-            if isinstance(err.data, list):
-                msgs = {x['cause']['message'] for x in err.data}
+            if isinstance(err.context, list):
+                msgs = {x['cause']['message'] for x in err.context}
                 self.assertSetEqual(
                     msgs, set([
                         '`owner` path was not found',
@@ -89,7 +88,7 @@ class ConfigFreeFlowTest(FpTestCase):
 
     def test_verify_version(self):
         """On free-flow there are no releases."""
-        config = copy(self.base_config)
+        config = self.base_config.copy()
         _test = config.verify_version
         gh_latest = ''
         self.assert_ok(_test(gh_latest, False, False))

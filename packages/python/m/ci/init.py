@@ -1,13 +1,13 @@
-import os
 import re
 from inspect import cleandoc as cdoc
 from pathlib import Path
 from typing import List, Tuple
 
-from ..core import Good, Issue, OneOf, issue, one_of
-from ..core.io import CiTool, read_file, write_file
-from ..core.subprocess import eval_cmd
-from ..git import get_remote_url
+from m.core import Good, Issue, OneOf, issue, one_of
+from m.core import rw as mio
+from m.core import subprocess
+from m.core.ci_tools import get_ci_tool
+from m.git import get_remote_url
 
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
@@ -20,7 +20,7 @@ def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
         A tuple with the owner and repo (or an Issue).
     """
     match = re.findall('.*:(.*)/(.*).git', ssh_url)
-    if match:
+    if match and match[0] and match[0][0] and match[0][1]:
         return Good(match[0])
     return issue(
         'unable to obtain owner and repo',
@@ -55,7 +55,8 @@ def m_json_body(owner: str, repo: str) -> str:
         {{
           "owner": "{owner}",
           "repo": "{repo}",
-          "version": "0.0.0"
+          "version": "0.0.0",
+          "workflow": "m_flow"
         }}
     """
     cbody = cdoc(body)
@@ -68,12 +69,13 @@ def create_m_config() -> OneOf[Issue, int]:
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
-    if not os.path.exists('m'):
-        os.makedirs('m')
+    m_dir = Path('m')
+    if not Path.exists(m_dir):
+        Path.mkdir(m_dir, parents=True)
     return one_of(lambda: [
         0
         for owner, repo in get_repo_info()
-        for _ in write_file('m/m.json', m_json_body(owner, repo))
+        for _ in mio.write_file('m/m.json', m_json_body(owner, repo))
     ])
 
 
@@ -93,9 +95,9 @@ def create_changelog() -> OneOf[Issue, int]:
         > The public API should not be considered stable.
 
         ## [Unreleased]
-    """  # noqa: E501, E800
+    """
     cbody = cdoc(body)
-    return write_file('CHANGELOG.md', f'{cbody}\n')
+    return mio.write_file('CHANGELOG.md', f'{cbody}\n')
 
 
 def _update_gitignore(body: str) -> str:
@@ -107,11 +109,11 @@ def _update_gitignore(body: str) -> str:
     Returns:
         The contents of the new gitignore file.
     """
-    buffer: List[str] = []
+    buffer: List[str] = body.splitlines()
     if 'm/.m' not in body:
         buffer.append('m/.m')
     entries = '\n'.join(buffer)
-    return f'{body}{entries}\n'
+    return f'{entries}\n'
 
 
 def update_gitignore() -> OneOf[Issue, int]:
@@ -124,24 +126,23 @@ def update_gitignore() -> OneOf[Issue, int]:
     """
     return one_of(lambda: [
         0
-        for _ in eval_cmd('touch .gitignore')
-        for body in read_file('.gitignore')
-        for _ in write_file('.gitignore', _update_gitignore(body))
+        for _ in subprocess.eval_cmd('touch .gitignore')
+        for body in mio.read_file('.gitignore')
+        for _ in mio.write_file('.gitignore', _update_gitignore(body))
     ])
 
 
-def init_repo() -> OneOf[Issue, int]:
+def init_repo() -> OneOf[Issue, str]:
     """Initialize a repository with the basic project configurations.
 
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
-    obra_path = Path('m/m.json').resolve()
-    if obra_path.exists():
-        CiTool.warn('delete m/m.json to restart the init process.')
-        return Good(0)
+    if Path.exists(Path('m/m.json')):
+        get_ci_tool().warn('delete m/m.json to restart the init process.')
+        return Good('...')
     return one_of(lambda: [
-        0
+        'done'
         for _ in create_m_config()
         for _ in update_gitignore()
         for _ in create_changelog()

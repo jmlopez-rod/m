@@ -1,64 +1,69 @@
-import inspect
+from typing import Any
 
-from ..validators import validate_json_payload
+from m.cli import command, validate_json_payload
+from pydantic import BaseModel, Field
 
 
-def add_parser(sub_parser, raw):
-    desc = r"""
-        query json data.
+class Arguments(BaseModel):
+    r"""Query json data.
 
-        single value:
+    single value::
 
-            m jsonq path.to.property < file.json
-            cat file.json | m jsonq path.to.property
-            m jsonq @file.json path.to.property
+        m jsonq path.to.property < file.json
+        cat file.json | m jsonq path.to.property
+        m jsonq @file.json path.to.property
 
-        Return the value stored in the json file. For arrays and objects it
-        will print the python representation of the object.
+    Return the value stored in the json file. For arrays and objects it
+    will print the python representation of the object.
 
-        multiple values:
+    multiple values::
 
-            m jsonq path1 path2 path3 < file.json
-            cat file.json | m jsonq path1 path2 path3
-            m jsonq @file.json path1 path2 path3
+        m jsonq path1 path2 path3 < file.json
+        cat file.json | m jsonq path1 path2 path3
+        m jsonq @file.json path1 path2 path3
 
-        use `read` to store in bash variables:
+    use `read` to store in bash variables::
 
-            read -r -d '\n' \
-                var1 var2 var3 \
-                <<< "$(m jsonq @file.json 'path1' 'path2' 'path3')"
+        read -r -d '\n' \
+            var1 var2 var3 \
+            <<< "$(m jsonq @file.json 'path1' 'path2' 'path3')"
+
+    If available, take advantage of better queries through jq and yq:
+
+    - jq: https://stedolan.github.io/jq/manual/
+    - yq: https://mikefarah.gitbook.io/yq/
     """
-    parser = sub_parser.add_parser(
-        'jsonq',
-        help='query json data',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
+
+    payload: Any = Field(
+        description='json data: @- (stdin), @filename (file), string',
+        validator=validate_json_payload,
+        positional=True,
     )
-    add = parser.add_argument
-    add(
-        'payload',
-        type=validate_json_payload,
-        nargs='?',
-        default='@-',
-        help='json data: @- (default stdin), @filename (file), string',
+
+    query: list[str] = Field(
+        description='path to json data',
+        nargs='+',
+        positional=True,
     )
-    add(
-        '-w',
-        '--warn',
-        action='store_true',
-        help='print warning messages instead of errors',
+
+    warn: bool = Field(
+        default=False,
+        aliases=['w', 'warn'],
+        description='print warning messages instead of errors',
     )
-    add(
-        '-s',
-        '--separator',
-        type=str,
+
+    separator: str = Field(
         default='\n',
-        help=r'separator for multiple values (default \n)',
+        aliases=['s', 'separator'],
+        description='separator for multiple values',
     )
-    add('query', type=str, nargs='+', help='path to json data')
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
+@command(
+    name='jsonq',
+    help='query json data',
+    model=Arguments,
+)
+def run(arg: Arguments):
     from ...core.json import jsonq
     return jsonq(arg.payload, arg.separator, arg.warn, *arg.query)

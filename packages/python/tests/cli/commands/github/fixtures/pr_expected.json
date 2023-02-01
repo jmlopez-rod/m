@@ -1,0 +1,36 @@
+{
+  "headRefName": "ReduceExceptions",
+  "headRefOid": "d9ae52cf49732a2d45b6cb7f4069205c88af39eb",
+  "baseRefName": "main",
+  "baseRefOid": "6452cfbad0afcc6d09b75e0a1e32da1d07e0b7ca",
+  "title": "Reduce exceptions",
+  "body": "Clean up a couple of exceptions that were being thrown repeatedly during initial project load of a large project on Linux:\r\n\r\n1) `matchFiles` shouldn't call `visitDirectory` on `basePaths` that don't exist (throwing from `realpath` and `readdir`)\r\n2) Once the system runs out of file watchers, stop trying to add them - just default to polling (could be a small perf win)\r\n\r\nAfter this change, \"All Exceptions\" causes the debugger to stop exactly twice: when `typescript-etw` is found to be absent and the first time the file watcher limit is hit.\r\n\r\nThis change is purely to make it easier to enable \"All Exceptions\" when debugging TypeScript - not for correctness or (significant) perf improvements.",
+  "url": "https://github.com/microsoft/TypeScript/pull/44710",
+  "author": {
+    "login": "amcasey",
+    "avatarUrl": "https://avatars.githubusercontent.com/u/10508071?s=50&u=5cdab89019ba5ab897408db0dd8f6dd29e3a0ad5&v=4",
+    "email": ""
+  },
+  "files": {
+    "totalCount": 5,
+    "nodes": [
+      {
+        "path": "src/compiler/sys.ts"
+      },
+      {
+        "path": "src/compiler/utilities.ts"
+      },
+      {
+        "path": "src/compiler/watchUtilities.ts"
+      },
+      {
+        "path": "src/harness/fakesHosts.ts"
+      },
+      {
+        "path": "src/harness/virtualFileSystemWithWatch.ts"
+      }
+    ]
+  },
+  "merged": true,
+  "isDraft": false
+}

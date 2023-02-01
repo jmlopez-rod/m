@@ -1,0 +1,17 @@
+{
+  "data": {
+    "repository": {
+      "commit": {
+        "message": "direct commit in master branch",
+        "author": {
+          "name": "Manuel Lopez",
+          "user": null
+        },
+        "oid": "abc123"
+      },
+      "releases": {
+        "nodes": []
+      }
+    }
+  }
+}

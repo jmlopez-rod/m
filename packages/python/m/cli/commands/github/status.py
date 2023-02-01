@@ -1,73 +1,71 @@
-import inspect
+from m.cli import add_arg, command, run_main
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Create a commit status
+class Arguments(BaseModel):
+    r"""Create a commit status.
 
-        - https://docs.github.com/en/rest/reference/repos#create-a-commit-status
+    - https://docs.github.com/en/rest/reference/repos#create-a-commit-status
 
-        example:
+    example::
 
-            $ m github status \\
-                --owner jmlopez-rod \\
-                --repo pysync \\
-                --sha [sha] \\
-                --context github-check \\
-                --state pending \\
-                --decription 'running checks'
-    """  # noqa
-    parser = sub_parser.add_parser(
-        'status',
-        help='create a commit status',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
-        type=str,
+        $ m github status \
+            --owner jmlopez-rod \
+            --repo pysync \
+            --sha [sha] \
+            --context github-check \
+            --state pending \
+            --description 'running checks'
+
+    The `owner` option defaults to the value of the environment variable
+    `GITHUB_REPOSITORY_OWNER`.
+    """
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
-        type=str,
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
-    add(
-        '--sha',
+    sha: str = Field(
+        description='commit sha',
         required=True,
-        help='The commit sha',
     )
-    add(
-        '--context',
+    context: str = Field(
+        description='unique identifier for the status (a name?)',
         required=True,
-        help='unique identifier for the status (a name?)',
     )
-    add(
-        '--state',
+    state: str = Field(
+        proxy=add_arg(
+            '--state',
+            required=True,
+            choices=['error', 'failure', 'pending', 'success'],
+            help='the state of the status',
+        ),
+    )
+    description: str = Field(
+        description='a short description of the status',
         required=True,
-        choices=['error', 'failure', 'pending', 'success'],
-        help='the state of the status',
     )
-    add(
-        '--description',
-        required=True,
-        help='a short description of the status',
+    url: str | None = Field(
+        description='URL to associate with this status',
     )
-    add('--url', help='URL to associate with this status')
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.api import GithubShaStatus, commit_status
+@command(
+    name='status',
+    help='create a commit status',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
+    from m.github.api import GithubShaStatus, commit_status
     return run_main(
         lambda: commit_status(
-            arg.token,
+            arg_ns.token,
             arg.owner,
             arg.repo,
             GithubShaStatus(

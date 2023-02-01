@@ -1,13 +1,25 @@
 import os
 from unittest.mock import patch
 
-from m.core.io import env, format_seconds, renv, renv_vars
+from m.core.io import env, env_model, format_seconds, renv
+from pydantic import BaseModel, Field
 
 from ..util import FpTestCase
 
 
 def mockenv(**envvars):
     return patch.dict(os.environ, envvars)
+
+
+class EnvVarsTestFail(BaseModel):
+    nope1: str = Field('NOPE1')
+    nope2: str = Field('NOPE2')
+    val1: str = Field('VAR_1')
+
+
+class EnvVarsTestPass(BaseModel):
+    val1: str = Field('VAR_1')
+    val2: str = Field('VAR_2')
 
 
 class IoTest(FpTestCase):
@@ -37,8 +49,8 @@ class IoTest(FpTestCase):
     @mockenv(VAR_1='val1', VAR_2='val2')
     def test_renv_vars(self):
         self.assert_issue(
-            renv_vars(['NOPE1', 'VAR_1', 'NOPE2']),
+            env_model(EnvVarsTestFail),
             'missing [NOPE1, NOPE2] in env',
         )
-        val = self.assert_ok(renv_vars(['VAR_2', 'VAR_1']))
-        self.assertEqual(val, ['val2', 'val1'])
+        val = self.assert_ok(env_model(EnvVarsTestPass))
+        self.assertEqual([val.val2, val.val1], ['val2', 'val1'])

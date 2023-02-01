@@ -20,8 +20,8 @@ cp LICENSE README.md "./$target"
 
 find "./$target" | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 rm -rf "./$target/src/tests"
-sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" "./$target/setup.py"
-sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" "./$target/src/m/version.py"
+sed -i -e "s/0.0.0-PLACEHOLDER/$M_PY_TAG/g" "./$target/setup.py"
+sed -i -e "s/0.0.0-PLACEHOLDER/$M_PY_TAG/g" "./$target/src/m/version.py"
 
 (
   cd "$target"

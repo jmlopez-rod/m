@@ -30,7 +30,7 @@ def validate_json_payload(file_path: str):
         return res.value
     if file_path.startswith('@'):
         filename = file_path[1:]
-        if not Path(filename).exists():
+        if not Path.exists(Path(filename)):
             raise ArgumentTypeError(f'file "{filename}" does not exist')
         res = read_json(filename)
         if res.is_bad:
@@ -65,9 +65,10 @@ def validate_payload(file_path: str) -> str:
         return sys.stdin.read()
     if file_path.startswith('@'):
         filename = file_path[1:]
-        if not Path(filename).exists():
+        path_handle = Path(filename)
+        if not Path.exists(path_handle):
             raise ArgumentTypeError(f'file "{filename}" does not exist')
-        with open(filename, encoding='UTF-8') as fp:
+        with Path.open(path_handle, encoding='UTF-8') as fp:
             return fp.read()
     return file_path
 

@@ -1,55 +1,50 @@
-import inspect
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Merge a pull request
+class Arguments(BaseModel):
+    r"""Merge a pull request.
 
-        https://docs.github.com/en/rest/reference/pulls#merge-a-pull-request
+    https://docs.github.com/en/rest/reference/pulls#merge-a-pull-request
 
-        example:
+    example::
 
-            $ m github merge_pr \\
-                --owner owner \\
-                --repo repo \\
-                --pr pr_number \\
-                'commit_title' | m json
+        $ m github merge_pr \\
+            --owner owner \\
+            --repo repo \\
+            --commit-title 'commit_title' \\
+            99
     """
-    parser = sub_parser.add_parser(
-        'merge_pr',
-        help='merge a pull request',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
-    add(
-        '--commit-title',
-        help='commit title',
+    commit_title: str | None = Field(
+        description='commit title',
     )
-    add(
-        'pr',
-        type=int,
-        help='the pr number',
+    pr: int = Field(
+        description='the pr number',
+        positional=True,
+        required=True,
     )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.api import merge_pr
+@command(
+    name='merge_pr',
+    help='merge a pull request',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
+    from m.github.api import merge_pr
     return run_main(lambda: merge_pr(
-        arg.token,
+        arg_ns.token,
         arg.owner,
         arg.repo,
         arg.pr,

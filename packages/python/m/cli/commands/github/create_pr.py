@@ -1,72 +1,68 @@
-import inspect
+from m.cli import command, run_main, validate_payload
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
-from ...validators import validate_payload
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Create a pull request
+class Arguments(BaseModel):
+    r"""Create a pull request.
 
-        https://docs.github.com/en/rest/reference/pulls#create-a-pull-request
+    https://docs.github.com/en/rest/reference/pulls#create-a-pull-request
 
-        example:
+    example::
 
-            $ m github create_pr \\
-                --owner jmlopez-rod \\
-                --repo repo \\
-                --head feature_branch \\
-                --base master \\
-                --title 'PR Title' \\
-                @file_with_pr_body | m json
+        $ m github create_pr \
+            --owner jmlopez-rod \
+            --repo repo \
+            --head feature_branch \
+            --base master \
+            --title 'PR Title' \
+            @file_with_pr_body | m json
     """
-    parser = sub_parser.add_parser(
-        'create_pr',
-        help='create a pull request',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
-    add(
-        '--head',
+    head: str = Field(
+        description='name of the branch where the changes are implemented',
         required=True,
-        help='name of the branch where the changes are implemented.',
     )
-    add(
-        '--base',
+    base: str = Field(
+        description='name of the branch you want the changes pulled into',
         required=True,
-        help='name of the branch you want the changes pulled into',
     )
-    add(
-        '--title',
+    title: str = Field(
+        description='pull request title',
         required=True,
-        help='pull request title',
     )
-    add(
-        'body',
-        type=validate_payload,
-        nargs='?',
+    body: str = Field(
         default='@-',
-        help='data: @- (stdin), @filename (file), string. Defaults to @-',
+        description='data: @- (stdin), @filename (file), string',
+        validator=validate_payload,
+        positional=True,
     )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.api import GithubPullRequest, create_pr
+@command(
+    name='create_pr',
+    help='create a pull request',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
+    from m.github.api import GithubPullRequest, create_pr
     return run_main(lambda: create_pr(
-        arg.token,
+        arg_ns.token,
         arg.owner,
         arg.repo,
-        GithubPullRequest(arg.title, arg.body, arg.head, arg.base),
+        GithubPullRequest(
+            title=arg.title,
+            body=arg.body,
+            head=arg.head,
+            base=arg.base,
+        ),
     ))

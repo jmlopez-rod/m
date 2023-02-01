@@ -1,0 +1,5 @@
+packages/python/tests/util.py:16:1: E303 too many blank lines (4)
+packages/python/tests/util.py:16:45: E201 whitespace after '['
+packages/python/tests/util.py:16:49: E202 whitespace before ']'
+packages/python/tests/util.py:31:16: E271 multiple spaces after keyword
+packages/python/tests/util.py:42:21: E203 whitespace before ','

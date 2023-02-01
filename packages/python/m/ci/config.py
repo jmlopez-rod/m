@@ -1,8 +1,7 @@
-from dataclasses import dataclass
-from distutils.version import StrictVersion
+from packaging.version import Version
+from pydantic import BaseModel
 
 from ..core import Good, Issue, OneOf, issue, json, one_of
-from ..core.io import JsonStr
 from .types import (
     GitFlowConfig,
     MFlowConfig,
@@ -29,8 +28,7 @@ def _handle_non_release(ver_lt_latest: bool, ver_gt_latest: bool) -> str:
     return ''
 
 
-@dataclass
-class Config(JsonStr):
+class Config(BaseModel):
     """Object to store the m project configuration."""
 
     # pylint: disable=too-many-instance-attributes
@@ -96,11 +94,11 @@ class Config(JsonStr):
             'is_release_pr': is_release_pr,
         }
         try:
-            p_ver = StrictVersion(self.version)
+            p_ver = Version(self.version)
         except Exception as ex:
             return issue('error parsing version', cause=ex, context=err_data)
         try:
-            p_latest = StrictVersion(gh_latest)
+            p_latest = Version(gh_latest)
         except Exception as ex:  # noqa: WPS440
             return issue('error parsing latest', cause=ex, context=err_data)
         ver_gt_latest = p_ver > p_latest
@@ -126,13 +124,13 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """
     return one_of(lambda: [
         Config(
-            owner,
-            repo,
-            version,
-            m_dir,
-            workflow,
-            git_flow,
-            m_flow,
+            owner=owner,
+            repo=repo,
+            version=version,
+            m_dir=m_dir,
+            workflow=workflow,
+            git_flow=git_flow,
+            m_flow=m_flow,
             build_tag_with_version=with_version,
         )
         for m_cfg in json.read_json(f'{m_dir}/m.json')

@@ -1,11 +1,21 @@
 [MESSAGES CONTROL]
-init-hook="from pylint.config import find_pylintrc; import os, sys; sys.path.append(f'{os.path.dirname(find_pylintrc())}/packages/python')"
+init-hook="import sys; sys.path.append('/workspaces/m/packages/python')"
 
 disable=
-  broad-except,
-  missing-module-docstring
+  invalid-name,
+  too-few-public-methods,
+  wrong-import-order,
+  redefined-builtin,
+  missing-class-docstring,
+  unexpected-keyword-arg,
+  import-outside-toplevel,
+  missing-module-docstring,
+  broad-except
+
+extension-pkg-whitelist=pydantic
 
 no-docstring-rgx=^_|run|add_parser|main|add_arguments|^test|(.*)Test$
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$|^.*# type: ignore\[union-attr\]$
 
 good-names=_,
   i, j, k,

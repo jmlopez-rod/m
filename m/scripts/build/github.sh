@@ -5,8 +5,10 @@ target=.stage-github
 buildDir=./m/scripts/build/github
 
 rm -rf "$target"
+mkdir -p "$target"
 
-cp -r ./packages "./$target"
+cp -r ./packages/bash "./$target/bash"
+cp -r ./packages/python "./$target/python"
 cp "$buildDir/package.json" "./$target/package.json"
 cp LICENSE README.md "./$target"
 

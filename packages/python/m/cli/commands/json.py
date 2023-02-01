@@ -1,48 +1,54 @@
-from inspect import cleandoc as cdoc
-from typing import Tuple
+from typing import Any
 
-from ..argparse import STORE_TRUE, Arg, add_arguments
-from ..validators import validate_json_payload
+from m.cli import command, validate_json_payload
+from pydantic import BaseModel, Field
 
-DESC = """
-    Format a json payload.
+
+class Arguments(BaseModel):
+    """Format a json payload.
+
+    similar to `python -m json.tool` but instead it uses 2 spaces
+    for indentation::
 
         $ echo '{"a":99}' | m json
         {
-            "a": 99
+          "a": 99
         }
 
-    similar to `python -m json.tool` but instead it uses 2 spaces
-    for indentation.
-"""
-ARGS: Tuple[Arg, ...] = (
-    (
-        ['payload'],
-        'json data: @- (stdin), @filename (file), string. Defaults to @-',
-        {'type': validate_json_payload, 'nargs': '?', 'default': '@-'},
-    ),
-    (
-        ['--sort-keys'],
-        'sort the output of dictionaries alphabetically by key',
-        {**STORE_TRUE},
-    ),
-)
+    It is worth noting that if you have access to `jq` or `yq` then
+    it should be used instead of `m json`::
 
+        $ echo '{"a":99}' | jq
+        {
+          "a": 99
+        }
 
-def add_parser(sub_parser, raw):
-    parser = sub_parser.add_parser(
-        'json',
-        help='format json data',
-        formatter_class=raw,
-        description=cdoc(DESC),
+    - jq: https://stedolan.github.io/jq/manual/
+    - yq: https://mikefarah.gitbook.io/yq/
+    """
+
+    payload: Any = Field(
+        default='@-',
+        description='json data: @- (stdin), @filename (file), string',
+        validator=validate_json_payload,
+        positional=True,
     )
-    add_arguments(parser, ARGS)
+
+    sort_keys: bool = Field(
+        default=False,
+        description='sort the output of dictionaries alphabetically by key',
+    )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
+@command(
+    name='json',
+    help='format json data',
+    model=Arguments,
+)
+def run(arg: Arguments) -> int:
     import json
     import sys
+
     json.dump(arg.payload, sys.stdout, indent=2, sort_keys=arg.sort_keys)
     sys.stdout.write('\n')
     return 0

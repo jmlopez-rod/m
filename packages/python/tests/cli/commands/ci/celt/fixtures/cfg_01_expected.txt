@@ -1,0 +1,26 @@
+E303 (found 1, allowed 0):
+  packages/python/tests/util.py:16:1 - too many blank lines (4)
+
+E271 (found 1, allowed 0):
+  packages/python/tests/util.py:31:16 - multiple spaces after keyword
+
+E203 (found 1, allowed 0):
+  packages/python/tests/util.py:42:21 - whitespace before ','
+
+E202 (found 1, allowed 0):
+  packages/python/tests/util.py:16:49 - whitespace before ']'
+
+E201 (found 1, allowed 0):
+  packages/python/tests/util.py:16:45 - whitespace after '['
+
+FILES:
+  packages/python/tests/util.py: found 5
+
+RULES  FOUND  ALLOWED
+E303       1        0
+E271       1        0
+E203       1        0
+E202       1        0
+E201       1        0
+
+::error::5 extra errors were introduced

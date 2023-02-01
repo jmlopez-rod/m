@@ -1,60 +1,52 @@
-import inspect
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Create a release in Github.
+class Arguments(BaseModel):
+    r"""Create a release in Github.
 
-        - https://docs.github.com/en/rest/reference/repos#create-a-release
+    https://docs.github.com/en/rest/reference/repos#create-a-release
 
-        example:
+    example::
 
-            $ m github release \\
-                --owner jmlopez-rod \\
-                --repo pysync \\
-                --version 1.0.0
+        $ m github release \
+            --owner jmlopez-rod \
+            --repo pysync \
+            --version 1.0.0
+
+    The `owner` option defaults to the value of the environment variable
+    `GITHUB_REPOSITORY_OWNER`.
     """
-    parser = sub_parser.add_parser(
-        'release',
-        help='create a github release',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
-        type=str,
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
-        type=str,
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
-    add(
-        '--version',
-        type=str,
+    version: str = Field(
+        description='version to release',
         required=True,
-        help='version to release',
     )
-    add(
-        '--branch',
-        type=str,
-        default=None,
-        help='The branch where the git tag will be created',
+    branch: str | None = Field(
+        description='The branch where the git tag will be created',
     )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.api import create_release
+@command(
+    name='release',
+    help='create a github release',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
+    from m.github.api import create_release
     return run_main(
         lambda: create_release(
-            arg.token,
+            arg_ns.token,
             arg.owner,
             arg.repo,
             arg.version,

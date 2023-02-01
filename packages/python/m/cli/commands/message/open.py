@@ -1,20 +1,28 @@
-import inspect
+from m.cli import command
+from pydantic import BaseModel, Field
 
 
-def add_parser(sub_parser, raw):
-    desc = 'open a block to group several messages in the build log'
-    parser = sub_parser.add_parser(
-        'open',
-        help='open block',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
+class Arguments(BaseModel):
+    """Open a block to group several messages in the build log."""
+
+    name: str = Field(
+        description='block name to open',
+        positional=True,
+        required=True,
     )
-    parser.add_argument('name', type=str, help='block name to open')
-    parser.add_argument('description', type=str, help='block description')
+    description: str = Field(
+        description='block description',
+        positional=True,
+        required=True,
+    )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....core.io import CiTool
-    CiTool.open_block(arg.name, arg.description)
+@command(
+    name='open',
+    help='open a block',
+    model=Arguments,
+)
+def run(arg: Arguments):
+    from m.core.ci_tools import get_ci_tool
+    get_ci_tool().open_block(arg.name, arg.description)
     return 0

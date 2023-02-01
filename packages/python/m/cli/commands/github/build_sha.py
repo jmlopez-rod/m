@@ -1,48 +1,52 @@
-import inspect
+from m.cli import command, run_main
+from pydantic import BaseModel, Field
 
-from ...utils import env, run_main
+from ...utils import env
 
 
-def add_parser(sub_parser, raw):
-    desc = """
-        Provide the build sha. That is, provide GITHUB_SHA (a merge commit)
-        and we will get the sha of the actual commit we thought we were
-        building.
+class Arguments(BaseModel):
+    r"""Provide the build sha.
 
-        example:
+    Given the GITHUB_SHA (a merge commit it fetches the sha of the actual
+    commit we thought we were building.
 
-    """  # noqa
-    parser = sub_parser.add_parser(
-        'build_sha',
-        help='get the correct commit sha',
-        formatter_class=raw,
-        description=inspect.cleandoc(desc),
-    )
-    add = parser.add_argument
-    add(
-        '--owner',
-        type=str,
+    example::
+
+        $ m github build_sha \
+            --owner jmlopez-rod \
+            --repo m \
+            --sha 6bf3a8095891c551043877b922050d5b01d20284
+        fa6a600729ffbe1dfd7fece76ef4566e45fbfe40
+
+    The sha can be obtained in Github by looking at the output of the
+    checkout action.
+
+    The `owner` option defaults to the value of the environment variable
+    `GITHUB_REPOSITORY_OWNER`.
+    """
+
+    owner: str = Field(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        help='repo owner (default: env.GITHUB_REPOSITORY_OWNER)',
+        description='repo owner',
     )
-    add(
-        '--repo',
-        type=str,
+    repo: str = Field(
+        description='repo name',
         required=True,
-        help='repo name',
     )
-    add(
-        '--sha',
-        type=str,
+    sha: str = Field(
+        description='commit sha',
         required=True,
-        help='commit sha',
     )
 
 
-def run(arg):
-    # pylint: disable=import-outside-toplevel
-    from ....github.ci import get_build_sha
+@command(
+    name='build_sha',
+    help='get the correct commit sha',
+    model=Arguments,
+)
+def run(arg: Arguments, arg_ns) -> int:
+    from m.github.ci import get_build_sha
     return run_main(
-        lambda: get_build_sha(arg.token, arg.owner, arg.repo, arg.sha),
+        lambda: get_build_sha(arg_ns.token, arg.owner, arg.repo, arg.sha),
         handle_result=print,
     )

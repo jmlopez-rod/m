@@ -1,6 +1,8 @@
+from m.core import Good, Issue, OneOf, issue, one_of
+
 from .. import git
-from ..core import Good, Issue, OneOf, issue, one_of
-from .config import Config, read_config
+from . import config as cfg_mod
+from .config import Config
 
 
 def _verify_branch(
@@ -55,7 +57,7 @@ def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, None]:
     """
     return one_of(lambda: [
         None
-        for config in read_config(m_dir)
+        for config in cfg_mod.read_config(m_dir)
         for branch in git.get_branch()
         for _ in _verify_branch(config, branch, assertion_type)
     ])
