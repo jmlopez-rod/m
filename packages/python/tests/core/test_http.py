@@ -41,7 +41,7 @@ def test_http_vs_https_fetch(mocker: MockerFixture, protocol) -> None:
     in_use_mock.assert_called_once_with(HOST)
     other_mock.assert_not_called()
 
-    fetch_content = cast(str, assert_ok(fetch_result))
+    fetch_content = assert_ok(fetch_result)
     assert fetch_content == 'content'
 
 
@@ -52,8 +52,8 @@ def test_http_fail_req_vs_res(mocker: MockerFixture, tcase: str):
     getattr(http_inst, tcase).side_effect = Exception(f'fail {tcase}')
     fetch_result = fetch(f'https://{HOST}', {})
     failure_type = 'response' if tcase == 'getresponse' else 'request'
-    assert_issue(fetch_result, f'https {failure_type} failure')
-    ex = cast(Issue, fetch_result.value).cause
+    err = assert_issue(fetch_result, f'https {failure_type} failure')
+    ex = err.cause
     assert isinstance(ex, Exception)
     assert str(ex) == f'fail {tcase}'
 
