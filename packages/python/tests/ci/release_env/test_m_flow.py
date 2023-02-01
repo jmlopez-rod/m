@@ -2,9 +2,10 @@ from unittest.mock import patch
 
 from m.ci.config import Workflow
 from m.ci.git_env import get_git_env
-from m.ci.release_env import get_release_env
+from m.ci.release_env import ReleaseEnv, get_release_env
 from m.core import one_of
 from m.core.fp import Good
+from tests.conftest import assert_ok
 
 from ...util import FpTestCase, read_fixture
 from .util import CONFIG, ENV_VARS, mock_commit_sha
@@ -32,15 +33,15 @@ class ReleaseEnvMFlowTest(FpTestCase):
     def test_local(self):
         self.env_vars.ci_env = False
         self.env_vars.run_id = ''
-        result = self._get_env()
-        self.assertFalse(result.is_bad)
-        self.assertEqual(result.value.__dict__, dict(
+        env = assert_ok(self._get_env())
+        assert env == ReleaseEnv(
             build_tag='0.0.0-local.git-sha-abc-123',
+            python_tag='',
             is_release=False,
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow
-        ))
+        )
 
     def test_master_behind(self):
         """Github says version is 1.1.1 but the config is still in 0.0.0 This
@@ -77,6 +78,7 @@ class ReleaseEnvMFlowTest(FpTestCase):
             self.assert_ok(result)
             self.assertEqual(result.value.__dict__, dict(
                 build_tag='0.0.0-master.b404',
+                python_tag='0.0.0rc0.dev404',
                 is_release=False,
                 is_release_pr=False,
                 is_hotfix_pr=False,

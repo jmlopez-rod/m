@@ -12,6 +12,7 @@ class ReleaseEnv(BaseModel):
     """Object to store the release configuration."""
 
     build_tag: str
+    python_tag: str
     is_release: bool
     is_release_pr: bool
     is_hotfix_pr: bool
@@ -112,6 +113,7 @@ def get_release_env(
     return one_of(lambda: [
         ReleaseEnv(
             build_tag=build_tag,
+            python_tag=python_tag,
             is_release=is_release,
             is_release_pr=is_release_pr,
             is_hotfix_pr=is_hotfix_pr,
@@ -125,4 +127,5 @@ def get_release_env(
             is_release=is_release,
         )
         for build_tag in git_env.get_build_tag(config, env_vars.run_id)
+        for python_tag in git_env.get_py_tag(config, env_vars.run_id)
     ])

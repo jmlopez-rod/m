@@ -1,15 +1,17 @@
-from typing import Any, cast
+from typing import Any, TypeVar, cast
 
 from m.core.fp import OneOf
 from m.core.issue import Issue
 
+G = TypeVar('G')  # pylint: disable=invalid-name
 
-def assert_ok(either: OneOf[Issue, Any]) -> Any:
+
+def assert_ok(either: OneOf[Issue, G]) -> G:
     assert either.is_bad is False, 'expecting ok'
-    return either.value
+    return cast(G, either.value)
 
 
-def assert_issue(error: OneOf[Issue, Any], message: str | list[str]) -> Any:
+def assert_issue(error: OneOf[Issue, Any], message: str | list[str]) -> Issue:
     assert error.is_bad is True, 'expecting issue'
     err = cast(Issue, error.value)
     if isinstance(message, list):

@@ -1,7 +1,7 @@
 import re
 from typing import cast
 
-from m.ci.versioning import VersionInputs, build_m_tag
+from m.ci.versioning import VersionInputs, build_m_tag, build_py_tag
 from m.core.ci_tools import EnvVars
 from m.core.maybe import maybe
 from pydantic import BaseModel
@@ -135,6 +135,31 @@ class GitEnv(BaseModel):
         hotfix_prefix = get_hotfix_prefix(config)
         return self.pull_request.is_release_pr(hotfix_prefix)
 
+    def _version_inputs(
+        self,
+        config: Config,
+        run_id: str,
+    ) -> VersionInputs | None:
+        is_release = self.is_release(config)
+        is_release_pr = self.is_release_pr(config)
+        is_hotfix_pr = self.is_hotfix_pr(config)
+        is_dev_branch = self.target_branch == config.git_flow.develop_branch
+        if config.uses_git_flow() and is_dev_branch:
+            if is_release or is_release_pr or is_hotfix_pr:
+                return None
+        pr_number = maybe(lambda: self.pull_request.pr_number)  # type: ignore[union-attr]
+        return VersionInputs(
+            version=config.version,
+            version_prefix=_build_tag_prefix(config),
+            run_id=run_id,
+            sha=self.sha,
+            pr_number=pr_number,
+            branch=self.target_branch,
+            is_release=is_release,
+            is_release_pr=is_release_pr,
+            is_hotfix_pr=is_hotfix_pr,
+        )
+
     def get_build_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
         """Create a build tag for the current commit.
 
@@ -168,34 +193,34 @@ class GitEnv(BaseModel):
             A unique identifier for the build. This tag is compatible with
             both `npm` and `docker`.
         """
-        is_release = self.is_release(config)
-        is_release_pr = self.is_release_pr(config)
-        is_hotfix_pr = self.is_hotfix_pr(config)
-        is_dev_branch = self.target_branch == config.git_flow.develop_branch
-        if config.uses_git_flow() and is_dev_branch:
-            if is_release or is_release_pr or is_hotfix_pr:
-                return Good('SKIP')
-        pr_number = maybe(lambda: self.pull_request.pr_number)  # type: ignore[union-attr]
-        ver_input = VersionInputs(
-            version=config.version,
-            version_prefix=_build_tag_prefix(config),
-            run_id=run_id,
-            sha=self.sha,
-            pr_number=pr_number,
-            branch=self.target_branch,
-            is_release=is_release,
-            is_release_pr=is_release_pr,
-            is_hotfix_pr=is_hotfix_pr,
-        )
-        return Good(build_m_tag(ver_input))
+        ver_input = self._version_inputs(config, run_id)
+        if ver_input:
+            return Good(build_m_tag(ver_input, config))
+        return Good('SKIP')
+
+    def get_py_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
+        """Create a python tag for the current commit.
+
+        Args:
+            config: The `m` configuration.
+            run_id: A unique identifier for the run/job.
+
+        Returns:
+            A unique identifier for the build. This tag is compatible with
+            python.
+        """
+        ver_input = self._version_inputs(config, run_id)
+        if ver_input:
+            return Good(build_py_tag(ver_input, config))
+        return Good('SKIP')
 
 
 def _build_tag_prefix(config: Config) -> str:
     if config.uses_free_flow():
         return ''
     if config.build_tag_with_version:
-        return f'{config.version}-'
-    return '0.0.0-'
+        return f'{config.version}'
+    return '0.0.0'
 
 
 def get_pr_number(branch: str) -> int | None:

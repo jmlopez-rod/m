@@ -76,6 +76,7 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         'M_PR_BRANCH': git.get_pr_branch(),
         'M_PR_NUMBER': git.get_pr_number(),
         'M_TAG': release.build_tag,
+        'M_PY_TAG': release.python_tag,
         'M_IS_RELEASE': release.is_release,
         'M_IS_RELEASE_PR': release.is_release_pr,
         'M_IS_HOTFIX_PR': release.is_hotfix_pr,
