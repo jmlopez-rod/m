@@ -10,11 +10,16 @@ WORKDIR /scratch
 RUN apt-get update \
   && apt-get install -y \
     git make \
-    nodejs npm \
     curl bash-completion
 
+## None
+RUN apt update \
+  && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+  && apt install -y nodejs
+
 ## PNPM
-RUN npm install -g pnpm
+ARG PNPM_VERSION=7.15.0
+RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@${PNPM_VERSION}
 
 ENV WORKSPACE=/workspace
 WORKDIR $WORKSPACE
