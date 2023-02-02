@@ -8,6 +8,10 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.12.1] <a name="0.12.1" href="#0.12.1">-</a> February 02, 2023
+
+- skip release to npmjs - previous job did not publish to pypi.
+
 ## [0.12.0] <a name="0.12.0" href="#0.12.0">-</a> February 01, 2023
 
 - Using a devcontainer for local development and pipelines.
@@ -157,7 +161,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.12.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.12.1...HEAD
+[0.12.1]: https://github.com/jmlopez-rod/m/compare/0.12.0...0.12.1
 [0.12.0]: https://github.com/jmlopez-rod/m/compare/0.11.2...0.12.0
 [0.11.2]: https://github.com/jmlopez-rod/m/compare/0.11.1...0.11.2
 [0.11.1]: https://github.com/jmlopez-rod/m/compare/0.11.0...0.11.1
