@@ -5,6 +5,16 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
 
 @pytest.mark.parametrize('tcase', [
     TCase(
+        cmd='m jsonq merged',
+        expected='true',
+        std_in='{"merged":true}',
+    ),
+    TCase(
+        cmd='m jsonq @- hotdog',
+        expected='100',
+        std_in='{"hotdog":100}',
+    ),
+    TCase(
         cmd='m jsonq [1] 0',
         expected='1',
     ),
@@ -65,5 +75,8 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
     )
 ])
 def test_m_jsonq(tcase: TCase, mocker: MockerFixture) -> None:
+    if tcase.std_in:
+        stdin_read = mocker.patch('sys.stdin.read')
+        stdin_read.return_value = tcase.std_in
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
