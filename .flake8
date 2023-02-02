@@ -19,7 +19,7 @@ ignore =
   RST301,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
 per-file-ignores =
   # There are multiple `assert`s in tests, we allow them:
-  packages/python/tests/*.py:S101
+  packages/python/tests/*.py:S101,FS003
   packages/python/m/core/fp.py:WPS110
 
 extend-ignore =
