@@ -11,7 +11,7 @@ def npm_tags(m_tag: str) -> list[str]:
         A tag that can be used by npm during the publishing step.
     """
     tags = []
-    regex = r'\d.\d.\d-(.*)\.(.*)'
+    regex = r'\d+.\d+.\d+-(.*)\.(.*)'
     matches = re.match(regex, m_tag)
     if matches:
         tag, _ = matches.groups()
