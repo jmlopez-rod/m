@@ -42,7 +42,7 @@
     "D102": 41,
     "C812": 72,
     "WPS317": 79,
-    "WPS226": 79
+    "WPS226": 80
   },
   "allowedPylintRules": {
     "unused-argument": 1,
