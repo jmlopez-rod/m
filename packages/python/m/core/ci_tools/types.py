@@ -1,28 +1,8 @@
 from dataclasses import dataclass
-from typing import Callable, Protocol, TextIO
+from typing import Callable
 
 from m.core import Issue, OneOf
 from pydantic import BaseModel, Field
-
-# The following disables on these next two classes is because we cannot
-# use a simple Callable type:  https://stackoverflow.com/a/68392079
-
-
-class OpenBlock(Protocol):  # noqa: D101
-    def __call__(  # noqa: D102,E704
-        self,
-        name: str,
-        description: str,
-        stream: TextIO | None = None,
-    ) -> None: ...  # noqa: WPS428
-
-
-class CloseBlock(Protocol):  # noqa: D101
-    def __call__(  # noqa: D102,E704
-        self,
-        name: str,
-        stream: TextIO | None = None,
-    ) -> None: ...  # noqa: WPS428
 
 
 class EnvVars(BaseModel):
@@ -45,7 +25,7 @@ class EnvVars(BaseModel):
 class Message(BaseModel):
     """Parameters needed to deliver a warning or error message."""
 
-    message: str = Field(description='message to display')
+    msg: str = Field(description='message to display')
     title: str | None = Field(default=None, description='custom title')
     file: str | None = Field(  # noqa: WPS110 - required by Github
         default=None,
@@ -61,10 +41,6 @@ class Message(BaseModel):
         description='column number, starting at 1',
     )
     end_col: str | None = Field(default=None, description='end column number')
-    stream: TextIO | None = Field(
-        default=None,
-        description='defaults to sys.stderr',
-    )
 
     class Config:
         """Allow other types."""
@@ -76,8 +52,9 @@ class Message(BaseModel):
 class ProviderModule:
     """Container to store functions from the providers."""
 
+    ci: bool
     env_vars: Callable[[], OneOf[Issue, EnvVars]]
-    open_block: OpenBlock
-    close_block: CloseBlock
-    error: Callable[[Message | str], None]
-    warn: Callable[[Message | str], None]
+    open_block:  Callable[[str, str], str]
+    close_block:  Callable[[str], str]
+    error: Callable[[Message, str, str], str]
+    warn: Callable[[Message, str, str], str]

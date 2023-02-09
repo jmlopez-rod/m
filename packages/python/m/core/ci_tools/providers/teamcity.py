@@ -1,8 +1,6 @@
-import sys
-from typing import TextIO
-
 from m.core import Good, Issue, OneOf
 
+from ..misc import default_formatter
 from ..types import EnvVars, Message, ProviderModule
 
 REPLACEMENTS = (
@@ -12,11 +10,6 @@ REPLACEMENTS = (
     (']', '|]'),
     ('\n', '|n'),
 )
-
-
-# Do not use outside of module. This is done here to avoid
-# disabling a flake8 for every ci tool method.
-_print = print
 
 
 def escape_msg(msg: str) -> str:
@@ -41,11 +34,11 @@ def _escape(name: str, description: str) -> str:
     return f"{name}='{desc}'"
 
 
-def _tc(msg: str, **kwargs) -> str:
+def _tc(cmd: str, postfix, **kwargs) -> str:
     key_items = ' '.join(
         [_escape(name, desc) for name, desc in kwargs.items()],
     ).strip()
-    return f'##teamcity[{msg} {key_items}]'
+    return f'##teamcity[{cmd} {key_items}]{postfix}'
 
 
 def env_vars() -> OneOf[Issue, EnvVars]:
@@ -59,11 +52,7 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     return Good(EnvVars(ci_env=True))
 
 
-def open_block(
-    name: str,
-    description: str,
-    stream: TextIO | None = None,
-) -> None:
+def open_block(name: str, description: str) -> str:
     """Display the name and description of a block.
 
     https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html#BuildScriptInteractionwithTeamCity-BlocksofServiceMessages
@@ -71,76 +60,60 @@ def open_block(
     Args:
         name: Name of the block.
         description: The block description.
-        stream: Defaults to sys.stdout.
+
+    Returns:
+        A formatted string.
     """
-    _print(
-        _tc('blockOpened', name=name, description=description),
-        file=stream or sys.stdout,
-    )
+    return _tc('blockOpened', postfix='', name=name, description=description)
 
 
-def close_block(name: str, stream: TextIO | None = None) -> None:
+def close_block(name: str) -> str:
     """Close a previously defined block.
 
     Args:
         name: The name of the block to close.
-        stream: Defaults to sys.stdout.
+
+    Returns:
+        A formatted string.
     """
-    _print(_tc('blockClosed', name=name), file=stream or sys.stdout)
+    return _tc('blockClosed', postfix='', name=name)
 
 
-def error(msg: Message | str) -> None:
+def error(_msg: Message, message: str, postfix: str) -> str:
     """Print an error message.
 
     Doing so will make Teamcity abort the job.
     Supports file, line and col properties of Message.
 
     Args:
-        msg: The message to display.
+        _msg: The message information.
+        message: A formatted string that may include information from `_msg`.
+        postfix: Anything that may need to be displayed after the message.
+
+    Returns:
+        A formatted string.
     """
-    if isinstance(msg, str):
-        _print(
-            _tc('buildProblem', description=msg),
-            file=sys.stderr,
-        )
-        return
-    stream = msg.stream or sys.stderr
-    parts = [x for x in (msg.file, msg.line, msg.col) if x]
-    loc = ':'.join(parts)
-    msg_info = f'[{loc}]: ' if loc else ''
-    desc = f'{msg_info}{msg.message}' or ''
-    _print(
-        _tc('buildProblem', description=desc),
-        file=stream,
-    )
+    return _tc('buildProblem', postfix=postfix, description=message)
 
 
-def warn(msg: Message | str) -> None:
+def warn(_msg: Message, message: str, postfix: str) -> str:
     """Print an warning message to Teamcity.
 
     Supports file, line and col properties of Message.
 
     Args:
-        msg: The message to display.
+        _msg: The message information.
+        message: A formatted string that may include information from `_msg`.
+        postfix: Anything that may need to be displayed after the message.
+
+    Returns:
+        A formatted string.
     """
-    if isinstance(msg, str):
-        _print(
-            _tc('message', status='WARNING', text=msg),
-            file=sys.stderr,
-        )
-        return
-    stream = msg.stream or sys.stderr
-    parts = [x for x in (msg.file, msg.line, msg.col) if x]
-    loc = ':'.join(parts)
-    msg_info = f'[{loc}]: ' if loc else ''
-    desc = f'{msg_info}{msg.message}' or ''
-    _print(
-        _tc('message', status='WARNING', text=desc),
-        file=stream,
-    )
+    return _tc('message', status='WARNING', text=message, postfix=postfix)
 
 
 tool = ProviderModule(
+    ci=True,
     env_vars=env_vars,
     open_block=open_block,
     close_block=close_block,

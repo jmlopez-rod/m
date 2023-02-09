@@ -115,7 +115,7 @@ def display_issue(issue: Issue) -> None:
     Args:
         issue: An instance of an Issue.
     """
-    get_ci_tool().error(issue.message)
+    get_ci_tool().error(issue.message, '', '')
     error_block(str(issue))
 
 

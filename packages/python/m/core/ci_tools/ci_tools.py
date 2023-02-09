@@ -35,9 +35,9 @@ def error_block(msg: str, stream: TextIO | None = None) -> None:
         stream: The file stream to print (defaults to sys.stderr)
     """
     tool = get_ci_tool()
-    tool.open_block('error', '', stream or sys.stderr)
-    _print(msg, file=stream or sys.stderr)
-    tool.close_block('error', stream or sys.stderr)
+    # tool.open_block('error', '', stream or sys.stderr)
+    # _print(msg, file=stream or sys.stderr)
+    # tool.close_block('error', stream or sys.stderr)
 
 
 def warn_block(msg: str, stream: TextIO | None = None) -> None:
@@ -48,6 +48,6 @@ def warn_block(msg: str, stream: TextIO | None = None) -> None:
         stream: The file stream to print (defaults to sys.stderr)
     """
     tool = get_ci_tool()
-    tool.open_block('warning', '', stream or sys.stderr)
-    _print(msg, file=stream or sys.stderr)
-    tool.close_block('warning', stream or sys.stderr)
+    # tool.open_block('warning', '', stream or sys.stderr)
+    # _print(msg, file=stream or sys.stderr)
+    # tool.close_block('warning', stream or sys.stderr)

@@ -1,15 +1,9 @@
-import sys
-from typing import TextIO
-
 from m.core import Issue, OneOf, one_of
 
 from m import git
 
+from ..misc import default_formatter
 from ..types import EnvVars, Message, ProviderModule
-
-# Do not use outside of module. This is done here to avoid
-# disabling a flake8 for every ci tool method.
-_print = print
 
 
 def env_vars() -> OneOf[Issue, EnvVars]:
@@ -30,11 +24,7 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     )
 
 
-def open_block(
-    name: str,
-    description: str,
-    stream: TextIO | None = None,
-) -> None:
+def open_block(name: str, description: str) -> str:
     """Display the name and description of a block.
 
     Local environments do not support blocks like Github and Teamcity.
@@ -45,10 +35,10 @@ def open_block(
         stream: Defaults to sys.stdout.
     """
     desc = f' {description}' if description else ''
-    _print(f'{name}:{desc}', file=stream or sys.stdout)
+    return f'{name}:{desc}'
 
 
-def close_block(name: str, stream: TextIO | None = None) -> None:
+def close_block(name: str) -> str:
     """Display an empty line to denote the end of a block.
 
     Args:
@@ -56,10 +46,10 @@ def close_block(name: str, stream: TextIO | None = None) -> None:
         stream: Defaults to sys.stdout.
     """
     # pylint: disable=unused-argument
-    _print('', file=stream or sys.stdout)
+    return ''
 
 
-def error(msg: Message | str) -> None:
+def error(msg: Message, message: str, postfix: str) -> str:
     """Print an error message.
 
     Supports file, line and col properties of Message.
@@ -67,17 +57,10 @@ def error(msg: Message | str) -> None:
     Args:
         msg: The message to display.
     """
-    if isinstance(msg, str):
-        _print(f'error: {msg}', file=sys.stderr)
-        return
-    stream = msg.stream or sys.stderr
-    parts = [x for x in (msg.file, msg.line, msg.col) if x]
-    loc = ':'.join(parts)
-    msg_info = f'[{loc}]' if loc else ''
-    _print(f'error{msg_info}: {msg.message}', file=stream or sys.stderr)
+    return default_formatter(msg, message, postfix)
 
 
-def warn(msg: Message | str) -> None:
+def warn(msg: Message, message: str, postfix: str) -> str:
     """Print an warning message.
 
     Supports file, line and col properties of Message.
@@ -85,17 +68,11 @@ def warn(msg: Message | str) -> None:
     Args:
         msg: The message to display.
     """
-    if isinstance(msg, str):
-        _print(f'warn: {msg}', file=sys.stderr)
-        return
-    stream = msg.stream or sys.stderr
-    parts = [x for x in (msg.file, msg.line, msg.col) if x]
-    loc = ':'.join(parts)
-    msg_info = f'[{loc}]' if loc else ''
-    _print(f'warn{msg_info}: {msg.message}', file=stream)
+    return default_formatter(msg, message, postfix)
 
 
 tool = ProviderModule(
+    ci=False,
     env_vars=env_vars,
     open_block=open_block,
     close_block=close_block,

@@ -1,15 +1,10 @@
-import sys
-from typing import TextIO, cast
+from typing import cast
 
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import env_model
 from pydantic import BaseModel, Field
 
 from ..types import EnvVars, Message, ProviderModule
-
-# Do not use outside of module. This is done here to avoid
-# disabling a flake8 for every ci tool method.
-_print = print
 
 
 class GithubEnvVars(BaseModel):
@@ -52,8 +47,7 @@ def env_vars() -> OneOf[Issue, EnvVars]:
 def open_block(
     name: str,
     description: str,
-    stream: TextIO | None = None,
-) -> None:
+) -> str:
     """Group log lines.
 
     There is no description field and it does not support nesting.
@@ -66,10 +60,10 @@ def open_block(
         stream: Defaults to sys.stdout.
     """
     # pylint: disable=unused-argument
-    _print(f'::group::{name}', file=stream or sys.stdout)
+    return f'::group::{name}'
 
 
-def close_block(name: str, stream: TextIO | None = None) -> None:
+def close_block(name: str) -> str:
     """Close the current block.
 
     Github Actions does not support nesting blocks, all this does is close
@@ -80,10 +74,20 @@ def close_block(name: str, stream: TextIO | None = None) -> None:
         stream: Defaults to sys.stdout.
     """
     # pylint: disable=unused-argument
-    _print('::endgroup::', file=stream or sys.stdout)
+    return '::endgroup::'
 
 
-def error(msg: Message | str) -> None:
+def _gh_format(msg_type: str, msg: Message, message: str, postfix: str) -> str:
+    file_entry = f'file={msg.file}' if msg.file else ''
+    line_entry = f'line={msg.line}' if msg.line else ''
+    col_entry = f'col={msg.col}' if msg.col else ''
+    parts = [x for x in (file_entry, line_entry, col_entry) if x]
+    loc = ','.join(parts)
+    msg_info = f' {loc}' if loc else ''
+    return f'::{msg_type}{msg_info}::{message}{postfix}'
+
+
+def error(msg: Message, message: str, postfix: str) -> str:
     """Print an error message.
 
     https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-error-message
@@ -91,20 +95,10 @@ def error(msg: Message | str) -> None:
     Args:
         msg: The message to display.
     """
-    if isinstance(msg, str):
-        _print(f'::error::{msg}', file=sys.stderr)
-        return
-    stream = msg.stream or sys.stderr
-    file_entry = f'file={msg.file}' if msg.file else ''
-    line_entry = f'line={msg.line}' if msg.line else ''
-    col_entry = f'col={msg.col}' if msg.col else ''
-    parts = [x for x in (file_entry, line_entry, col_entry) if x]
-    loc = ','.join(parts)
-    msg_info = f' {loc}' if loc else ''
-    _print(f'::error{msg_info}::{msg.message}', file=stream)
+    return _gh_format('error', msg, message, postfix)
 
 
-def warn(msg: Message | str) -> None:
+def warn(msg: Message, message: str, postfix: str) -> str:
     """Print an warning message.
 
     https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-warning-message
@@ -112,20 +106,11 @@ def warn(msg: Message | str) -> None:
     Args:
         msg: The message to display.
     """
-    if isinstance(msg, str):
-        _print(f'::warning::{msg}', file=sys.stderr)
-        return
-    stream = msg.stream or sys.stderr
-    file_entry = f'file={msg.file}' if msg.file else ''
-    line_entry = f'line={msg.line}' if msg.line else ''
-    col_entry = f'col={msg.col}' if msg.col else ''
-    parts = [x for x in (file_entry, line_entry, col_entry) if x]
-    loc = ','.join(parts)
-    msg_info = f' {loc}' if loc else ''
-    _print(f'::warning{msg_info}::{msg.message}', file=stream)
+    return _gh_format('warning', msg, message, postfix)
 
 
 tool = ProviderModule(
+    ci=True,
     env_vars=env_vars,
     open_block=open_block,
     close_block=close_block,
