@@ -7,7 +7,8 @@ from typing import Any, List
 from typing import Mapping as Map
 from typing import Union, cast
 
-from .ci_tools import get_ci_tool
+from m.log import Logger
+
 from .fp import Good, OneOf
 from .issue import Issue
 from .one_of import issue
@@ -169,14 +170,14 @@ def jsonq(
     Returns:
         0 if all the keys are available, non-zero if there are problems.
     """
-    tool = get_ci_tool()
+    logger = Logger('m.cli')
     either = multi_get(dict_inst, *key_str)
     if either.is_bad:
         problem = cast(Issue, either.value)
         if display_warning:
-            tool.warn(problem.message)
+            logger.warning(problem.message)
         else:
-            tool.error(problem.message)
+            logger.error(problem.message)
         print(either.value, file=sys.stderr)  # noqa: WPS421
         return 1
     strings = [_to_str(res_item) for res_item in cast(List[Any], either.value)]

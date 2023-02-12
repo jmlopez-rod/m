@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from typing import Callable
 
@@ -54,7 +55,4 @@ class ProviderModule:
 
     ci: bool
     env_vars: Callable[[], OneOf[Issue, EnvVars]]
-    open_block:  Callable[[str, str], str]
-    close_block:  Callable[[str], str]
-    error: Callable[[Message, str, str], str]
-    warn: Callable[[Message, str, str], str]
+    formatter: Callable[[logging.Formatter, logging.LogRecord], str]

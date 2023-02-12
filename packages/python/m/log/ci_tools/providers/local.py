@@ -1,0 +1,76 @@
+import logging
+
+from m.core import Issue, OneOf, one_of
+from m.log.misc import indent_payload
+
+from m import git
+
+from ..types import EnvVars, Message, ProviderModule
+
+
+def env_vars() -> OneOf[Issue, EnvVars]:
+    """Obtain basic environment variables in a local environment.
+
+    Returns:
+        An `EnvVars` instance if successful.
+    """
+    return one_of(
+        lambda: [
+            EnvVars(
+                git_branch=git_branch,
+                git_sha=git_sha,
+            )
+            for git_branch in git.get_branch()
+            for git_sha in git.get_current_commit_sha()
+        ],
+    )
+
+
+def _loc_fmt(parts: list[str | None]) -> str:
+    _parts = [x for x in parts if x]
+    loc = ':'.join(_parts)
+    return f'[{loc}]' if loc else ''
+
+
+def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
+    """Format a log record using the functions provided in this module.
+
+    This function is meant to be used by a log formatter. See more info
+
+
+    Args:
+        formatter: A log formatter instance.
+        record: A log record.
+
+    Returns:
+        A formatted string.
+    """
+    record_dict = record.__dict__
+
+    open_b = record_dict.get('open_block')
+    if open_b:
+        name, desc = open_b
+        return f'>>> [{name}]: {desc}'
+
+    close_b = record_dict.get('close_block')
+    if close_b:
+        return ''
+
+    indent = len(record.levelname) + 3
+    context = record_dict.get('context')
+    ci_info = record_dict.get('ci_info', Message(msg=record.msg))
+    msg_info = _loc_fmt([ci_info.file, ci_info.line, ci_info.col])
+    loc = _loc_fmt([record.filename, f'{record.lineno}'])
+    context_str = indent_payload(indent, context) if context else ''
+
+    msg = record.msg
+    asctime = formatter.formatTime(record, formatter.datefmt)
+    message = f'[{record.levelname}] [{asctime}]{msg_info}{loc}: {msg}'
+    return f'{message}{context_str}'
+
+
+tool = ProviderModule(
+    ci=False,
+    env_vars=env_vars,
+    formatter=log_format,
+)

@@ -48,7 +48,7 @@ def test_m_ci_env_local(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch('m.git.get_current_commit_sha').return_value = Good(
         tcase.current_commit_sha,
     )
-    mocker.patch('time.time').return_value = 123456789
+    mocker.patch('time').return_value = 123456789
     write_file_mock = mocker.patch('m.core.rw.write_file')
     write_file_mock.return_value = Good(None)
 

@@ -2,16 +2,19 @@ import argparse
 import json
 import sys
 from contextlib import suppress
-from typing import Any, Callable, Optional, cast
+from functools import partial
+from typing import Any, Callable, cast
 
-from m.core import Issue, OneOf
-from m.core.ci_tools import error_block, get_ci_tool
+from m.core import Issue, IssueDict, OneOf
+from m.log import Logger
 
 from ..core.io import env
 from .engine.misc import params_count
 from .engine.sys import get_cli_command_modules
 from .engine.types import CmdMap, CommandModule, MetaMap, NestedCmdMap
 from .validators import validate_non_empty_str
+
+logger = Logger('m.cli.utils')
 
 
 def _main_parser(
@@ -107,16 +110,15 @@ def run_cli(
     sys.exit(exit_code)
 
 
-def display_issue(issue: Issue) -> None:
-    """Print an error message.
+def _issue_handler(show_traceback: bool, iss: Issue):
+    iss_dict = iss.to_dict(show_traceback=show_traceback)
+    if len(iss_dict) and 'context' in iss_dict:
+        iss_dict = cast(IssueDict, iss_dict['context'])
+    logger.error(iss.message, cast(dict, iss_dict))
 
-    The error message is customize to the CI environment.
 
-    Args:
-        issue: An instance of an Issue.
-    """
-    get_ci_tool().error(issue.message, '', '')
-    error_block(str(issue))
+def issue_handler(show_traceback: bool) -> Callable[[Issue], None]:
+    return partial(_issue_handler, show_traceback)
 
 
 def display_result(inst: Any) -> None:
@@ -135,7 +137,7 @@ def display_result(inst: Any) -> None:
 def run_main(
     callback: Callable[[], OneOf[Issue, Any]],
     handle_result: Callable[[Any], None] = display_result,
-    handle_issue: Callable[[Issue], None] = display_issue,
+    handle_issue: Callable[[Issue], None] = issue_handler(True),
 ) -> int:
     """Run the callback and print the returned value.
 
@@ -172,20 +174,20 @@ def run_main(
     return 0
 
 
-def error(msg: str, issue: Optional[Issue] = None) -> int:
-    """Print an error message.
+# def error(msg: str, issue: Optional[Issue] = None) -> int:
+#     """Print an error message.
 
-    Args:
-        msg: The error message.
-        issue: Optional `Issue` instance to go along with the error message.
+#     Args:
+#         msg: The error message.
+#         issue: Optional `Issue` instance to go along with the error message.
 
-    Returns:
-        The integer 1.
-    """
-    get_ci_tool().error(msg)
-    if issue:
-        error_block(str(issue), sys.stderr)
-    return 1
+#     Returns:
+#         The integer 1.
+#     """
+#     get_ci_tool().error(msg)
+#     if issue:
+#         error_block(str(issue), sys.stderr)
+#     return 1
 
 
 def cli_integration_token(

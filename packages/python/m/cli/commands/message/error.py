@@ -40,12 +40,13 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from m.core.ci_tools import Message, get_ci_tool
+    from m.log import Logger, Message
+
     msg = Message(
-        message=arg.message,
+        msg=arg.message,
         file=arg.file,
         line=arg.line,
         col=arg.col,
     )
-    get_ci_tool().error(msg)
+    Logger('m.cli').error(msg)
     return 1

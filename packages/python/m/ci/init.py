@@ -143,9 +143,13 @@ def init_repo() -> OneOf[Issue, str]:
     """
     if Path.exists(Path('m/m.json')):
         logger.info('starting', {'a': 100})
+        logger.open_block('block1', 'opening block1')
         logger.warning('dont mind me', {'b': 'yes'})
+        logger.open_block('sub block1', 'sub1')
         logger.info('just a message')
+        logger.open_block('sub block2', 'sub2')
         logger.error('oops', {'what': 'ok', 'yes': 'no'})
+        logger.close_block('sub block1')
         logger.error(Message(msg='huh?', file='hello.js', line='99', col='2'))
         # get_ci_tool().warn('delete m/m.json to restart the init process.')
         return Good('...')

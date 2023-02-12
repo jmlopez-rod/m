@@ -102,7 +102,7 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
                 for y in x.splitlines()
             ]
 
-    def to_dict(self) -> IssueDict:
+    def to_dict(self, show_traceback: bool = True) -> IssueDict:
         """Convert to a ordered dictionary.
 
         This is done so that each of the properties are written in an expected
@@ -127,6 +127,8 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
                     'message': str(self.cause),
                     'traceback': self.cause_tb,
                 }
+        if not show_traceback:
+            remove_traceback(issue_dict)
         return issue_dict
 
     def to_str(self, show_traceback: bool) -> str:

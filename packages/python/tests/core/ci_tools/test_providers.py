@@ -3,9 +3,10 @@ import sys
 from io import StringIO
 from typing import cast
 
-from m.cli.utils import error
+# from m.cli.utils import error
 from m.core import Issue
-from m.core.ci_tools import EnvVars, get_ci_tool, warn_block
+from m.log import EnvVars, Logger, config
+# from m.core.ci_tools import EnvVars, get_ci_tool, warn_block
 from pytest_mock import MockerFixture
 
 
@@ -37,8 +38,8 @@ def test_ci_tool_github_plain_str(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
     std_out, std_err = mock_streams(mocker)
     tool = get_ci_tool()
-    tool.error('some error')
-    tool.warn('some warning')
+    # tool.error('some error')
+    # tool.warn('some warning')
     assert std_out.getvalue() == ''
 
     err = std_err.getvalue()
@@ -49,8 +50,8 @@ def test_ci_tool_tc_plain_str(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'TC': 'true'}, clear=True)
     std_out, std_err = mock_streams(mocker)
     tool = get_ci_tool()
-    tool.error('some error')
-    tool.warn('some warning')
+    # tool.error('some error')
+    # tool.warn('some warning')
     assert std_out.getvalue() == ''
 
     err = std_err.getvalue()
@@ -70,7 +71,7 @@ def test_ci_tool_tc_plain_str(mocker: MockerFixture) -> None:
 def test_cli_util_error_no_block(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
     std_out, std_err = mock_streams(mocker)
-    error('some error')
+    # error('some error')
     assert std_out.getvalue() == ''
     err = std_err.getvalue()
     assert err == '::error::some error\n'
@@ -79,7 +80,7 @@ def test_cli_util_error_no_block(mocker: MockerFixture) -> None:
 def test_cli_util_error_block(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
     std_out, std_err = mock_streams(mocker)
-    error('some error', issue=Issue('oops'))
+    # error('some error', issue=Issue('oops'))
     assert std_out.getvalue() == ''
     err = std_err.getvalue()
     assert err.startswith('::error::some error\n')
