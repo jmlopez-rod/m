@@ -1,19 +1,17 @@
 import logging
 from functools import partial
-from typing import Any, Callable
+from typing import Callable
 
 from m.core.fp import Good, OneOf
 from m.core.issue import Issue
 
 from .ci_tools.types import Message
 
-LogData = dict[str, Any]
-
 
 def log_func_wrapper(
     func: Callable,
     msg: str | Message,
-    context: LogData | None = None,
+    context: dict | Issue | None = None,
     exit_code: int = 0,
 ) -> OneOf[Issue, int]:
     """Call a logger function with a message and log data.

@@ -119,7 +119,7 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from m.core.ci_tools import get_ci_tool
+    from m.log import Logger
 
     from ....ci.celt.core.process import PostProcessor
     from ....ci.celt.core.types import Configuration, ProjectStatus
@@ -152,5 +152,5 @@ def run(arg: Arguments):
     )
     print(output, file=sys.stderr)  # noqa: WPS421
     if project.error_msg:
-        get_ci_tool().error(project.error_msg)
+        Logger('m.cli.celt').error(project.error_msg)
     return project.status.value

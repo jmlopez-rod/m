@@ -1,5 +1,9 @@
 import json
+import logging
 import textwrap
+from typing import cast
+
+from m.core import Issue
 
 
 def indent_payload(
@@ -20,3 +24,30 @@ def indent_payload(
     json_dict = json.dumps(payload, indent=2)
     indented_payload = textwrap.indent(json_dict, ' ' * indent)
     return f'\n{indented_payload}' if prepend_new_line else indented_payload
+
+
+def format_context(
+    record: logging.LogRecord,
+    indent: int,
+    show_traceback: bool,
+) -> str:
+    """Extract the context from a log record.
+
+    Args:
+        record: The log record instance.
+        indent: The level of indentation to apply to the string.
+        show_traceback: Attempts to display the traceback if it exists.
+
+    Returns:
+        A string with leading new line of the context associated with a log
+        record.
+    """
+    context = record.__dict__.get('context')
+    data_dict = None
+    if isinstance(context, Issue):
+        data_dict = cast(dict, context.to_dict(show_traceback=show_traceback))
+        if context.only_context():
+            data_dict = data_dict['context']
+    else:
+        data_dict = context
+    return indent_payload(indent, data_dict) if data_dict else ''

@@ -1,7 +1,7 @@
 import logging
 
 from m.core import Issue, OneOf, one_of
-from m.log.misc import indent_payload
+from m.log.misc import format_context
 
 from m import git
 
@@ -32,7 +32,11 @@ def _loc_fmt(parts: list[str | None]) -> str:
     return f'[{loc}]' if loc else ''
 
 
-def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
+def log_format(
+    formatter: logging.Formatter,
+    record: logging.LogRecord,
+    show_traceback: bool,
+) -> str:
     """Format a log record using the functions provided in this module.
 
     This function is meant to be used by a log formatter. See more info
@@ -41,6 +45,7 @@ def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
     Args:
         formatter: A log formatter instance.
         record: A log record.
+        show_traceback: If true, display the python stack trace.
 
     Returns:
         A formatted string.
@@ -57,16 +62,15 @@ def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
         return ''
 
     indent = len(record.levelname) + 3
-    context = record_dict.get('context')
+    context = format_context(record, indent, show_traceback=show_traceback)
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
     msg_info = _loc_fmt([ci_info.file, ci_info.line, ci_info.col])
     loc = _loc_fmt([record.filename, f'{record.lineno}'])
-    context_str = indent_payload(indent, context) if context else ''
 
     msg = record.msg
     asctime = formatter.formatTime(record, formatter.datefmt)
     message = f'[{record.levelname}] [{asctime}]{msg_info}{loc}: {msg}'
-    return f'{message}{context_str}'
+    return f'{message}{context}'
 
 
 tool = ProviderModule(

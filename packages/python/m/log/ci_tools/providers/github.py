@@ -3,7 +3,7 @@ from typing import cast
 
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import env_model
-from m.log.misc import indent_payload
+from m.log.misc import format_context
 from pydantic import BaseModel, Field
 
 from ..types import EnvVars, Message, ProviderModule
@@ -72,7 +72,11 @@ def _gh_format(msg_type: str, msg: Message, message: str, postfix: str) -> str:
     return f'::{msg_type}{msg_info}::{message}{postfix}'
 
 
-def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
+def log_format(
+    formatter: logging.Formatter,
+    record: logging.LogRecord,
+    show_traceback: bool,
+) -> str:
     """Format a log record using the functions provided in this module.
 
     This function is meant to be used by a log formatter. See more info
@@ -81,6 +85,7 @@ def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
     Args:
         formatter: A log formatter instance.
         record: A log record.
+        show_traceback: If true, display the python stack trace.
 
     Returns:
         A formatted string.
@@ -102,16 +107,15 @@ def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
     indent_padding = 2 if is_command else 3
     indent = len(record.levelname) + indent_padding
 
-    context = record_dict.get('context')
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
-    context_str = indent_payload(indent, context) if context else ''
+    context = format_context(record, indent, show_traceback=show_traceback)
 
     if is_command:
-        return _gh_format(level_name, ci_info, record.msg, context_str)
+        return _gh_format(level_name, ci_info, record.msg, context)
     msg = record.msg
     asctime = formatter.formatTime(record, formatter.datefmt)
     message = f'[{record.levelname}] [{asctime}]: {msg}'
-    return f'{message}{context_str}'
+    return f'{message}{context}'
 
 
 tool = ProviderModule(

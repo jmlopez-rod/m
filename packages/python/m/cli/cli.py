@@ -1,20 +1,24 @@
 import argparse
-import json
 import sys
-from contextlib import suppress
-from functools import partial
 from typing import Any, Callable, cast
 
-from m.core import Issue, IssueDict, OneOf
+from m.core import Issue, OneOf
+from m.core.fp import is_bad
 from m.log import Logger
 
-from ..core.io import env
+from ..core.io import env, is_traceback_enabled
 from .engine.misc import params_count
 from .engine.sys import get_cli_command_modules
 from .engine.types import CmdMap, CommandModule, MetaMap, NestedCmdMap
+from .handlers import create_issue_handler, create_json_handler
 from .validators import validate_non_empty_str
 
-logger = Logger('m.cli.utils')
+logger = Logger('m.cli')
+cli_global_option = Callable[[argparse.ArgumentParser], argparse.Action]
+
+
+default_result_handler = create_json_handler(pretty=False)
+default_issue_handler = create_issue_handler(use_warning=False)
 
 
 def _main_parser(
@@ -105,39 +109,22 @@ def run_cli(
 
     len_run_args = params_count(run_func)
     run_args = [arg, None][:len_run_args]
-    # mypy is having a hard time figuring out the type of run_args
-    exit_code = run_func(*run_args)  # type:ignore[arg-type]
+    exit_code = 0
+    try:
+        # mypy is having a hard time figuring out the type of run_args
+        exit_code = run_func(*run_args)  # type:ignore[arg-type]
+    except Exception as ex:
+        default_issue_handler(
+            Issue('unknown cli run function exception', cause=ex),
+        )
+        exit_code = 5
     sys.exit(exit_code)
-
-
-def _issue_handler(show_traceback: bool, iss: Issue):
-    iss_dict = iss.to_dict(show_traceback=show_traceback)
-    if len(iss_dict) and 'context' in iss_dict:
-        iss_dict = cast(IssueDict, iss_dict['context'])
-    logger.error(iss.message, cast(dict, iss_dict))
-
-
-def issue_handler(show_traceback: bool) -> Callable[[Issue], None]:
-    return partial(_issue_handler, show_traceback)
-
-
-def display_result(inst: Any) -> None:
-    """Print the JSON stringification of a non-None parameter.
-
-    Args:
-        inst: The instance to stringify.
-    """
-    if inst is not None:
-        msg = inst
-        with suppress(Exception):
-            msg = json.dumps(inst, separators=(',', ':'))
-        print(msg)  # noqa: WPS421
 
 
 def run_main(
     callback: Callable[[], OneOf[Issue, Any]],
-    handle_result: Callable[[Any], None] = display_result,
-    handle_issue: Callable[[Issue], None] = issue_handler(True),
+    result_handler: Callable[[Any], None] = default_result_handler,
+    issue_handler: Callable[[Issue], None] = default_issue_handler,
 ) -> int:
     """Run the callback and print the returned value.
 
@@ -147,53 +134,33 @@ def run_main(
 
     Args:
         callback: A function that returns a `OneOf`.
-        handle_result: A function that takes in the Good result.
-        handle_issue: A function that takes in the Issue.
+        result_handler: A function that takes in the Good result.
+        issue_handler: A function that takes in the Issue.
 
     Returns:
         0 if the callback is a `Good` result otherwise return 1.
     """
+    res = None
     try:
         res = callback()
-        result_value = res.value
-        if res.is_bad:
-            if isinstance(result_value, Issue):
-                handle_issue(result_value)
-            else:
-                issue = Issue(
-                    'non-issue exception',
-                    cause=cast(Issue, result_value),
-                )
-                handle_issue(issue)
-            return 1
-        handle_result(result_value)
     except Exception as ex:
-        issue = Issue('unknown caught exception', cause=ex)
-        handle_issue(issue)
+        issue_handler(Issue('unknown caught exception', cause=ex))
+        return 2
+    if is_bad(res):
+        problem = res.value
+        if isinstance(problem, Issue):
+            issue_handler(problem)
+        else:
+            issue_handler(Issue('non-issue exception', cause=problem))
         return 1
+    result_handler(res.value)
     return 0
-
-
-# def error(msg: str, issue: Optional[Issue] = None) -> int:
-#     """Print an error message.
-
-#     Args:
-#         msg: The error message.
-#         issue: Optional `Issue` instance to go along with the error message.
-
-#     Returns:
-#         The integer 1.
-#     """
-#     get_ci_tool().error(msg)
-#     if issue:
-#         error_block(str(issue), sys.stderr)
-#     return 1
 
 
 def cli_integration_token(
     integration: str,
     env_var: str,
-) -> Callable[[argparse.ArgumentParser], argparse.Action]:
+) -> cli_global_option:
     """Return a function that takes in a parser.
 
     This generated function registers a token argument in the parser
@@ -204,7 +171,7 @@ def cli_integration_token(
         env_var: The environment variable name.
 
     Returns:
-        A function that
+        A function to add arguments to an argparse parser.
     """
     return lambda parser: parser.add_argument(
         '-t',

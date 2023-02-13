@@ -1,6 +1,11 @@
 from typing import Any
 
-from m.cli import command, validate_json_payload
+from m.cli import (
+    command,
+    create_issue_handler,
+    run_main,
+    validate_json_payload,
+)
 from pydantic import BaseModel, Field
 
 
@@ -66,5 +71,10 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from ...core.json import jsonq
-    return jsonq(arg.payload, arg.separator, arg.warn, *arg.query)
+    from m.core.json import jsonq
+
+    return run_main(
+        lambda: jsonq(arg.payload, arg.separator, *arg.query),
+        result_handler=print,
+        issue_handler=create_issue_handler(arg.warn),
+    )

@@ -1,6 +1,6 @@
 from inspect import cleandoc
 
-from ...utils import cli_integration_token
+from m.cli import cli_integration_token
 
 _DESC = """
     The following commands make calls to the Github api.

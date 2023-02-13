@@ -9,6 +9,14 @@ from pydantic import BaseModel
 BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
 
 
+def is_traceback_enabled():
+    """Return True if the stacktrace should be displayed."""
+    debug_mode = env('DEBUG', 'false') == 'true'
+    ci_env = env('CI', 'false') == 'true'
+    forced = env('__M_FORCE_DEBUG__', 'false') == 'true'
+    return debug_mode or ci_env or forced
+
+
 def format_seconds(number_of_seconds: int | float) -> str:
     """Return a string representing the number of seconds.
 

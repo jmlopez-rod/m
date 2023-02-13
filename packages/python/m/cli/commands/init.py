@@ -12,9 +12,6 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run():
-    import logging
-
     from m.ci.init import init_repo
-    from m.core.logging import logging_config
-    logging_config(logging.INFO, [])
+
     return run_main(init_repo, handle_result=print)

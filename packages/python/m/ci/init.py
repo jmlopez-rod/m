@@ -6,11 +6,10 @@ from typing import List, Tuple
 from m.core import Good, Issue, OneOf, issue, one_of
 from m.core import rw as mio
 from m.core import subprocess
-from m.core.ci_tools import Message, get_ci_tool
-from m.core.logging import Logger
 from m.git import get_remote_url
+from m.log import Logger, Message
 
-logger = Logger('m:init')
+logger = Logger('m.cli.init')
 
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:

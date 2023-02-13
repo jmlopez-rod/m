@@ -1,7 +1,7 @@
 import logging
 
 from m.core import Good, Issue, OneOf
-from m.log.misc import indent_payload
+from m.log.misc import format_context
 
 from ..types import EnvVars, Message, ProviderModule
 
@@ -54,7 +54,11 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     return Good(EnvVars(ci_env=True))
 
 
-def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
+def log_format(
+    formatter: logging.Formatter,
+    record: logging.LogRecord,
+    show_traceback: bool,
+) -> str:
     """Format a log record using the functions provided in this module.
 
     This function is meant to be used by a log formatter. See more info
@@ -65,6 +69,7 @@ def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
     Args:
         formatter: A log formatter instance.
         record: A log record.
+        show_traceback: If true, display the python stack trace.
 
     Returns:
         A formatted string.
@@ -86,8 +91,7 @@ def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
     indent_padding = 2 if is_command else 3
     indent = len(record.levelname) + indent_padding
 
-    context = record_dict.get('context')
-    context_str = indent_payload(indent, context) if context else ''
+    context = format_context(record, indent, show_traceback=show_traceback)
 
     # Github supports adding context information about an error
     # Not so sure Teamcity does. If there is some way of using this info
@@ -101,13 +105,13 @@ def log_format(formatter: logging.Formatter, record: logging.LogRecord) -> str:
             'message',
             status='WARNING',
             text=msg,
-            postfix=context_str,
+            postfix=context,
         )
     if level_name == 'error':
-        return _tc('buildProblem', postfix=context_str, description=msg)
+        return _tc('buildProblem', postfix=context, description=msg)
 
     message = f'[{record.levelname}]: {msg}'
-    return f'{message}{context_str}'
+    return f'{message}{context}'
 
 
 tool = ProviderModule(

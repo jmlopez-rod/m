@@ -2,6 +2,8 @@ import json
 import logging
 import textwrap
 
+from m.core.io import is_traceback_enabled
+
 from .ci_tools.ci_tools import get_ci_tool
 from .ci_tools.types import Message
 
@@ -39,9 +41,10 @@ class CiFormatter(logging.Formatter):
         super().__init__(datefmt=datefmt)
         self.opened_blocks: list[str] = []
         self.ci_tool = get_ci_tool()
+        self.show_traceback = is_traceback_enabled()
 
     def format(self, record):
-        msg = self.ci_tool.formatter(self, record)
+        msg = self.ci_tool.formatter(self, record, self.show_traceback)
         if self.ci_tool.ci:
             return msg
 

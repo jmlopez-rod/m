@@ -1,10 +1,11 @@
-from typing import Callable, Generic, Iterator, TypeVar, Union, cast
+from typing import Callable, Generic, Iterator, TypeGuard, TypeVar, Union, cast
 
 # Note: disabling WPS110 in .flake8 for this file.
 #   Reason for this, the variable name "value".
 A = TypeVar('A')  # pylint: disable=invalid-name
 B = TypeVar('B')  # pylint: disable=invalid-name
 G = TypeVar('G')  # pylint: disable=invalid-name
+K = TypeVar('K')  # pylint: disable=invalid-name
 LazyArg = Union[A, Callable[[], A]]
 
 
@@ -41,7 +42,7 @@ class OneOf(Generic[B, G]):
     is_bad: bool
     value: B | G
 
-    def __init__(self, is_bad: bool, value: B | G):
+    def __init__(self, bad: bool, value: B | G):
         """Initialize a `OneOf`.
 
         Args:
@@ -50,7 +51,7 @@ class OneOf(Generic[B, G]):
             value:
                 The value of the instance.
         """
-        self.is_bad = is_bad
+        self.is_bad = bad
         self.value = value
 
     def __iter__(self) -> Iterator[G]:
@@ -78,7 +79,7 @@ class OneOf(Generic[B, G]):
         if not self.is_bad:
             yield self.value
 
-    def map(self, fct: Callable[[G], G]) -> 'OneOf':
+    def map(self, fct: Callable[[G], K]) -> 'OneOf[B, K]':
         """Apply the function to its value if this is a `Good` instance.
 
         Args:
@@ -87,7 +88,11 @@ class OneOf(Generic[B, G]):
         Returns:
             Itself if its a `Bad` otherwise another instance of `Good`.
         """
-        return self if self.is_bad else Good(fct(cast(G, self.value)))
+        return (
+            cast(OneOf[B, K], self)
+            if self.is_bad
+            else Good(fct(cast(G, self.value)))
+        )
 
     def flat_map_bad(self, fct: Callable[[B], 'OneOf']) -> 'OneOf':
         """Apply the input function if this is a `Bad` value.
@@ -118,13 +123,13 @@ class Bad(OneOf[B, G]):
     is_bad: bool = False
     value: B
 
-    def __init__(self, one_of_value):
+    def __init__(self, one_of_value: B):
         """Initialize a `Bad` instance.
 
         Args:
             one_of_value: The "bad" value.
         """
-        super().__init__(is_bad=True, value=one_of_value)
+        super().__init__(bad=True, value=one_of_value)
 
 
 class Good(OneOf[B, G]):
@@ -139,4 +144,17 @@ class Good(OneOf[B, G]):
         Args:
             one_of_value: The "bad" value.
         """
-        super().__init__(is_bad=False, value=one_of_value)
+        super().__init__(bad=False, value=one_of_value)
+
+
+def is_bad(inst: OneOf[B, G]) -> TypeGuard[Bad[B, G]]:
+    return inst.is_bad
+
+
+def is_good(inst: OneOf[B, G]) -> TypeGuard[Good[B, G]]:
+    return not inst.is_bad
+
+
+def non_bad(inst: OneOf[B, G]) -> Good[B, G]:
+    assert not is_bad(inst)
+    return cast(Good[B, G], inst)

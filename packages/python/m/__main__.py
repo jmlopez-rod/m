@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from m.cli.utils import run_cli
+from m.cli import run_cli
 from m.log import logging_config
 from m.version import VERSION
 
