@@ -7,7 +7,7 @@ from m.core import Good, Issue, OneOf, issue, one_of
 from m.core import rw as mio
 from m.core import subprocess
 from m.git import get_remote_url
-from m.log import Logger, Message
+from m.log import Logger
 
 logger = Logger('m.cli.init')
 
@@ -141,16 +141,7 @@ def init_repo() -> OneOf[Issue, str]:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
     if Path.exists(Path('m/m.json')):
-        logger.info('starting', {'a': 100})
-        logger.open_block('block1', 'opening block1')
-        logger.warning('dont mind me', {'b': 'yes'})
-        logger.open_block('sub block1', 'sub1')
-        logger.info('just a message')
-        logger.open_block('sub block2', 'sub2')
-        logger.error('oops', {'what': 'ok', 'yes': 'no'})
-        logger.close_block('sub block1')
-        logger.error(Message(msg='huh?', file='hello.js', line='99', col='2'))
-        # get_ci_tool().warn('delete m/m.json to restart the init process.')
+        logger.warning('delete m/m.json to restart the init process.')
         return Good('...')
     return one_of(lambda: [
         'done'

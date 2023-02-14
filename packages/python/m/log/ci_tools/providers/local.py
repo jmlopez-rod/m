@@ -1,7 +1,7 @@
 import logging
 
 from m.core import Issue, OneOf, one_of
-from m.log.misc import format_context
+from m.log.misc import format_context, format_location
 
 from m import git
 
@@ -26,16 +26,11 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     )
 
 
-def _loc_fmt(parts: list[str | None]) -> str:
-    _parts = [x for x in parts if x]
-    loc = ':'.join(_parts)
-    return f'[{loc}]' if loc else ''
-
-
 def log_format(
     formatter: logging.Formatter,
     record: logging.LogRecord,
     show_traceback: bool,
+    debug_python: bool,
 ) -> str:
     """Format a log record using the functions provided in this module.
 
@@ -46,6 +41,7 @@ def log_format(
         formatter: A log formatter instance.
         record: A log record.
         show_traceback: If true, display the python stack trace.
+        debug_python: If true, display the location of the record's origin.
 
     Returns:
         A formatted string.
@@ -64,8 +60,12 @@ def log_format(
     indent = len(record.levelname) + 3
     context = format_context(record, indent, show_traceback=show_traceback)
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
-    msg_info = _loc_fmt([ci_info.file, ci_info.line, ci_info.col])
-    loc = _loc_fmt([record.filename, f'{record.lineno}'])
+    msg_info = format_location([ci_info.file, ci_info.line, ci_info.col])
+    loc = (
+        format_location([record.pathname, f'{record.lineno}'])
+        if debug_python
+        else ''
+    )
 
     msg = record.msg
     asctime = formatter.formatTime(record, formatter.datefmt)

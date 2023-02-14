@@ -36,8 +36,7 @@ def remove_traceback(issue_dict: object) -> None:
         if cause:
             remove_traceback(cause)
         context = issue_dict.get('context')
-        if isinstance(context, dict):
-            remove_traceback(context)
+        remove_traceback(context)
         if isinstance(context, list):
             for context_item in context:
                 remove_traceback(context_item)
@@ -128,6 +127,9 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
 
         This is done so that each of the properties are written in an expected
         order.
+
+        Args:
+            show_traceback: If False, it will remove all stacktraces.
 
         Returns:
             An `IssueDict` instance.

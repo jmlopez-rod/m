@@ -55,4 +55,7 @@ class ProviderModule:
 
     ci: bool
     env_vars: Callable[[], OneOf[Issue, EnvVars]]
-    formatter: Callable[[logging.Formatter, logging.LogRecord, bool], str]
+    formatter: Callable[
+        [logging.Formatter, logging.LogRecord, bool, bool],
+        str,
+    ]

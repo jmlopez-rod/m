@@ -36,14 +36,13 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from m.core.ci_tools import Message
-    from m.core.logging import Logger
-    logger = Logger('m.cli')
+    from m.log import Logger, Message
+
     msg = Message(
         msg=arg.message,
         file=arg.file,
         line=arg.line,
         col=arg.col,
     )
-    logger.warning(msg)
+    Logger('m.cli').warning(msg)
     return 0

@@ -1,7 +1,7 @@
 import logging
 
 from m.core import Good, Issue, OneOf
-from m.log.misc import format_context
+from m.log.misc import format_context, format_location
 
 from ..types import EnvVars, Message, ProviderModule
 
@@ -58,6 +58,7 @@ def log_format(
     formatter: logging.Formatter,
     record: logging.LogRecord,
     show_traceback: bool,
+    debug_python: bool,
 ) -> str:
     """Format a log record using the functions provided in this module.
 
@@ -70,6 +71,7 @@ def log_format(
         formatter: A log formatter instance.
         record: A log record.
         show_traceback: If true, display the python stack trace.
+        debug_python: If true, display the location of the record's origin.
 
     Returns:
         A formatted string.
@@ -93,14 +95,18 @@ def log_format(
 
     context = format_context(record, indent, show_traceback=show_traceback)
 
-    # Github supports adding context information about an error
-    # Not so sure Teamcity does. If there is some way of using this info
-    # we can use it with `ci_info`.
-    # ci_info = record_dict.get('ci_info', Message(msg=record.msg))
+    ci_info = record_dict.get('ci_info', Message(msg=record.msg))
+    msg_info = format_location([ci_info.file, ci_info.line, ci_info.col])
 
-    msg = record.msg
+    loc = (
+        format_location([record.pathname, f'{record.lineno}'])
+        if debug_python
+        else ''
+    )
 
+    msg = f'{loc} {record.msg}'.lstrip()
     if level_name == 'warning':
+
         return _tc(
             'message',
             status='WARNING',
@@ -110,7 +116,8 @@ def log_format(
     if level_name == 'error':
         return _tc('buildProblem', postfix=context, description=msg)
 
-    message = f'[{record.levelname}]: {msg}'
+    msg = record.msg
+    message = f'[{record.levelname}] {msg_info}{loc}: {msg}'
     return f'{message}{context}'
 
 

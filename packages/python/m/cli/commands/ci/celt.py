@@ -2,11 +2,8 @@ import sys
 from typing import Any, cast
 
 from m.cli import command, validate_json_payload, validate_payload
+from m.core import is_bad, one_of
 from pydantic import BaseModel, Field
-
-from ....core import one_of
-
-# from ...utils import display_issue
 
 
 class Arguments(BaseModel):
@@ -119,13 +116,13 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
+    from m.ci.celt.core.process import PostProcessor
+    from m.ci.celt.core.types import Configuration, ProjectStatus
+    from m.ci.celt.post_processor import get_post_processor
+    from m.core.issue import Issue
     from m.log import Logger
 
-    from ....ci.celt.core.process import PostProcessor
-    from ....ci.celt.core.types import Configuration, ProjectStatus
-    from ....ci.celt.post_processor import get_post_processor
-    from ....core.issue import Issue
-
+    logger = Logger('m.cli.celt')
     config = Configuration(
         arg.max_lines,
         arg.full_message,
@@ -139,9 +136,9 @@ def run(arg: Arguments):
         for tool in tool_either
         for project in tool.run(arg.payload, arg.config)
     ])
-    if either.is_bad:
+    if is_bad(either):
         Issue.show_traceback = arg.traceback
-        display_issue(cast(Issue, either.value))
+        logger.error('celt failure', either.value)
         return 1
     tool = cast(PostProcessor, tool_either.value)
     project = cast(ProjectStatus, either.value)
@@ -152,5 +149,5 @@ def run(arg: Arguments):
     )
     print(output, file=sys.stderr)  # noqa: WPS421
     if project.error_msg:
-        Logger('m.cli.celt').error(project.error_msg)
+        logger.error(project.error_msg)
     return project.status.value

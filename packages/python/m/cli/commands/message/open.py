@@ -23,6 +23,8 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments):
-    from m.core.ci_tools import get_ci_tool
-    get_ci_tool().open_block(arg.name, arg.description)
+    from m.log import Logger
+
+    logger = Logger('m.cli')
+    logger.open_block(arg.name, arg.description)
     return 0

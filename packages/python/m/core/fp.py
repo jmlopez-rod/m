@@ -46,7 +46,7 @@ class OneOf(Generic[B, G]):
         """Initialize a `OneOf`.
 
         Args:
-            is_bad:
+            bad:
                 Set to `True` if the instance holds a `Bad` value.
             value:
                 The value of the instance.
@@ -148,13 +148,24 @@ class Good(OneOf[B, G]):
 
 
 def is_bad(inst: OneOf[B, G]) -> TypeGuard[Bad[B, G]]:
+    """Assert that a OneOf instance is a `Bad`.
+
+    Args:
+        inst: The `OneOf` instance.
+
+    Returns:
+        True if the instance is a `Bad`.
+    """
     return inst.is_bad
 
 
 def is_good(inst: OneOf[B, G]) -> TypeGuard[Good[B, G]]:
+    """Assert that a OneOf instance is a `Good`.
+
+    Args:
+        inst: The `OneOf` instance.
+
+    Returns:
+        True if the instance is a `Good`.
+    """
     return not inst.is_bad
-
-
-def non_bad(inst: OneOf[B, G]) -> Good[B, G]:
-    assert not is_bad(inst)
-    return cast(Good[B, G], inst)

@@ -6,7 +6,7 @@ from m.core import Issue, OneOf
 from m.core.fp import is_bad
 from m.log import Logger
 
-from ..core.io import env, is_traceback_enabled
+from ..core.io import env
 from .engine.misc import params_count
 from .engine.sys import get_cli_command_modules
 from .engine.types import CmdMap, CommandModule, MetaMap, NestedCmdMap

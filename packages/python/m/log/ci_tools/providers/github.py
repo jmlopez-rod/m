@@ -3,7 +3,7 @@ from typing import cast
 
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import env_model
-from m.log.misc import format_context
+from m.log.misc import format_context, format_location
 from pydantic import BaseModel, Field
 
 from ..types import EnvVars, Message, ProviderModule
@@ -76,6 +76,7 @@ def log_format(
     formatter: logging.Formatter,
     record: logging.LogRecord,
     show_traceback: bool,
+    debug_python: bool,
 ) -> str:
     """Format a log record using the functions provided in this module.
 
@@ -86,6 +87,7 @@ def log_format(
         formatter: A log formatter instance.
         record: A log record.
         show_traceback: If true, display the python stack trace.
+        debug_python: If true, display the location of the record's origin.
 
     Returns:
         A formatted string.
@@ -110,11 +112,17 @@ def log_format(
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
     context = format_context(record, indent, show_traceback=show_traceback)
 
+    loc = (
+        format_location([record.pathname, f'{record.lineno}'])
+        if debug_python
+        else ''
+    )
     if is_command:
-        return _gh_format(level_name, ci_info, record.msg, context)
+        msg = f'{loc} {record.msg}'
+        return _gh_format(level_name, ci_info, msg, context)
     msg = record.msg
     asctime = formatter.formatTime(record, formatter.datefmt)
-    message = f'[{record.levelname}] [{asctime}]: {msg}'
+    message = f'[{record.levelname}] [{asctime}]{loc}: {msg}'
     return f'{message}{context}'
 
 

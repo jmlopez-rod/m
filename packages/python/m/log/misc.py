@@ -51,3 +51,16 @@ def format_context(
     else:
         data_dict = context
     return indent_payload(indent, data_dict) if data_dict else ''
+
+
+def format_location(parts: list[str | None]) -> str:
+    """Join a list of possible defined strings.
+
+    Args:
+        parts: A list of possibly defined strings.
+
+    Returns:
+        A string with the location or an empty string.
+    """
+    loc = ':'.join([x for x in parts if x])
+    return f'[{loc}]' if loc else ''
