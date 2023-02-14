@@ -18,6 +18,7 @@ GH = {'GITHUB_ACTIONS': 'true'}  # Github
 TC = {'TEAMCITY': 'true'}  # Teamcity
 MSG = 'hot dog, hot dog, hot diggity dog'
 FN = 'pkg/file.py'
+LP = '[WARNING] [09:33:09 PM - Nov 29, 1973]'
 
 WARN = "message status='WARNING'"
 SIMPLE = [
@@ -27,7 +28,7 @@ SIMPLE = [
         environ=env_vars,
     )
     for err_msg, env_vars in (
-        (f'warn: {MSG}\n', LH),
+        (f'{LP}: {MSG}\n', LH),
         (f'::warning::{MSG}\n', GH),
         (f"##teamcity[{WARN} text='{MSG}']\n", TC),
     )
@@ -39,7 +40,7 @@ WITH_FILE = [
         environ=env_vars,
     )
     for err_msg, env_vars in [
-        (f'warn[{FN}]: {MSG}\n', LH),
+        (f'{LP}[{FN}]: {MSG}\n', LH),
         (f'::warning file={FN}::{MSG}\n', GH),
         (f"##teamcity[{WARN} text='|[{FN}|]: {MSG}']\n", TC),
     ]
@@ -51,7 +52,7 @@ WITH_LINE = [
         environ=env_vars,
     )
     for err_msg, env_vars in [
-        (f'warn[{FN}:99]: {MSG}\n', LH),
+        (f'{LP}[{FN}:99]: {MSG}\n', LH),
         (f'::warning file={FN},line=99::{MSG}\n', GH),
         (f"##teamcity[{WARN} text='|[{FN}:99|]: {MSG}']\n", TC),
     ]
@@ -63,7 +64,7 @@ WITH_COL = [
         environ=env_vars,
     )
     for err_msg, env_vars in [
-        (f'warn[{FN}:1:2]: {MSG}\n', LH),
+        (f'{LP}[{FN}:1:2]: {MSG}\n', LH),
         (f'::warning file={FN},line=1,col=2::{MSG}\n', GH),
         (f"##teamcity[{WARN} text='|[{FN}:1:2|]: {MSG}']\n", TC),
     ]
@@ -85,5 +86,6 @@ WITH_COL = [
 ])
 def test_m_message_warn(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, tcase.environ, clear=True)
+    mocker.patch('time.time').return_value = 123456789
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)

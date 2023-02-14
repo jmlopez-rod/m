@@ -30,7 +30,7 @@ TESTS = [
         cleandoc=False,
     )
     for msg, env_vars in (
-        ('\nnew: a desc', LH),
+        ('\n  >>> [new]: a desc', LH),
         ('::endgroup::\n::group::new', GH),
         (cleandoc(TC_RES), TC),
     )
@@ -47,7 +47,7 @@ TESTS = [
         exit_code=2,
     ),
 ])
-def test_m_message_open(tcase: TCase, mocker: MockerFixture) -> None:
+def test_m_message_sibling(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, tcase.environ, clear=True)
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)

@@ -1,6 +1,6 @@
-::error::invalid_tool is not a supported post processor
+::error::celt failure
 ::group::error
-{
-  "message": "invalid_tool is not a supported post processor"
-}
+       {
+         "message": "invalid_tool is not a supported post processor"
+       }
 ::endgroup::

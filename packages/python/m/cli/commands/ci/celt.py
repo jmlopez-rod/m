@@ -138,7 +138,7 @@ def run(arg: Arguments):
     ])
     if is_bad(either):
         Issue.show_traceback = arg.traceback
-        logger.error('celt failure', either.value)
+        logger.error_block('celt failure', either.value)
         return 1
     tool = cast(PostProcessor, tool_either.value)
     project = cast(ProjectStatus, either.value)

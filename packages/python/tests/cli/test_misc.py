@@ -34,7 +34,7 @@ def test_run_main_success(mocker: MockerFixture):
 def test_run_main_unknown_error(mocker: MockerFixture):
     on_success, on_failure = handlers(mocker)
     exit_code = run_main(failure_func, on_success, on_failure)
-    assert exit_code == 1
+    assert exit_code == 2
 
     # https://stackoverflow.com/a/39669722
     args, _ = on_failure.call_args_list[0]

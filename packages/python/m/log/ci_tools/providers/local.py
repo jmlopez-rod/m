@@ -51,7 +51,7 @@ def log_format(
     open_b = record_dict.get('open_block')
     if open_b:
         name, desc = open_b
-        return f'>>> [{name}]: {desc}'
+        return f'>>> [{name}]: {desc}'.rstrip()
 
     close_b = record_dict.get('close_block')
     if close_b:
@@ -59,6 +59,9 @@ def log_format(
 
     indent = len(record.levelname) + 3
     context = format_context(record, indent, show_traceback=show_traceback)
+    if not record.msg:
+        return context[1:]
+
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
     msg_info = format_location([ci_info.file, ci_info.line, ci_info.col])
     loc = (

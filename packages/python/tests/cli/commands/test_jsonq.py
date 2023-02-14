@@ -62,7 +62,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
             'a.b.c.1',
         ],
         exit_code=1,
-        errors=['warn']
+        errors=['[WARNING]']
     ),
     TCase(
         cmd=[

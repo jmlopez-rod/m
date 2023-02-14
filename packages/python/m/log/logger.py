@@ -57,7 +57,12 @@ class Logger:
         self.warning = partial(log_func_wrapper, self.inst.warning)
         self.error = partial(log_func_wrapper, self.inst.error)
 
-    def open_block(self, name: str, description: str) -> OneOf[Issue, int]:
+    def open_block(
+        self,
+        name: str,
+        description: str,
+        stderr: bool = False,
+    ) -> OneOf[Issue, int]:
         """Group log lines.
 
         Signals the formatter that the next log lines should be placed in a
@@ -66,31 +71,79 @@ class Logger:
         Args:
             name: The name of the block to open.
             description: Not supported.
+            stderr: Force message to be displayed in stderr.
 
         Returns:
             A OneOf containing 0 to make it easier to call in fp for loops.
         """
-        self.inst.info(
+        func = self.inst.error if stderr else self.inst.info
+        func(
             'OPEN_BLOCK',
             extra={'open_block': (name, description)},
             stacklevel=2,
         )
         return Good(0)
 
-    def close_block(self, name: str) -> OneOf[Issue, int]:
+    def close_block(
+        self,
+        name: str,
+        stderr: bool = False,
+    ) -> OneOf[Issue, int]:
         """Close a group log lines.
 
         Signals the formatter that the current group of lines should end.
 
         Args:
             name: The name of the block to close.
+            stderr: Force message to be displayed in stderr.
 
         Returns:
             A OneOf containing 0 to make it easier to call in fp for loops.
         """
-        self.inst.info(
+        func = self.inst.error if stderr else self.inst.info
+        func(
             'CLOSE_BLOCK',
             extra={'close_block': name},
             stacklevel=2,
         )
+        return Good(0)
+
+    def error_block(
+        self,
+        msg: str | Message,
+        context: dict | Issue,
+    ) -> OneOf[Issue, int]:
+        """Display an error block.
+
+        Args:
+            msg: The error message to display.
+            context: The dict/Issue to display in a block.
+
+        Returns:
+            A OneOf containing 0 to make it easier to call in fp for loops.
+        """
+        self.error(msg)
+        self.open_block('error', '', stderr=True)
+        self.error('', context)
+        self.close_block('error', stderr=True)
+        return Good(0)
+
+    def waning_block(
+        self,
+        msg: str | Message,
+        context: dict | Issue,
+    ) -> OneOf[Issue, int]:
+        """Display a warning block.
+
+        Args:
+            msg: The warning message to display.
+            context: The dict/Issue to display in a block.
+
+        Returns:
+            A OneOf containing 0 to make it easier to call in fp for loops.
+        """
+        self.warning(msg)
+        self.open_block('warning', '', stderr=True)
+        self.warning('', context)
+        self.close_block('warning', stderr=True)
         return Good(0)

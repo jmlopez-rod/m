@@ -97,6 +97,7 @@ def log_format(
 
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
     msg_info = format_location([ci_info.file, ci_info.line, ci_info.col])
+    msg_info = f'{msg_info}:' if msg_info else ''
 
     loc = (
         format_location([record.pathname, f'{record.lineno}'])
@@ -104,9 +105,8 @@ def log_format(
         else ''
     )
 
-    msg = f'{loc} {record.msg}'.lstrip()
+    msg = f'{loc}{msg_info} {record.msg}'.lstrip()
     if level_name == 'warning':
-
         return _tc(
             'message',
             status='WARNING',

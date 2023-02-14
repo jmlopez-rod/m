@@ -50,13 +50,19 @@ def _eval_cmd(cmd: str, tcase: TCase):
     TCase(
         repo_url='git@github.com:fizzy/hotdog.git',
         expected='...',
-        errors=['warn: delete m/m.json to restart the init process.'],
+        errors=[
+            '[WARNING]',
+            'delete m/m.json to restart the init process.',
+        ],
         m_file_exists=True,
     ),
     TCase(
         repo_url='git@github.com:fizzy/hotdog.git',
         expected='...',
-        errors=['warn: delete m/m.json to restart the init process.'],
+        errors=[
+            '[WARNING]',
+            'delete m/m.json to restart the init process.',
+        ],
         m_file_exists=True,
     ),
     TCase(

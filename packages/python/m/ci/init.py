@@ -145,7 +145,6 @@ def init_repo() -> OneOf[Issue, str]:
         return Good('...')
     return one_of(lambda: [
         'done'
-        for _ in logger.info('starting', {'a': 100})
         for _ in create_m_config()
         for _ in update_gitignore()
         for _ in create_changelog()

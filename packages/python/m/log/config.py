@@ -4,7 +4,7 @@ from .formatters import CiFormatter
 from .handlers import StdErrHandler, StdOutHandler
 
 
-def logging_config(level: int) -> None:
+def logging_config(level: int = logging.NOTSET) -> None:
     """Apply a configuration to the logs.
 
     Args:

@@ -111,6 +111,8 @@ def log_format(
 
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
     context = format_context(record, indent, show_traceback=show_traceback)
+    if not record.msg:
+        return context[1:]
 
     loc = (
         format_location([record.pathname, f'{record.lineno}'])
@@ -118,7 +120,7 @@ def log_format(
         else ''
     )
     if is_command:
-        msg = f'{loc} {record.msg}'
+        msg = f'{loc} {record.msg}'.lstrip()
         return _gh_format(level_name, ci_info, msg, context)
     msg = record.msg
     asctime = formatter.formatTime(record, formatter.datefmt)
