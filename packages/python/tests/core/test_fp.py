@@ -1,7 +1,7 @@
 import unittest
 
 from m.core import one_of
-from m.core.fp import Bad, Good
+from m.core.fp import Bad, Good, is_good
 from m.core.maybe import non_null
 from m.core.one_of import to_one_of
 from tests.conftest import assert_issue
@@ -49,6 +49,7 @@ def test_fp_map():
     assert bad.value == 'to the bone'
     good = Good('x').map(lambda msg: f'{msg}^2')
     assert not good.is_bad
+    assert is_good(good)
     assert good.value == 'x^2'
 
 

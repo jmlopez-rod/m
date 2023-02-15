@@ -1,4 +1,4 @@
-from m.cli import command, run_main
+from m.cli import command, create_json_handler, run_main
 from m.core.io import env
 from pydantic import BaseModel, Field
 
@@ -16,6 +16,8 @@ class Arguments(BaseModel):
             "baseRefOid": "6452cfbad0afcc6d09b75e0a1e32da1d07e0b7ca",
             "title": "Reduce exceptions",
             "body": "...
+
+    Or use the `--pretty` option to avoid piping.
     """
 
     owner: str = Field(
@@ -29,6 +31,10 @@ class Arguments(BaseModel):
     files: int = Field(
         default=10,
         description='max number of files to retrieve',
+    )
+    pretty: bool = Field(
+        default=False,
+        description='format json payload with indentation',
     )
     pr_number: int = Field(
         description='the pr number',
@@ -44,10 +50,13 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments, arg_ns) -> int:
     from m.github.cli import get_pr_info
-    return run_main(lambda: get_pr_info(
-        arg_ns.token,
-        arg.owner,
-        arg.repo,
-        arg.pr_number,
-        arg.files,
-    ))
+    return run_main(
+        lambda: get_pr_info(
+            arg_ns.token,
+            arg.owner,
+            arg.repo,
+            arg.pr_number,
+            arg.files,
+        ),
+        result_handler=create_json_handler(arg.pretty),
+    )
