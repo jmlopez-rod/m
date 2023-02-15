@@ -2,6 +2,31 @@ import logging
 import sys
 
 
+class JsonFileHandler(logging.FileHandler):
+    """A log handler to output to a file."""
+
+    def __init__(self, formatter: logging.Formatter, filename: str):
+        """Initialize the handler.
+
+        Args:
+            formatter: The formatter to use with the handler.
+            filename: The file where to store the log recrods.
+        """
+        super().__init__(filename, encoding='UTF-8')
+        self.setFormatter(formatter)
+
+    def filter(self, _record: logging.LogRecord) -> bool:
+        """Display all records.
+
+        Args:
+            _record: A logging record instance.
+
+        Returns:
+            True
+        """
+        return True
+
+
 class StdErrHandler(logging.StreamHandler):
     """A log handler to print to stderr."""
 

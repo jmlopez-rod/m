@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from io import StringIO
@@ -14,15 +15,17 @@ logger = Logger('test.providers')
 def mock_streams(mocker: MockerFixture):
     std_out = StringIO()
     std_err = StringIO()
+    log_hdl = StringIO()
+    mocker.patch('logging.FileHandler._open').return_value = log_hdl
     mocker.patch('time.time').return_value = 123456789
     mocker.patch.object(sys, 'stdout', std_out)
     mocker.patch.object(sys, 'stderr', std_err)
-    return std_out, std_err
+    return std_out, std_err, log_hdl
 
 
 def test_ci_tool_warn_block(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {}, clear=True)
-    std_out, std_err = mock_streams(mocker)
+    std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.waning_block('some warning', {'context': []})
     assert std_out.getvalue() == ''
@@ -38,7 +41,7 @@ def test_ci_tool_warn_block(mocker: MockerFixture) -> None:
 
 def test_ci_tool_close_blocks(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {}, clear=True)
-    std_out, std_err = mock_streams(mocker)
+    std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.info('a')
     logger.open_block('b1', 'open b1')
@@ -56,10 +59,31 @@ def test_ci_tool_close_blocks(mocker: MockerFixture) -> None:
         [INFO] [09:33:09 PM - Nov 29, 1973]: c
     """)
 
+def test_ci_tool_json_logger(mocker: MockerFixture) -> None:
+    mocker.patch.dict(os.environ, {}, clear=True)
+    std_out, std_err, log_hdl = mock_streams(mocker)
+    logging_config('file_log.json')
+    logger.info('a')
+    logger.info('b', {'info': 'b_value'})
+    assert std_err.getvalue() == ''
+    assert std_out.getvalue() == dedent("""\
+        [INFO] [09:33:09 PM - Nov 29, 1973]: a
+        [INFO] [09:33:09 PM - Nov 29, 1973]: b
+               {
+                 "info": "b_value"
+               }
+    """)
+    file_log = log_hdl.getvalue()
+    lines = [json.loads(line) for line in file_log.splitlines()]
+    assert len(lines) == 2
+    assert lines[0].get('msg') == 'a'
+    assert lines[1].get('msg') == 'b'
+    assert lines[1].get('context').get('info') == 'b_value'
+
 
 def test_ci_tool_github_plain_str(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
-    std_out, std_err = mock_streams(mocker)
+    std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error')
     logger.warning('some warning')
@@ -73,7 +97,7 @@ def test_ci_tool_github_plain_str(mocker: MockerFixture) -> None:
 
 def test_ci_tool_tc_plain_str(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'TC': 'true'}, clear=True)
-    std_out, std_err = mock_streams(mocker)
+    std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error')
     logger.warning('some warning')
@@ -107,7 +131,7 @@ def test_ci_tool_tc_plain_str(mocker: MockerFixture) -> None:
 
 def test_cli_util_error_no_block(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
-    std_out, std_err = mock_streams(mocker)
+    std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error')
     assert std_out.getvalue() == ''
@@ -117,7 +141,7 @@ def test_cli_util_error_no_block(mocker: MockerFixture) -> None:
 
 def test_cli_util_error_block(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
-    std_out, std_err = mock_streams(mocker)
+    std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error', Issue('oops'))
     assert std_out.getvalue() == ''
