@@ -3,7 +3,7 @@ from typing import cast
 
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import env_model
-from m.log.misc import format_context, format_location
+from m.log.misc import default_record_fmt, format_context, format_location
 from pydantic import BaseModel, Field
 
 from ..types import EnvVars, Message, ProviderModule
@@ -99,12 +99,10 @@ def log_format(
         name, _ = open_b
         return f'::group::{name}'
 
-    close_b = record_dict.get('close_block')
-    if close_b:
+    if record_dict.get('close_block'):
         return '::endgroup::'
 
-    level_name = record.levelname.lower()
-    is_command = level_name in {'warning', 'error'}
+    is_command = record.levelname in {'WARNING', 'ERROR'}
 
     indent_padding = 2 if is_command else 3
     indent = len(record.levelname) + indent_padding
@@ -121,11 +119,13 @@ def log_format(
     )
     if is_command:
         msg = f'{loc} {record.msg}'.lstrip()
-        return _gh_format(level_name, ci_info, msg, context)
-    msg = record.msg
-    asctime = formatter.formatTime(record, formatter.datefmt)
-    message = f'[{record.levelname}] [{asctime}]{loc}: {msg}'
-    return f'{message}{context}'
+        return _gh_format(record.levelname.lower(), ci_info, msg, context)
+    return default_record_fmt(
+        record,
+        formatter.formatTime(record, formatter.datefmt),
+        loc,
+        context,
+    )
 
 
 tool = ProviderModule(

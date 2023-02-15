@@ -64,3 +64,25 @@ def format_location(parts: list[str | None]) -> str:
     """
     loc = ':'.join([x for x in parts if x])
     return f'[{loc}]' if loc else ''
+
+
+def default_record_fmt(
+    record: logging.LogRecord,
+    asctime: str,
+    after_time: str,
+    after_msg: str,
+) -> str:
+    """Format a log record.
+
+    Args:
+        record: A log record.
+        asctime: The string representing the time of creation.
+        after_time: A string that will be placed after the time.
+        after_msg: A string to be placed after the main message.
+
+    Returns:
+        A formatted string.
+    """
+    fmt_time = f'[{asctime}]' if asctime else ''
+    level = record.levelname
+    return f'[{level}] {fmt_time}{after_time}: {record.msg}{after_msg}'

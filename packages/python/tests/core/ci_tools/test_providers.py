@@ -24,7 +24,7 @@ def test_ci_tool_warn_block(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {}, clear=True)
     std_out, std_err = mock_streams(mocker)
     logging_config()
-    logger.waning_block('some warning', { 'context': [] })
+    logger.waning_block('some warning', {'context': []})
     assert std_out.getvalue() == ''
     assert std_err.getvalue() == dedent("""\
         [WARNING] [09:33:09 PM - Nov 29, 1973]: some warning

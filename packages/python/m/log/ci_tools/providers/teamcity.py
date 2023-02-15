@@ -1,7 +1,7 @@
 import logging
 
 from m.core import Good, Issue, OneOf
-from m.log.misc import format_context, format_location
+from m.log.misc import default_record_fmt, format_context, format_location
 
 from ..types import EnvVars, Message, ProviderModule
 
@@ -54,8 +54,16 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     return Good(EnvVars(ci_env=True))
 
 
+def _fmt_open(record_dict: dict) -> str:
+    open_b = record_dict.get('open_block')
+    if open_b:
+        name, desc = open_b
+        return _tc('blockOpened', postfix='', name=name, description=desc)
+    return ''
+
+
 def log_format(
-    formatter: logging.Formatter,
+    _formatter: logging.Formatter,
     record: logging.LogRecord,
     show_traceback: bool,
     debug_python: bool,
@@ -68,7 +76,7 @@ def log_format(
         https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html#BuildScriptInteractionwithTeamCity-BlocksofServiceMessages
 
     Args:
-        formatter: A log formatter instance.
+        _formatter: A log formatter instance.
         record: A log record.
         show_traceback: If true, display the python stack trace.
         debug_python: If true, display the location of the record's origin.
@@ -78,22 +86,20 @@ def log_format(
     """
     record_dict = record.__dict__
 
-    open_b = record_dict.get('open_block')
+    open_b = _fmt_open(record_dict)
     if open_b:
-        name, desc = open_b
-        return _tc('blockOpened', postfix='', name=name, description=desc)
+        return open_b
 
     close_b = record_dict.get('close_block')
     if close_b:
         return _tc('blockClosed', postfix='', name=close_b)
 
-    level_name = record.levelname.lower()
-    is_command = level_name in {'warning', 'error'}
-
-    indent_padding = 2 if is_command else 3
+    indent_padding = 2 if record.levelname in {'WARNING', 'ERROR'} else 3
     indent = len(record.levelname) + indent_padding
 
     context = format_context(record, indent, show_traceback=show_traceback)
+    if not record.msg:
+        return context[1:]
 
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
     msg_info = format_location([ci_info.file, ci_info.line, ci_info.col])
@@ -106,19 +112,18 @@ def log_format(
     )
 
     msg = f'{loc}{msg_info} {record.msg}'.lstrip()
-    if level_name == 'warning':
-        return _tc(
+    if record.levelname == 'WARNING':
+        msg = _tc(
             'message',
             status='WARNING',
             text=msg,
             postfix=context,
         )
-    if level_name == 'error':
-        return _tc('buildProblem', postfix=context, description=msg)
-
-    msg = record.msg
-    message = f'[{record.levelname}] {msg_info}{loc}: {msg}'
-    return f'{message}{context}'
+    elif record.levelname == 'ERROR':
+        msg = _tc('buildProblem', postfix=context, description=msg)
+    else:
+        msg = default_record_fmt(record, '', f'{msg_info}{loc}', context)
+    return msg
 
 
 tool = ProviderModule(

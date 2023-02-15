@@ -1,7 +1,7 @@
 import logging
 
 from m.core import Issue, OneOf, one_of
-from m.log.misc import format_context, format_location
+from m.log.misc import default_record_fmt, format_context, format_location
 
 from m import git
 
@@ -53,8 +53,7 @@ def log_format(
         name, desc = open_b
         return f'>>> [{name}]: {desc}'.rstrip()
 
-    close_b = record_dict.get('close_block')
-    if close_b:
+    if record_dict.get('close_block'):
         return ''
 
     indent = len(record.levelname) + 3
@@ -70,10 +69,12 @@ def log_format(
         else ''
     )
 
-    msg = record.msg
-    asctime = formatter.formatTime(record, formatter.datefmt)
-    message = f'[{record.levelname}] [{asctime}]{msg_info}{loc}: {msg}'
-    return f'{message}{context}'
+    return default_record_fmt(
+        record,
+        formatter.formatTime(record, formatter.datefmt),
+        f'{msg_info}{loc}',
+        context,
+    )
 
 
 tool = ProviderModule(
