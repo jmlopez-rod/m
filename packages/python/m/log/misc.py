@@ -84,5 +84,5 @@ def default_record_fmt(
         A formatted string.
     """
     fmt_time = f'[{asctime}]' if asctime else ''
-    level = record.levelname
-    return f'[{level}] {fmt_time}{after_time}: {record.msg}{after_msg}'
+    prefix = f'[{record.levelname}] {fmt_time}{after_time}'.rstrip()
+    return f'{prefix}: {record.msg}{after_msg}'
