@@ -5,12 +5,14 @@ ignore =
   WPS218,  # Found too many `assert` statements - this is what testing is about
   WPS462,  # Wrong multiline string usage - will not assign to variables when using dedent
   WPS226,  # Found string literal over-use - using variables will make tests harder to read
-
-  W503,    #
+  D102,    # Missing docstring in public method - Needs to be configured to ignore test_ functions
   D100,    # Missing docstring in public module
   D103,    # Missing docstring in public function
   D104,    # Missing docstring in public package
   E501,    # pylint has a flexible configuration on long lines
+
+  W503,    #
+
   WPS300,  # Found local folder import
   WPS210,  # Found too many local variables: 8 > 5
   WPS221,  # Found line with high Jones Complexity: 15 > 14
