@@ -70,19 +70,19 @@ class GitEnvTest(FpTestCase):
                 Good(
                     dict(
                         repository=dict(
-                            commit=dict(
-                                message='Merge sha1 into sha2',
-                            ),
+                            commit={
+                                'message': 'Merge sha1 into sha2',
+                            },
                         ),
                     ),
                 ),
                 Good(
                     dict(
                         repository=dict(
-                            commit=dict(
-                                oid='123456789',
-                                message='commit message',
-                            ),
+                            commit={
+                                'oid': '123456789',
+                                'message': 'commit message',
+                            },
                         ),
                     ),
                 ),

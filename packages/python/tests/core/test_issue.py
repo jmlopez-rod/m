@@ -25,7 +25,7 @@ class IssueTest(unittest.TestCase):
             description='desc',
             message='message',
             cause=ValueError('cause'),
-            context=dict(x=100),
+            context={'x': 100},
         ).to_dict()
         self.assertEqual(obj.get('message'), 'message')
         self.assertEqual(obj.get('description'), 'desc')

@@ -29,15 +29,13 @@
     "WPS335": 6,
     "Q000": 6,
     "DAR101": 7,
-    "WPS400": 10,
     "WPS432": 11,
-    "C408": 14,
+    "C408": 11,
     "WPS121": 17,
     "D101": 17,
     "WPS407": 27,
     "WPS110": 33,
-    "WPS425": 34,
-    "D102": 0
+    "WPS425": 34
   },
   "allowedPylintRules": {
     "unused-argument": 1,
@@ -45,9 +43,9 @@
     "trailing-newlines": 1,
     "super-init-not-called": 2,
     "broad-exception-raised": 3,
-    "line-too-long": 6,
-    "duplicate-code": 7,
-    "use-dict-literal": 14,
-    "missing-function-docstring": 15
+    "line-too-long": 2,
+    "duplicate-code": 6,
+    "use-dict-literal": 11,
+    "missing-function-docstring": 16
   }
 }

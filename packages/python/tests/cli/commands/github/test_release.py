@@ -28,8 +28,7 @@ CMD = ('m', 'github', 'release')
             }),
         ],
         body_to_send={
-            'body': '**See '
-                    '[CHANGELOG](https://github.com/fake/hotdog/blob/master/CHANGELOG.md#1.0.0).**',  # noqa E501
+            'body': '**See [CHANGELOG](https://github.com/fake/hotdog/blob/master/CHANGELOG.md#1.0.0).**',
             'draft': False,
             'name': '1.0.0',
             'prerelease': False,
@@ -47,8 +46,7 @@ CMD = ('m', 'github', 'release')
             }),
         ],
         body_to_send={
-            'body': '**See '
-                    '[CHANGELOG](https://github.com/fake/hotdog/blob/master/CHANGELOG.md#1.0.0).**',  # noqa E501
+            'body': '**See [CHANGELOG](https://github.com/fake/hotdog/blob/master/CHANGELOG.md#1.0.0).**',
             'draft': False,
             'name': '1.0.0',
             'prerelease': False,
