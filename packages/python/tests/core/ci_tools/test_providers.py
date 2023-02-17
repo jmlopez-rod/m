@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import sys
 from io import StringIO
@@ -59,11 +60,13 @@ def test_ci_tool_close_blocks(mocker: MockerFixture) -> None:
         [INFO] [09:33:09 PM - Nov 29, 1973]: c
     """)
 
+
 def test_ci_tool_json_logger(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {}, clear=True)
     std_out, std_err, log_hdl = mock_streams(mocker)
-    logging_config('file_log.json')
+    logging_config(json_file='file_log.json')
     logger.info('a')
+    logger.debug('should not display')
     logger.info('b', {'info': 'b_value'})
     assert std_err.getvalue() == ''
     assert std_out.getvalue() == dedent("""\
@@ -79,6 +82,50 @@ def test_ci_tool_json_logger(mocker: MockerFixture) -> None:
     assert lines[0].get('msg') == 'a'
     assert lines[1].get('msg') == 'b'
     assert lines[1].get('context').get('info') == 'b_value'
+
+
+def test_ci_tool_json_logger_debug(mocker: MockerFixture) -> None:
+    mocker.patch.dict(os.environ, {}, clear=True)
+    std_out, std_err, log_hdl = mock_streams(mocker)
+    logging_config(level=logging.DEBUG, json_file='file_log.json')
+    logger.info('a')
+    logger.debug('should display')
+    logger.info('b', {'info': 'b_value'})
+    assert std_err.getvalue() == ''
+    assert std_out.getvalue() == dedent("""\
+        [INFO] [09:33:09 PM - Nov 29, 1973]: a
+        [DEBUG] [09:33:09 PM - Nov 29, 1973]: should display
+        [INFO] [09:33:09 PM - Nov 29, 1973]: b
+               {
+                 "info": "b_value"
+               }
+    """)
+    file_log = log_hdl.getvalue()
+    lines = [json.loads(line) for line in file_log.splitlines()]
+    assert len(lines) == 3
+    assert lines[0].get('msg') == 'a'
+    assert lines[1].get('msg') == 'should display'
+    assert lines[2].get('msg') == 'b'
+    assert lines[2].get('context').get('info') == 'b_value'
+
+
+def test_ci_tool_logger_debug(mocker: MockerFixture) -> None:
+    mocker.patch.dict(os.environ, {'DEBUG_M_LOGS': 'true'}, clear=True)
+    std_out, std_err, _ = mock_streams(mocker)
+    # no need to specify since we are using the environment variable
+    logging_config()
+    logger.info('a')
+    logger.debug('should display')
+    logger.info('b', {'info': 'b_value'})
+    assert std_err.getvalue() == ''
+    assert std_out.getvalue() == dedent("""\
+        [INFO] [09:33:09 PM - Nov 29, 1973]: a
+        [DEBUG] [09:33:09 PM - Nov 29, 1973]: should display
+        [INFO] [09:33:09 PM - Nov 29, 1973]: b
+               {
+                 "info": "b_value"
+               }
+    """)
 
 
 def test_ci_tool_github_plain_str(mocker: MockerFixture) -> None:

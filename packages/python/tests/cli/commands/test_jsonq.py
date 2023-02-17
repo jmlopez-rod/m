@@ -25,7 +25,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
             '{"a":{"b":{"c":["hello"] } } }',
             'a.b.c.0',
         ],
-        expected='hello'
+        expected='hello',
     ),
     TCase(
         cmd=[
@@ -62,16 +62,18 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
             'a.b.c.1',
         ],
         exit_code=1,
-        errors=['[WARNING]']
+        errors=['[WARNING]'],
     ),
     TCase(
         cmd=[
             'm',
             'jsonq',
             '[null, true, false, { }]',
-            '0', '1', '3'
+            '0',
+            '1',
+            '3',
         ],
-        expected='null\ntrue\n{}'
+        expected='null\ntrue\n{}',
     )
 ])
 def test_m_jsonq(tcase: TCase, mocker: MockerFixture) -> None:

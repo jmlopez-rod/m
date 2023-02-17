@@ -6,8 +6,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd='m --version',
-        expected='0.0.0-PLACEHOLDER'
-
+        expected='0.0.0-PLACEHOLDER',
     ),
     TCase(
         cmd='m',

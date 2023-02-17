@@ -60,6 +60,7 @@ def test_to_one_of():
     bad = to_one_of(failure_func, 'failure message', {'data': 'helpful'})
     assert_issue(bad, 'failure message')
 
+
 def _possibly_none() -> str | None:
     return 'some_value'
 

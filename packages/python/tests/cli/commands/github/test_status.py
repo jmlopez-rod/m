@@ -2,7 +2,7 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import run_cli
+from tests.cli.conftest import cli_params, run_cli
 
 
 class TCase(CliTestCase):
@@ -12,40 +12,47 @@ class TCase(CliTestCase):
     body_to_send: dict[str, str]
 
 
+CMD = ('m', 'github', 'status')
+
+
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=[
-            'm', 'github', 'status',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--sha', 'SHA',
-            '--context', 'github-check',
-            '--state', 'pending',
-            '--description', 'running checks',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--sha': 'SHA',
+                '--context': 'github-check',
+                '--state': 'pending',
+                '--description': 'running checks',
+            }),
         ],
         body_to_send={
             'context': 'github-check',
             'state': 'pending',
             'description': 'running checks',
-        }
+        },
     ),
     TCase(
         cmd=[
-            'm', 'github', 'status',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--sha', 'SHA',
-            '--context', 'github-check',
-            '--state', 'pending',
-            '--description', 'running checks',
-            '--url', 'https://url-info'
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--sha': 'SHA',
+                '--context': 'github-check',
+                '--state': 'pending',
+                '--description': 'running checks',
+                '--url': 'https://url-info',
+            }),
         ],
         body_to_send={
             'context': 'github-check',
             'state': 'pending',
             'description': 'running checks',
             'target_url': 'https://url-info',
-        }
+        },
     ),
 ])
 def test_github_status(tcase: TCase, mocker: MockerFixture) -> None:

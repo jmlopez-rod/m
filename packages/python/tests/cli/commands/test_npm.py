@@ -21,8 +21,7 @@ class TCase(CliTestCase):
             Good('- tag1'),
             Good('- tag2'),
         ],
-        expected='["- tag1","- tag2"]'
-
+        expected='["- tag1","- tag2"]',
     ),
     TCase(
         cmd='m npm clean_tags scope/pkg',

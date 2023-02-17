@@ -68,3 +68,11 @@ def assert_streams(
         )
         expected_str = f'{expected}\n' if tcase.new_line else expected
         assert out == expected_str
+
+
+def cli_params(params: dict[str, str]) -> list[str]:
+    return [
+        param_item
+        for param_name, param_val in params.items()
+        for param_item in (param_name, param_val)
+    ]
