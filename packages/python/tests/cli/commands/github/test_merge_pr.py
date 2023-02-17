@@ -2,7 +2,7 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import run_cli
+from tests.cli.conftest import cli_params, run_cli
 
 
 class TCase(CliTestCase):
@@ -12,22 +12,29 @@ class TCase(CliTestCase):
     body_to_send: dict[str, str]
 
 
+CMD = ('m', 'github', 'merge_pr')
+
+
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=[
-            'm', 'github', 'merge_pr',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+            }),
             '99',
         ],
         body_to_send={}
     ),
     TCase(
         cmd=[
-            'm', 'github', 'merge_pr',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--commit-title', 'some custom commit title',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--commit-title': 'some custom commit title',
+            }),
             '99',
         ],
         body_to_send={

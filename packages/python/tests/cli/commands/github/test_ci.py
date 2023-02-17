@@ -4,7 +4,7 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import run_cli
+from tests.cli.conftest import cli_params, run_cli
 
 from .conftest import get_json_fixture
 
@@ -19,14 +19,19 @@ class TCase(CliTestCase):
     new_line: bool = False
 
 
+CMD = ('m', 'github', 'ci')
+
+
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=[
-            'm', 'github', 'ci',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--sha', '4538b2a2556efcbdfc1e7df80c4f71ade45f3958',
-            '--pr', '1',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--sha': '4538b2a2556efcbdfc1e7df80c4f71ade45f3958',
+                '--pr': '1',
+            }),
             '--include-release',
         ],
         response_files=['ci_simple.json'],
@@ -34,11 +39,13 @@ class TCase(CliTestCase):
     ),
     TCase(
         cmd=[
-            'm', 'github', 'ci',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
+            *CMD,
             '--merge-commit',
-            '--sha', '4538b2a2556efcbdfc1e7df80c4f71ade45f3958',
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--sha': '4538b2a2556efcbdfc1e7df80c4f71ade45f3958',
+            }),
         ],
         response_files=['ci_no_merge_1.json', 'ci_no_merge_2.json'],
         expected_file='ci_no_merge_expected.json',

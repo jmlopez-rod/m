@@ -8,14 +8,14 @@ from m.ci.celt.post_processor import get_post_processor
 from ...util import FpTestCase, read_fixture
 
 
-def assert_str_has(content: str, substrings: List[str]):
+def assert_str_has(target_str: str, substrings: List[str]):
     """Assert that a string has a set of substrings.
 
     Args:
-        content: The string to test.
-        substrings: The required strings to appear in `content`.
+        target_str: The string to test.
+        substrings: The required strings to appear in `target_str`.
     """
-    missing = [x for x in substrings if x not in content]
+    missing = [x for x in substrings if x not in target_str]
     if len(missing) > 0:
         raise AssertionError(f'missing {missing}')
 

@@ -4,7 +4,7 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import run_cli
+from tests.cli.conftest import cli_params, run_cli
 
 
 class TCase(CliTestCase):
@@ -14,13 +14,18 @@ class TCase(CliTestCase):
     body_to_send: dict[str, Any]
 
 
+CMD = ('m', 'github', 'release')
+
+
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=[
-            'm', 'github', 'release',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--version', '1.0.0',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--version': '1.0.0',
+            }),
         ],
         body_to_send={
             'body': '**See '
@@ -33,11 +38,13 @@ class TCase(CliTestCase):
     ),
     TCase(
         cmd=[
-            'm', 'github', 'release',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--version', '1.0.0',
-            '--branch', 'production',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--version': '1.0.0',
+                '--branch': 'production',
+            }),
         ],
         body_to_send={
             'body': '**See '

@@ -4,7 +4,7 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import run_cli
+from tests.cli.conftest import cli_params, run_cli
 
 from .conftest import get_json_fixture
 
@@ -20,12 +20,17 @@ class TCase(CliTestCase):
     total_lines: int = 1
 
 
+CMD = ('m', 'github', 'pr')
+
+
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=[
-            'm', 'github', 'pr',
-            '--owner', 'microsoft',
-            '--repo', 'typescript',
+            *CMD,
+            *cli_params({
+                '--owner': 'microsoft',
+                '--repo': 'typescript',
+            }),
             '44710',
         ],
         response_files=['pr.json'],
@@ -33,10 +38,12 @@ class TCase(CliTestCase):
     ),
     TCase(
         cmd=[
-            'm', 'github', 'pr',
+            *CMD,
             '--pretty',
-            '--owner', 'microsoft',
-            '--repo', 'typescript',
+            *cli_params({
+                '--owner': 'microsoft',
+                '--repo': 'typescript',
+            }),
             '44710',
         ],
         response_files=['pr.json'],

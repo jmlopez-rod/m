@@ -38,9 +38,7 @@
     "WPS407": 27,
     "WPS110": 33,
     "WPS425": 34,
-    "D102": 41,
-    "C812": 73,
-    "WPS317": 8
+    "D102": 41
   },
   "allowedPylintRules": {
     "unused-argument": 1,

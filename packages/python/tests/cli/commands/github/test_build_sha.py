@@ -2,7 +2,7 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import assert_streams, run_cli
+from tests.cli.conftest import assert_streams, cli_params, run_cli
 
 from .conftest import get_json_fixture
 
@@ -14,23 +14,31 @@ class TCase(CliTestCase):
     response_files: list[str]
 
 
+CMD = ('m', 'github', 'build_sha')
+
+
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=[
-            'm', 'github', 'build_sha',
-            '--owner', 'jmlopez-rod',
-            '--repo', 'm',
-            '--sha', '6bf3a8095891c551043877b922050d5b01d20284',
+            *CMD,
+            *cli_params({
+                '--owner': 'jmlopez-rod',
+                '--repo': 'm',
+                '--sha': '6bf3a8095891c551043877b922050d5b01d20284',
+            }),
+
         ],
         response_files=['build_sha.json'],
         expected='fa6a600729ffbe1dfd7fece76ef4566e45fbfe40'
     ),
     TCase(
         cmd=[
-            'm', 'github', 'build_sha',
-            '--owner', 'jmlopez-rod',
-            '--repo', 'unknown-repo',
-            '--sha', 'unknown',
+            *CMD,
+            *cli_params({
+                '--owner': 'jmlopez-rod',
+                '--repo': 'unknown-repo',
+                '--sha': 'unknown',
+            }),
         ],
         response_files=['build_sha_error.json'],
         errors=[
