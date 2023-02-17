@@ -114,7 +114,7 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
             '-  "version": "0.0.1"\n',
             '+  "version": "1.2.3"\n',
             ' }\n',
-        ]
+        ],
     ),
 ])
 def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):

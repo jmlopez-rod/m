@@ -91,7 +91,7 @@ def test_m_init(tcase: TCase, mocker: MockerFixture) -> None:
     )
     mocker.patch(
         'm.core.subprocess.eval_cmd',
-        lambda cmd: _eval_cmd(cmd, tcase)
+        lambda cmd: _eval_cmd(cmd, tcase),
     )
     # Only testing the case in which it writes
     file_write_mock = mocker.patch('m.core.rw.write_file')

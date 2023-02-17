@@ -25,7 +25,7 @@ CMD = ('m', 'github', 'merge_pr')
             }),
             '99',
         ],
-        body_to_send={}
+        body_to_send={},
     ),
     TCase(
         cmd=[
@@ -39,7 +39,7 @@ CMD = ('m', 'github', 'merge_pr')
         ],
         body_to_send={
             'commit_title': 'some custom commit title',
-        }
+        },
     ),
 ])
 def test_github_merge_pr(tcase: TCase, mocker: MockerFixture) -> None:

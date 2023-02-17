@@ -29,7 +29,7 @@ class TCase(CliTestCase):
         exit_code=1,
         response_file='latest_release_bad.json',
         errors=[
-            "Could not resolve to a Repository with the name 'fake/hotdog'"
+            "Could not resolve to a Repository with the name 'fake/hotdog'",
         ],
     ),
     TCase(

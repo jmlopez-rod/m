@@ -34,7 +34,7 @@ CMD = ('m', 'github', 'release')
             'name': '1.0.0',
             'prerelease': False,
             'tag_name': '1.0.0',
-        }
+        },
     ),
     TCase(
         cmd=[
@@ -54,7 +54,7 @@ CMD = ('m', 'github', 'release')
             'prerelease': False,
             'tag_name': '1.0.0',
             'target_commitish': 'production',
-        }
+        },
     ),
 ])
 def test_github_release(tcase: TCase, mocker: MockerFixture) -> None:

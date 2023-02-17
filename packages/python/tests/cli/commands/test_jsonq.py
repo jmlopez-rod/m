@@ -74,7 +74,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
             '3',
         ],
         expected='null\ntrue\n{}',
-    )
+    ),
 ])
 def test_m_jsonq(tcase: TCase, mocker: MockerFixture) -> None:
     if tcase.std_in:

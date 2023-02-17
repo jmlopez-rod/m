@@ -26,10 +26,9 @@ CMD = ('m', 'github', 'build_sha')
                 '--repo': 'm',
                 '--sha': '6bf3a8095891c551043877b922050d5b01d20284',
             }),
-
         ],
         response_files=['build_sha.json'],
-        expected='fa6a600729ffbe1dfd7fece76ef4566e45fbfe40'
+        expected='fa6a600729ffbe1dfd7fece76ef4566e45fbfe40',
     ),
     TCase(
         cmd=[
@@ -43,7 +42,7 @@ CMD = ('m', 'github', 'build_sha')
         response_files=['build_sha_error.json'],
         errors=[
             'github graphql errors',
-            'some error message'
+            'some error message',
         ],
         exit_code=1,
     ),

@@ -23,7 +23,6 @@
     "S404": 2,
     "WPS454": 3,
     "WPS421": 3,
-    "WPS355": 3,
     "WPS204": 3,
     "DAR401": 3,
     "DAR201": 5,
@@ -38,7 +37,7 @@
     "WPS407": 27,
     "WPS110": 33,
     "WPS425": 34,
-    "D102": 41
+    "D102": 0
   },
   "allowedPylintRules": {
     "unused-argument": 1,

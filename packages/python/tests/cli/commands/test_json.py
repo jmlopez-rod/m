@@ -24,7 +24,7 @@ def _file_exists(name: str):
     ),
     TCase(
         cmd='m json []',
-        expected='[]'
+        expected='[]',
     ),
     TCase(
         cmd=[
@@ -75,15 +75,15 @@ def _file_exists(name: str):
         errors=[
             'argument payload: file "invalid-file.json" does not exist',
         ],
-        exit_code=2
+        exit_code=2,
     ),
     TCase(
         cmd='m json @bad_json.json',
         errors=[
             'argument payload: invalid json payload in bad_json.json',
         ],
-        exit_code=2
-    )
+        exit_code=2,
+    ),
 ])
 def test_m_json(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch('pathlib.Path.exists', _file_exists)

@@ -42,7 +42,7 @@ class TCase(CliTestCase):
             'body': 'PR Title\n\nPR Body',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
     TCase(
         cmd=[
@@ -61,7 +61,7 @@ class TCase(CliTestCase):
             'body': 'PR Title\n\nPR body in File\n',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
     TCase(
         cmd=[
@@ -97,7 +97,7 @@ class TCase(CliTestCase):
             'body': '@jmlopez-rod - pr title',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
     TCase(
         cmd=[
@@ -116,7 +116,7 @@ class TCase(CliTestCase):
             'body': 'PR Title from stdin',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
 ])
 def test_github_create_pr(tcase: TCase, mocker: MockerFixture) -> None:

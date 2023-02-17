@@ -48,7 +48,7 @@ CMD = ('m', 'github', 'pr')
         ],
         response_files=['pr.json'],
         expected_file='pr_expected.json',
-        total_lines=36
+        total_lines=36,
     ),
 ])
 def test_github_latest_release(tcase: TCase, mocker: MockerFixture) -> None:
