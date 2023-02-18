@@ -69,5 +69,5 @@ class ProcessTest(FpTestCase):
         self.assertEqual(rules, {
             'R1': [reports[0].violations[0]],
             'R2': [reports[0].violations[1], reports[1].violations[0]],
-            'R3': [reports[2].violations[0]]
+            'R3': [reports[2].violations[0]],
         })

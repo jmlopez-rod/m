@@ -50,7 +50,7 @@ class TCase(CliTestCase):
         response_files=[
             'm_dir_gh_m_flow/ci_simple.json',
             'm_dir_gh_m_flow/ci_simple.json',
-        ]
+        ],
     ),
 ])
 def test_m_ci_env_gh(tcase: TCase, mocker: MockerFixture) -> None:

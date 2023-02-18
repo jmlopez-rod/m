@@ -8,14 +8,14 @@ from m.ci.celt.post_processor import get_post_processor
 from ...util import FpTestCase, read_fixture
 
 
-def assert_str_has(content: str, substrings: List[str]):
+def assert_str_has(target_str: str, substrings: List[str]):
     """Assert that a string has a set of substrings.
 
     Args:
-        content: The string to test.
-        substrings: The required strings to appear in `content`.
+        target_str: The string to test.
+        substrings: The required strings to appear in `target_str`.
     """
-    missing = [x for x in substrings if x not in content]
+    missing = [x for x in substrings if x not in target_str]
     if len(missing) > 0:
         raise AssertionError(f'missing {missing}')
 
@@ -64,7 +64,7 @@ class CeltTest(FpTestCase):
                 'no-unused-vars': 3,
                 'semi': 1,
                 'made-up': 100,
-            }
+            },
         }
         result = eslint.run(payload, config)
         self.assert_ok(result)
@@ -82,7 +82,7 @@ class CeltTest(FpTestCase):
         project = cast(ProjectStatus, result.value)
         self.assertEqual(project.status, ExitCode.error)
         assert_str_has(eslint.to_str(project), [
-            'no-unused-vars      3        0'
+            'no-unused-vars      3        0',
         ])
 
     def test_eslint_fail_reduce(self):
@@ -93,7 +93,7 @@ class CeltTest(FpTestCase):
                 'no-unused-vars': 5,
                 'quotes': 1,
                 'semi': 10,
-            }
+            },
         }
         result = eslint.run(payload, config)
         self.assert_ok(result)
@@ -112,7 +112,7 @@ class CeltTest(FpTestCase):
                 'no-unused-vars': 3,
                 'quotes': 1,
                 'semi': 1,
-            }
+            },
         }
         result = eslint.run(payload, config)
         self.assert_ok(result)
@@ -130,7 +130,7 @@ class CeltTest(FpTestCase):
         project = cast(ProjectStatus, result.value)
         self.assertEqual(project.status, ExitCode.ok)
         assert_str_has(eslint.to_str(project), [
-            'no errors found'
+            'no errors found',
         ])
         # test json stats
         json_stats = eslint.stats_json(project)

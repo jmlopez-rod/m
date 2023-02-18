@@ -24,7 +24,7 @@ IssueDict = TypedDict(
 def remove_traceback(issue_dict: object) -> None:
     """Remove the `traceback` key from a dictionary if it exists.
 
-    It will recursively remove the `traceback` from its cause.
+    It will recursively remove the `traceback` from its cause or context.
 
     Args:
         issue_dict: A dictionary representation of an `Issue`.
@@ -35,6 +35,11 @@ def remove_traceback(issue_dict: object) -> None:
         cause = issue_dict.get('cause')
         if cause:
             remove_traceback(cause)
+        context = issue_dict.get('context')
+        remove_traceback(context)
+        if isinstance(context, list):
+            for context_item in context:
+                remove_traceback(context_item)
 
 
 # Rule WPS230 is suppressed here since I want to have a flat structure
@@ -94,6 +99,7 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
                 ]
         self.context = context
         self.include_traceback = include_traceback
+        self.traceback = None
         if self.include_traceback:
             frame = inspect.currentframe()
             self.traceback = [
@@ -102,11 +108,28 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
                 for y in x.splitlines()
             ]
 
-    def to_dict(self) -> IssueDict:
+    def only_context(self) -> bool:
+        """Return true if the issue only offers context.
+
+        In some cases we may create an issue with only a message and a
+        context. This function will let us know of such case so that a
+        log formatter may be able to unwrap the context.
+
+        Returns:
+            True if it is safe to only display the context value on a log.
+        """
+        has_context = self.context is not None
+        all_props = (self.description, self.traceback, self.cause)
+        return has_context and not [_ for _ in all_props if _]
+
+    def to_dict(self, show_traceback: bool = True) -> IssueDict:
         """Convert to a ordered dictionary.
 
         This is done so that each of the properties are written in an expected
         order.
+
+        Args:
+            show_traceback: If False, it will remove all stacktraces.
 
         Returns:
             An `IssueDict` instance.
@@ -117,7 +140,7 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
             issue_dict['description'] = self.description
         if self.context:
             issue_dict['context'] = self.context
-        if self.include_traceback:
+        if self.include_traceback and self.traceback:
             issue_dict['traceback'] = self.traceback
         if self.cause:
             if isinstance(self.cause, Issue):
@@ -127,6 +150,8 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
                     'message': str(self.cause),
                     'traceback': self.cause_tb,
                 }
+        if not show_traceback:
+            remove_traceback(issue_dict)
         return issue_dict
 
     def to_str(self, show_traceback: bool) -> str:
@@ -138,9 +163,7 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
         Returns:
             A string representation of the Issue instance.
         """
-        issue_dict = self.to_dict()
-        if not show_traceback:
-            remove_traceback(issue_dict)
+        issue_dict = self.to_dict(show_traceback=show_traceback)
         return json.dumps(issue_dict, indent=2)
 
     def __str__(self) -> str:

@@ -18,6 +18,7 @@ GH = {'GITHUB_ACTIONS': 'true'}  # Github
 TC = {'TEAMCITY': 'true'}  # Teamcity
 MSG = 'hot dog, hot dog, hot diggity dog'
 FN = 'pkg/file.py'
+LP = '[ERROR] [09:33:09 PM - Nov 29, 1973]'
 
 SIMPLE = [
     TCase(
@@ -26,7 +27,7 @@ SIMPLE = [
         environ=env_vars,
     )
     for err_msg, env_vars in (
-        (f'error: {MSG}\n', LH),
+        (f'{LP}: {MSG}\n', LH),
         (f'::error::{MSG}\n', GH),
         (f"##teamcity[buildProblem description='{MSG}']\n", TC),
     )
@@ -38,7 +39,7 @@ WITH_FILE = [
         environ=env_vars,
     )
     for err_msg, env_vars in (
-        (f'error[{FN}]: {MSG}\n', LH),
+        (f'{LP}[{FN}]: {MSG}\n', LH),
         (f'::error file={FN}::{MSG}\n', GH),
         (f"##teamcity[buildProblem description='|[{FN}|]: {MSG}']\n", TC),
     )
@@ -50,7 +51,7 @@ WITH_LINE = [
         environ=env_vars,
     )
     for err_msg, env_vars in [
-        (f'error[{FN}:99]: {MSG}\n', LH),
+        (f'{LP}[{FN}:99]: {MSG}\n', LH),
         (f'::error file={FN},line=99::{MSG}\n', GH),
         (f"##teamcity[buildProblem description='|[{FN}:99|]: {MSG}']\n", TC),
     ]
@@ -62,7 +63,7 @@ WITH_COL = [
         environ=env_vars,
     )
     for err_msg, env_vars in [
-        (f'error[{FN}:1:2]: {MSG}\n', LH),
+        (f'{LP}[{FN}:1:2]: {MSG}\n', LH),
         (f'::error file={FN},line=1,col=2::{MSG}\n', GH),
         (f"##teamcity[buildProblem description='|[{FN}:1:2|]: {MSG}']\n", TC),
     ]
@@ -84,5 +85,6 @@ WITH_COL = [
 ])
 def test_m_message_error(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, tcase.environ, clear=True)
+    mocker.patch('time.time').return_value = 123456789
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)

@@ -9,6 +9,54 @@ from pydantic import BaseModel
 BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
 
 
+def _is_true(name: str) -> bool:
+    return env(name, 'false') == 'true'
+
+
+def is_traceback_enabled() -> bool:
+    """Return True if the stacktrace should be displayed.
+
+    This is true by default on a CI environment where the env var CI is set
+    to `true`.
+
+    We can enable this locally by settings the env vars
+
+    - DEBUG_M_STACKTRACE
+    - DEBUG
+
+    The `DEBUG_M_STACKTRACE` is provided so to only target this particular
+    piece of info and avoid other pieces of code that may be looking at
+    the `DEBUG` env var from activating.
+
+    Returns:
+        True if the stacktrace should be displayed.
+    """
+    debug_stacktrace = _is_true('DEBUG_M_STACKTRACE')
+    debug_mode = _is_true('DEBUG')
+    ci_env = _is_true('CI')
+    return debug_stacktrace or debug_mode or ci_env
+
+
+def is_python_info_enabled():
+    """Return True if the python file location should be displayed.
+
+    By default this information is not displayed since the stacktrace already
+    provides most of the info. If we need it we can set one of the env var
+
+    - DEBUG_M_PYTHON
+    - DEBUG
+
+    `DEBUG_M_PYTHON` is accepted in case we do not want to enable the
+    traceback.
+
+    Returns:
+        True if the python file location should be displayed.
+    """
+    debug_python = _is_true('DEBUG_M_PYTHON')
+    debug_mode = _is_true('DEBUG')
+    return debug_python or debug_mode
+
+
 def format_seconds(number_of_seconds: int | float) -> str:
     """Return a string representing the number of seconds.
 

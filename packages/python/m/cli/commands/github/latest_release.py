@@ -1,7 +1,6 @@
 from m.cli import command, run_main
+from m.core.io import env
 from pydantic import BaseModel, Field
-
-from ...utils import env
 
 
 class Arguments(BaseModel):

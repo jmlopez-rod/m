@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from m.core import rw as mio
-from m.core.ci_tools import EnvVars, get_ci_tool
+from m.log import EnvVars, get_ci_tool
 from pydantic import BaseModel
 
 from ..core import Issue, fp, issue, one_of

@@ -24,7 +24,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='master branch',
@@ -38,7 +38,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='pull request 1',
@@ -66,7 +66,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=True,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='release pull request',
@@ -80,7 +80,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=True,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='release pr develop',
@@ -94,7 +94,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=True,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='release merge - use proper version number',
@@ -108,7 +108,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='release merge develop - need to merge back to develop branch',
@@ -122,7 +122,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='pr hotfix no update develop',
@@ -136,7 +136,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=True,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='pr hotfix develop - proper pr to develop',
@@ -150,7 +150,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=True,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='pr hotfix - version needs to be greater than the one in gh.',
@@ -164,7 +164,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=True,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='hotfix merge - user proper version.',
@@ -178,7 +178,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         # making sure potential fixes done in hotfix work in develop.
@@ -193,49 +193,49 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.git_flow,
-        )
+        ),
     ),
     TCase(
         desc='branch behind - developer needs to merge the latest',
         config={'version': '0.0.0'},
         env_vars={'git_branch': 'refs/heads/my-branch'},
         gh_res='master.json',
-        err='version is behind (Branch may need to be updated)'
+        err='version is behind (Branch may need to be updated)',
     ),
     TCase(
         desc='version ahead - developer made a mistake and bumped?',
         config={'version': '2.0.0'},
         env_vars={'git_branch': 'refs/heads/my-branch'},
         gh_res='master.json',
-        err='version is ahead (Revert configuration change)'
+        err='version is ahead (Revert configuration change)',
     ),
     TCase(
         desc='release pr - no update on version',
         config={'version': '1.1.1'},
         env_vars={'git_branch': 'refs/pull/2'},
         gh_res='release-pr.json',
-        err='version needs to be bumped'
+        err='version needs to be bumped',
     ),
     TCase(
         desc='release pr - wrong target',
         config={'version': '1.1.1'},
         env_vars={'git_branch': 'refs/pull/2'},
         gh_res='release-pr-wrong-baseref.json',
-        err='invalid release-pr'
+        err='invalid release-pr',
     ),
     TCase(
         desc='hotfix pr - no update',
         config={'version': '1.1.1'},
         env_vars={'git_branch': 'refs/pull/2'},
         gh_res='hotfix-pr.json',
-        err='version needs to be bumped'
+        err='version needs to be bumped',
     ),
     TCase(
         desc='hotfix pr - wrong target',
         config={'version': '1.1.1'},
         env_vars={'git_branch': 'refs/pull/2'},
         gh_res='hotfix-pr-wrong-baseref.json',
-        err='invalid hotfix-pr'
+        err='invalid hotfix-pr',
     ),
     TCase(
         # too late, went ahead and merged it, no release was actually made
@@ -243,7 +243,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
         config={'version': '1.1.2'},
         env_vars={'git_branch': 'refs/heads/random'},
         gh_res='merge-hotfix-random.json',
-        err='version is ahead (Revert configuration change)'
+        err='version is ahead (Revert configuration change)',
     ),
 ])
 def test_git_flow(tcase: TCase, mocker: MockerFixture) -> None:

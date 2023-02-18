@@ -3,8 +3,8 @@ from unittest.mock import patch
 from m.ci.config import Config, GitFlowConfig, MFlowConfig, Workflow
 from m.ci.git_env import GitEnv, get_git_env
 from m.core import issue
-from m.core.ci_tools import EnvVars
 from m.core.fp import Good
+from m.log import EnvVars
 
 from ..util import FpTestCase
 
@@ -70,19 +70,19 @@ class GitEnvTest(FpTestCase):
                 Good(
                     dict(
                         repository=dict(
-                            commit=dict(
-                                message='Merge sha1 into sha2',
-                            ),
+                            commit={
+                                'message': 'Merge sha1 into sha2',
+                            },
                         ),
                     ),
                 ),
                 Good(
                     dict(
                         repository=dict(
-                            commit=dict(
-                                oid='123456789',
-                                message='commit message',
-                            ),
+                            commit={
+                                'oid': '123456789',
+                                'message': 'commit message',
+                            },
                         ),
                     ),
                 ),

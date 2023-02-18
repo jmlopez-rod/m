@@ -1,7 +1,7 @@
 from typing import cast
 
 from m.core import Good, Issue, OneOf, issue, one_of
-from m.core.ci_tools import EnvVars
+from m.log import EnvVars
 from pydantic import BaseModel
 
 from .config import Config, Workflow

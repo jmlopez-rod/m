@@ -3,14 +3,13 @@ import sys
 from collections.abc import Mapping
 from contextlib import suppress
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 from typing import Mapping as Map
-from typing import Union, cast
+from typing import Union
 
-from .ci_tools import get_ci_tool
 from .fp import Good, OneOf
 from .issue import Issue
-from .one_of import issue
+from .one_of import issue, one_of
 
 
 def read_json(
@@ -53,8 +52,8 @@ def parse_json(
     Returns:
         A `Good` containing the parsed contents of the json string.
     """
+    empty = '' if error_if_empty else 'null'
     try:
-        empty = '' if error_if_empty else 'null'
         return Good(json.loads(json_str or empty))
     except Exception as ex:
         return issue('failed to parse the json data', cause=ex)
@@ -104,7 +103,7 @@ def get(dict_inst: Any, key_str: str) -> OneOf[Issue, Any]:
 def multi_get(
     dict_inst: object,
     *keys: str,
-) -> OneOf[Issue, List[Any]]:
+) -> OneOf[Issue, list[Any]]:
     """Call `get` for every input specified by `keys`.
 
     It collects the invalid keys and returns an `Issue`::
@@ -153,32 +152,20 @@ def _to_str(inst: Any):
 def jsonq(
     dict_inst: Map[str, Any],
     separator: str,
-    display_warning: bool,
     *key_str: str,
-) -> int:
-    """Print the values obtained from `multi_get` to stdout.
+) -> OneOf[Issue, str]:
+    """Stringify the values obtained from `multi_get`.
 
     Args:
         dict_inst: The dictionary instance to query.
         separator: A string to use to separate the results.
-        display_warning: Print a warning if true.
-            The process will still exit with 1 but the ci tool
-            will not exit when it sees the error message.
         key_str: The queries to apply.
 
     Returns:
-        0 if all the keys are available, non-zero if there are problems.
+        A string separated by `separator` if successful or an Issue with
+        a description of the problems.
     """
-    tool = get_ci_tool()
-    either = multi_get(dict_inst, *key_str)
-    if either.is_bad:
-        problem = cast(Issue, either.value)
-        if display_warning:
-            tool.warn(problem.message)
-        else:
-            tool.error(problem.message)
-        print(either.value, file=sys.stderr)  # noqa: WPS421
-        return 1
-    strings = [_to_str(res_item) for res_item in cast(List[Any], either.value)]
-    print(separator.join(strings))  # noqa: WPS421 - meant to use on cli
-    return 0
+    return one_of(lambda: [
+        separator.join(map(_to_str, key_values))
+        for key_values in multi_get(dict_inst, *key_str)
+    ])

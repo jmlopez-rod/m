@@ -1,6 +1,8 @@
 import argparse
+import logging
 
-from m.cli.utils import run_cli
+from m.cli import run_cli
+from m.log import logging_config
 from m.version import VERSION
 
 
@@ -15,6 +17,7 @@ def main_args(parser: argparse.ArgumentParser) -> None:
 
 def main():
     """Execute the cli."""
+    logging_config(logging.NOTSET)
     run_cli(__file__, main_args)
 
 

@@ -11,46 +11,50 @@
     "source=m-vscode-server-extensions,target=/root/.vscode-server/extensions,type=volume",
     "source=m-vscode-server-extensions-insiders,target=/root/.vscode-server-insiders/extensions,type=volume"
   ],
-  "settings": {
-    "[json][jsonc][markdown][mdx][yaml]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-      "editor.formatOnSave": true
-    },
-    "editor.renderWhitespace": "all",
-    "files.associations": {
-      "Makefile.*": "makefile"
-    },
-    "emeraldwalk.runonsave": {
-      "commands": [
-        {
-          "match": "\\.py$",
-          "cmd": "isort ${file}"
-        }
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "[json][jsonc][markdown][mdx][yaml]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode",
+          "editor.formatOnSave": true
+        },
+        "editor.renderWhitespace": "all",
+        "files.associations": {
+          "Makefile.*": "makefile"
+        },
+        "emeraldwalk.runonsave": {
+          "commands": [
+            {
+              "match": "\\.py$",
+              "cmd": "isort ${file}"
+            }
+          ]
+        },
+        "editor.minimap.enabled": false,
+        "editor.rulers": [80, 120],
+        "python.defaultInterpreterPath": "/workspace/venv/bin/python3",
+        "python.pythonPath": "/workspaces/m/packages/python",
+        "python.languageServer": "Pylance",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.linting.pylintArgs": ["--rc-file=.pylintrc"],
+        "python.linting.flake8Enabled": true,
+        "python.linting.flake8Args": ["--config=.flake8"],
+        "python.linting.mypyEnabled": true,
+        "python.linting.mypyArgs": ["--config-file=mypy.ini"]
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.flake8",
+        "EditorConfig.EditorConfig",
+        "unifiedjs.vscode-mdx",
+        "emeraldwalk.RunOnSave",
+        "streetsidesoftware.code-spell-checker"
       ]
-    },
-    "editor.minimap.enabled": false,
-    "editor.rulers": [80, 120],
-    "python.defaultInterpreterPath": "/workspace/venv/bin/python3",
-    "python.pythonPath": "/workspaces/m/packages/python",
-    "python.languageServer": "Pylance",
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.linting.pylintArgs": ["--rc-file=.pylintrc"],
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": ["--config=.flake8"],
-    "python.linting.mypyEnabled": true,
-    "python.linting.mypyArgs": ["--config-file=mypy.ini"]
+    }
   },
-  "extensions": [
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "ms-python.python",
-    "ms-python.vscode-pylance",
-    "ms-python.flake8",
-    "EditorConfig.EditorConfig",
-    "unifiedjs.vscode-mdx",
-    "emeraldwalk.RunOnSave",
-    "streetsidesoftware.code-spell-checker"
-  ],
   "shutdownAction": "stopContainer"
 }

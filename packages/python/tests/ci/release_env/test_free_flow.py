@@ -24,7 +24,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.free_flow,
-        )
+        ),
     ),
     TCase(
         desc='pr 1',
@@ -38,7 +38,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.free_flow,
-        )
+        ),
     ),
     TCase(
         desc='local - uses a timestamp since git sha do not work with pip',
@@ -52,7 +52,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.free_flow,
-        )
+        ),
     ),
 ])
 def test_m_flow(tcase: TCase, mocker: MockerFixture) -> None:

@@ -22,10 +22,11 @@ TESTS = [
         cmd=['m', 'message', 'open', 'title', 'a desc'],
         expected=msg,
         environ=env_vars,
+        cleandoc=False,
     )
     for msg, env_vars in (
-        ('title: a desc\n', LH),
-        ('::group::title\n', GH),
+        ('  >>> [title]: a desc', LH),
+        ('::group::title', GH),
         ("##teamcity[blockOpened name='title' description='a desc']", TC),
     )
 ]

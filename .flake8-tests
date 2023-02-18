@@ -1,0 +1,34 @@
+[flake8]
+max-module-members = 10
+i-control-code = False
+ignore =
+  WPS218,  # Found too many `assert` statements - this is what testing is about
+  WPS462,  # Wrong multiline string usage - will not assign to variables when using dedent
+  WPS226,  # Found string literal over-use - using variables will make tests harder to read
+  D102,    # Missing docstring in public method - Needs to be configured to ignore test_ functions
+  D100,    # Missing docstring in public module
+  D103,    # Missing docstring in public function
+  D104,    # Missing docstring in public package
+  E501,    # pylint has a flexible configuration on long lines
+
+  W503,    #
+
+  WPS300,  # Found local folder import
+  WPS210,  # Found too many local variables: 8 > 5
+  WPS221,  # Found line with high Jones Complexity: 15 > 14
+  WPS305,  # Found `f` string
+  WPS306,  # Found class without a base class
+  WPS433,  # Found nested import
+  WPS111,  # Found too short name: x < 2
+  WPS224,  # Found a comprehension with too many `for` statements
+  RST203,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
+  RST301,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
+per-file-ignores =
+  # There are multiple `assert`s in tests, we allow them:
+  packages/python/tests/*.py:S101,FS003
+  packages/python/m/core/fp.py:WPS110
+
+extend-ignore =
+    # Google Python style is not RST until after processed by Napoleon
+    # See https://github.com/peterjc/flake8-rst-docstrings/issues/17
+    RST201,RST203,RST301,

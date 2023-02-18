@@ -2,8 +2,8 @@ import re
 from typing import cast
 
 from m.ci.versioning import VersionInputs, build_m_tag, build_py_tag
-from m.core.ci_tools import EnvVars
 from m.core.maybe import maybe
+from m.log import EnvVars
 from pydantic import BaseModel
 
 from ..core import Issue, issue

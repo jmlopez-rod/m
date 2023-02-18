@@ -31,7 +31,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
     TCase(
         desc='pr 1',
@@ -45,7 +45,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
     TCase(
         desc='pr 1 - dev versioning',
@@ -59,7 +59,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
     TCase(
         desc='release pr - no version update',
@@ -87,7 +87,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=True,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
     TCase(
         desc='release pr - wrong target, branch target takes priority',
@@ -108,7 +108,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
     TCase(
         desc='release pr',
@@ -122,7 +122,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=True,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
     TCase(
         desc='hotfix merge - use proper version number',
@@ -136,7 +136,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
     TCase(
         desc='local - uses a timestamp since git sha do not work with pip',
@@ -150,7 +150,7 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
             is_release_pr=False,
             is_hotfix_pr=False,
             workflow=Workflow.m_flow,
-        )
+        ),
     ),
 ])
 def test_m_flow(tcase: TCase, mocker: MockerFixture) -> None:

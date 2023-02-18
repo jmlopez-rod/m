@@ -9,7 +9,7 @@ from tests.fixture_utils import read_fixture
 
 get_fixture = partial(
     read_fixture,
-    path='cli/commands/ci/release_setup/fixtures'
+    path='cli/commands/ci/release_setup/fixtures',
 )
 
 
@@ -64,6 +64,6 @@ def assert_result(
     changelog_call = write_file_mock.call_args_list[1]
     actual_diff_cl = _get_diffs(
         get_fixture(tcase.changelog),
-        changelog_call.args[1]
+        changelog_call.args[1],
     )
     assert actual_diff_cl == tcase.diff_cl

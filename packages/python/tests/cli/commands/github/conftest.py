@@ -6,7 +6,7 @@ from tests.fixture_utils import read_fixture
 
 get_fixture = partial(
     read_fixture,
-    path='cli/commands/github/fixtures'
+    path='cli/commands/github/fixtures',
 )
 
 

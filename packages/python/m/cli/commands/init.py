@@ -13,4 +13,5 @@ class Arguments(BaseModel):
 )
 def run():
     from m.ci.init import init_repo
-    return run_main(init_repo, handle_result=print)
+
+    return run_main(init_repo, result_handler=print)

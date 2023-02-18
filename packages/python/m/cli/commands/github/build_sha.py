@@ -1,7 +1,6 @@
 from m.cli import command, run_main
+from m.core.io import env
 from pydantic import BaseModel, Field
-
-from ...utils import env
 
 
 class Arguments(BaseModel):
@@ -48,5 +47,5 @@ def run(arg: Arguments, arg_ns) -> int:
     from m.github.ci import get_build_sha
     return run_main(
         lambda: get_build_sha(arg_ns.token, arg.owner, arg.repo, arg.sha),
-        handle_result=print,
+        result_handler=print,
     )

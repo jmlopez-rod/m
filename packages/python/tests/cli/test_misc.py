@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from m.cli import run_main
 from m.cli.engine.parsers.boolean import handle_field
 from m.core import Bad, Good, Issue, issue
@@ -32,7 +34,7 @@ def test_run_main_success(mocker: MockerFixture):
 def test_run_main_unknown_error(mocker: MockerFixture):
     on_success, on_failure = handlers(mocker)
     exit_code = run_main(failure_func, on_success, on_failure)
-    assert exit_code == 1
+    assert exit_code == 2
 
     # https://stackoverflow.com/a/39669722
     args, _ = on_failure.call_args_list[0]
@@ -43,7 +45,11 @@ def test_run_main_unknown_error(mocker: MockerFixture):
 
 def test_run_main_non_issue(mocker: MockerFixture):
     on_success, on_failure = handlers(mocker)
-    exit_code = run_main(lambda: Bad('oops'), on_success, on_failure)
+    exit_code = run_main(
+        lambda: cast(Bad[Issue, Any], Bad('oops')),
+        on_success,
+        on_failure,
+    )
     assert exit_code == 1
 
     args, _ = on_failure.call_args_list[0]

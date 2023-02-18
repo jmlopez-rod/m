@@ -4,10 +4,11 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import assert_streams, run_cli
+from tests.cli.conftest import assert_streams, cli_params, run_cli
 from tests.util import file_exists_mock, read_fixture_mock
 
 FIXTURE_PATH = 'cli/commands/github/fixtures'
+CMD = ('m', 'github', 'create_pr')
 
 
 def _file_exists(name: str):
@@ -26,12 +27,14 @@ class TCase(CliTestCase):
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=[
-            'm', 'github', 'create_pr',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--head', 'feature_branch',
-            '--base', 'master',
-            '--title', 'PR Title',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--head': 'feature_branch',
+                '--base': 'master',
+                '--title': 'PR Title',
+            }),
             'PR Title\n\nPR Body',
         ],
         body_to_send={
@@ -39,16 +42,18 @@ class TCase(CliTestCase):
             'body': 'PR Title\n\nPR Body',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
     TCase(
         cmd=[
-            'm', 'github', 'create_pr',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--head', 'feature_branch',
-            '--base', 'master',
-            '--title', 'PR Title',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--head': 'feature_branch',
+                '--base': 'master',
+                '--title': 'PR Title',
+            }),
             '@create_pr.txt',
         ],
         body_to_send={
@@ -56,16 +61,18 @@ class TCase(CliTestCase):
             'body': 'PR Title\n\nPR body in File\n',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
     TCase(
         cmd=[
-            'm', 'github', 'create_pr',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--head', 'feature_branch',
-            '--base', 'master',
-            '--title', 'PR Title',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--head': 'feature_branch',
+                '--base': 'master',
+                '--title': 'PR Title',
+            }),
             '@invalid-file.txt',
         ],
         errors=[
@@ -75,12 +82,14 @@ class TCase(CliTestCase):
     ),
     TCase(
         cmd=[
-            'm', 'github', 'create_pr',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--head', 'feature_branch',
-            '--base', 'master',
-            '--title', 'PR Title',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--head': 'feature_branch',
+                '--base': 'master',
+                '--title': 'PR Title',
+            }),
             '\\@jmlopez-rod - pr title',
         ],
         body_to_send={
@@ -88,16 +97,18 @@ class TCase(CliTestCase):
             'body': '@jmlopez-rod - pr title',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
     TCase(
         cmd=[
-            'm', 'github', 'create_pr',
-            '--owner', 'fake',
-            '--repo', 'hotdog',
-            '--head', 'feature_branch',
-            '--base', 'master',
-            '--title', 'PR Title',
+            *CMD,
+            *cli_params({
+                '--owner': 'fake',
+                '--repo': 'hotdog',
+                '--head': 'feature_branch',
+                '--base': 'master',
+                '--title': 'PR Title',
+            }),
         ],
         std_in='PR Title from stdin',
         body_to_send={
@@ -105,7 +116,7 @@ class TCase(CliTestCase):
             'body': 'PR Title from stdin',
             'head': 'feature_branch',
             'title': 'PR Title',
-        }
+        },
     ),
 ])
 def test_github_create_pr(tcase: TCase, mocker: MockerFixture) -> None:

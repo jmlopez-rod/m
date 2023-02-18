@@ -62,8 +62,8 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
             f'+## [1.2.3] <a name="1.2.3" href="#1.2.3">-</a> {TODAY}\n',
             '+\n',
             '+\n',
-            '+[unreleased]: https://github.com/gh_owner/gh_repo/compare/1.2.3...HEAD\n',  # noqa E501
-            '+[1.2.3]: https://github.com/gh_owner/gh_repo/compare/sha123abc...1.2.3\n',  # noqa E501
+            '+[unreleased]: https://github.com/gh_owner/gh_repo/compare/1.2.3...HEAD\n',
+            '+[1.2.3]: https://github.com/gh_owner/gh_repo/compare/sha123abc...1.2.3\n',
         ],
         m_file='m_comma.json',
         diff_mf=[
@@ -93,15 +93,15 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
             '+\n',
             '+\n',
             '+\n',
-            ' ## [0.2.0] <a name="0.2.0" href="#0.2.0">-</a> August 25, 2021\n',  # noqa E501
+            ' ## [0.2.0] <a name="0.2.0" href="#0.2.0">-</a> August 25, 2021\n',
             ' desc 0.2\n',
             ' \n',
-            ' ## [0.1.0] <a name="0.1.0" href="#0.1.0">-</a> August 21, 2021\n',  # noqa E501
+            ' ## [0.1.0] <a name="0.1.0" href="#0.1.0">-</a> August 21, 2021\n',
             ' desc 0.1\n',
-            '+[unreleased]: https://github.com/gh_owner/gh_repo/compare/1.2.3...HEAD\n',  # noqa E501
-            '+[1.2.3]: https://github.com/gh_owner/gh_repo/compare/0.2.0...1.2.3\n',  # noqa E501
-            '+[0.2.0]: https://github.com/gh_owner/gh_repo/compare/0.1.0...0.2.0\n',  # noqa E501
-            '+[0.1.0]: https://github.com/gh_owner/gh_repo/compare/sha123abc...0.1.0\n',  # noqa E501
+            '+[unreleased]: https://github.com/gh_owner/gh_repo/compare/1.2.3...HEAD\n',
+            '+[1.2.3]: https://github.com/gh_owner/gh_repo/compare/0.2.0...1.2.3\n',
+            '+[0.2.0]: https://github.com/gh_owner/gh_repo/compare/0.1.0...0.2.0\n',
+            '+[0.1.0]: https://github.com/gh_owner/gh_repo/compare/sha123abc...0.1.0\n',
         ],
         m_file='m_no_comma.json',
         diff_mf=[
@@ -114,7 +114,7 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
             '-  "version": "0.0.1"\n',
             '+  "version": "1.2.3"\n',
             ' }\n',
-        ]
+        ],
     ),
 ])
 def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):

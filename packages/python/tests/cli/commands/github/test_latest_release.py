@@ -4,7 +4,7 @@ import pytest
 from m.core.fp import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
-from tests.cli.conftest import assert_streams, run_cli
+from tests.cli.conftest import assert_streams, cli_params, run_cli
 
 from .conftest import get_json_fixture
 
@@ -29,7 +29,7 @@ class TCase(CliTestCase):
         exit_code=1,
         response_file='latest_release_bad.json',
         errors=[
-            "Could not resolve to a Repository with the name 'fake/hotdog'"
+            "Could not resolve to a Repository with the name 'fake/hotdog'",
         ],
     ),
     TCase(
@@ -52,11 +52,14 @@ def test_github_latest_release(tcase: TCase, mocker: MockerFixture) -> None:
 def test_github_latest_release_access(mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {}, clear=True)
     cmd = [
-        'm', 'github',
-        '--token', '',
+        'm',
+        'github',
+        *cli_params({'--token': ''}),
         'latest_release',
-        '--owner', 'fake',
-        '--repo', 'hotdog',
+        *cli_params({
+            '--owner': 'fake',
+            '--repo': 'hotdog',
+        }),
     ]
     _, std_err = run_cli(cmd, 2, mocker)
     assert 'argument -t/--token: empty value not allowed' in std_err

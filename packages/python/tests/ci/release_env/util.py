@@ -2,7 +2,7 @@ from typing import Any
 
 from m.ci.config import Config, GitFlowConfig, MFlowConfig, Workflow
 from m.ci.release_env import ReleaseEnv
-from m.core.ci_tools import EnvVars
+from m.log import EnvVars
 from pydantic import BaseModel
 
 CONFIG = Config(

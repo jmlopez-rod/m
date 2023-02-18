@@ -24,7 +24,7 @@ def _file_exists(name: str):
     ),
     TCase(
         cmd='m json []',
-        expected='[]'
+        expected='[]',
     ),
     TCase(
         cmd=[
@@ -75,15 +75,15 @@ def _file_exists(name: str):
         errors=[
             'argument payload: file "invalid-file.json" does not exist',
         ],
-        exit_code=2
+        exit_code=2,
     ),
     TCase(
         cmd='m json @bad_json.json',
         errors=[
             'argument payload: invalid json payload in bad_json.json',
         ],
-        exit_code=2
-    )
+        exit_code=2,
+    ),
 ])
 def test_m_json(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch('pathlib.Path.exists', _file_exists)
@@ -102,3 +102,15 @@ def test_m_json(tcase: TCase, mocker: MockerFixture) -> None:
 
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
+
+
+def throw_error():
+    """Sabotage the run function for the m json cli."""
+    raise RuntimeError('oops')
+
+
+def test_m_unknown_cli_error(mocker: MockerFixture) -> None:
+    mocker.patch('json.dump', throw_error)
+    std_out, std_err = run_cli('m json null', 5, mocker)
+    assert std_out == ''
+    assert 'unknown cli run function exception' in std_err

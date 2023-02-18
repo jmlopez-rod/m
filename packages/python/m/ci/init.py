@@ -6,8 +6,10 @@ from typing import List, Tuple
 from m.core import Good, Issue, OneOf, issue, one_of
 from m.core import rw as mio
 from m.core import subprocess
-from m.core.ci_tools import get_ci_tool
 from m.git import get_remote_url
+from m.log import Logger
+
+logger = Logger('m.cli.init')
 
 
 def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
@@ -139,7 +141,7 @@ def init_repo() -> OneOf[Issue, str]:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
     if Path.exists(Path('m/m.json')):
-        get_ci_tool().warn('delete m/m.json to restart the init process.')
+        logger.warning('delete m/m.json to restart the init process.')
         return Good('...')
     return one_of(lambda: [
         'done'
