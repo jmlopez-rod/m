@@ -1,6 +1,6 @@
 import re
-from inspect import cleandoc as cdoc
 from pathlib import Path
+from textwrap import dedent
 from typing import List, Tuple
 
 from m.core import Good, Issue, OneOf, issue, one_of
@@ -53,7 +53,7 @@ def m_json_body(owner: str, repo: str) -> str:
     Returns:
         A json string to be the content of the `m.json` file.
     """
-    body = f"""
+    body = f"""\
         {{
           "owner": "{owner}",
           "repo": "{repo}",
@@ -61,11 +61,10 @@ def m_json_body(owner: str, repo: str) -> str:
           "workflow": "m_flow"
         }}
     """
-    cbody = cdoc(body)
-    return f'{cbody}\n'
+    return dedent(body)
 
 
-def create_m_config() -> OneOf[Issue, int]:
+def create_m_config() -> OneOf[Issue, str]:
     """Create the m configuration file.
 
     Returns:
@@ -74,20 +73,25 @@ def create_m_config() -> OneOf[Issue, int]:
     m_dir = Path('m')
     if not Path.exists(m_dir):
         Path.mkdir(m_dir, parents=True)
+    file_name = 'm/m.json'
     return one_of(lambda: [
-        0
+        file_name
         for owner, repo in get_repo_info()
-        for _ in mio.write_file('m/m.json', m_json_body(owner, repo))
+        for _ in mio.write_file(file_name, m_json_body(owner, repo))
+        for _ in logger.info(f'created {file_name}', {
+            'owner': owner,
+            'repo': repo,
+        })
     ])
 
 
-def create_changelog() -> OneOf[Issue, int]:
+def create_changelog() -> OneOf[Issue, str]:
     """Create the changelog file.
 
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
-    body = """
+    body = """\
         # Changelog
 
         The format of this changelog is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
@@ -98,8 +102,14 @@ def create_changelog() -> OneOf[Issue, int]:
 
         ## [Unreleased]
     """
-    cbody = cdoc(body)
-    return mio.write_file('CHANGELOG.md', f'{cbody}\n')
+    file_name = 'CHANGELOG.md'
+    if Path.exists(Path(file_name)):
+        logger.warning(f'{file_name} contents will be overwritten')
+    return one_of(lambda: [
+        file_name
+        for _ in mio.write_file('CHANGELOG.md', dedent(body))
+        for _ in logger.info(f'updated {file_name}')
+    ])
 
 
 def _update_gitignore(body: str) -> str:
@@ -118,23 +128,26 @@ def _update_gitignore(body: str) -> str:
     return f'{entries}\n'
 
 
-def update_gitignore() -> OneOf[Issue, int]:
+def update_gitignore() -> OneOf[Issue, str]:
     """Update the gitignore file.
 
     Adds the m/.m directory to the list.
 
     Returns:
-        A `OneOf` containing 0 or an Issue if it was unable to update the file.
+        A `OneOf` containing file name or an Issue if it was unable to update
+        the file.
     """
+    file_name = '.gitignore'
     return one_of(lambda: [
-        0
-        for _ in subprocess.eval_cmd('touch .gitignore')
-        for body in mio.read_file('.gitignore')
-        for _ in mio.write_file('.gitignore', _update_gitignore(body))
+        file_name
+        for _ in subprocess.eval_cmd(f'touch {file_name}')
+        for body in mio.read_file(file_name)
+        for _ in mio.write_file(file_name, _update_gitignore(body))
+        for _ in logger.info(f'updated {file_name}')
     ])
 
 
-def init_repo() -> OneOf[Issue, str]:
+def init_repo() -> OneOf[Issue, None]:
     """Initialize a repository with the basic project configurations.
 
     Returns:
@@ -142,10 +155,13 @@ def init_repo() -> OneOf[Issue, str]:
     """
     if Path.exists(Path('m/m.json')):
         logger.warning('delete m/m.json to restart the init process.')
-        return Good('...')
+        return Good(None)
     return one_of(lambda: [
-        'done'
-        for _ in create_m_config()
-        for _ in update_gitignore()
-        for _ in create_changelog()
+        None
+        for m_file in create_m_config()
+        for gitignore in update_gitignore()
+        for changelog in create_changelog()
+        for _ in logger.info('setup complete', {
+            'touched_files': [m_file, gitignore, changelog],
+        })
     ])
