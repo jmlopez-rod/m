@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase, assert_streams, run_cli
@@ -77,6 +79,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
     ),
 ])
 def test_m_jsonq(tcase: TCase, mocker: MockerFixture) -> None:
+    mocker.patch.dict(os.environ, {}, clear=True)
     if tcase.std_in:
         stdin_read = mocker.patch('sys.stdin.read')
         stdin_read.return_value = tcase.std_in
