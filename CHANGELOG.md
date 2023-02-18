@@ -8,6 +8,15 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.13.0] <a name="0.13.0" href="#0.13.0">-</a> February 18, 2023
+
+- Moved `ciTools` to the `m.log` module. From here on `print` statements
+  will be substituted by `logger.info`.
+- `run_main` renamed parameters, use `result_handler` and `issue_handler`.
+- Introducing environment variables `DEBUG_M_[INSERT_SOMETHING_HERE]`. More on
+  that later in the docs. These are meant to make things a bit more verbose in
+  a local environment.
+
 ## [0.12.2] <a name="0.12.2" href="#0.12.2">-</a> February 09, 2023
 
 - Fix `m ci npm_tag`: Versions with multiple digits not being properly matched.
@@ -169,7 +178,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.12.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/jmlopez-rod/m/compare/0.12.2...0.13.0
 [0.12.2]: https://github.com/jmlopez-rod/m/compare/0.12.1...0.12.2
 [0.12.1]: https://github.com/jmlopez-rod/m/compare/0.12.0...0.12.1
 [0.12.0]: https://github.com/jmlopez-rod/m/compare/0.11.2...0.12.0
