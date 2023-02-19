@@ -3,6 +3,7 @@ from typing import cast
 
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import env_model
+from m.log.colors import color
 from m.log.misc import default_record_fmt, format_context, format_location
 from pydantic import BaseModel, Field
 
@@ -96,8 +97,12 @@ def log_format(
 
     open_b = record_dict.get('open_block')
     if open_b:
-        name, _ = open_b
-        return f'::group::{name}'
+        name, desc = open_b
+        return color(
+            f'::group::{{bold_purple}}{name}',
+            '{{bold}} - ',
+            f'{{purple}}{desc}',
+        )
 
     if record_dict.get('close_block'):
         return '::endgroup::'
