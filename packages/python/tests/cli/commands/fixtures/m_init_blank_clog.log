@@ -3,13 +3,9 @@
          "owner": "jmlopez-rod",
          "repo": "m"
        }
-[INFO] [09:33:09 PM - Nov 29, 1973]: updated .gitignore
-[INFO] [09:33:09 PM - Nov 29, 1973]: updated CHANGELOG.md
 [INFO] [09:33:09 PM - Nov 29, 1973]: setup complete
        {
-         "touched_files": [
-           "m/m.json",
-           ".gitignore",
-           "CHANGELOG.md"
+         "modified_files": [
+           "m/m.json"
          ]
        }

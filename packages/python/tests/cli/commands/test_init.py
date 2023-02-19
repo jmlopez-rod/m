@@ -44,37 +44,36 @@ def _eval_cmd(cmd: str, tcase: TCase):
     TCase(
         repo_url='git@github.com:jmlopez-rod/m.git',
         expected=read_fixture('m_init_blank.log', FIXTURE_PATH),
+        errors=[
+            '[WARNING]',
+            '.gitignore already ignores m/.m',
+        ],
     ),
     TCase(
         repo_url='git@github.com:jmlopez-rod/m.git',
         changelog_exists=True,
         errors=[
             '[WARNING]',
-            'CHANGELOG.md contents will be overwritten',
+            'CHANGELOG.md already exists',
         ],
         expected=read_fixture('m_init_blank_clog.log', FIXTURE_PATH),
     ),
     TCase(
         repo_url='https://github.com/jmlopez-rod/m',
         errors=['unable to obtain owner and repo'],
+        new_line=False,
         exit_code=1,
     ),
     TCase(
         repo_url='git@github.com:fizzy/hotdog.git',
-        expected='...',
+        expected=read_fixture('m_init_repeat.log', FIXTURE_PATH),
         errors=[
             '[WARNING]',
-            'delete m/m.json to restart the init process.',
+            'm/m.json already exists',
         ],
-        m_file_exists=True,
-    ),
-    TCase(
-        repo_url='git@github.com:fizzy/hotdog.git',
-        expected='...',
-        errors=[
-            '[WARNING]',
-            'delete m/m.json to restart the init process.',
-        ],
+        cleandoc=False,
+        new_line=False,
+        changelog_exists=True,
         m_file_exists=True,
     ),
     TCase(

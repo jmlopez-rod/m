@@ -4,10 +4,10 @@
          "repo": "hotdog"
        }
 [INFO] [09:33:09 PM - Nov 29, 1973]: updated .gitignore
-[INFO] [09:33:09 PM - Nov 29, 1973]: updated CHANGELOG.md
+[INFO] [09:33:09 PM - Nov 29, 1973]: created CHANGELOG.md
 [INFO] [09:33:09 PM - Nov 29, 1973]: setup complete
        {
-         "touched_files": [
+         "modified_files": [
            "m/m.json",
            ".gitignore",
            "CHANGELOG.md"

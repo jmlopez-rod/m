@@ -70,10 +70,13 @@ def create_m_config() -> OneOf[Issue, str]:
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
+    file_name = 'm/m.json'
+    if Path.exists(Path(file_name)):
+        logger.warning(f'{file_name} already exists')
+        return Good(None)
     m_dir = Path('m')
     if not Path.exists(m_dir):
         Path.mkdir(m_dir, parents=True)
-    file_name = 'm/m.json'
     return one_of(lambda: [
         file_name
         for owner, repo in get_repo_info()
@@ -85,7 +88,7 @@ def create_m_config() -> OneOf[Issue, str]:
     ])
 
 
-def create_changelog() -> OneOf[Issue, str]:
+def create_changelog() -> OneOf[Issue, str | None]:
     """Create the changelog file.
 
     Returns:
@@ -104,31 +107,39 @@ def create_changelog() -> OneOf[Issue, str]:
     """
     file_name = 'CHANGELOG.md'
     if Path.exists(Path(file_name)):
-        logger.warning(f'{file_name} contents will be overwritten')
+        logger.warning(f'{file_name} already exists')
+        return Good(None)
     return one_of(lambda: [
         file_name
         for _ in mio.write_file('CHANGELOG.md', dedent(body))
-        for _ in logger.info(f'updated {file_name}')
+        for _ in logger.info(f'created {file_name}')
     ])
 
 
-def _update_gitignore(body: str) -> str:
+def _update_gitignore(file_name: str, body: str) -> OneOf[Issue, str | None]:
     """List of things that should be in a gitignore file.
 
     Args:
+        file_name: The name of the gitignore file.
         body: The current contents of the gitignore file.
 
     Returns:
         The contents of the new gitignore file.
     """
+    if 'm/.m' in body:
+        logger.warning(f'{file_name} already ignores m/.m')
+        return Good(None)
     buffer: List[str] = body.splitlines()
-    if 'm/.m' not in body:
-        buffer.append('m/.m')
+    buffer.append('m/.m')
     entries = '\n'.join(buffer)
-    return f'{entries}\n'
+    return one_of(lambda: [
+        file_name
+        for _ in mio.write_file(file_name, f'{entries}\n')
+        for _ in logger.info(f'updated {file_name}')
+    ])
 
 
-def update_gitignore() -> OneOf[Issue, str]:
+def update_gitignore() -> OneOf[Issue, str | None]:
     """Update the gitignore file.
 
     Adds the m/.m directory to the list.
@@ -139,11 +150,10 @@ def update_gitignore() -> OneOf[Issue, str]:
     """
     file_name = '.gitignore'
     return one_of(lambda: [
-        file_name
+        fname
         for _ in subprocess.eval_cmd(f'touch {file_name}')
         for body in mio.read_file(file_name)
-        for _ in mio.write_file(file_name, _update_gitignore(body))
-        for _ in logger.info(f'updated {file_name}')
+        for fname in _update_gitignore(file_name, body)
     ])
 
 
@@ -153,15 +163,12 @@ def init_repo() -> OneOf[Issue, None]:
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
-    if Path.exists(Path('m/m.json')):
-        logger.warning('delete m/m.json to restart the init process.')
-        return Good(None)
     return one_of(lambda: [
         None
         for m_file in create_m_config()
         for gitignore in update_gitignore()
         for changelog in create_changelog()
         for _ in logger.info('setup complete', {
-            'touched_files': [m_file, gitignore, changelog],
+            'modified_files': [x for x in (m_file, gitignore, changelog) if x],
         })
     ])
