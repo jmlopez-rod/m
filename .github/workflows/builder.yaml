@@ -21,6 +21,7 @@ jobs:
         NPMJS_TOKEN: ${{ secrets.NPMJS_TOKEN }}
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        FORCE_COLOR: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
