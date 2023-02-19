@@ -1,14 +1,16 @@
 #!/bin/bash
 set -xeuo pipefail
 
+m message open 'setup' 'update paths'
 export PYTHONPATH="${PWD}/packages/python"
 export PATH="${PWD}/packages/bash/lib:$PATH"
 
+m message sibling_block 'setup' 'lint' 'run flake8 on source code'
 # Use regex to filter files: --file-regex='.*(npm_tag|http)\.py$'
 m ci celt -t flake8 -c @allowed_errors.json < <(flake8 packages/python/m)
 
 # static checks
-m message open 'mypy' 'static checks'
+m message sibling_block 'lint' 'mypy' 'static checks'
 mypy ./packages/python/m
 mypy ./packages/python/tests
 
