@@ -37,7 +37,11 @@ class TCase(CliTestCase):
 ])
 def test_m_ci_celt(tcase: TCase, mocker: MockerFixture) -> None:
     # Testing with Github to make sense out of error blocks
-    mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
+    mocker.patch.dict(
+        os.environ,
+        {'GITHUB_ACTIONS': 'true', 'NO_COLOR': 'true'},
+        clear=True,
+    )
     mocker.patch('pathlib.Path.exists', _file_exists)
     mocker.patch(
         'pathlib.Path.open',

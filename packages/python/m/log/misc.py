@@ -5,6 +5,8 @@ from typing import cast
 
 from m.core import Issue
 
+from .colors import color
+
 
 def indent_payload(
     indent: int,
@@ -53,17 +55,21 @@ def format_context(
     return indent_payload(indent, data_dict) if data_dict else ''
 
 
-def format_location(parts: list[str | None]) -> str:
+def format_location(
+    parts: list[str | None],
+    default_color: str = 'aqua',
+) -> str:
     """Join a list of possible defined strings.
 
     Args:
         parts: A list of possibly defined strings.
+        default_color: The color to use for the string.
 
     Returns:
         A string with the location or an empty string.
     """
     loc = ':'.join([x for x in parts if x])
-    return f'[{loc}]' if loc else ''
+    return color(f'{{{default_color}}}[{loc}]{{end}}') if loc else ''
 
 
 def default_record_fmt(
@@ -83,6 +89,17 @@ def default_record_fmt(
     Returns:
         A formatted string.
     """
-    fmt_time = f'[{asctime}]' if asctime else ''
-    prefix = f'[{record.levelname}] {fmt_time}{after_time}'.rstrip()
-    return f'{prefix}: {record.msg}{after_msg}'
+    level_color = {
+        logging.DEBUG: 'green',
+        logging.INFO: 'blue',
+        logging.WARNING: 'yellow',
+        logging.ERROR: 'red',
+        logging.CRITICAL: 'bold_red',
+    }.get(record.levelno, 'gray')
+    fmt_time = color(f'{{gray}}[{asctime}]{{end}}') if asctime else ''
+    fmt_level = color(f'{{{level_color}}}[{record.levelname}]{{end}}')
+    prefix = f'{fmt_level} {fmt_time}{after_time}'.rstrip()
+    record_msg = record.msg
+    if level_color != 'blue':
+        record_msg = color(f'{{{level_color}}}{record_msg}{{end}}')
+    return f'{prefix}: {record_msg}{after_msg}'

@@ -86,7 +86,7 @@ def _eval_cmd(cmd: str, tcase: TCase):
     ),
 ])
 def test_m_init(tcase: TCase, mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {}, clear=True)
+    mocker.patch.dict(os.environ, {'NO_COLOR': 'true'}, clear=True)
     mocker.patch('time.time').return_value = 123456789
     mocker.patch(
         'pathlib.Path.exists',

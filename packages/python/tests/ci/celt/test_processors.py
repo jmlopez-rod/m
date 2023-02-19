@@ -1,6 +1,8 @@
 import inspect
+import os
 from typing import List, cast
 
+import pytest
 from m.ci.celt.core.process import PostProcessor
 from m.ci.celt.core.types import Configuration, ExitCode, ProjectStatus
 from m.ci.celt.post_processor import get_post_processor
@@ -23,6 +25,11 @@ def assert_str_has(target_str: str, substrings: List[str]):
 def _post_processor(name: str) -> PostProcessor:
     celt_config = Configuration()
     return cast(PostProcessor, get_post_processor(name, celt_config).value)
+
+
+@pytest.fixture(autouse=True, scope='class')
+def _no_color(class_mocker):
+    class_mocker.patch.dict(os.environ, {'NO_COLOR': 'true'}, clear=True)
 
 
 class CeltTest(FpTestCase):

@@ -1,6 +1,8 @@
 from functools import cmp_to_key
 from typing import Any, Callable, List, Tuple
 
+from m.log.colors import color
+
 from .types import Configuration, ExitCode, ProjectStatus, RuleInfo
 
 
@@ -36,7 +38,9 @@ def rule_info_str(
         A string representation of the rule info.
     """
     allowed = 'IGNORED' if rule.ignored else f'allowed {rule.allowed}'
-    buffer = [f'{rule.rule_id} (found {rule.found}, {allowed}):']
+    rule_id = color(f'{{red}}{rule.rule_id}{{end}}')
+    total_found = color(f'{{red}}{rule.found}{{end}}')
+    buffer = [f'{rule_id} (found {total_found}, {allowed}):']
     violations = (
         rule.violations
         if config.max_lines == -1
@@ -47,7 +51,8 @@ def rule_info_str(
         msg, *rest = violation.message.splitlines()
         line = violation.line
         column = violation.column
-        buffer.append(f'  {file_path}:{line}:{column} - {msg}')
+        file_loc = color(f'{{gray}}{file_path}:{line}:{column}{{end}}')
+        buffer.append(f'  {file_loc} - {msg}')
         if rest and config.full_message:
             buffer.extend([f'    {x}' for x in rest])
     if -1 < config.max_lines < len(rule.violations):
@@ -103,9 +108,16 @@ def project_status_str(
             if rule.ignored
         ]
         if project.total_found > 0:
-            buffer.append(f'project has {project.total_found} errors to clear')
+            buffer.append(
+                color(
+                    '{gray}project has ',
+                    f'{{red}}{project.total_found} errors',
+                    '{gray} to clear',
+                ),
+            )
         else:
-            buffer.append('no errors found')
+            msg = 'no errors found'
+            buffer.append(color(f'{{bold_green}}{msg}'))
         return '\n'.join(buffer)
 
     buffer = [
@@ -114,10 +126,10 @@ def project_status_str(
         if rule.found > rule.allowed
     ]
 
-    buffer.append('FILES:')
+    buffer.append(color('{bold}FILES:'))
     by_file = sorted(project.files.items(), key=lambda t: len(t[1]))
     buffer.extend([
-        f'  {file_name}: found {total}'
+        color(f'  {{gray}}{file_name}:{{end}} found {total}')
         for file_name, violations in by_file
         for total in (len(violations), )
     ])

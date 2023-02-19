@@ -11,6 +11,7 @@ from m.log import EnvVars, Logger, get_ci_tool, logging_config
 from pytest_mock import MockerFixture
 
 logger = Logger('test.providers')
+no_color = {'NO_COLOR': 'true'}
 
 
 def mock_streams(mocker: MockerFixture):
@@ -25,7 +26,7 @@ def mock_streams(mocker: MockerFixture):
 
 
 def test_ci_tool_warn_block(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {}, clear=True)
+    mocker.patch.dict(os.environ, no_color, clear=True)
     std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.waning_block('some warning', {'context': []})
@@ -41,7 +42,7 @@ def test_ci_tool_warn_block(mocker: MockerFixture) -> None:
 
 
 def test_ci_tool_close_blocks(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {}, clear=True)
+    mocker.patch.dict(os.environ, no_color, clear=True)
     std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.info('a')
@@ -62,7 +63,7 @@ def test_ci_tool_close_blocks(mocker: MockerFixture) -> None:
 
 
 def test_ci_tool_json_logger(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {}, clear=True)
+    mocker.patch.dict(os.environ, no_color, clear=True)
     std_out, std_err, log_hdl = mock_streams(mocker)
     logging_config(json_file='file_log.json')
     logger.info('a')
@@ -85,7 +86,7 @@ def test_ci_tool_json_logger(mocker: MockerFixture) -> None:
 
 
 def test_ci_tool_json_logger_debug(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {}, clear=True)
+    mocker.patch.dict(os.environ, no_color, clear=True)
     std_out, std_err, log_hdl = mock_streams(mocker)
     logging_config(level=logging.DEBUG, json_file='file_log.json')
     logger.info('a')
@@ -110,7 +111,11 @@ def test_ci_tool_json_logger_debug(mocker: MockerFixture) -> None:
 
 
 def test_ci_tool_logger_debug(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {'DEBUG_M_LOGS': 'true'}, clear=True)
+    mocker.patch.dict(
+        os.environ,
+        {'DEBUG_M_LOGS': 'true', **no_color},
+        clear=True,
+    )
     std_out, std_err, _ = mock_streams(mocker)
     # no need to specify since we are using the environment variable
     logging_config()
@@ -129,7 +134,11 @@ def test_ci_tool_logger_debug(mocker: MockerFixture) -> None:
 
 
 def test_ci_tool_github_plain_str(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
+    mocker.patch.dict(
+        os.environ,
+        {'GITHUB_ACTIONS': 'true', **no_color},
+        clear=True,
+    )
     std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error')
@@ -143,13 +152,17 @@ def test_ci_tool_github_plain_str(mocker: MockerFixture) -> None:
 
 
 def test_ci_tool_tc_plain_str(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {'TC': 'true'}, clear=True)
+    mocker.patch.dict(
+        os.environ,
+        {'TC': 'true', **no_color},
+        clear=True,
+    )
     std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error')
     logger.warning('some warning')
     logger.info('hello there')
-    logger.info('', {'context':'only context'})
+    logger.info('', {'context': 'only context'})
     out = std_out.getvalue()
     # technically in this case the context should go one more space
     # but this case is very rare. If I see it more times and it really
@@ -177,7 +190,11 @@ def test_ci_tool_tc_plain_str(mocker: MockerFixture) -> None:
 
 
 def test_cli_util_error_no_block(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
+    mocker.patch.dict(
+        os.environ,
+        {'GITHUB_ACTIONS': 'true', **no_color},
+        clear=True,
+    )
     std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error')
@@ -187,7 +204,11 @@ def test_cli_util_error_no_block(mocker: MockerFixture) -> None:
 
 
 def test_cli_util_error_block(mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {'GITHUB_ACTIONS': 'true'}, clear=True)
+    mocker.patch.dict(
+        os.environ,
+        {'GITHUB_ACTIONS': 'true', **no_color},
+        clear=True,
+    )
     std_out, std_err, _ = mock_streams(mocker)
     logging_config()
     logger.error('some error', Issue('oops'))
