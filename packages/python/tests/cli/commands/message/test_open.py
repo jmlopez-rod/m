@@ -26,7 +26,7 @@ TESTS = [
     )
     for msg, env_vars in (
         ('  >>> [title]: a desc', LH),
-        ('::group::title', GH),
+        ('::group::title - a desc', GH),
         ("##teamcity[blockOpened name='title' description='a desc']", TC),
     )
 ]

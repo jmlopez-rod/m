@@ -31,7 +31,7 @@ TESTS = [
     )
     for msg, env_vars in (
         ('\n  >>> [new]: a desc', LH),
-        ('::endgroup::\n::group::new', GH),
+        ('::endgroup::\n::group::new - a desc', GH),
         (cleandoc(TC_RES), TC),
     )
 ]
