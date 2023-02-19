@@ -100,7 +100,7 @@ def log_format(
         name, desc = open_b
         return color(
             f'::group::{{bold_purple}}{name}',
-            f'{{gray}}{desc}',
+            f'{{gray}} - {desc}',
         )
 
     if record_dict.get('close_block'):
