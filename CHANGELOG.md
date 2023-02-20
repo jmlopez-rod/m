@@ -8,6 +8,12 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.14.0] <a name="0.14.0" href="#0.14.0">-</a> February 20, 2023
+
+- Update `m init` to provide information on what it does
+- Logger formatter defaults to using colors. May be disabled with `NO_COLOR=true` env var.
+- `m.log.colors` provides the `color` function to format any message with color.
+
 ## [0.13.0] <a name="0.13.0" href="#0.13.0">-</a> February 18, 2023
 
 - Moved `ciTools` to the `m.log` module. From here on `print` statements
@@ -178,7 +184,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.13.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.14.0...HEAD
+[0.14.0]: https://github.com/jmlopez-rod/m/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/jmlopez-rod/m/compare/0.12.2...0.13.0
 [0.12.2]: https://github.com/jmlopez-rod/m/compare/0.12.1...0.12.2
 [0.12.1]: https://github.com/jmlopez-rod/m/compare/0.12.0...0.12.1
