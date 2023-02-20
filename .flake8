@@ -2,6 +2,8 @@
 max-module-members = 10
 i-control-code = False
 ignore =
+  FS003,   # f-string missing prefix - IDE helps us and tests covers output
+
   W503,    #
   D100,    # Missing docstring in public module
   D103,    # Missing docstring in public function

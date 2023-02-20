@@ -13,9 +13,9 @@ class TCase(CliTestCase):
     exit_code: int = 0
 
 
-LH: dict = {}  # Localhost
-GH = {'GITHUB_ACTIONS': 'true'}  # Github
-TC = {'TEAMCITY': 'true'}  # Teamcity
+LH: dict = {'NO_COLOR': 'true'}  # Localhost
+GH = {'GITHUB_ACTIONS': 'true', 'NO_COLOR': 'true'}  # Github
+TC = {'TEAMCITY': 'true', 'NO_COLOR': 'true'}  # Teamcity
 
 TESTS = [
     TCase(
@@ -26,7 +26,7 @@ TESTS = [
     )
     for msg, env_vars in (
         ('  >>> [title]: a desc', LH),
-        ('::group::title', GH),
+        ('::group::title - a desc', GH),
         ("##teamcity[blockOpened name='title' description='a desc']", TC),
     )
 ]

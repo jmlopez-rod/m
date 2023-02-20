@@ -64,7 +64,7 @@ def log_format(
     ci_info = record_dict.get('ci_info', Message(msg=record.msg))
     msg_info = format_location([ci_info.file, ci_info.line, ci_info.col])
     loc = (
-        format_location([record.pathname, f'{record.lineno}'])
+        format_location([record.pathname, f'{record.lineno}'], 'bold_aqua')
         if debug_python
         else ''
     )

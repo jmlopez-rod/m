@@ -16,6 +16,7 @@ class TCase(CliTestCase):
     cmd: str = 'm init'
     repo_url: str
     m_file_exists: bool = False
+    changelog_exists: bool = False
     gitignore_contents: str = '.vscode\nm/.m\n'
     new_gitignore_contents: str = '.vscode\nm/.m\n'
     changelog: str | None = None
@@ -26,6 +27,8 @@ def _file_exists(name: str, tcase: TCase):
     """Having issues using partial with file_exists_mock."""
     if str(name) == 'm/m.json':
         return tcase.m_file_exists
+    if str(name) == 'CHANGELOG.md':
+        return tcase.changelog_exists
     return file_exists_mock(name, FIXTURE_PATH)
 
 
@@ -40,34 +43,42 @@ def _eval_cmd(cmd: str, tcase: TCase):
 @pytest.mark.parametrize('tcase', [
     TCase(
         repo_url='git@github.com:jmlopez-rod/m.git',
-        expected='done',
+        expected=read_fixture('m_init_blank.log', FIXTURE_PATH),
+        errors=[
+            '[WARNING]',
+            '.gitignore already ignores m/.m',
+        ],
+    ),
+    TCase(
+        repo_url='git@github.com:jmlopez-rod/m.git',
+        changelog_exists=True,
+        errors=[
+            '[WARNING]',
+            'CHANGELOG.md already exists',
+        ],
+        expected=read_fixture('m_init_blank_clog.log', FIXTURE_PATH),
     ),
     TCase(
         repo_url='https://github.com/jmlopez-rod/m',
         errors=['unable to obtain owner and repo'],
+        new_line=False,
         exit_code=1,
     ),
     TCase(
         repo_url='git@github.com:fizzy/hotdog.git',
-        expected='...',
+        expected=read_fixture('m_init_repeat.log', FIXTURE_PATH),
         errors=[
             '[WARNING]',
-            'delete m/m.json to restart the init process.',
+            'm/m.json already exists',
         ],
+        cleandoc=False,
+        new_line=False,
+        changelog_exists=True,
         m_file_exists=True,
     ),
     TCase(
         repo_url='git@github.com:fizzy/hotdog.git',
-        expected='...',
-        errors=[
-            '[WARNING]',
-            'delete m/m.json to restart the init process.',
-        ],
-        m_file_exists=True,
-    ),
-    TCase(
-        repo_url='git@github.com:fizzy/hotdog.git',
-        expected='done',
+        expected=read_fixture('m_init_blank_hotdog.log', FIXTURE_PATH),
         gitignore_contents='npm_modules\nhotdog',
         new_gitignore_contents='npm_modules\nhotdog\nm/.m\n',
         changelog='CHANGELOG.md',
@@ -75,7 +86,8 @@ def _eval_cmd(cmd: str, tcase: TCase):
     ),
 ])
 def test_m_init(tcase: TCase, mocker: MockerFixture) -> None:
-    mocker.patch.dict(os.environ, {}, clear=True)
+    mocker.patch.dict(os.environ, {'NO_COLOR': 'true'}, clear=True)
+    mocker.patch('time.time').return_value = 123456789
     mocker.patch(
         'pathlib.Path.exists',
         lambda name: _file_exists(name, tcase),

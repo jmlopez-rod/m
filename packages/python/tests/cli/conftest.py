@@ -60,13 +60,13 @@ def assert_streams(
     if tcase.errors:
         for error in tcase.errors:
             assert error in err
-    else:
-        expected = (
-            cleandoc(tcase.expected)
-            if tcase.cleandoc
-            else tcase.expected
-        )
-        expected_str = f'{expected}\n' if tcase.new_line else expected
+    expected = (
+        cleandoc(tcase.expected)
+        if tcase.cleandoc
+        else tcase.expected
+    )
+    expected_str = f'{expected}\n' if tcase.new_line else expected
+    if expected and out != '\n':
         assert out == expected_str
 
 

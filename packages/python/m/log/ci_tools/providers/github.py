@@ -3,6 +3,7 @@ from typing import cast
 
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import env_model
+from m.log.colors import color
 from m.log.misc import default_record_fmt, format_context, format_location
 from pydantic import BaseModel, Field
 
@@ -72,6 +73,14 @@ def _gh_format(msg_type: str, msg: Message, message: str, postfix: str) -> str:
     return f'::{msg_type}{msg_info}::{message}{postfix}'
 
 
+def _format_block(name, desc) -> str:
+    with_desc = f'{{gray}} - {desc}' if desc else ''
+    return color(
+        f'::group::{{bold_purple}}{name}',
+        with_desc,
+    )
+
+
 def log_format(
     formatter: logging.Formatter,
     record: logging.LogRecord,
@@ -96,8 +105,7 @@ def log_format(
 
     open_b = record_dict.get('open_block')
     if open_b:
-        name, _ = open_b
-        return f'::group::{name}'
+        return _format_block(*open_b)
 
     if record_dict.get('close_block'):
         return '::endgroup::'

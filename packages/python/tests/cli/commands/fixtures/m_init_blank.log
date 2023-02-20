@@ -1,0 +1,13 @@
+[INFO] [09:33:09 PM - Nov 29, 1973]: created m/m.json
+       {
+         "owner": "jmlopez-rod",
+         "repo": "m"
+       }
+[INFO] [09:33:09 PM - Nov 29, 1973]: created CHANGELOG.md
+[INFO] [09:33:09 PM - Nov 29, 1973]: setup complete
+       {
+         "modified_files": [
+           "m/m.json",
+           "CHANGELOG.md"
+         ]
+       }

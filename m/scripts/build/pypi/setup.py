@@ -28,7 +28,7 @@ setuptools.setup(
         'bin/reviewRelease',
         'bin/endRelease',
     ],
-    install_requires=['typing_extensions', 'pydantic', 'pyyaml'],
+    install_requires=['typing_extensions', 'pydantic', 'pyyaml', 'packaging'],
     package_data={'m': ['py.typed']},
     packages=setuptools.find_packages(where='src'),
     python_requires='>=3.7',

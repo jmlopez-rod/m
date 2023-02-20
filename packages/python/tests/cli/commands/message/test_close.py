@@ -13,9 +13,9 @@ class TCase(CliTestCase):
     exit_code: int = 0
 
 
-LH: dict = {}  # Localhost
-GH = {'GITHUB_ACTIONS': 'true'}  # Github
-TC = {'TEAMCITY': 'true'}  # Teamcity
+LH: dict = {'NO_COLOR': 'true'}  # Localhost
+GH = {'GITHUB_ACTIONS': 'true', 'NO_COLOR': 'true'}  # Github
+TC = {'TEAMCITY': 'true', 'NO_COLOR': 'true'}  # Teamcity
 
 TESTS = [
     TCase(
