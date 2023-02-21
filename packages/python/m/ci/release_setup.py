@@ -5,6 +5,9 @@ from m.ci.config import Config, read_config
 from m.core import Good, Issue, OneOf, issue, one_of, rw
 from m.git import get_first_commit_sha
 from m.github.ci import compare_sha_url
+from m.log import Logger
+
+logger = Logger('m.ci.release_setup')
 
 
 def _get_versions(lines: list[str], new_ver: str, first_sha: str) -> list[str]:
@@ -92,6 +95,7 @@ def update_changelog_file(
         for text in rw.read_file(filename)
         for new_data in new_changelog(text, owner, repo, new_ver, first_sha)
         for _ in rw.write_file(filename, new_data)
+        for _ in logger.info(f'updated {filename}')
     ])
 
 
@@ -133,14 +137,16 @@ def update_version(
         for config_contents in rw.read_file(filename)
         for new_data in _update_config_version(config_contents, version)
         for _ in rw.write_file(filename, new_data)
+        for _ in logger.info(f'bumped version in {filename}')
     ])
 
 
 def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
     link = compare_sha_url(config.owner, config.repo, config.version, 'HEAD')
-    print(f'\nSetup for version {new_ver} is complete.')
-    print(f'Unreleased changes: {link}\n')
-    return Good(0)
+    return logger.info('setup complete', {
+        'new_version': new_ver,
+        'unreleased_changes': link,
+    })
 
 
 def release_setup(
