@@ -1,7 +1,7 @@
 from functools import cmp_to_key
 from typing import Any, Callable, List, Tuple
 
-from m.log.colors import color
+from m.color import color
 
 from .types import Configuration, ExitCode, ProjectStatus, RuleInfo
 

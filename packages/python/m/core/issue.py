@@ -6,7 +6,10 @@ from collections import OrderedDict
 from contextlib import suppress
 from typing import cast
 
+from m.color import highlight_json, highlight_yaml
 from typing_extensions import TypedDict
+
+from . import yaml
 
 IssueDict = TypedDict(
     'IssueDict',
@@ -15,7 +18,7 @@ IssueDict = TypedDict(
         'description': str,
         'cause': object,
         'context': object,
-        'traceback': list[str],
+        'traceback': list[str] | str,
     },
     total=False,
 )
@@ -53,13 +56,15 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
     """
 
     show_traceback = True
+    yaml_traceback = True
 
     message: str
     description: str | None
     cause: Exception | None
     context: object | None
     include_traceback: bool
-    cause_tb: list[str] | None
+    cause_tb: list[str] | str | None
+    traceback: list[str] | str | None
 
     def __init__(  # noqa: WPS211 - need to initialize the attributes
         self,
@@ -97,6 +102,12 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
                     for x in exception_list
                     for y in x.splitlines()
                 ]
+                if Issue.yaml_traceback:
+                    self.cause_tb = '\n'.join([
+                        '(most recent call last):',
+                        *self.cause_tb,
+                        '',
+                    ])
         self.context = context
         self.include_traceback = include_traceback
         self.traceback = None
@@ -107,6 +118,12 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
                 for x in traceback.format_stack(frame)[:-1]
                 for y in x.splitlines()
             ]
+            if Issue.yaml_traceback:
+                self.traceback = '\n'.join([
+                    '(most recent call last):',
+                    *self.traceback,
+                    '',
+                ])
 
     def only_context(self) -> bool:
         """Return true if the issue only offers context.
@@ -164,6 +181,8 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
             A string representation of the Issue instance.
         """
         issue_dict = self.to_dict(show_traceback=show_traceback)
+        if Issue.yaml_traceback:
+            return yaml.dumps(issue_dict)
         return json.dumps(issue_dict, indent=2)
 
     def __str__(self) -> str:
@@ -172,4 +191,7 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
         Returns:
             A string representation of the Issue instance.
         """
-        return self.to_str(Issue.show_traceback)
+        issue_str = self.to_str(Issue.show_traceback)
+        if Issue.yaml_traceback:
+            return highlight_yaml(issue_str)
+        return highlight_json(issue_str)

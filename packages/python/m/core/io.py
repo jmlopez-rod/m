@@ -3,7 +3,9 @@ import os
 import sys
 from typing import TypeVar
 
-from m.core import Good, Issue, OneOf, issue
+from m.core import Good, OneOf
+from m.core.issue import Issue
+from m.core.one_of import issue
 from pydantic import BaseModel
 
 BaseModelT = TypeVar('BaseModelT', bound=BaseModel)

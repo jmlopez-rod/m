@@ -3,15 +3,15 @@ import logging
 import textwrap
 from typing import cast
 
-from m.core import Issue
-
-from .colors import color
+from m.color import color, highlight_json, highlight_yaml
+from m.core import Issue, yaml
 
 
 def indent_payload(
     indent: int,
     payload: dict,
     prepend_new_line: bool = True,
+    as_yaml: bool = True,
 ) -> str:
     """Stringify a dictionary as JSON and indent it.
 
@@ -19,11 +19,16 @@ def indent_payload(
         indent: The number of spaces to indent.
         payload: The data to stringify and indent.
         prepend_new_line: Prepend a new line to the payload if `True`.
+        as_yaml: Dump the payload in yaml.
 
     Returns:
         An indented payload.
     """
-    json_dict = json.dumps(payload, indent=2)
+    json_dict = (
+        highlight_yaml(yaml.dumps(payload))
+        if as_yaml
+        else highlight_json(json.dumps(payload, indent=2))
+    )
     indented_payload = textwrap.indent(json_dict, ' ' * indent)
     return f'\n{indented_payload}' if prepend_new_line else indented_payload
 
@@ -46,13 +51,18 @@ def format_context(
     """
     context = record.__dict__.get('context')
     data_dict = None
+    as_yaml = Issue.yaml_traceback
     if isinstance(context, Issue):
         data_dict = cast(dict, context.to_dict(show_traceback=show_traceback))
         if context.only_context():
             data_dict = data_dict['context']
     else:
         data_dict = context
-    return indent_payload(indent, data_dict) if data_dict else ''
+    return (
+        indent_payload(indent, data_dict, as_yaml=as_yaml)
+        if data_dict
+        else ''
+    )
 
 
 def format_location(
