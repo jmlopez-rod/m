@@ -1,4 +1,4 @@
-from m.cli import command, create_json_handler, run_main
+from m.cli import command, create_json_handler, create_yaml_handler, run_main
 from m.core.io import env
 from pydantic import BaseModel, Field
 
@@ -36,6 +36,10 @@ class Arguments(BaseModel):
         default=False,
         description='format json payload with indentation',
     )
+    yaml: bool = Field(
+        default=False,
+        description='use yaml format',
+    )
     pr_number: int = Field(
         description='the pr number',
         positional=True,
@@ -50,6 +54,11 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments, arg_ns) -> int:
     from m.github.cli import get_pr_info
+    handler = (
+        create_yaml_handler(arg.pretty)
+        if arg.yaml
+        else create_json_handler(arg.pretty)
+    )
     return run_main(
         lambda: get_pr_info(
             arg_ns.token,
@@ -58,5 +67,5 @@ def run(arg: Arguments, arg_ns) -> int:
             arg.pr_number,
             arg.files,
         ),
-        result_handler=create_json_handler(arg.pretty),
+        result_handler=handler,
     )
