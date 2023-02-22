@@ -46,4 +46,3 @@ class TCase(BaseModel):
     gh_res: str
     release_env: ReleaseEnv | None = None
     err: str | None = None
-

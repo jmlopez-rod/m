@@ -54,7 +54,7 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments, arg_ns) -> int:
     from m.github.cli import get_pr_info
-    handler = (
+    result_handler = (
         create_yaml_handler(arg.pretty)
         if arg.yaml
         else create_json_handler(arg.pretty)
@@ -67,5 +67,5 @@ def run(arg: Arguments, arg_ns) -> int:
             arg.pr_number,
             arg.files,
         ),
-        result_handler=handler,
+        result_handler=result_handler,
     )

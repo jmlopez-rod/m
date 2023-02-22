@@ -30,7 +30,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
     TCase(
         cmd='m git status',
         eval_cmd_side_effects=[
-            Good("Untracked files"),
+            Good('Untracked files'),
         ],
         expected='untracked',
     ),

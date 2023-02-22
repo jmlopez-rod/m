@@ -5,7 +5,6 @@
     "WPS347": 1,
     "WPS342": 1,
     "WPS214": 1,
-    "W391": 1,
     "S106": 1,
     "P103": 1,
     "E241": 1,
@@ -26,25 +25,23 @@
     "DAR401": 3,
     "DAR201": 5,
     "WPS335": 6,
-    "Q000": 6,
+    "Q000": 4,
     "DAR101": 7,
-    "WPS432": 11,
     "C408": 11,
     "WPS121": 17,
     "D101": 17,
     "WPS407": 27,
-    "WPS110": 33,
+    "WPS110": 34,
     "WPS425": 34
   },
   "allowedPylintRules": {
     "unused-argument": 1,
     "unnecessary-comprehension": 1,
-    "trailing-newlines": 1,
     "super-init-not-called": 2,
     "broad-exception-raised": 3,
     "line-too-long": 2,
-    "duplicate-code": 6,
+    "duplicate-code": 5,
     "use-dict-literal": 11,
-    "missing-function-docstring": 16
+    "missing-function-docstring": 17
   }
 }

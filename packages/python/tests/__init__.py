@@ -4,10 +4,15 @@ import subprocess
 from functools import partial
 from pathlib import Path
 
+from m.core import Issue
 from m.core import rw as mio
 
 original_write_file = mio.write_file
 original_mkdir = Path.mkdir
+
+
+# Disabling yaml output - during tests we want to focus on json data
+Issue.yaml_traceback = False
 
 
 def needs_mocking(func_name: str, *args, **kwargs):
@@ -40,7 +45,7 @@ if not os.environ.get('CI'):
 
 class BlockNetwork(socket.socket):
     def __init__(self, *args, **kwargs):
-        raise Exception("Network call blocked")
+        raise Exception('Network call blocked')
 
 
 # making sure that no calls to the internet are done
