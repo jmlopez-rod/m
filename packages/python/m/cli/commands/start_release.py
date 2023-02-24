@@ -1,5 +1,6 @@
 from m.cli import command, run_main
-from pydantic import BaseModel
+from m.core.io import env
+from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -12,13 +13,18 @@ class Arguments(BaseModel):
     certain operations.
     """
 
+    github_token: str = Field(
+        default=env('GITHUB_TOKEN'),
+        description='github PAT',
+    )
+
 
 @command(
     name='start_release',
     help='start the release process',
     model=Arguments,
 )
-def run():
+def run(arg: Arguments):
     from m.ci.start_release import start_release
 
-    return run_main(start_release)
+    return run_main(lambda: start_release(arg.github_token, hotfix=False))

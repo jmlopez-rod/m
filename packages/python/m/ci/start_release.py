@@ -59,7 +59,7 @@ def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
                 True
                 for cmd_out in git.stash()
                 for _ in logger.info('ran `git stash`', {'output': cmd_out})
-            ])
+            ]).flat_map_bad(lambda err: issue('git stash failure', cause=err))
     return issue(
         'releases can only be done in a clean git state',
         context={
