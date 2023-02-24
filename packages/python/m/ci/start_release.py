@@ -58,7 +58,7 @@ def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
             return one_of(lambda: [
                 True
                 for cmd_out in git.stash()
-                for _ in logger.info('ran `git stash`', {'output': cmd_out})
+                for _ in logger.info('ran `git stash`', {'git': cmd_out})
             ]).flat_map_bad(lambda err: issue('git stash failure', cause=err))
     return issue(
         'releases can only be done in a clean git state',
@@ -138,6 +138,11 @@ def after_checkout(branch_checkout: str, stashed: bool) -> OneOf[Issue, None]:
     return Good(None)
 
 
+def _branch_checkout(branch: str) -> OneOf[Issue, str]:
+    return git.checkout_branch(branch).flat_map_bad(
+        lambda err: issue('git checkout failure', cause=err),
+    )
+
 def start_release(gh_token: str, hotfix: bool = False) -> OneOf[Issue, None]:
     """Start the release process.
 
@@ -158,7 +163,7 @@ def start_release(gh_token: str, hotfix: bool = False) -> OneOf[Issue, None]:
         for commits in git.get_commits(gh_ver)
         for _ in verify_release(commits, hotfix=hotfix)
         for new_ver in io.prompt_next_version(gh_ver, release_type)
-        for branch_checkout in git.checkout_branch(f'{release_type}/{new_ver}')
+        for branch_checkout in _branch_checkout(f'{release_type}/{new_ver}')
         for _ in after_checkout(branch_checkout, stashed_changes)
         for _ in release_setup('m', config, new_ver)
     ])

@@ -8,7 +8,7 @@ from m.core import rw as mio
 from pytest_mock import MockerFixture
 from tests.cli.conftest import assert_streams, run_cli
 
-from .conftest import TCaseErr, read_file_fake
+from .conftest import TCaseErr, get_fixture, read_file_fake
 
 TODAY = datetime.now().strftime('%B %d, %Y')
 no_color = {'NO_COLOR': 'true'}
@@ -77,18 +77,76 @@ no_color = {'NO_COLOR': 'true'}
             'git stash failure',
         ],
     ),
-    # TCaseErr(
-    #     cmd='m start_release',
-    #     branch='master',
-    #     status=('dirty', 'Changes not staged'),
-    #     user_input=['yes'],
-    #     git_stash=Good('we got stashed your changes'),
-    #     exit_code=10,
-    #     errors=[
-    #         "would you like to stash the changes and continue?",
-    #         'git stash failure',
-    #     ],
-    # ),
+    TCaseErr(
+        cmd='m start_release',
+        branch='master',
+        status=('dirty', 'Changes not staged'),
+        user_input=['yes', 'no'],
+        git_stash=Good('we stashed your changes'),
+        commits=[],
+        exit_code=1,
+        errors=[
+            'there are no commits to release',
+            'Proceed with a release instead of a hotfix?',
+            'release aborted by user',
+            '"suggestion": "consider creating a hotfix"',
+        ],
+    ),
+    TCaseErr(
+        cmd='m start_release',
+        branch='master',
+        status=('clean', 'oh good for you'),
+        user_input=['0.1.0'],
+        commits=['feature 1', 'feature 2'],
+        git_checkout=issue('unable to switch branches'),
+        exit_code=1,
+        errors=[
+            'git checkout failure',
+            'unable to switch branches',
+        ],
+    ),
+    TCaseErr(
+        cmd='m start_release',
+        branch='master',
+        status=('clean', 'oh good for you'),
+        # no commits - should be a hotfix but we do it anyway
+        user_input=['yes', '0.1.0'],
+        commits=[],
+        git_checkout=issue('unable to switch branches'),
+        exit_code=1,
+        errors=[
+            'Proceed with a release instead of a hotfix?',
+            'git checkout failure',
+            'unable to switch branches',
+        ],
+    ),
+    TCaseErr(
+        cmd='m start_release',
+        branch='master',
+        status=('dirty', 'Changes not staged'),
+        git_stash=Good('we stashed your changes'),
+        git_stash_pop=issue('something went wrong popping the stash'),
+        user_input=['yes', '0.1.0'],
+        commits=['feature 1'],
+        git_checkout=Good('switch to release branch'),
+        exit_code=0,
+        errors=[
+            '`git stash pop` issue',
+            'something went wrong popping the stash',
+        ],
+    ),
+    TCaseErr(
+        cmd='m start_release',
+        branch='master',
+        status=('dirty', 'Changes not staged'),
+        git_stash=Good('we stashed your changes'),
+        git_stash_pop=Good('your changes are back'),
+        user_input=['yes', '0.1.0'],
+        commits=['feature 1'],
+        git_checkout=Good('switch to release branch'),
+        exit_code=0,
+        expected=get_fixture('release.log'),
+    ),
 ])
 def test_m_start_release_errors(mocker: MockerFixture, tcase: TCaseErr):
     # Checking output with json instead of yaml
@@ -102,7 +160,12 @@ def test_m_start_release_errors(mocker: MockerFixture, tcase: TCaseErr):
     mocker.patch.object(mio, 'read_file', fake)
     mocker.patch('m.git.get_branch').return_value = Good(tcase.branch)
     mocker.patch('m.git.get_status').return_value = Good(tcase.status)
+    mocker.patch('m.git.checkout_branch').return_value = tcase.git_checkout
+    ver = '0.0.1'
+    mocker.patch('m.github.cli.get_latest_release').return_value = Good(ver)
+    mocker.patch('m.git.get_commits').return_value = Good(tcase.commits)
     mocker.patch('m.git.stash').return_value = tcase.git_stash
+    mocker.patch('m.git.stash_pop').return_value = tcase.git_stash_pop
     mocker.patch('m.git.get_first_commit_sha').return_value = Good('sha123abc')
     mocker.patch('m.core.rw.write_file').return_value = Good(None)
 

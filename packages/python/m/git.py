@@ -27,7 +27,7 @@ def stash_pop() -> OneOf[Issue, str]:
     Returns:
         A `OneOf` containing an `Issue` or the response from `git stash pop`.
     """
-    return subprocess.eval_cmd('git stash')
+    return subprocess.eval_cmd('git stash pop')
 
 
 def checkout_branch(branch: str) -> OneOf[Issue, str]:
