@@ -11,7 +11,7 @@ from tests.cli.conftest import assert_streams, run_cli
 from .conftest import TCaseErr, get_fixture, read_file_fake
 
 TODAY = datetime.now().strftime('%B %d, %Y')
-no_color = {'NO_COLOR': 'true'}
+env_mock = {'NO_COLOR': 'true'}
 
 
 @pytest.mark.parametrize('tcase', [
@@ -184,7 +184,7 @@ no_color = {'NO_COLOR': 'true'}
 ])
 def test_m_start_release_errors(mocker: MockerFixture, tcase: TCaseErr):
     # Checking output with json instead of yaml
-    mocker.patch.dict(os.environ, no_color, clear=True)
+    mocker.patch.dict(os.environ, env_mock, clear=True)
     mocker.patch('time.time').return_value = 123456789
     fake = partial(read_file_fake, f_map={
         'm/m.json': 'm.json',

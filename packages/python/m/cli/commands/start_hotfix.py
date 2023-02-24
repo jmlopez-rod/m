@@ -1,4 +1,4 @@
-from m.cli import command, run_main
+from m.cli import add_arg, command, run_main
 from m.core.io import env
 from pydantic import BaseModel, Field
 
@@ -13,8 +13,11 @@ class Arguments(BaseModel):
     """
 
     github_token: str = Field(
-        default=env('GITHUB_TOKEN'),
-        description='github PAT',
+        proxy=add_arg(
+            '--github-token',
+            default=env('GITHUB_TOKEN'),
+            help='Github PAT (default: env.GITHUB_TOKEN)',
+        ),
     )
 
 
