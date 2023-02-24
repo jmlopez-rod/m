@@ -120,6 +120,40 @@ no_color = {'NO_COLOR': 'true'}
             'unable to switch branches',
         ],
     ),
+    # hotfix version
+    TCaseErr(
+        cmd='m start_hotfix',
+        branch='master',
+        status=('clean', 'oh good for you'),
+        # Commits may be features - proceeding anyway
+        user_input=['yes', '0.1.0'],
+        commits=['feature 1'],
+        git_checkout=issue('unable to switch branches'),
+        exit_code=1,
+        errors=[
+            'hotfix may contain unreleased features',
+            'Disregard warning and proceed with hotfix?',
+            'git checkout failure',
+            'unable to switch branches',
+        ],
+    ),
+    # hotfix version
+    TCaseErr(
+        cmd='m start_hotfix',
+        branch='master',
+        status=('clean', 'oh good for you'),
+        # Commits may be features - stopping processes
+        user_input=['no'],
+        commits=['feature 1'],
+        git_checkout=issue('unable to switch branches'),
+        exit_code=1,
+        errors=[
+            'hotfix may contain unreleased features',
+            'Disregard warning and proceed with hotfix?',
+            'hotfix aborted by user',
+            '"suggestion": "consider creating a release"',
+        ],
+    ),
     TCaseErr(
         cmd='m start_release',
         branch='master',
