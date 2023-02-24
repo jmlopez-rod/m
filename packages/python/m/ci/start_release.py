@@ -143,6 +143,7 @@ def _branch_checkout(branch: str) -> OneOf[Issue, str]:
         lambda err: issue('git checkout failure', cause=err),
     )
 
+
 def start_release(gh_token: str, hotfix: bool = False) -> OneOf[Issue, None]:
     """Start the release process.
 

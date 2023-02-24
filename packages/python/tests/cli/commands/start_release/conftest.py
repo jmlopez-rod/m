@@ -42,4 +42,3 @@ class TCase(CliTestCase):
     m_file: str
     diff_cl: list[str]
     diff_mf: list[str]
-

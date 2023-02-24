@@ -1,7 +1,7 @@
 import sys
 from inspect import cleandoc
 from io import StringIO
-from typing import Any, Tuple
+from typing import Any, Callable, Tuple
 
 import pytest
 from m.__main__ import main
@@ -12,7 +12,9 @@ from pytest_mock import MockerFixture
 class TCase(BaseModel):
     """Basic test case for cli commands."""
 
+    runner: Callable[[], Any] | None = None
     cmd: str | list[str]
+    expected_value: Any = None
     expected: str = ''
     errors: list[str] = []
     eval_cmd_side_effects: list[Any] = []

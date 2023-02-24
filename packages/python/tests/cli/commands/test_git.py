@@ -3,6 +3,8 @@ from m.core import Good
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase, assert_streams, run_cli
 
+from m import git
+
 
 @pytest.mark.parametrize('tcase', [
     TCase(
@@ -35,8 +37,45 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
         expected='untracked',
     ),
 ])
-def test_m_git_branch(tcase: TCase, mocker: MockerFixture) -> None:
+def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
     eval_cmd = mocker.patch('m.core.subprocess.eval_cmd')
     eval_cmd.side_effect = tcase.eval_cmd_side_effects
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
+
+
+@pytest.mark.parametrize('tcase', [
+    TCase(
+        runner=git.stash,
+        cmd='...',
+        eval_cmd_side_effects=[Good('it got stashed')],
+        expected='it got stashed',
+    ),
+    TCase(
+        runner=git.stash_pop,
+        cmd='...',
+        eval_cmd_side_effects=[Good('popped stash')],
+        expected='popped stash',
+    ),
+    TCase(
+        runner=lambda: git.checkout_branch('yolo'),
+        cmd='...',
+        eval_cmd_side_effects=[Good('switched branch')],
+        expected='switched branch',
+    ),
+    TCase(
+        runner=lambda: git.get_commits('sha1'),
+        cmd='...',
+        eval_cmd_side_effects=[Good('commit1\ncommit2\n')],
+        expected_value=['commit1', 'commit2'],
+    ),
+])
+def test_m_git_fns(tcase: TCase, mocker: MockerFixture) -> None:
+    eval_cmd = mocker.patch('m.core.subprocess.eval_cmd')
+    eval_cmd.side_effect = tcase.eval_cmd_side_effects
+    assert tcase.runner is not None
+    res = tcase.runner()
+    if tcase.expected_value:
+        assert res.value == tcase.expected_value
+    else:
+        assert res.value == tcase.expected
