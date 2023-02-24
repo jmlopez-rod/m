@@ -25,6 +25,10 @@ class Arguments(BaseModel):
     """
 
 
+def _get_status(status_desc: tuple[str, str]) -> str:
+    return status_desc[0]
+
+
 @command(
     name='status',
     help='display the current git status',
@@ -32,4 +36,7 @@ class Arguments(BaseModel):
 )
 def run():
     from m import git
-    return run_main(git.get_status, print)
+    return run_main(
+        lambda: git.get_status().map(_get_status),
+        print,
+    )

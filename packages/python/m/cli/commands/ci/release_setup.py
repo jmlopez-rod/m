@@ -35,6 +35,7 @@ def run(arg: Arguments) -> int:
     return run_main(
         lambda: release_setup(
             arg.m_dir,
+            None,
             arg.new_ver,
             arg.m_file,
             arg.changelog,

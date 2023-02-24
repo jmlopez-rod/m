@@ -1,8 +1,11 @@
 from m.core import Good, Issue, OneOf, issue, one_of
+from m.log import Logger
 
 from .. import git
 from . import config as cfg_mod
 from .config import Config
+
+logger = Logger('m.ci.assert_branch')
 
 
 def _verify_branch(
@@ -11,6 +14,10 @@ def _verify_branch(
     assertion_type: str,
 ) -> OneOf[Issue, int]:
     workflow = config.workflow
+    logger.info(f'verifying "{branch}" branch', {
+        'workflow': str(workflow),
+    })
+
     if config.uses_free_flow():
         return issue(
             'The free-flow workflow does not support releases',
@@ -43,7 +50,7 @@ def _verify_branch(
     return Good(0)
 
 
-def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, None]:
+def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, Config]:
     """Make sure git is using the correct branch based on the workflow.
 
     Args:
@@ -56,7 +63,7 @@ def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, None]:
         A OneOf containing `None` or an `Issue`.
     """
     return one_of(lambda: [
-        None
+        config
         for config in cfg_mod.read_config(m_dir)
         for branch in git.get_branch()
         for _ in _verify_branch(config, branch, assertion_type)

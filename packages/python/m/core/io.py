@@ -1,14 +1,17 @@
 import math
 import os
 import sys
-from typing import TypeVar
+from typing import Sequence, TypeVar
 
+from m.color import color
 from m.core import Good, OneOf
 from m.core.issue import Issue
 from m.core.one_of import issue
+from m.log.logger import Logger
 from pydantic import BaseModel
 
 BaseModelT = TypeVar('BaseModelT', bound=BaseModel)
+logger = Logger('m.core.io')
 
 
 def _is_true(name: str) -> bool:
@@ -158,7 +161,7 @@ def _ver_str(major: int, minor: int, patch: int) -> str:
     return f'{major}.{minor}.{patch}'
 
 
-def prompt_next_version(version: str, release_type: str) -> str:
+def prompt_next_version(version: str, release_type: str) -> OneOf[Issue, str]:
     """Prompt the developer to select the next version.
 
     It displays the possible major, minor and patch versions and prompts the
@@ -169,24 +172,43 @@ def prompt_next_version(version: str, release_type: str) -> str:
         release_type: If `hotfix` then it bumps the patch value.
 
     Returns:
-        One of the versions.
+        One of the versions wrapped in a OneOf.
     """
     ver = version.split('-')[0]
     parts = [int(x) for x in ver.split('.')]
     patch = _ver_str(parts[0], parts[1], parts[2] + 1)
     if release_type == 'hotfix':
-        return patch
+        return Good(patch)
 
     minor = _ver_str(parts[0], parts[1] + 1, 0)
     major = _ver_str(parts[0] + 1, 0, 0)
+    ver = f'{{bold_green}}{version}{{end}}'
+    msg = color(f'Current version is {ver}. Enter one of the following:')
+    return Good(prompt_choices(msg, [minor, major]))
+
+
+def prompt_choices(
+    description: str,
+    choices: Sequence[str],
+    as_list=True,
+) -> str:
+    """Prompt the user with a description until we get one of the choices.
+
+    Args:
+        description: The prompt to display.
+        choices: List of accepted choices.
+        as_list: If false, it will concat the choices with `/`.
+
+    Returns:
+        The string chosen by the user.
+    """
     valid = False
-    options = [minor, major]
-    msg = f'Current version is {version}. Enter one of the following:\n  '
-    msg += '\n  '.join(options)
     dev_input = ''
+    choices_display = choices if as_list else '/'.join(choices)
     while not valid:
-        print(msg, file=sys.stderr)
-        dev_input = input('')
-        if dev_input in options:
+        logger.prompt(description, {'choices': choices_display})
+        sys.stderr.write('>>>>>>>> ')
+        dev_input = input()
+        if dev_input in choices:
             valid = True
     return dev_input

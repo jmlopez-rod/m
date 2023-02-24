@@ -1,11 +1,41 @@
 import logging
 from functools import partial
-from typing import Callable
+from typing import Callable, cast
 
 from m.core.fp import Good, OneOf
 from m.core.issue import Issue
 
 from .ci_tools.types import Message
+
+PROMPT = 35
+
+
+class PromptLogger(logging.Logger):
+    """Adding a prompt level to the logger."""
+
+    def __init__(self, name, level=logging.NOTSET):
+        """Override the Logger init function.
+
+        Args:
+            name: Loggers name.
+            level: An optional level.
+        """
+        super().__init__(name, level)
+        logging.addLevelName(PROMPT, 'PROMPT')
+
+    def prompt(self, msg, *args, **kwargs) -> None:
+        """Log 'msg % args' with severity 'PROMPT'.
+
+        Args:
+            msg: The message to log
+            args: arguments to use in the message replacement.
+            kwargs: The keywords arguments to provide extra information.
+        """
+        if self.isEnabledFor(PROMPT):
+            self._log(PROMPT, msg, args, **kwargs)
+
+
+logging.setLoggerClass(PromptLogger)
 
 
 def log_func_wrapper(
@@ -55,6 +85,10 @@ class Logger:
         self.debug = partial(log_func_wrapper, self.inst.debug)
         self.info = partial(log_func_wrapper, self.inst.info)  # noqa: WPS110
         self.warning = partial(log_func_wrapper, self.inst.warning)
+        self.prompt = partial(
+            log_func_wrapper,
+            cast(PromptLogger, self.inst).prompt,
+        )
         self.error = partial(log_func_wrapper, self.inst.error)
 
     def open_block(

@@ -6,6 +6,8 @@ from typing import cast
 from m.color import color, highlight_json, highlight_yaml
 from m.core import Issue, yaml
 
+from .logger import PROMPT
+
 
 def indent_payload(
     indent: int,
@@ -103,6 +105,7 @@ def default_record_fmt(
         logging.DEBUG: 'green',
         logging.INFO: 'blue',
         logging.WARNING: 'yellow',
+        PROMPT: 'bold_blue',
         logging.ERROR: 'red',
         logging.CRITICAL: 'bold_red',
     }.get(record.levelno, 'gray')

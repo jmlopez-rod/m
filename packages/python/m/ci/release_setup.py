@@ -149,10 +149,17 @@ def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
     })
 
 
+def _read_config(m_dir: str, config: Config | None) -> OneOf[Issue, Config]:
+    if config:
+        return Good(config)
+    return read_config(m_dir)
+
+
 def release_setup(
     m_dir: str,
+    config_inst: Config | None,
     new_ver: str,
-    m_file: str,
+    m_file: str = 'm.json',
     changelog: str = 'CHANGELOG.md',
 ) -> OneOf[Issue, None]:
     """Modify all the necessary files to create a release.
@@ -161,6 +168,7 @@ def release_setup(
 
     Args:
         m_dir: The directory with the m configuration.
+        config_inst: If provided it skips reading the configuration.
         new_ver: The new version to write in the m configuration.
         m_file: The name of the m configuration file (m.json, m.yaml).
         changelog: The name of the changelog file (defaults to CHANGELOG.md)
@@ -170,7 +178,7 @@ def release_setup(
     """
     return one_of(lambda: [
         None
-        for config in read_config(m_dir)
+        for config in _read_config(m_dir, config_inst)
         for first_sha in get_first_commit_sha()
         for _ in update_version(m_dir, new_ver, m_file)
         for _ in update_changelog_file(
