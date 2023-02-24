@@ -25,7 +25,7 @@ def handlers(mocker: MockerFixture):
 
 def test_run_main_success(mocker: MockerFixture):
     on_success, on_failure = handlers(mocker)
-    exit_code = run_main(lambda:  Good('some output'), on_success, on_failure)
+    exit_code = run_main(lambda: Good('some output'), on_success, on_failure)
     assert exit_code == 0
     on_success.assert_called_once_with('some output')
     on_failure.assert_not_called()

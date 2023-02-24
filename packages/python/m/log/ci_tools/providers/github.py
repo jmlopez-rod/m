@@ -1,9 +1,9 @@
 import logging
 from typing import cast
 
+from m.color import color
 from m.core import Issue, OneOf, issue, one_of
 from m.core.io import env_model
-from m.log.colors import color
 from m.log.misc import default_record_fmt, format_context, format_location
 from pydantic import BaseModel, Field
 

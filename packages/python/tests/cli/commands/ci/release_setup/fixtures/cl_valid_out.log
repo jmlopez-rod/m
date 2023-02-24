@@ -1,0 +1,7 @@
+[INFO] [09:33:09 PM - Nov 29, 1973]: bumped version in m/m.json
+[INFO] [09:33:09 PM - Nov 29, 1973]: updated CHANGELOG.md
+[INFO] [09:33:09 PM - Nov 29, 1973]: setup complete
+       {
+         "new_version": "1.2.3",
+         "unreleased_changes": "https://github.com/gh_owner/gh_repo/compare/0.0.1...HEAD"
+       }

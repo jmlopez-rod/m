@@ -1,0 +1,20 @@
+[INFO] [09:33:09 PM - Nov 29, 1973]: verifying "master" branch
+       {
+         "workflow": "m_flow"
+       }
+[INFO] [09:33:09 PM - Nov 29, 1973]: ran `git stash`
+       {
+         "git": "we stashed your changes"
+       }
+[INFO] [09:33:09 PM - Nov 29, 1973]: branch checkout successful
+       {
+         "git": "switch to release branch\n"
+       }
+[INFO] [09:33:09 PM - Nov 29, 1973]: stashed files have been restored
+[INFO] [09:33:09 PM - Nov 29, 1973]: bumped version in m/m.json
+[INFO] [09:33:09 PM - Nov 29, 1973]: updated CHANGELOG.md
+[INFO] [09:33:09 PM - Nov 29, 1973]: setup complete
+       {
+         "new_version": "0.1.0",
+         "unreleased_changes": "https://github.com/jmlopez-rod/m/compare/0.14.0...HEAD"
+       }

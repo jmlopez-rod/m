@@ -6,7 +6,10 @@ from collections import OrderedDict
 from contextlib import suppress
 from typing import cast
 
+from m.color import highlight_json, highlight_yaml
 from typing_extensions import TypedDict
+
+from . import yaml
 
 IssueDict = TypedDict(
     'IssueDict',
@@ -15,7 +18,7 @@ IssueDict = TypedDict(
         'description': str,
         'cause': object,
         'context': object,
-        'traceback': list[str],
+        'traceback': list[str] | str,
     },
     total=False,
 )
@@ -42,6 +45,16 @@ def remove_traceback(issue_dict: object) -> None:
                 remove_traceback(context_item)
 
 
+def _traceback_to_str(traceback_list: list[str]) -> str:
+    if not traceback_list:
+        return ''
+    return '\n'.join([
+        '(most recent call last):',
+        *traceback_list,
+        '',
+    ])
+
+
 # Rule WPS230 is suppressed here since I want to have a flat structure
 # with this class. In other places we can refactor and group attributes into
 # other classes.
@@ -53,6 +66,7 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
     """
 
     show_traceback = True
+    yaml_traceback = True
 
     message: str
     description: str | None
@@ -60,6 +74,7 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
     context: object | None
     include_traceback: bool
     cause_tb: list[str] | None
+    traceback: list[str] | None
 
     def __init__(  # noqa: WPS211 - need to initialize the attributes
         self,
@@ -85,12 +100,15 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
         if cause and not isinstance(cause, Issue):
             # https://stackoverflow.com/a/12539332/788553
             with suppress(BaseException):
+                exc_info = sys.exc_info()
+                fmt_exception = (
+                    traceback.format_exception_only(exc_info[0], exc_info[1])
+                    if exc_info[0] is not None and exc_info[1] is not None
+                    else []
+                )
                 exception_list = [
-                    *traceback.format_tb(sys.exc_info()[2]),
-                    *traceback.format_exception_only(
-                        sys.exc_info()[0],
-                        sys.exc_info()[1],
-                    ),
+                    *traceback.format_tb(exc_info[2]),
+                    *fmt_exception,
                 ]
                 self.cause_tb = [
                     y
@@ -142,14 +160,10 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
             issue_dict['context'] = self.context
         if self.include_traceback and self.traceback:
             issue_dict['traceback'] = self.traceback
+            if Issue.yaml_traceback and isinstance(self.traceback, list):
+                issue_dict['traceback'] = _traceback_to_str(self.traceback)
         if self.cause:
-            if isinstance(self.cause, Issue):
-                issue_dict['cause'] = self.cause.to_dict()
-            else:
-                issue_dict['cause'] = {
-                    'message': str(self.cause),
-                    'traceback': self.cause_tb,
-                }
+            self._handle_cause(issue_dict)
         if not show_traceback:
             remove_traceback(issue_dict)
         return issue_dict
@@ -164,6 +178,8 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
             A string representation of the Issue instance.
         """
         issue_dict = self.to_dict(show_traceback=show_traceback)
+        if Issue.yaml_traceback:
+            return yaml.dumps(issue_dict)
         return json.dumps(issue_dict, indent=2)
 
     def __str__(self) -> str:
@@ -172,4 +188,25 @@ class Issue(Exception):  # noqa: N818, WPS230 - Intention is not to raise
         Returns:
             A string representation of the Issue instance.
         """
-        return self.to_str(Issue.show_traceback)
+        issue_str = self.to_str(Issue.show_traceback)
+        if Issue.yaml_traceback:
+            return highlight_yaml(issue_str)
+        return highlight_json(issue_str)
+
+    def _handle_cause(self, issue_dict: IssueDict) -> None:
+        if isinstance(self.cause, Issue):
+            issue_dict['cause'] = self.cause.to_dict()
+        else:
+            issue_dict['cause'] = {
+                'message': str(self.cause),
+                'traceback': self.cause_tb,
+            }
+            # I'm clearly assigning to a dict in the above statement...
+            # but it is an object so a dict can be assigned to it but that
+            # does not mean that we can use `pop` on an object. So we have to
+            # help mypy know that know we are dealing with a dict.
+            cause = cast(dict, issue_dict['cause'])
+            if not self.cause_tb:
+                cause.pop('traceback', None)
+            if Issue.yaml_traceback and isinstance(self.cause_tb, list):
+                cause['traceback'] = _traceback_to_str(self.cause_tb)

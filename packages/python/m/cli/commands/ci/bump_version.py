@@ -1,4 +1,4 @@
-from m.cli import add_arg, command
+from m.cli import add_arg, command, run_main
 from pydantic import BaseModel, Field
 
 
@@ -27,6 +27,8 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments):
     from m.core.io import prompt_next_version
-    next_ver = prompt_next_version(arg.version, arg.type)
-    print(next_ver)  # noqa: WPS421
-    return 0
+
+    return run_main(
+        lambda: prompt_next_version(arg.version, arg.type),
+        result_handler=print,
+    )

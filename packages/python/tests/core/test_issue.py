@@ -1,4 +1,5 @@
 import unittest
+from contextlib import suppress
 
 from m.core import Bad, Issue, issue
 
@@ -55,3 +56,30 @@ def test_issue_remove_traceback():
 
     str_obj = obj.to_str(show_traceback=True)
     assert 'traceback' in str_obj
+
+
+def test_issue_yaml():
+    exception = ValueError('sub-cause')
+    sub = Issue(
+        message='sub',
+        description='sub',
+        cause=exception,
+    )
+    tuple_data = ('one', 'two')
+    obj = Issue(
+        description='desc',
+        message='message',
+        cause=sub,
+        # covers displaying tuple_data
+        context={'x': 100, 'tuple_data': tuple_data},
+    )
+    Issue.yaml_traceback = True
+    str_obj = ''
+    with suppress(BaseException):
+        str_obj = f'{obj}'
+    Issue.yaml_traceback = False
+    # asserting that we have the message of the ValueError
+    # also making sure we get some colors
+    assert "one" in str_obj
+    assert "two" in str_obj
+    assert '\x1b[38;5;153msub-cause\x1b[39m\n' in str_obj

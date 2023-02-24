@@ -1,7 +1,7 @@
 from functools import cmp_to_key
 from typing import Any, Callable, List, Tuple
 
-from m.log.colors import color
+from m.color import color
 
 from .types import Configuration, ExitCode, ProjectStatus, RuleInfo
 
@@ -149,7 +149,14 @@ def project_status_str(
     )
     buffer.append(format_row(['RULES', 'FOUND', 'ALLOWED'], widths, 'lll'))
     buffer.extend([
-        format_row([rule_id, rule.found, rule.allowed], widths, 'lrr')
+        (
+            color(
+                '{gray}',
+                format_row([rule_id, rule.found, rule.allowed], widths, 'lrr'),
+            )
+            if rule.found == rule.allowed
+            else format_row([rule_id, rule.found, rule.allowed], widths, 'lrr')
+        )
         for rule_id, rule in key_rule
         if not rule.ignored
     ])

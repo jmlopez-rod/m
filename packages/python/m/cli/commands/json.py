@@ -47,8 +47,15 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments) -> int:
     import json
-    import sys
 
-    json.dump(arg.payload, sys.stdout, indent=2, sort_keys=arg.sort_keys)
-    sys.stdout.write('\n')
+    from m.color import highlight_json
+
+    json_str = json.dumps(
+        arg.payload,
+        indent=2,
+        sort_keys=arg.sort_keys,
+    )
+    # Could bypass linter by using run_main but worth doing this
+    # especially when we should be using `jq` instead.
+    print(highlight_json(json_str))  # noqa: WPS421
     return 0

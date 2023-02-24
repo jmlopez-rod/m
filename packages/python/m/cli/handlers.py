@@ -4,7 +4,8 @@ from contextlib import suppress
 from functools import partial
 from typing import Any, Callable
 
-from m.core import Issue
+from m.color import highlight_json, highlight_yaml
+from m.core import Issue, yaml
 from m.log import Logger
 
 logger = Logger('m.cli.cli_helpers')
@@ -13,9 +14,8 @@ logger = Logger('m.cli.cli_helpers')
 def _issue_handler(use_warning: bool, iss: Issue):
     """Log an Issue instance.
 
-    Provides a few options on how to log it. For instance, we may want to
-    log as a warning to avoid CI tools such as Teamcity from failing the
-    job.
+    Provides the user_warning argument so that CI tools like Teamcity won't
+    fail the job.
 
     Args:
         use_warning: Uses a warning log instead of an error.
@@ -31,17 +31,35 @@ def _json_handler(pretty: bool, inst: Any):
     """Use the print function to display the result as json.
 
     Args:
-        pretty: If true, it formats with indentation of 2 spaces.
+        pretty: If true, it highlights and indents the json string.
         inst: A python object.
     """
     if inst is not None:
         msg = inst
         if pretty:
             with suppress(Exception):
-                msg = json.dumps(inst, indent=2)
+                msg = highlight_json(json.dumps(inst, indent=2))
         else:
             with suppress(Exception):
                 msg = json.dumps(inst, separators=(',', ':'))
+        print(msg)  # noqa: WPS421
+
+
+def _yaml_handler(pretty: bool, inst: Any):
+    """Use the print function to display the result as yaml.
+
+    Args:
+        pretty: If true, it highlights the yaml string.
+        inst: A python object.
+    """
+    if inst is not None:
+        msg = inst
+        if pretty:
+            with suppress(Exception):
+                msg = highlight_yaml(yaml.dumps(inst))
+        else:
+            with suppress(Exception):
+                msg = yaml.dumps(inst)
         print(msg)  # noqa: WPS421
 
 
@@ -67,3 +85,15 @@ def create_json_handler(pretty: bool) -> Callable[[Any], None]:
         A function that uses the arguments provided.
     """
     return partial(_json_handler, pretty)
+
+
+def create_yaml_handler(pretty: bool) -> Callable[[Any], None]:
+    """Generate a function to display a value to stdout as yaml.
+
+    Args:
+        pretty: If true, it highlights the output.
+
+    Returns:
+        A function that uses the arguments provided.
+    """
+    return partial(_yaml_handler, pretty)

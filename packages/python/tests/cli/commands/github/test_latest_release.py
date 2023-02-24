@@ -36,9 +36,9 @@ class TCase(CliTestCase):
         exit_code=1,
         response_file='latest_release_unknown.json',
         errors=[
-            "github response missing data field",
+            'github response missing data field',
             # making sure we display the contents of the response
-            "intentionally changing the response to see how m behaves",
+            'intentionally changing the response to see how m behaves',
         ],
     ),
 ])

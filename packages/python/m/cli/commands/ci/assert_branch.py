@@ -32,4 +32,8 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments):
     from m.ci.assert_branch import assert_branch
-    return run_main(lambda: assert_branch(arg.type, arg.m_dir))
+
+    return run_main(
+        lambda: assert_branch(arg.type, arg.m_dir),
+        result_handler=lambda _: None,
+    )

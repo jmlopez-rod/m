@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 from functools import partial
 
@@ -17,6 +18,7 @@ from .conftest import (
 )
 
 TODAY = datetime.now().strftime('%B %d, %Y')
+no_color = {'NO_COLOR': 'true'}
 
 
 @pytest.mark.parametrize('tcase', [
@@ -34,6 +36,7 @@ TODAY = datetime.now().strftime('%B %d, %Y')
     ),
 ])
 def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
+    mocker.patch.dict(os.environ, no_color, clear=True)
     fake = partial(read_file_fake, f_map={
         'm/m.json': 'm_comma.json',
         'CHANGELOG.md': tcase.changelog or 'not_set.file_ext',
@@ -77,6 +80,7 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
             '   "repo": "gh_repo"\n',
             ' }\n',
         ],
+        expected=get_fixture('cl_valid_out.log'),
     ),
     TCase(
         cmd='m ci release_setup m 1.2.3',
@@ -118,10 +122,12 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
     ),
 ])
 def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):
+    mocker.patch.dict(os.environ, no_color, clear=True)
     fake = partial(read_file_fake, f_map={
         'm/m.json': tcase.m_file,
         'CHANGELOG.md': tcase.changelog,
     })
+    mocker.patch('time.time').return_value = 123456789
     mocker.patch.object(mio, 'read_file', fake)
     mocker.patch('m.git.get_first_commit_sha').return_value = Good('sha123abc')
     mocker.patch('m.core.json.read_json').return_value = Good(
@@ -130,5 +136,6 @@ def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):
     write_file_mock = mocker.patch('m.core.rw.write_file')
     write_file_mock.return_value = Good(None)
 
-    std_out, _ = run_cli(tcase.cmd, tcase.exit_code, mocker)
+    std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_result(std_out, write_file_mock, tcase)
+    assert_streams(std_out, std_err, tcase)

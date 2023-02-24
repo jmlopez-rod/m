@@ -6,7 +6,7 @@
     "WPS361": 2,
     "WPS231": 2,
     "WPS229": 1,
-    "WPS421": 5,
+    "WPS421": 2,
     "WPS226": 2
   },
   "allowedPylintRules": {

@@ -1,4 +1,4 @@
-from m.core.io import env
+from .disable import color_disabled
 
 
 class Color:
@@ -35,22 +35,19 @@ no_color_dict = {color_name: '' for color_name in color_dict}
 def color(*args: str, auto_end=True) -> str:
     r"""Color a message.
 
-    Formats the message by replacing the colors in the Colors class.
+    Format the arguments by replacing the colors in the Colors class.
     For instance::
 
-        color('{blue}Hello there{end}\n{yellow}WARNING{end}')
-
-    We can turn off colors by declaring the environment variable
-    NO_COLOR.
+        color('{blue}Hello there{end}\n{yellow}WARNING')
 
     Args:
         args: Strings to color
-        auto_end: Adds a string to end coloring
+        auto_end: Add a string to end coloring
 
     Returns:
         A formatted message.
     """
-    no_color = env('NO_COLOR', 'false') == 'true'
+    no_color = color_disabled()
     color_map = no_color_dict if no_color else color_dict
     end = '' if no_color or not auto_end else Color.end
     msg_list = [msg.format(**color_map) for msg in args]

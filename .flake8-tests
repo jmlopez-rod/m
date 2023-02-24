@@ -5,7 +5,8 @@ ignore =
   WPS218,  # Found too many `assert` statements - this is what testing is about
   WPS462,  # Wrong multiline string usage - will not assign to variables when using dedent
   WPS226,  # Found string literal over-use - using variables will make tests harder to read
-  D102,    # Missing docstring in public method - Needs to be configured to ignore test_ functions
+  WPS432,  # Found magic number - while testing we need to put in different values
+  D102,    # Missing docstring in public method - Needs to be configured to ignore test\_ functions
   D100,    # Missing docstring in public module
   D103,    # Missing docstring in public function
   D104,    # Missing docstring in public package
@@ -23,6 +24,7 @@ ignore =
   WPS224,  # Found a comprehension with too many `for` statements
   RST203,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
   RST301,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
+
 per-file-ignores =
   # There are multiple `assert`s in tests, we allow them:
   packages/python/tests/*.py:S101,FS003

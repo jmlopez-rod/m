@@ -10,3 +10,6 @@ twine
 pytest
 pytest-mock
 pydantic
+Pygments
+types-Pygments
+types-PyYAML

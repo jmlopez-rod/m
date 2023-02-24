@@ -1,3 +1,4 @@
+import os
 from functools import partial
 
 import pytest
@@ -86,6 +87,11 @@ def _file_exists(name: str):
     ),
 ])
 def test_m_json(tcase: TCase, mocker: MockerFixture) -> None:
+    mocker.patch.dict(
+        os.environ,
+        {'NO_COLOR': 'true', 'GITHUB_TOKEN': 'super_secret'},
+        clear=True,
+    )
     mocker.patch('pathlib.Path.exists', _file_exists)
     mocker.patch(
         'pathlib.Path.open',
@@ -110,7 +116,7 @@ def throw_error():
 
 
 def test_m_unknown_cli_error(mocker: MockerFixture) -> None:
-    mocker.patch('json.dump', throw_error)
+    mocker.patch('json.dumps', throw_error)
     std_out, std_err = run_cli('m json null', 5, mocker)
     assert std_out == ''
     assert 'unknown cli run function exception' in std_err
