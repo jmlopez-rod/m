@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 from functools import partial
@@ -202,6 +203,9 @@ def test_m_start_release_errors(mocker: MockerFixture, tcase: TCaseErr):
     mocker.patch('m.git.stash_pop').return_value = tcase.git_stash_pop
     mocker.patch('m.git.get_first_commit_sha').return_value = Good('sha123abc')
     mocker.patch('m.core.rw.write_file').return_value = Good(None)
+    mocker.patch('m.core.json.read_json').return_value = Good(
+        json.loads(get_fixture('m.json')),
+    )
 
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)

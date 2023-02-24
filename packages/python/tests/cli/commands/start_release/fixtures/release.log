@@ -16,5 +16,5 @@
 [INFO] [09:33:09 PM - Nov 29, 1973]: setup complete
        {
          "new_version": "0.1.0",
-         "unreleased_changes": "https://github.com/jmlopez-rod/m/compare/0.14.0...HEAD"
+         "unreleased_changes": "https://github.com/gh_owner/gh_repo/compare/0.0.1...HEAD"
        }

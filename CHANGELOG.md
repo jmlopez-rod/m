@@ -8,6 +8,15 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.15.0] <a name="0.15.0" href="#0.15.0">-</a> February 24, 2023
+
+- Deprecate `startRelease` and `startHotfix`. These two bash scripts have been
+  rewritten in python. Instead use can use `m start_release` and `m start_hotfix`.
+- `m release_setup` has been switched to use a logger.
+- `yaml` output has been introduced as well as colors. Currently the only
+  way to disable colors is by using the env var `NO_COLOR=true`.
+- All cli errors default to `yaml` format.
+
 ## [0.14.0] <a name="0.14.0" href="#0.14.0">-</a> February 20, 2023
 
 - Update `m init` to provide information on what it does
@@ -184,7 +193,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.14.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.15.0...HEAD
+[0.15.0]: https://github.com/jmlopez-rod/m/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/jmlopez-rod/m/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/jmlopez-rod/m/compare/0.12.2...0.13.0
 [0.12.2]: https://github.com/jmlopez-rod/m/compare/0.12.1...0.12.2
