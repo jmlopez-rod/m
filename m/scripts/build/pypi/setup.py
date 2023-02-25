@@ -28,8 +28,14 @@ setuptools.setup(
         'bin/reviewRelease',
         'bin/endRelease',
     ],
-    install_requires=['typing_extensions', 'pydantic', 'pyyaml', 'packaging', 'Pygments'],
+    install_requires=[
+        'typing_extensions',
+        'pydantic',
+        'pyyaml',
+        'packaging',
+        'pygments>=2.14.0',
+    ],
     package_data={'m': ['py.typed']},
     packages=setuptools.find_packages(where='src'),
-    python_requires='>=3.7',
+    python_requires='>=3.10',
 )

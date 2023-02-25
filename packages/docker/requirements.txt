@@ -11,5 +11,5 @@ pytest
 pytest-mock
 pydantic
 Pygments
-types-Pygments
-types-PyYAML
+types-pygments
+types-pyyaml
