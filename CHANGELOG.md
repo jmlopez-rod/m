@@ -8,6 +8,10 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.15.1] <a name="0.15.1" href="#0.15.1">-</a> February 25, 2023
+
+- Require pygments >= 2.14.0 and python >= 3.10.
+
 ## [0.15.0] <a name="0.15.0" href="#0.15.0">-</a> February 24, 2023
 
 - Deprecate `startRelease` and `startHotfix`. These two bash scripts have been
@@ -193,7 +197,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.15.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.15.1...HEAD
+[0.15.1]: https://github.com/jmlopez-rod/m/compare/0.15.0...0.15.1
 [0.15.0]: https://github.com/jmlopez-rod/m/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/jmlopez-rod/m/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/jmlopez-rod/m/compare/0.12.2...0.13.0
