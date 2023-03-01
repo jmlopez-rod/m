@@ -4,7 +4,6 @@ from typing import Any, Optional
 from m.core import Good, Issue, OneOf, non_issue, one_of
 
 from ..core.json import get
-from . import api
 from .ci_dataclasses import (
     AssociatedPullRequest,
     Author,
@@ -15,6 +14,7 @@ from .ci_dataclasses import (
     Release,
 )
 from .ci_graph_queries import LATEST_RELEASE, PULL_REQUEST, commit_query
+from .graphql import api
 
 
 def create_ci_query(

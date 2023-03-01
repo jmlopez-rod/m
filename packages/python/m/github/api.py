@@ -1,82 +1,16 @@
 from dataclasses import dataclass
-from typing import Any, Mapping, Optional
+from typing import Any, Optional
 
-from m.core import Good, Issue, OneOf, http, issue, one_of
+from m.core import Issue, OneOf, http
 from pydantic import BaseModel
+
+from .request import request
 
 HttpMethod = http.HttpMethod
 
 
 def _repos(owner: str, repo: str, *endpoint: str) -> str:
     return '/'.join(['', 'repos', owner, repo, *endpoint])
-
-
-def request(
-    token: str,
-    endpoint: str,
-    method: HttpMethod = HttpMethod.get,
-    dict_data: Optional[Any] = None,
-) -> OneOf[Issue, Any]:
-    """Make an api request to github.
-
-    See::
-
-        - https://docs.github.com/en/rest/overview/resources-in-the-rest-api
-        - https://docs.github.com/en/rest/overview/endpoints-available-for-github-apps
-
-    Args:
-        token: A github personal access token.
-        endpoint: A github api endpoint.
-        method: The http method to use. (default 'GET')
-        dict_data: A payload if the method if `POST` or `GET`.
-
-    Returns:
-        A response from Github.
-    """
-    url = f'https://api.github.com{endpoint}'
-    headers = {'authorization': f'Bearer {token}'}
-    return http.fetch_json(url, headers, method, dict_data)
-
-
-def _filter_data(dict_data: Mapping[str, Any]) -> OneOf[Issue, Any]:
-    if dict_data.get('errors'):
-        return issue(
-            'github graphql errors',
-            context={'response': dict_data},
-        )
-    if dict_data.get('data'):
-        return Good(dict_data['data'])
-    return issue(
-        'github response missing data field',
-        context={'response': dict_data},
-    )
-
-
-def graphql(
-    token: str,
-    query: str,
-    variables: Mapping[str, Any],
-) -> OneOf[Issue, Any]:
-    """Make a request to Github's graphql API.
-
-    https://docs.github.com/en/graphql/guides/forming-calls-with-graphql
-
-    Args:
-        token: A github PAT.
-        query: A graphql query.
-        variables: The variables to use in the query.
-
-    Returns:
-        The Github response.
-    """
-    payload = {'query': query, 'variables': variables or {}}
-    return one_of(
-        lambda: [
-            payload
-            for res in request(token, '/graphql', HttpMethod.post, payload)
-            for payload in _filter_data(res)
-        ],
-    )
 
 
 def create_release(

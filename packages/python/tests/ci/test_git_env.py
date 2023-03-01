@@ -45,7 +45,7 @@ class GitEnvTest(FpTestCase):
 
     def test_read_git_env_fail(self):
         self.env_vars.ci_env = True
-        with patch('m.github.api.graphql') as graphql_mock:
+        with patch('m.github.graphql.api.graphql') as graphql_mock:
             graphql_mock.return_value = issue('made up issue')
             result = get_git_env(self.config, self.env_vars)
             err = self.assert_issue(result, 'git_env failure')
@@ -54,7 +54,7 @@ class GitEnvTest(FpTestCase):
 
     def test_bad_github_response(self):
         self.env_vars.ci_env = True
-        with patch('m.github.api.graphql') as graphql_mock:
+        with patch('m.github.graphql.api.graphql') as graphql_mock:
             graphql_mock.side_effect = [Good({}), Good({})]
             result = get_git_env(self.config, self.env_vars)
             err = self.assert_issue(result, 'git_env failure')
@@ -65,7 +65,7 @@ class GitEnvTest(FpTestCase):
 
     def test_pass(self):
         self.env_vars.ci_env = True
-        with patch('m.github.api.graphql') as graphql_mock:
+        with patch('m.github.graphql.api.graphql') as graphql_mock:
             graphql_mock.side_effect = [
                 Good(
                     dict(

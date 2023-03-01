@@ -97,3 +97,20 @@ def create_yaml_handler(pretty: bool) -> Callable[[Any], None]:
         A function that uses the arguments provided.
     """
     return partial(_yaml_handler, pretty)
+
+
+def create_dict_handler(pretty: bool, as_yaml: bool) -> Callable[[Any], None]:
+    """Create a json or yaml handler.
+
+    Args:
+        pretty: If true, t highlights the output.
+        as_yaml: If true, it formats using yaml.
+
+    Returns:
+        A function that uses the arguments
+    """
+    return (
+        create_yaml_handler(pretty)
+        if as_yaml
+        else create_json_handler(pretty)
+    )

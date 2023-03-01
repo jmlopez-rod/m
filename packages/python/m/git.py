@@ -1,6 +1,5 @@
-from m.core import one_of, subprocess
+from m.core import Issue, issue, one_of, subprocess
 from m.core.fp import OneOf
-from m.core.issue import Issue
 
 
 def get_branch() -> OneOf[Issue, str]:
@@ -39,7 +38,9 @@ def checkout_branch(branch: str) -> OneOf[Issue, str]:
     Returns:
         A `OneOf` containing an `Issue` of the git response.
     """
-    return subprocess.eval_cmd(f'git checkout -b {branch}')
+    return subprocess.eval_cmd(f'git checkout -b {branch}').flat_map_bad(
+        lambda err: issue('git checkout failure', cause=err),
+    )
 
 
 def get_first_commit_sha() -> OneOf[Issue, str]:
