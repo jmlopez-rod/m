@@ -1,0 +1,22 @@
+- author:
+    login: jmlopez-rod
+  baseRefName: master
+  closed: true
+  latestReviews:
+    nodes: []
+  mergeable: CONFLICTING
+  merged: true
+  number: 31
+  title: (hotfix) 0.5.1
+  url: https://github.com/jmlopez-rod/git-flow/pull/31
+- author:
+    login: jmlopez-rod
+  baseRefName: develop
+  closed: true
+  latestReviews:
+    nodes: []
+  mergeable: UNKNOWN
+  merged: true
+  number: 32
+  title: (hotfix to develop) 0.5.1
+  url: https://github.com/jmlopez-rod/git-flow/pull/32

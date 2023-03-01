@@ -53,6 +53,7 @@ def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
     if conflicting:
         return issue('found conflicting prs', context={
             'prs': {pr.number: pr.url for pr in conflicting},
+            'suggestion': 'check out the pull requests',
         })
     return Good(None)
 
