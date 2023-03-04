@@ -17,6 +17,7 @@ class TCase(BaseModel):
     expected_value: Any = None
     expected: str = ''
     errors: list[str] = []
+    banned_errors: list[str] = []
     eval_cmd_side_effects: list[Any] = []
     exit_code: int = 0
     cleandoc: bool = True
@@ -62,6 +63,9 @@ def assert_streams(
     if tcase.errors:
         for error in tcase.errors:
             assert error in err
+    if tcase.banned_errors:
+        for banned_error in tcase.banned_errors:
+            assert banned_error not in err
     expected = (
         cleandoc(tcase.expected)
         if tcase.cleandoc

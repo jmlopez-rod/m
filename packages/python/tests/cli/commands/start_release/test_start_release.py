@@ -182,8 +182,24 @@ env_mock = {'NO_COLOR': 'true'}
         exit_code=0,
         expected=get_fixture('release.log'),
     ),
+    # be able to proceed even without getting the commits
+    TCaseErr(
+        cmd='m start_release',
+        branch='master',
+        status=('clean', 'oh good for you'),
+        user_input=['0.1.0'],
+        commits='issue retrieving commits',
+        git_checkout=issue('unable to switch branches'),
+        exit_code=1,
+        errors=[
+            'unable to retrieve unreleased commits - skipping checks',
+            'issue retrieving commits',
+            'git checkout failure',
+            'unable to switch branches',
+        ],
+    ),
 ])
-def test_m_start_release_errors(mocker: MockerFixture, tcase: TCaseErr):
+def test_m_start_release(mocker: MockerFixture, tcase: TCaseErr):
     # Checking output with json instead of yaml
     mocker.patch.dict(os.environ, env_mock, clear=True)
     mocker.patch('time.time').return_value = 123456789
@@ -196,9 +212,13 @@ def test_m_start_release_errors(mocker: MockerFixture, tcase: TCaseErr):
     mocker.patch('m.git.get_branch').return_value = Good(tcase.branch)
     mocker.patch('m.git.get_status').return_value = Good(tcase.status)
     mocker.patch('m.git.checkout_branch').return_value = tcase.git_checkout
-    ver = '0.0.1'
+    ver = tcase.version
     mocker.patch('m.github.cli.get_latest_release').return_value = Good(ver)
-    mocker.patch('m.git.get_commits').return_value = Good(tcase.commits)
+    commits_mock = mocker.patch('m.git.get_commits')
+    if isinstance(tcase.commits, list):
+        commits_mock.return_value = Good(tcase.commits)
+    else:
+        commits_mock.return_value = issue(tcase.commits)
     mocker.patch('m.git.stash').return_value = tcase.git_stash
     mocker.patch('m.git.stash_pop').return_value = tcase.git_stash_pop
     mocker.patch('m.git.get_first_commit_sha').return_value = Good('sha123abc')

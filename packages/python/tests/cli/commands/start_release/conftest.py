@@ -26,11 +26,12 @@ class TCaseErr(CliTestCase):
     branch: str = 'master'
     user_input: list[str] = []
     status: tuple[str, str] = ('clean', 'clean msg')
+    version: str = '0.0.1'
     # Its a test, and pydantic does not support the OneOf type...
     git_stash: Any = Good('it has been stashed')
     git_stash_pop: Any = Good('stash popped')
     changelog: str | None = None
-    commits: list[str] = []
+    commits: list[str] | str = []
     git_checkout: Any = Good('git has checked out a branch')
 
 
