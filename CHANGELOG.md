@@ -8,6 +8,12 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.15.2] <a name="0.15.2" href="#0.15.2">-</a> March 04, 2023
+
+- `m start_release` fails when a project has not done any releases.
+  Command now does an exception for the case when the latest release is `0.0.0`
+  and avoids checking for commits.
+
 ## [0.15.1] <a name="0.15.1" href="#0.15.1">-</a> February 25, 2023
 
 - Require pygments >= 2.14.0 and python >= 3.10.
@@ -197,7 +203,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.15.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.15.2...HEAD
+[0.15.2]: https://github.com/jmlopez-rod/m/compare/0.15.1...0.15.2
 [0.15.1]: https://github.com/jmlopez-rod/m/compare/0.15.0...0.15.1
 [0.15.0]: https://github.com/jmlopez-rod/m/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/jmlopez-rod/m/compare/0.13.0...0.14.0

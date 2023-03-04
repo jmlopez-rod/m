@@ -1,6 +1,4 @@
-from m.core import one_of, subprocess
-from m.core.fp import OneOf
-from m.core.issue import Issue
+from m.core import Good, Issue, OneOf, one_of, subprocess
 
 
 def get_branch() -> OneOf[Issue, str]:
@@ -69,8 +67,13 @@ def get_remote_url() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git config --get remote.origin.url')
 
 
-def get_commits(first: str, latest: str = 'HEAD') -> OneOf[Issue, list[str]]:
+def get_commits(
+    first: str,
+    latest: str = 'HEAD',
+) -> OneOf[Issue, list[str] | None]:
     """Get a list of all the commits between two tags.
+
+    May return `None` in the special case when `first` is `0.0.0`.
 
     Args:
         first: The first tag.
@@ -79,6 +82,8 @@ def get_commits(first: str, latest: str = 'HEAD') -> OneOf[Issue, list[str]]:
     Returns:
         A `OneOf` containing an `Issue` or a list of all the commits.
     """
+    if first == '0.0.0':
+        return Good(None)
     cmd = f'git log {latest}...{first} --oneline --no-color'
     return subprocess.eval_cmd(cmd).map(lambda out: out.splitlines())
 

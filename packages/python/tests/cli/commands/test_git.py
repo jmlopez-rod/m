@@ -79,3 +79,9 @@ def test_m_git_fns(tcase: TCase, mocker: MockerFixture) -> None:
         assert res.value == tcase.expected_value
     else:
         assert res.value == tcase.expected
+
+
+# testing the special case when there are no releases
+def test_m_git_get_commits() -> None:
+    res = git.get_commits('0.0.0')
+    assert res.value is None

@@ -69,12 +69,17 @@ def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
     )
 
 
-def verify_release(commits: list[str], hotfix: bool) -> OneOf[Issue, None]:
+def verify_release(
+    commits: list[str] | None,
+    hotfix: bool,
+) -> OneOf[Issue, None]:
     """Compare the number of commits to verify if the release should proceed.
 
     In some cases we may start a hotfix without realizing that there are
     already some commits in the branch that have not been released. In this
     case it should have been a full release instead.
+
+    This step can be skipped if `commits` is `None`.
 
     Args:
         commits: List of unreleased commits.
@@ -83,6 +88,8 @@ def verify_release(commits: list[str], hotfix: bool) -> OneOf[Issue, None]:
     Returns:
         None if everything is good, otherwise an issue.
     """
+    if commits is None:
+        return Good(None)
     if hotfix and len(commits):
         logger.warning('hotfix may contain unreleased features', {
             'commits': commits,
@@ -144,6 +151,17 @@ def _branch_checkout(branch: str) -> OneOf[Issue, str]:
     )
 
 
+def _get_commits(gh_ver: str) -> OneOf[Issue, list[str] | None]:
+    either = git.get_commits(gh_ver)
+    if is_bad(either):
+        logger.warning(
+            'unable to retrieve unreleased commits - skipping checks',
+            either.value,
+        )
+        return Good(None)
+    return either
+
+
 def start_release(gh_token: str, hotfix: bool = False) -> OneOf[Issue, None]:
     """Start the release process.
 
@@ -161,7 +179,7 @@ def start_release(gh_token: str, hotfix: bool = False) -> OneOf[Issue, None]:
         for status, description in git.get_status()
         for stashed_changes in assert_git_status(status, description)
         for gh_ver in get_latest_release(gh_token, config.owner, config.repo)
-        for commits in git.get_commits(gh_ver)
+        for commits in _get_commits(gh_ver)
         for _ in verify_release(commits, hotfix=hotfix)
         for new_ver in io.prompt_next_version(gh_ver, release_type)
         for branch_checkout in _branch_checkout(f'{release_type}/{new_ver}')
