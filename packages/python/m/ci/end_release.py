@@ -1,4 +1,5 @@
 from m.core import Good, Issue, OneOf, issue, one_of
+from m.github.api import merge_pr
 from m.github.graphql.enums import MergeableState
 from m.github.graphql.queries.branch_prs import PullRequest
 from m.github.graphql.queries.branch_prs import fetch as fetch_branch_prs
@@ -6,7 +7,7 @@ from m.log import Logger
 
 from m import git
 
-from .config import read_config
+from .config import Config, read_config
 
 logger = Logger('m.ci.start_release')
 
@@ -45,6 +46,8 @@ def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
     Returns:
         An issue if the user decides to cancel, None otherwise.
     """
+    if not prs:
+        return issue('no prs associated with the release/hotfix branch')
     conflicting = [
         pr
         for pr in prs
@@ -55,8 +58,33 @@ def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
             'prs': {pr.number: pr.url for pr in conflicting},
             'suggestion': 'check out the pull requests',
         })
+    # TODO: handle code reviews - warn if there are requested changes
     return Good(None)
 
+
+def merge_prs(
+    gh_token: str,
+    config: Config,
+    prs: list[PullRequest],
+) -> OneOf[Issue, None]:
+    """Merge the given prs.
+
+    Args:
+        gh_token: The GITHUB_TOKEN to use to make api calls to Github.
+        config: The m configuration.
+        prs: The pull requests to merge.
+
+    Returns:
+        An issue if there is a problem while merging or None if successful.
+    """
+    # merge_pr(
+    #     gh_token,
+    #     config.owner,
+    #     config.repo,
+    #     prs[0].number,
+    #     None,
+    # )
+    return Good(None)
 
 def end_release(gh_token: str) -> OneOf[Issue, None]:
     """End the release process.
@@ -79,4 +107,5 @@ def end_release(gh_token: str) -> OneOf[Issue, None]:
             branch,
         )
         for _ in inspect_prs(prs)
+        for _ in merge_prs(gh_token, config, prs)
     ])
