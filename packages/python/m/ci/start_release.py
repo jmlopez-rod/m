@@ -145,12 +145,6 @@ def after_checkout(branch_checkout: str, stashed: bool) -> OneOf[Issue, None]:
     return Good(None)
 
 
-def _branch_checkout(branch: str) -> OneOf[Issue, str]:
-    return git.checkout_branch(branch).flat_map_bad(
-        lambda err: issue('git checkout failure', cause=err),
-    )
-
-
 def _get_commits(gh_ver: str) -> OneOf[Issue, list[str] | None]:
     either = git.get_commits(gh_ver)
     if is_bad(either):

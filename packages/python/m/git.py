@@ -1,4 +1,4 @@
-from m.core import Good, Issue, OneOf, one_of, subprocess
+from m.core import Good, Issue, OneOf, issue, one_of, subprocess
 
 
 def get_branch() -> OneOf[Issue, str]:
