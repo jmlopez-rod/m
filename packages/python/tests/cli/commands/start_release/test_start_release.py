@@ -191,7 +191,6 @@ env_mock = {'NO_COLOR': 'true'}
         errors=[
             'unable to retrieve unreleased commits - skipping checks',
             'issue retrieving commits',
-            'git checkout failure',
             'unable to switch branches',
         ],
     ),
