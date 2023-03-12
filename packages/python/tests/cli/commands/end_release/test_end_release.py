@@ -82,6 +82,37 @@ env_mock = {'NO_COLOR': 'true'}
         cleandoc=False,
         new_line=False,
     ),
+    TCase(
+        cmd='m end_release',
+        branch='release/0.0.2',
+        exit_code=0,
+        graphql_response='git_flow_first_merged.json',
+        merge_result=[
+            Good({
+                "sha": "some__other_sha",
+                "merged": True,
+                "message": "Pull Request successfully merged"
+            }),
+        ],
+        expected=get_fixture('git_flow_first_merged.log'),
+        errors=[
+            'master branch pr already merged/closed',
+        ],
+        gh_latest=['0.0.1'] * 7 + ['0.0.2'],
+        cleandoc=False,
+        new_line=False,
+    ),
+    TCase(
+        cmd='m end_release',
+        branch='release/0.0.2',
+        exit_code=0,
+        graphql_response='git_flow_done.json',
+        merge_result=[],
+        errors=[
+            'master branch pr already merged/closed',
+            'develop branch pr already merged/closed',
+        ],
+    ),
 ])
 def test_m_end_release(mocker: MockerFixture, tcase: TCase):
     # Checking output with json instead of yaml

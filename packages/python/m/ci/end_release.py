@@ -16,6 +16,7 @@ from m import git
 from .config import Config, Workflow, read_config
 
 logger = Logger('m.ci.start_release')
+_checks_per_line = 30
 
 
 def assert_branch(branch: str) -> OneOf[Issue, str]:
@@ -93,7 +94,7 @@ def wait_until(
         modifier = ''
         if counter % 6 == 0:
             modifier = '    '
-        if counter % 30 == 0:
+        if counter % _checks_per_line == 0:
             modifier = f'\n{indent}'
         sys.stdout.write(f'.{modifier}')
         sys.stdout.flush()
@@ -131,18 +132,26 @@ def merge_prs(
     if len(prs) == 2:
         second_pr = prs[second_index]
 
-    first_merged_result = merge_pr(
-        gh_token,
-        config.owner,
-        config.repo,
-        first_pr.number,
-        None,
-    )
-    msg = f'merged pr{first_pr.number} to {master_branch}'
+    first_merged_result: OneOf[Issue, None]
+    if first_pr.merged or first_pr.closed:
+        msg = f'{master_branch} branch pr already merged/closed'
+        logger.warning(msg, context={
+            'pr_info': first_pr.dict(),
+        })
+        first_merged_result = Good(None)
+    else:
+        msg = f'merged pr{first_pr.number} to {master_branch}'
+        first_merged_result = merge_pr(
+            gh_token,
+            config.owner,
+            config.repo,
+            first_pr.number,
+            None,
+        ).map(lambda res: logger.info(msg, res)).map(lambda _: None)
+
     return one_of(lambda: [
         None
-        for res in first_merged_result
-        for _ in logger.info(msg, res)
+        for _ in first_merged_result
         for _ in _merge_second_pr(gh_token, config, second_pr, target_ver)
     ])
 
@@ -165,11 +174,16 @@ def _merge_second_pr(
 ) -> OneOf[Issue, None]:
     if not pr:
         return Good(None)
+    base_ref = pr.base_ref_name
+    if pr.merged or pr.closed:
+        logger.warning(f'{base_ref} branch pr already merged/closed', context={
+            'pr_info': pr.dict(),
+        })
+        return Good(None)
     ver = target_ver
     owner = config.owner
     repo = config.repo
     pr_num = pr.number
-    base_ref = pr.base_ref_name
     not_released = partial(_not_released, gh_token, owner, repo, ver)
     logger.info(f'checking every 10 seconds until {ver} is released')
     return one_of(lambda: [

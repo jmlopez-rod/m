@@ -1,0 +1,8 @@
+[INFO] [09:33:09 PM - Nov 29, 1973]: checking every 10 seconds until 0.0.2 is released
+       ......    .
+[INFO] [09:33:09 PM - Nov 29, 1973]: merged pr32 to develop
+       {
+         "sha": "some__other_sha",
+         "merged": true,
+         "message": "Pull Request successfully merged"
+       }
