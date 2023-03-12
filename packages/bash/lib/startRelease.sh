@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# @depracated - remove when moving to m 1.0.0
+# @deprecated - remove when moving to m 1.0.0
 
 # Adding to path so that npx can work: https://superuser.com/a/39995
 pathadd() {
