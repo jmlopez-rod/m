@@ -1,5 +1,11 @@
+import sys
+import time
+from functools import partial
+from typing import Callable
+
 from m.core import Good, Issue, OneOf, issue, one_of
 from m.github.api import merge_pr
+from m.github.cli import get_latest_release
 from m.github.graphql.enums import MergeableState
 from m.github.graphql.queries.branch_prs import PullRequest
 from m.github.graphql.queries.branch_prs import fetch as fetch_branch_prs
@@ -7,12 +13,12 @@ from m.log import Logger
 
 from m import git
 
-from .config import Config, read_config
+from .config import Config, Workflow, read_config
 
 logger = Logger('m.ci.start_release')
 
 
-def assert_branch(branch: str) -> OneOf[Issue, None]:
+def assert_branch(branch: str) -> OneOf[Issue, str]:
     """Assert that the end of a release is done in the proper branch.
 
     This can only happen in `release/x.y.z` or `hotfix/x.y.z`.
@@ -21,11 +27,12 @@ def assert_branch(branch: str) -> OneOf[Issue, None]:
         branch: branch name to verify.
 
     Returns:
-        An Issue if the current branch is not a release/hotfix.
+        An Issue if the current branch is not a release/hotfix else the
+        version to release/hotfix.
     """
     valid_prefix = ('release/', 'hotfix/')
     if branch.startswith(valid_prefix):
-        return Good(None)
+        return Good(branch.split('/')[1])
     return issue(
         'end_release can only be done from a release/hotfix branch',
         context={
@@ -62,10 +69,44 @@ def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
     return Good(None)
 
 
+def wait_until(
+    predicate: Callable[[], OneOf[Issue, bool]],
+) -> OneOf[Issue, None]:
+    """Sleep until the predicate function returns False.
+
+    Will print a `.` (dot) every 10 seconds thus every 6 dots
+    denote a minute.
+
+    Args:
+        predicate: function returning an Issue or a boolean
+
+    Returns:
+        An issue or None.
+    """
+    should_loop = predicate()
+    counter = 0
+    indent = '       '
+    sys.stdout.write(indent)
+    while not should_loop.is_bad and should_loop.value is True:
+        time.sleep(10)
+        counter += 1
+        modifier = ''
+        if counter % 6 == 0:
+            modifier = '    '
+        if counter % 30 == 0:
+            modifier = f'\n{indent}'
+        sys.stdout.write(f'.{modifier}')
+        sys.stdout.flush()
+        should_loop = predicate()
+    sys.stdout.write('\n')
+    return should_loop.map(lambda _: None)
+
+
 def merge_prs(
     gh_token: str,
     config: Config,
     prs: list[PullRequest],
+    target_ver: str,
 ) -> OneOf[Issue, None]:
     """Merge the given prs.
 
@@ -73,18 +114,71 @@ def merge_prs(
         gh_token: The GITHUB_TOKEN to use to make api calls to Github.
         config: The m configuration.
         prs: The pull requests to merge.
+        target_ver: The version to release.
 
     Returns:
         An issue if there is a problem while merging or None if successful.
     """
-    # merge_pr(
-    #     gh_token,
-    #     config.owner,
-    #     config.repo,
-    #     prs[0].number,
-    #     None,
-    # )
-    return Good(None)
+    master_branch = (
+        config.git_flow.master_branch
+        if config.workflow == Workflow.git_flow
+        else config.m_flow.master_branch
+    )
+    first_index = 0 if prs[0].base_ref_name == master_branch else 1
+    second_index = 0 if first_index == 1 else 1
+    first_pr = prs[first_index]
+    second_pr = None
+    if len(prs) == 2:
+        second_pr = prs[second_index]
+
+    first_merged_result = merge_pr(
+        gh_token,
+        config.owner,
+        config.repo,
+        first_pr.number,
+        None,
+    )
+    msg = f'merged pr{first_pr.number} to {master_branch}'
+    return one_of(lambda: [
+        None
+        for res in first_merged_result
+        for _ in logger.info(msg, res)
+        for _ in _merge_second_pr(gh_token, config, second_pr, target_ver)
+    ])
+
+
+def _not_released(
+    token: str,
+    owner: str,
+    repo: str,
+    ver: str,
+) -> OneOf[Issue, bool]:
+    latest = get_latest_release(token, owner, repo)
+    return latest.map(lambda current_ver: current_ver != ver)
+
+
+def _merge_second_pr(
+    gh_token: str,
+    config: Config,
+    pr: PullRequest | None,
+    target_ver: str,
+) -> OneOf[Issue, None]:
+    if not pr:
+        return Good(None)
+    ver = target_ver
+    owner = config.owner
+    repo = config.repo
+    pr_num = pr.number
+    base_ref = pr.base_ref_name
+    not_released = partial(_not_released, gh_token, owner, repo, ver)
+    logger.info(f'checking every 10 seconds until {ver} is released')
+    return one_of(lambda: [
+        None
+        for _ in wait_until(not_released)
+        for res in merge_pr(gh_token, owner, repo, pr_num, None)
+        for _ in logger.info(f'merged pr{pr_num} to {base_ref}', res)
+    ])
+
 
 def end_release(gh_token: str) -> OneOf[Issue, None]:
     """End the release process.
@@ -98,7 +192,7 @@ def end_release(gh_token: str) -> OneOf[Issue, None]:
     return one_of(lambda: [
         None
         for branch in git.get_branch()
-        for _ in assert_branch(branch)
+        for target_ver in assert_branch(branch)
         for config in read_config('m')
         for prs in fetch_branch_prs(
             gh_token,
@@ -107,5 +201,5 @@ def end_release(gh_token: str) -> OneOf[Issue, None]:
             branch,
         )
         for _ in inspect_prs(prs)
-        for _ in merge_prs(gh_token, config, prs)
+        for _ in merge_prs(gh_token, config, prs, target_ver)
     ])

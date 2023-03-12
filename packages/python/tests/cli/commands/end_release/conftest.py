@@ -1,4 +1,5 @@
 from functools import partial
+from typing import Any
 
 from m.core import Issue, issue
 from m.core.fp import Good, OneOf
@@ -25,3 +26,5 @@ class TCase(CliTestCase):
     branch: str = 'master'
     user_input: list[str] = []
     graphql_response: str = ''
+    merge_result: list[Any] = []
+    gh_latest: list[str] = ['0.0.1']

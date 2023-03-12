@@ -1,0 +1,6 @@
+[INFO] [09:33:09 PM - Nov 29, 1973]: merged pr31 to master
+       {
+         "sha": "some_sha",
+         "merged": true,
+         "message": "Pull Request successfully merged"
+       }

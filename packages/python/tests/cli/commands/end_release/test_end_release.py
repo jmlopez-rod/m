@@ -35,21 +35,78 @@ env_mock = {'NO_COLOR': 'true'}
             '"31": "https://github.com/jmlopez-rod/git-flow/pull/31"',
         ],
     ),
+    TCase(
+        cmd='m end_release',
+        branch='release/0.1.0',
+        exit_code=1,
+        graphql_response='no_prs.json',
+        errors=[
+            'no prs associated with the release/hotfix branch',
+        ],
+    ),
+    TCase(
+        cmd='m end_release',
+        branch='release/0.1.0',
+        exit_code=0,
+        graphql_response='single.json',
+        merge_result=[
+            Good({
+                "sha": "some_sha",
+                "merged": True,
+                "message": "Pull Request successfully merged"
+            }),
+        ],
+        expected=get_fixture('single.log'),
+        cleandoc=False,
+        new_line=False,
+    ),
+    TCase(
+        cmd='m end_release',
+        branch='release/0.0.2',
+        exit_code=0,
+        graphql_response='git_flow.json',
+        merge_result=[
+            Good({
+                "sha": "some_sha",
+                "merged": True,
+                "message": "Pull Request successfully merged"
+            }),
+            Good({
+                "sha": "some__other_sha",
+                "merged": True,
+                "message": "Pull Request successfully merged"
+            }),
+        ],
+        expected=get_fixture('git_flow.log'),
+        gh_latest=['0.0.1'] * 40 + ['0.0.2'],
+        cleandoc=False,
+        new_line=False,
+    ),
 ])
 def test_m_end_release(mocker: MockerFixture, tcase: TCase):
     # Checking output with json instead of yaml
     mocker.patch.dict(os.environ, env_mock, clear=True)
     mocker.patch('time.time').return_value = 123456789
+    mocker.patch('time.sleep').return_value = ''
     fake = partial(read_file_fake, f_map={'m/m.json': 'm.json'})
+    mocker.patch('m.core.json.read_json').return_value = Good(
+        json.loads(get_fixture('m.json')),
+    )
     mocker.patch.object(mio, 'read_file', fake)
     mocker.patch('builtins.input').side_effect = tcase.user_input
     mocker.patch('m.git.get_branch').return_value = Good(tcase.branch)
-    ver = '0.0.1'
     if tcase.graphql_response:
         mocker.patch('m.github.graphql.api.request').return_value = Good(
             json.loads(get_fixture(tcase.graphql_response)),
         )
-    mocker.patch('m.github.cli.get_latest_release').return_value = Good(ver)
+
+    if tcase.merge_result:
+        mocker.patch(
+            'm.ci.end_release.merge_pr'
+        ).side_effect = tcase.merge_result
+    mocker.patch(
+        'm.ci.end_release.get_latest_release'
+    ).side_effect = [Good(ver) for ver in tcase.gh_latest]
 
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
