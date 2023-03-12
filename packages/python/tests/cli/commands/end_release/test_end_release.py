@@ -51,9 +51,9 @@ env_mock = {'NO_COLOR': 'true'}
         graphql_response='single.json',
         merge_result=[
             Good({
-                "sha": "some_sha",
-                "merged": True,
-                "message": "Pull Request successfully merged"
+                'sha': 'some_sha',
+                'merged': True,
+                'message': 'Pull Request successfully merged',
             }),
         ],
         expected=get_fixture('single.log'),
@@ -67,18 +67,18 @@ env_mock = {'NO_COLOR': 'true'}
         graphql_response='git_flow.json',
         merge_result=[
             Good({
-                "sha": "some_sha",
-                "merged": True,
-                "message": "Pull Request successfully merged"
+                'sha': 'some_sha',
+                'merged': True,
+                'message': 'Pull Request successfully merged',
             }),
             Good({
-                "sha": "some__other_sha",
-                "merged": True,
-                "message": "Pull Request successfully merged"
+                'sha': 'some_other_sha',
+                'merged': True,
+                'message': 'Pull Request successfully merged',
             }),
         ],
         expected=get_fixture('git_flow.log'),
-        gh_latest=['0.0.1'] * 40 + ['0.0.2'],
+        gh_latest=['0.0.1' for _ in range(0, 40)] + ['0.0.2'],
         cleandoc=False,
         new_line=False,
     ),
@@ -89,16 +89,16 @@ env_mock = {'NO_COLOR': 'true'}
         graphql_response='git_flow_first_merged.json',
         merge_result=[
             Good({
-                "sha": "some__other_sha",
-                "merged": True,
-                "message": "Pull Request successfully merged"
+                'sha': 'some_other_sha',
+                'merged': True,
+                'message': 'Pull Request successfully merged',
             }),
         ],
         expected=get_fixture('git_flow_first_merged.log'),
         errors=[
             'master branch pr already merged/closed',
         ],
-        gh_latest=['0.0.1'] * 7 + ['0.0.2'],
+        gh_latest=['0.0.1' for _ in range(0, 7)] + ['0.0.2'],
         cleandoc=False,
         new_line=False,
     ),
@@ -133,10 +133,10 @@ def test_m_end_release(mocker: MockerFixture, tcase: TCase):
 
     if tcase.merge_result:
         mocker.patch(
-            'm.ci.end_release.merge_pr'
+            'm.ci.end_release.merge_pr',
         ).side_effect = tcase.merge_result
     mocker.patch(
-        'm.ci.end_release.get_latest_release'
+        'm.ci.end_release.get_latest_release',
     ).side_effect = [Good(ver) for ver in tcase.gh_latest]
 
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)

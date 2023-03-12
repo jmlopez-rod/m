@@ -2,7 +2,7 @@
        ......    .
 [INFO] [09:33:09 PM - Nov 29, 1973]: merged pr32 to develop
        {
-         "sha": "some__other_sha",
+         "sha": "some_other_sha",
          "merged": true,
          "message": "Pull Request successfully merged"
        }

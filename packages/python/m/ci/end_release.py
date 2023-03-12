@@ -66,7 +66,10 @@ def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
             'prs': {pr.number: pr.url for pr in conflicting},
             'suggestion': 'check out the pull requests',
         })
-    # TODO: handle code reviews - warn if there are requested changes
+    # Nice to have: handle code reviews - warn if there are requested changes
+    # To introduce this we need to prompt the user if we should proceed to
+    # merge the pr even when there are pending reviews. This is mainly
+    # done for admins that may be able to merge without approvals.
     return Good(None)
 
 

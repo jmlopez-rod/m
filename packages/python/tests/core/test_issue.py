@@ -80,6 +80,6 @@ def test_issue_yaml():
     Issue.yaml_traceback = False
     # asserting that we have the message of the ValueError
     # also making sure we get some colors
-    assert "one" in str_obj
-    assert "two" in str_obj
+    assert 'one' in str_obj
+    assert 'two' in str_obj
     assert '\x1b[38;5;153msub-cause\x1b[39m\n' in str_obj
