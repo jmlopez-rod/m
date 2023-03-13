@@ -90,7 +90,7 @@ class TCase(CliTestCase):
                 '--base': 'master',
                 '--title': 'PR Title',
             }),
-            '\\@jmlopez-rod - pr title',
+            r'\@jmlopez-rod - pr title',
         ],
         body_to_send={
             'base': 'master',

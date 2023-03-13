@@ -7,13 +7,15 @@ from m.ci.config import (
     MFlowConfig,
     Workflow,
     read_config,
-    read_workflow,
 )
 from m.core import issue
 from m.core.fp import Good
 from m.core.issue import Issue
 
 from ...util import FpTestCase
+
+# Mocking Path.exists - yaml, yml, json
+config_files_output = (False, False, True)
 
 
 class ConfigFreeFlowTest(FpTestCase):
@@ -31,41 +33,42 @@ class ConfigFreeFlowTest(FpTestCase):
         m_flow=MFlowConfig(),
     )
 
-    def test_workflow_config(self):
-        result = read_workflow('free-flow')
-        workflow = self.assert_ok(result)
-        self.assertEqual(workflow, Workflow.free_flow)
+    @patch('pathlib.Path.exists')
+    def test_read_config_missing(self, path_exists_mock):
+        path_exists_mock.side_effect = (False, False, False)
+        confg_result = read_config('m')
+        self.assert_issue(confg_result, 'read_config failure')
+        assert 'm file not found' in str(confg_result.value)
 
-    def test_workflow_config_fail(self):
-        result = read_workflow('unknown-flow')
-        self.assert_issue(result, 'invalid workflow')
-
-    @patch('m.core.json.read_json')
-    def test_read_config_fail(self, read_json_mock):
+    @patch('pathlib.Path.exists')
+    @patch('m.core.yaml_fp.read_yson')
+    def test_read_config_fail(self, read_json_mock, path_exists_mock):
+        path_exists_mock.side_effect = config_files_output
         read_json_mock.return_value = issue('made up issue')
         result = read_config('m')
         self.assert_issue(result, 'read_config failure')
 
-    def test_empty_config(self):
-        with patch('m.core.json.read_json') as read_json_mock:
+    @patch('pathlib.Path.exists')
+    def test_empty_config(self, path_exists_mock):
+        path_exists_mock.side_effect = config_files_output
+        with patch('m.core.yaml_fp.read_yson') as read_json_mock:
             read_json_mock.return_value = Good({})
             result = read_config('m')
             self.assert_issue(result, 'read_config failure')
             err = cast(Issue, cast(Issue, result.value).cause)
-            self.assertEqual(err.message, 'multi_get key retrieval failure')
-            if isinstance(err.context, list):
-                msgs = {x['cause']['message'] for x in err.context}
-                self.assertSetEqual(
-                    msgs, set([
-                        '`owner` path was not found',
-                        '`repo` path was not found',
-                    ]),
-                )
+            self.assertEqual(err.message, 'pydantic validation error')
+            if err.cause:
+                msgs = str(err.cause)
+                assert '2 validation errors for Config' in msgs
+                assert 'owner\n  field required' in msgs
+                assert 'repo\n  field required' in msgs
             else:
                 raise AssertionError('issue data should be a string')
 
-    def test_pass(self):
-        with patch('m.core.json.read_json') as read_json_mock:
+    @patch('pathlib.Path.exists')
+    def test_pass(self, path_exists_mock):
+        path_exists_mock.side_effect = config_files_output
+        with patch('m.core.yaml_fp.read_yson') as read_json_mock:
             read_json_mock.return_value = Good(
                 dict(
                     owner='jmlopez-rod',

@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import Any, cast
 
@@ -66,7 +67,7 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
         'M_OWNER': config.owner,
         'M_REPO': config.repo,
         'M_CI': env_vars.ci_env,
-        'M_WORKFLOW': config.workflow.value,
+        'M_WORKFLOW': config.workflow,
         'M_RUN_ID': env_vars.run_id,
         'M_RUN_NUMBER': env_vars.run_number,
         'M_SHA': git.sha,
@@ -99,7 +100,7 @@ def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
     if not Path.exists(target_dir):
         Path.mkdir(target_dir, parents=True)
     return one_of(lambda: [
-        m_env
+        json.loads(m_env.json())
         for m_env in get_m_env(m_dir)
         for env_list in _m_env_vars(m_env)
         for _ in mio.write_file(f'{m_dir}/.m/env.list', env_list)

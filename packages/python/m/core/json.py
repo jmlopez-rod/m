@@ -1,12 +1,11 @@
 import json
-import sys
 from collections.abc import Mapping
 from contextlib import suppress
-from pathlib import Path
 from typing import Any
 from typing import Mapping as Map
 from typing import Union
 
+from . import rw
 from .fp import Good, OneOf
 from .issue import Issue
 from .one_of import issue, one_of
@@ -26,17 +25,17 @@ def read_json(
         A `Good` containing the parsed contents of the json file.
     """
     empty: str = '' if error_if_empty else 'null'
-    try:
-        if filename is None:
-            return Good(json.loads(sys.stdin.read() or empty))
-        with Path.open(Path(filename), encoding='UTF-8') as file_handle:
-            return Good(json.loads(file_handle.read() or empty))
-    except Exception as ex:
-        return issue(
+    return one_of(lambda: [
+        json_data
+        for json_str in rw.read_file(filename)
+        for json_data in parse_json(json_str or empty, error_if_empty)
+    ]).flat_map_bad(
+        lambda err: issue(
             'failed to read json file',
+            cause=err,
             context={'filename': filename or 'SYS.STDIN'},
-            cause=ex,
-        )
+        ),
+    )
 
 
 def parse_json(

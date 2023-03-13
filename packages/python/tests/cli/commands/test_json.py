@@ -72,6 +72,24 @@ def _file_exists(name: str):
         """,
     ),
     TCase(
+        cmd='m json @simple.yaml',
+        expected="""
+          [
+            "a",
+            0
+          ]
+        """,
+    ),
+    TCase(
+        cmd='m json @error.yaml',
+        errors=[
+            r'"message": "failed to read \".yaml\" file"',
+            '"filename": "error.yaml"',
+            'yaml.parser.ParserError',
+        ],
+        exit_code=2,
+    ),
+    TCase(
         cmd='m json @invalid-file.json',
         errors=[
             'argument payload: file "invalid-file.json" does not exist',
