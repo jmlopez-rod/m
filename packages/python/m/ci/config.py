@@ -1,7 +1,9 @@
+from pathlib import Path
+
 from packaging.version import Version
 from pydantic import BaseModel
 
-from ..core import Good, Issue, OneOf, issue, json, one_of
+from ..core import Good, Issue, OneOf, issue, one_of, yaml_fp
 from .types import Branches, GitFlowConfig, MFlowConfig, Workflow
 
 
@@ -147,6 +149,14 @@ class Config(BaseModel):
         return issue(msg, context=err_data) if msg else Good(0)
 
 
+def _get_m_filename(m_dir: str) -> OneOf[Issue, str]:
+    filenames = (f'{m_dir}/m.yaml', f'{m_dir}/m.yml', f'{m_dir}/m.json')
+    for filename in filenames:
+        if Path(filename).exists():
+            return Good(filename)
+    return issue('m file not found', context={'m_dir': m_dir})
+
+
 def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """Read an m configuration file.
 
@@ -158,5 +168,6 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """
     return one_of(lambda: [
         Config(m_dir=m_dir, **m_cfg)
-        for m_cfg in json.read_json(f'{m_dir}/m.json')
+        for m_filename in _get_m_filename(m_dir)
+        for m_cfg in yaml_fp.read_yson(m_filename)
     ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))
