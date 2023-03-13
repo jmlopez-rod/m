@@ -8,6 +8,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.16.0] <a name="0.16.0" href="#0.16.0">-</a> March 13, 2023
+
 - Deprecate `endRelease`. Instead we can use `m end_release`.
 - When ending a release it switches to the default branch.
 - Previously a release could only be finished by the user who started it.
@@ -209,7 +211,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.15.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.16.0...HEAD
+[0.16.0]: https://github.com/jmlopez-rod/m/compare/0.15.2...0.16.0
 [0.15.2]: https://github.com/jmlopez-rod/m/compare/0.15.1...0.15.2
 [0.15.1]: https://github.com/jmlopez-rod/m/compare/0.15.0...0.15.1
 [0.15.0]: https://github.com/jmlopez-rod/m/compare/0.14.0...0.15.0
