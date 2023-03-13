@@ -28,16 +28,18 @@ def stash_pop() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git stash pop')
 
 
-def checkout_branch(branch: str) -> OneOf[Issue, str]:
+def checkout_branch(branch: str, create: bool = True) -> OneOf[Issue, str]:
     """Checkout a branch.
 
     Args:
         branch: name of branch to checkout
+        create: create new branch
 
     Returns:
         A `OneOf` containing an `Issue` of the git response.
     """
-    return subprocess.eval_cmd(f'git checkout -b {branch}').flat_map_bad(
+    opt = '-b' if create else ''
+    return subprocess.eval_cmd(f'git checkout {opt} {branch}').flat_map_bad(
         lambda err: issue('git checkout failure', cause=err),
     )
 
