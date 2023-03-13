@@ -3,6 +3,7 @@ from argparse import ArgumentTypeError
 from pathlib import Path
 
 from ..core.json import parse_json, read_json
+from ..core.yaml_fp import read_yson
 
 
 def validate_json_payload(file_path: str):
@@ -10,6 +11,9 @@ def validate_json_payload(file_path: str):
 
     This is a string that tell us to read from a file, stdin or just
     plain json data.
+
+    It can be used parse `yaml` files as well. The extension should be
+    `.yaml` or `.yml`.
 
     Args:
         file_path: A string with the json payload. If it starts with `@` then
@@ -29,13 +33,17 @@ def validate_json_payload(file_path: str):
             raise ArgumentTypeError(msg)
         return res.value
     if file_path.startswith('@'):
+        err = ''
         filename = file_path[1:]
-        if not Path.exists(Path(filename)):
-            raise ArgumentTypeError(f'file "{filename}" does not exist')
-        res = read_json(filename)
-        if res.is_bad:
-            raise ArgumentTypeError(f'invalid json payload in {filename}')
-        return res.value
+        if Path.exists(Path(filename)):
+            res = read_yson(filename)
+            if not res.is_bad:
+                return res.value
+            err = f'invalid json payload in {filename}\n{res.value}'
+        else:
+            err = f'file "{filename}" does not exist'
+        if err:
+            raise ArgumentTypeError(err)
     res = parse_json(file_path)
     if res.is_bad:
         raise ArgumentTypeError(f'invalid json payload\n{res.value}')

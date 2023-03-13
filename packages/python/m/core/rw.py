@@ -1,10 +1,13 @@
+import sys
 from pathlib import Path
 
-from m.core.one_of import Good, Issue, OneOf, issue
+from .one_of import Good, Issue, OneOf, issue
 
 
-def read_file(filename: str) -> OneOf[Issue, str]:
+def read_file(filename: str | None) -> OneOf[Issue, str]:
     """FP version of open to read the contents of a file.
+
+    If `None` is provided it will attempt to read from `sys.stdin`.
 
     Args:
         filename: The file path to read.
@@ -12,6 +15,8 @@ def read_file(filename: str) -> OneOf[Issue, str]:
     Returns:
         A `Good` containing the contents of the file.
     """
+    if filename is None:
+        return Good(sys.stdin.read())
     try:
         with Path.open(Path(filename), encoding='UTF-8') as fp:
             return Good(fp.read())

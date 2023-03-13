@@ -9,6 +9,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 ## [Unreleased]
 
 - Delegate `m` configuration validation to pydantic.
+- `m.cli.validate_json_payload` handles `yaml` files. Commands that use
+  this validator can now handle `.json`, `.yaml` and `.yml` extensions.
 
 ## [0.16.1] <a name="0.16.1" href="#0.16.1">-</a> March 13, 2023
 
