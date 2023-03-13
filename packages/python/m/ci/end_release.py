@@ -222,6 +222,6 @@ def end_release(gh_token: str) -> OneOf[Issue, None]:
         for _ in inspect_prs(prs)
         for _ in merge_prs(gh_token, config, prs, target_ver)
         for default_branch in Good[Issue, str](config.get_default_branch())
-        for checkout in git.checkout_branch(default_branch)
+        for checkout in git.checkout_branch(default_branch, create=False)
         for _ in _switch_branch(default_branch, checkout)
     ])
