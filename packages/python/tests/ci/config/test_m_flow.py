@@ -25,7 +25,7 @@ class ConfigMFlowTest(FpTestCase):
     )
 
     def test_pass(self):
-        with patch('m.core.json.read_json') as read_json_mock:
+        with patch('m.core.yaml_fp.read_yson') as read_json_mock:
             read_json_mock.return_value = Good(
                 dict(
                     owner='jmlopez-rod',
@@ -34,6 +34,7 @@ class ConfigMFlowTest(FpTestCase):
                     workflow='m_flow',
                 ),
             )
+            # working because this project has `m/m.json` so path exists
             result = read_config('m')
             config = cast(Config, self.assert_ok(result))
             self.assertIsInstance(config, Config)

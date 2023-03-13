@@ -14,6 +14,9 @@ from m.core.issue import Issue
 
 from ...util import FpTestCase
 
+# Mocking Path.exists - yaml, yml, json
+config_files_output = (False, False, True)
+
 
 class ConfigFreeFlowTest(FpTestCase):
     """The base config should not change during the tests.
@@ -30,14 +33,25 @@ class ConfigFreeFlowTest(FpTestCase):
         m_flow=MFlowConfig(),
     )
 
-    @patch('m.core.json.read_json')
-    def test_read_config_fail(self, read_json_mock):
+    @patch('pathlib.Path.exists')
+    def test_read_config_missing(self, path_exists_mock):
+        path_exists_mock.side_effect = (False, False, False)
+        confg_result = read_config('m')
+        self.assert_issue(confg_result, 'read_config failure')
+        assert 'm file not found' in str(confg_result.value)
+
+    @patch('pathlib.Path.exists')
+    @patch('m.core.yaml_fp.read_yson')
+    def test_read_config_fail(self, read_json_mock, path_exists_mock):
+        path_exists_mock.side_effect = config_files_output
         read_json_mock.return_value = issue('made up issue')
         result = read_config('m')
         self.assert_issue(result, 'read_config failure')
 
-    def test_empty_config(self):
-        with patch('m.core.json.read_json') as read_json_mock:
+    @patch('pathlib.Path.exists')
+    def test_empty_config(self, path_exists_mock):
+        path_exists_mock.side_effect = config_files_output
+        with patch('m.core.yaml_fp.read_yson') as read_json_mock:
             read_json_mock.return_value = Good({})
             result = read_config('m')
             self.assert_issue(result, 'read_config failure')
@@ -51,8 +65,10 @@ class ConfigFreeFlowTest(FpTestCase):
             else:
                 raise AssertionError('issue data should be a string')
 
-    def test_pass(self):
-        with patch('m.core.json.read_json') as read_json_mock:
+    @patch('pathlib.Path.exists')
+    def test_pass(self, path_exists_mock):
+        path_exists_mock.side_effect = config_files_output
+        with patch('m.core.yaml_fp.read_yson') as read_json_mock:
             read_json_mock.return_value = Good(
                 dict(
                     owner='jmlopez-rod',

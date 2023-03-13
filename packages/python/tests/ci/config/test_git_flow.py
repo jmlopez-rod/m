@@ -25,7 +25,7 @@ class ConfigGitFlowTest(FpTestCase):
     )
 
     def test_pass(self):
-        with patch('m.core.json.read_json') as read_json_mock:
+        with patch('m.core.yaml_fp.read_yson') as read_json_mock:
             read_json_mock.return_value = Good(
                 dict(
                     owner='jmlopez-rod',
