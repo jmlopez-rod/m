@@ -65,6 +65,33 @@ class Config(BaseModel):
         """
         return self.workflow == Workflow.free_flow
 
+    def get_master_branch(self) -> str:
+        """Obtain the name of the branch that aliases the "master" branch.
+
+        Returns:
+            The name/alias assigned to the `master` branch.
+        """
+        if self.uses_m_flow():
+            return self.m_flow.master_branch
+        if self.uses_git_flow():
+            return self.git_flow.master_branch
+        return 'master'
+
+    def get_default_branch(self) -> str:
+        """Obtain the name of the branch that aliases the "default" branch.
+
+        This is dependent on the flow. For instance, in the git flow we
+        use the `develop` branch as default.
+
+        Returns:
+            The name/alias assigned to the default branch.
+        """
+        if self.uses_m_flow():
+            return self.m_flow.master_branch
+        if self.uses_git_flow():
+            return self.git_flow.develop_branch
+        return 'master'
+
     def verify_version(
         self,
         gh_latest: str,

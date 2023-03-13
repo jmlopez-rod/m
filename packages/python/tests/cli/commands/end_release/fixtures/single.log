@@ -4,3 +4,7 @@
          "merged": true,
          "message": "Pull Request successfully merged"
        }
+[INFO] [09:33:09 PM - Nov 29, 1973]: release complete - switching to "master" branch
+       {
+         "git": "switched to default branch\n"
+       }

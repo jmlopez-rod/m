@@ -13,7 +13,7 @@ from m.log import Logger
 
 from m import git
 
-from .config import Config, Workflow, read_config
+from .config import Config, read_config
 
 logger = Logger('m.ci.start_release')
 _checks_per_line = 30
@@ -123,11 +123,7 @@ def merge_prs(
     Returns:
         An issue if there is a problem while merging or None if successful.
     """
-    master_branch = (
-        config.git_flow.master_branch
-        if config.workflow == Workflow.git_flow
-        else config.m_flow.master_branch
-    )
+    master_branch = config.get_master_branch()
     first_index = 0 if prs[0].base_ref_name == master_branch else 1
     second_index = 0 if first_index == 1 else 1
     first_pr = prs[first_index]
@@ -197,6 +193,12 @@ def _merge_second_pr(
     ])
 
 
+def _switch_branch(branch: str, checkout: str) -> OneOf[Issue, None]:
+    return logger.info(f'release complete - switching to "{branch}" branch', {
+        'git': f'{checkout}\n',
+    }).map(lambda _: None)
+
+
 def end_release(gh_token: str) -> OneOf[Issue, None]:
     """End the release process.
 
@@ -219,4 +221,7 @@ def end_release(gh_token: str) -> OneOf[Issue, None]:
         )
         for _ in inspect_prs(prs)
         for _ in merge_prs(gh_token, config, prs, target_ver)
+        for default_branch in Good[Issue, str](config.get_default_branch())
+        for checkout in git.checkout_branch(default_branch)
+        for _ in _switch_branch(default_branch, checkout)
     ])

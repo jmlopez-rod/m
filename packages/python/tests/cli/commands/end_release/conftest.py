@@ -28,3 +28,4 @@ class TCase(CliTestCase):
     graphql_response: str = ''
     merge_result: list[Any] = []
     gh_latest: list[str] = ['0.0.1']
+    m_file: str = 'm.json'
