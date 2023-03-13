@@ -2,14 +2,7 @@ from packaging.version import Version
 from pydantic import BaseModel
 
 from ..core import Good, Issue, OneOf, issue, json, one_of
-from .types import (
-    GitFlowConfig,
-    MFlowConfig,
-    Workflow,
-    read_git_flow,
-    read_m_flow,
-    read_workflow,
-)
+from .types import Branches, GitFlowConfig, MFlowConfig, Workflow
 
 
 def _handle_release_pr(ver_gt_latest: bool) -> str:
@@ -32,14 +25,28 @@ class Config(BaseModel):
     """Object to store the m project configuration."""
 
     # pylint: disable=too-many-instance-attributes
+    m_dir: str
     owner: str
     repo: str
-    version: str
-    m_dir: str
-    workflow: Workflow
-    git_flow: GitFlowConfig
-    m_flow: MFlowConfig
+    version: str = '0.0.0'
+    workflow: Workflow = Workflow.free_flow
+    git_flow: GitFlowConfig = GitFlowConfig(
+        master_branch=Branches.master,
+        develop_branch=Branches.develop,
+        release_prefix=Branches.release,
+        hotfix_prefix=Branches.hotfix,
+    )
+    m_flow: MFlowConfig = MFlowConfig(
+        master_branch=Branches.master,
+        release_prefix=Branches.release,
+        hotfix_prefix=Branches.hotfix,
+    )
     build_tag_with_version: bool = False
+
+    class Config:
+        """Config to allow enums to be displayed as strings."""
+
+        use_enum_values = True
 
     def uses_git_flow(self):
         """Check if configuration is using the git flow.
@@ -150,21 +157,6 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
         A `OneOf` containing the `m` configuration or an `Issue`.
     """
     return one_of(lambda: [
-        Config(
-            owner=owner,
-            repo=repo,
-            version=version,
-            m_dir=m_dir,
-            workflow=workflow,
-            git_flow=git_flow,
-            m_flow=m_flow,
-            build_tag_with_version=with_version,
-        )
+        Config(m_dir=m_dir, **m_cfg)
         for m_cfg in json.read_json(f'{m_dir}/m.json')
-        for owner, repo in json.multi_get(m_cfg, 'owner', 'repo')
-        for version in (m_cfg.get('version', '0.0.0'),)
-        for workflow in read_workflow(m_cfg.get('workflow', 'free-flow'))
-        for git_flow in read_git_flow(m_cfg.get('gitFlow', {}))
-        for m_flow in read_m_flow(m_cfg.get('mFlow', {}))
-        for with_version in (m_cfg.get('build_tag_with_version', False),)
     ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))

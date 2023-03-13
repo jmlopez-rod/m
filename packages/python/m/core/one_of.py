@@ -1,5 +1,7 @@
 from typing import Any, Callable, TypeVar, cast
 
+from pydantic import ValidationError
+
 from .fp import Bad, Good, OneOf, StopBadIteration
 from .issue import Issue
 
@@ -46,6 +48,8 @@ def one_of(comp: Callable[[], list[G]]) -> OneOf[Any, G]:
         res = comp()
     except StopBadIteration as ex:
         return cast(Bad, ex.bad)
+    except ValidationError as ex:
+        return issue('pydantic validation error', cause=ex)
     except Exception as ex:
         return issue('one_of caught exception', cause=ex)
     if res:

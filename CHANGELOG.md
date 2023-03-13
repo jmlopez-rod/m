@@ -8,6 +8,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+- Delegate `m` configuration validation to pydantic.
+
 ## [0.16.1] <a name="0.16.1" href="#0.16.1">-</a> March 13, 2023
 
 - `end_release` fails because default branch already exists.
