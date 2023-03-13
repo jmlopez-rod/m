@@ -4,6 +4,9 @@ ciChecks:
 tests:
 	packages/python/tests/run.sh
 
+mypy:
+	mypy packages/python/m & mypy packages/python/tests
+
 bashTest:
 	cd packages/bash/tests && ./run.sh
 

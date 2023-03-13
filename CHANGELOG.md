@@ -8,6 +8,12 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+- Deprecate `endRelease`. Instead we can use `m end_release`.
+- When ending a release it switches to the default branch.
+- Previously a release could only be finished by the user who started it.
+  This can now be done by any user as long as they switch to the release/hotfix
+  branch and execute `m end_release`.
+
 ## [0.15.2] <a name="0.15.2" href="#0.15.2">-</a> March 04, 2023
 
 - `m start_release` fails when a project has not done any releases.

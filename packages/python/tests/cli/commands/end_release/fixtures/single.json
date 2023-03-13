@@ -1,0 +1,21 @@
+{
+  "data": {
+    "repository": {
+      "pullRequests": {
+        "nodes": [
+          {
+            "closed": false,
+            "title": "(hotfix) 0.5.1",
+            "number": 31,
+            "baseRefName": "master",
+            "mergeable": "MERGEABLE",
+            "merged": false,
+            "author": { "login": "jmlopez-rod" },
+            "latestReviews": { "nodes": [] },
+            "url": "https://github.com/jmlopez-rod/git-flow/pull/31"
+          }
+        ]
+      }
+    }
+  }
+}

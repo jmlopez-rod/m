@@ -33,7 +33,7 @@ def test_rw_write(mocker: MockerFixture) -> None:
     res = rw.write_file('some_file.txt', 'hello there')
 
     open_mock.assert_called_with(Path('some_file.txt'), 'w', encoding='UTF-8')
-    open_mock.return_value.write.assert_called_once_with("hello there")
+    open_mock.return_value.write.assert_called_once_with('hello there')
     assert res.value == 0
 
 

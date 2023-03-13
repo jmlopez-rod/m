@@ -102,7 +102,6 @@ env_mock = {'NO_COLOR': 'true'}
         git_checkout=issue('unable to switch branches'),
         exit_code=1,
         errors=[
-            'git checkout failure',
             'unable to switch branches',
         ],
     ),
@@ -117,7 +116,6 @@ env_mock = {'NO_COLOR': 'true'}
         exit_code=1,
         errors=[
             'Proceed with a release instead of a hotfix?',
-            'git checkout failure',
             'unable to switch branches',
         ],
     ),
@@ -134,7 +132,6 @@ env_mock = {'NO_COLOR': 'true'}
         errors=[
             'hotfix may contain unreleased features',
             'Disregard warning and proceed with hotfix?',
-            'git checkout failure',
             'unable to switch branches',
         ],
     ),
@@ -194,7 +191,6 @@ env_mock = {'NO_COLOR': 'true'}
         errors=[
             'unable to retrieve unreleased commits - skipping checks',
             'issue retrieving commits',
-            'git checkout failure',
             'unable to switch branches',
         ],
     ),

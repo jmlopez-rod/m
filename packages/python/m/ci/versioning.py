@@ -92,11 +92,7 @@ def build_py_tag(ver_input: VersionInputs, config: Config) -> str:
 
 
 def _get_py_branch_prefix(config: Config, branch: str) -> str:
-    master_branch = (
-        config.m_flow.master_branch
-        if config.uses_m_flow()
-        else config.git_flow.master_branch
-    )
+    master_branch = config.get_master_branch()
     develop_branch = (
         config.git_flow.develop_branch
         if config.uses_git_flow()

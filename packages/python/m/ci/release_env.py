@@ -44,13 +44,6 @@ def _verify_version(
     return Good(0)
 
 
-def _get_master_branch(config: Config) -> str:
-    # to be used if not using the free flow
-    if config.uses_git_flow():
-        return config.git_flow.master_branch
-    return config.m_flow.master_branch
-
-
 def _get_develop_branch(config: Config) -> str:
     if config.uses_git_flow():
         return config.git_flow.develop_branch
@@ -63,7 +56,7 @@ def _extra_checks(
     is_release_pr: bool,
     is_hotfix_pr: bool,
 ) -> OneOf[Issue, int]:
-    master_branch = _get_master_branch(config)
+    master_branch = config.get_master_branch()
     develop_branch = _get_develop_branch(config)
     valid_branches = (
         (master_branch,)
