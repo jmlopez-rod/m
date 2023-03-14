@@ -8,6 +8,7 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+- Deprecate `reviewRelease`. Instead use `m review_release`.
 - Add `m review_release`. It creates the backport pull request first so that
   the logs point to the build with actual contents (for git flow projects).
 - Delegate `m` configuration validation to pydantic.
@@ -16,6 +17,7 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - `m` configuration file is expected to have extension `.yaml`, `.yml` or `.json`.
   Projects should continue using `.json` extension for now since `reviewRelease` is
   is not aware of `m.yaml`.
+- Removed bash test files - everything is covered via `pytest`.
 
 ## [0.16.1] <a name="0.16.1" href="#0.16.1">-</a> March 13, 2023
 
