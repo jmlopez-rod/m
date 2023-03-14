@@ -11,6 +11,7 @@ ignore =
   E501,    # pylint has a flexible configuration on long lines
   WPS300,  # Found local folder import
   WPS201,  # Found module with too many imports: 13 > 12
+  WPS202,  # Found too many module members: 14 > 10
   WPS210,  # Found too many local variables: 8 > 5
   WPS221,  # Found line with high Jones Complexity: 15 > 14
   WPS305,  # Found `f` string

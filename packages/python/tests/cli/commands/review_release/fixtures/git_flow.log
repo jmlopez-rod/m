@@ -1,0 +1,9 @@
+[INFO] [09:33:09 PM - Nov 29, 1973]: The following changes will be committed
+       {
+         "git": "[mocked git status]"
+       }
+[INFO] [09:33:09 PM - Nov 29, 1973]: pull requests created
+       {
+         "(release to develop) 0.1.0": "https://pr1-url.com",
+         "(release) 0.1.0": "https://pr2-url.com"
+       }

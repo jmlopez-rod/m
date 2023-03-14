@@ -6,13 +6,9 @@ from m import git
 
 from .assert_branch import assert_branch
 from .release_setup import release_setup
+from .release_utils import YES_NO, is_yes
 
 logger = Logger('m.ci.start_release')
-YES_NO = ('yes', 'no')
-
-
-def _is_yes(user_response: str) -> bool:
-    return user_response == 'yes'
 
 
 def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
@@ -54,7 +50,7 @@ def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
             YES_NO,
             as_list=False,
         )
-        if _is_yes(response):
+        if is_yes(response):
             return one_of(lambda: [
                 True
                 for cmd_out in git.stash()
@@ -99,7 +95,7 @@ def verify_release(
             YES_NO,
             as_list=False,
         )
-        if _is_yes(response):
+        if is_yes(response):
             return Good(None)
         return issue('hotfix aborted by user', context={
             'commits': commits,
@@ -112,7 +108,7 @@ def verify_release(
             YES_NO,
             as_list=False,
         )
-        if _is_yes(response):
+        if is_yes(response):
             return Good(None)
         return issue('release aborted by user', context={
             'commits': 'no commits to release',
