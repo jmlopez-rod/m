@@ -16,7 +16,9 @@ def stage_all() -> OneOf[Issue, str]:
     Returns:
         A `OneOf` containing an `Issue` or the response from `git add .`.
     """
-    return subprocess.eval_cmd('git add .')
+    return subprocess.eval_cmd('git add .').flat_map_bad(
+        lambda err: issue('git add failure', cause=err),
+    )
 
 
 def commit(msg: str) -> OneOf[Issue, str]:

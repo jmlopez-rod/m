@@ -1,5 +1,5 @@
 from textwrap import dedent
-from typing import Any, cast
+from typing import cast
 
 from m.core import Good, Issue, OneOf, io, is_bad, issue, one_of
 from m.github.api import GithubPullRequest, create_pr
@@ -154,11 +154,11 @@ def create_prs(
     Returns:
         An issue if there is a problem while creating or None if successful.
     """
-    second_pr: OneOf[Issue, Any] = Good(None)
     all_prs: dict[str, str] = {}
     git_branch = f'{release_type}/{target_ver}'
+    develop_branch = config.get_develop_branch()
     if config.uses_git_flow():
-        title = f'({release_type} to develop) {target_ver}'
+        title = f'({release_type} to {develop_branch}) {target_ver}'
         backport_pr = create_pr(
             gh_token,
             config.owner,
@@ -167,7 +167,7 @@ def create_prs(
                 title=title,
                 body=_git_flow_pr_body(config, git_branch),
                 head=git_branch,
-                base=config.get_develop_branch(),
+                base=develop_branch,
             ),
         ).map(lambda res: cast(str, res.get('html_url', '')))
         if is_bad(backport_pr):
@@ -176,7 +176,7 @@ def create_prs(
                 backport_pr.value,
             )
         else:
-            all_prs[title] = cast(str, second_pr.value)
+            all_prs[title] = cast(str, backport_pr.value)
     title = f'({release_type}) {target_ver}'
     release_pr = create_pr(
         gh_token,
