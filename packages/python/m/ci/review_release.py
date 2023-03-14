@@ -11,9 +11,9 @@ from m.log import Logger
 from m import git
 
 from .config import Config, read_config
+from .release_utils import YES_NO, assert_branch, is_yes
 
 logger = Logger('m.ci.review_release')
-YES_NO = ('yes', 'no')
 
 
 def release_pr_body(config: Config) -> str:
@@ -69,10 +69,6 @@ def _git_flow_pr_body(config: Config, branch: str) -> str:
     """)
 
 
-def _is_yes(user_response: str) -> bool:
-    return user_response == 'yes'
-
-
 def acknowledge_git_status(status: str) -> OneOf[Issue, None]:
     """Display the current git status and ask developer to confirm.
 
@@ -88,34 +84,9 @@ def acknowledge_git_status(status: str) -> OneOf[Issue, None]:
         YES_NO,
         as_list=False,
     )
-    if _is_yes(response):
+    if is_yes(response):
         return Good(None)
     return issue('operation cancelled by user')
-
-
-def assert_branch(branch: str) -> OneOf[Issue, tuple[str, str]]:
-    """Assert that the end of a release is done in the proper branch.
-
-    This can only happen in `release/x.y.z` or `hotfix/x.y.z`.
-
-    Args:
-        branch: branch name to verify.
-
-    Returns:
-        An Issue if the current branch is not a release/hotfix else the
-        version to release/hotfix.
-    """
-    valid_prefix = ('release/', 'hotfix/')
-    if branch.startswith(valid_prefix):
-        parts = branch.split('/')
-        return Good((parts[0], parts[1]))
-    return issue(
-        'review_release can only be done from a release/hotfix branch',
-        context={
-            'current_branch': branch,
-            'expected': 'release/x.y.z or hotfix/x.y.z',
-        },
-    )
 
 
 def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
@@ -214,7 +185,7 @@ def review_release(token: str) -> OneOf[Issue, None]:
     return one_of(lambda: [
         None
         for branch in git.get_branch()
-        for release_type, target_ver in assert_branch(branch)
+        for release_type, target_ver in assert_branch(branch, 'review')
         for config in read_config('m')
         for prs in fetch_branch_prs(token, config.owner, config.repo, branch)
         for _ in inspect_prs(prs)

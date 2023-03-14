@@ -14,33 +14,10 @@ from m.log import Logger
 from m import git
 
 from .config import Config, read_config
+from .release_utils import assert_branch
 
 logger = Logger('m.ci.start_release')
 _checks_per_line = 30
-
-
-def assert_branch(branch: str) -> OneOf[Issue, str]:
-    """Assert that the end of a release is done in the proper branch.
-
-    This can only happen in `release/x.y.z` or `hotfix/x.y.z`.
-
-    Args:
-        branch: branch name to verify.
-
-    Returns:
-        An Issue if the current branch is not a release/hotfix else the
-        version to release/hotfix.
-    """
-    valid_prefix = ('release/', 'hotfix/')
-    if branch.startswith(valid_prefix):
-        return Good(branch.split('/')[1])
-    return issue(
-        'end_release can only be done from a release/hotfix branch',
-        context={
-            'current_branch': branch,
-            'expected': 'release/x.y.z or hotfix/x.y.z',
-        },
-    )
 
 
 def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
@@ -211,7 +188,7 @@ def end_release(gh_token: str) -> OneOf[Issue, None]:
     return one_of(lambda: [
         None
         for branch in git.get_branch()
-        for target_ver in assert_branch(branch)
+        for _, target_ver in assert_branch(branch, 'end')
         for config in read_config('m')
         for prs in fetch_branch_prs(
             gh_token,
