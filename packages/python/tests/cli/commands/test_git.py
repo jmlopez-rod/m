@@ -69,6 +69,30 @@ def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
         eval_cmd_side_effects=[Good('commit1\ncommit2\n')],
         expected_value=['commit1', 'commit2'],
     ),
+    TCase(
+        runner=git.stage_all,
+        cmd='...',
+        eval_cmd_side_effects=[Good('staged all')],
+        expected='staged all',
+    ),
+    TCase(
+        runner=git.raw_status,
+        cmd='...',
+        eval_cmd_side_effects=[Good('raw status')],
+        expected='raw status',
+    ),
+    TCase(
+        runner=lambda: git.push_branch('release/1.2.3'),
+        cmd='...',
+        eval_cmd_side_effects=[Good('pushed branch')],
+        expected='pushed branch',
+    ),
+    TCase(
+        runner=lambda: git.commit('yolo'),
+        cmd='...',
+        eval_cmd_side_effects=[Good('created commit')],
+        expected='created commit',
+    ),
 ])
 def test_m_git_fns(tcase: TCase, mocker: MockerFixture) -> None:
     eval_cmd = mocker.patch('m.core.subprocess.eval_cmd')
