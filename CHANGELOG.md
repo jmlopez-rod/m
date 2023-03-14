@@ -8,6 +8,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+- Add `m review_release`. It creates the backport pull request first so that
+  the logs point to the build with actual contents (for git flow projects).
 - Delegate `m` configuration validation to pydantic.
 - `m.cli.validate_json_payload` handles `yaml` files. Commands that use
   this validator can now handle `.json`, `.yaml` and `.yml` extensions.

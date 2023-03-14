@@ -86,6 +86,16 @@ class Config(BaseModel):
             return self.git_flow.master_branch
         return 'master'
 
+    def get_develop_branch(self) -> str:
+        """Obtain the name of the branch that aliases the "develop" branch.
+
+        Returns:
+            The name/alias assigned to the `develop` branch.
+        """
+        if self.uses_git_flow():
+            return self.git_flow.develop_branch
+        return 'develop'
+
     def get_default_branch(self) -> str:
         """Obtain the name of the branch that aliases the "default" branch.
 

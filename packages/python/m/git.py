@@ -10,6 +10,43 @@ def get_branch() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git rev-parse --abbrev-ref HEAD')
 
 
+def stage_all() -> OneOf[Issue, str]:
+    """Stage the current changes in the branch.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the response from `git add .`.
+    """
+    return subprocess.eval_cmd('git add .')
+
+
+def commit(msg: str) -> OneOf[Issue, str]:
+    """Create a commit.
+
+    Args:
+        msg: commit description.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the response from the git command.
+    """
+    return subprocess.eval_cmd(f'git commit -m "{msg}"').flat_map_bad(
+        lambda err: issue('git commit failure', cause=err),
+    )
+
+
+def push_branch(branch: str) -> OneOf[Issue, str]:
+    """Push branch.
+
+    Args:
+        branch: name of branch to push.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the response from the command.
+    """
+    return subprocess.eval_cmd(f'git push -u origin "{branch}"').flat_map_bad(
+        lambda err: issue('git push failure', cause=err),
+    )
+
+
 def stash() -> OneOf[Issue, str]:
     """Stash the current changes in the branch.
 
@@ -123,3 +160,12 @@ def get_status() -> OneOf[Issue, tuple[str, str]]:
             for msg in res
         ],
     )
+
+
+def raw_status() -> OneOf[Issue, str]:
+    """Obtain the output of "git status".
+
+    Returns:
+        A `OneOf` containing an `Issue` or the output of "git status".
+    """
+    return subprocess.eval_cmd('git status')
