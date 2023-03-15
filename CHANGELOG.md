@@ -8,6 +8,9 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+- `m init` creates `m.yaml`.
+- release tools handle `m.yaml` files as well as `m.json` files.
+
 ## [0.17.0] <a name="0.17.0" href="#0.17.0">-</a> March 14, 2023
 
 - Deprecate `reviewRelease`. Instead use `m review_release`.
