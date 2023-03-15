@@ -36,12 +36,11 @@ def release_pr_body(config: Config, gh_ver: str) -> str:
     return dedent(f"""\
         ## Reviewer directions
 
-        Verify `CHANGELOG.md` contains a summary describing the unreleased
-        changes.
+        Verify `CHANGELOG.md` contains a summary of the unreleased changes.
 
         {link}
 
-        ## Pull Request author directions
+        ## Author directions
 
         - Wait for reviewers to approve
         - When approved, {instructions}
@@ -60,7 +59,7 @@ def _git_flow_pr_body(config: Config, branch: str) -> str:
         ## Unreleased changes
 
         It may be easier to see the changelog in here. Please verify that
-        the unreleased changes are properly documented in the CHANGELOG.
+        the unreleased changes are properly documented in the `CHANGELOG`.
 
         {link}
 
