@@ -27,7 +27,7 @@
     "WPS121": 17,
     "D101": 17,
     "WPS407": 27,
-    "WPS110": 32,
+    "WPS110": 31,
     "WPS425": 34
   },
   "allowedPylintRules": {
