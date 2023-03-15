@@ -223,5 +223,8 @@ def test_m_start_release(mocker: MockerFixture, tcase: TCaseErr):
         json.loads(get_fixture('m.json')),
     )
 
+    # Tests are done using m.json
+    mocker.patch('m.ci.config.get_m_filename').return_value = Good('m/m.json')
+
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)

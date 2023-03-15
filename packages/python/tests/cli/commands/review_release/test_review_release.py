@@ -127,6 +127,9 @@ def test_m_review_release(mocker: MockerFixture, tcase: TCase):
         'm.ci.end_release.get_latest_release',
     ).side_effect = [Good(ver) for ver in tcase.gh_latest]
 
+    # Tests are done using m.json
+    mocker.patch('m.ci.config.get_m_filename').return_value = Good('m/m.json')
+
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
 
     if tcase.pr_body_has:

@@ -2,10 +2,11 @@ import json
 import os
 from datetime import datetime
 from functools import partial
+from pathlib import Path
 
 import pytest
 import yaml
-from m.core import Good
+from m.core import Good, Issue
 from m.core import rw as mio
 from pytest_mock import MockerFixture
 from tests.cli.conftest import assert_streams, run_cli
@@ -45,6 +46,7 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
     mocker.patch.object(mio, 'read_file', fake)
     mocker.patch('m.git.get_first_commit_sha').return_value = Good('sha123abc')
     mocker.patch('m.core.rw.write_file').return_value = Good(None)
+    mocker.patch('m.ci.config.get_m_filename').return_value = Good('m/m.json')
 
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
@@ -158,15 +160,19 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
         ],
     ),
 ])
-def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):
+def test_m_ci_release_setup_pass(mocker: MockerFixture, tcase: TCase):
     mocker.patch.dict(os.environ, no_color, clear=True)
+
+    ext = Path(tcase.m_file).suffix
     fake = partial(read_file_fake, f_map={
-        'm/m.json': tcase.m_file,
+        f'm/m{ext}': tcase.m_file,
         'CHANGELOG.md': tcase.changelog,
     })
+
     mocker.patch('time.time').return_value = 123456789
     mocker.patch.object(mio, 'read_file', fake)
     mocker.patch('m.git.get_first_commit_sha').return_value = Good('sha123abc')
+
     if tcase.m_file.endswith('.json'):
         mocker.patch('m.core.json.read_json').return_value = Good(
             json.loads(get_fixture(tcase.m_file)),
@@ -177,6 +183,11 @@ def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):
         )
     write_file_mock = mocker.patch('m.core.rw.write_file')
     write_file_mock.return_value = Good(None)
+
+    # Tell `m` what file we are using
+    m_file = Good[Issue, str](f'm/m{ext}')
+    mocker.patch('m.ci.release_setup.get_m_filename').return_value = m_file
+    mocker.patch('m.ci.config.get_m_filename').return_value = m_file
 
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
     assert_result(std_out, write_file_mock, tcase)

@@ -153,6 +153,8 @@ def test_m_end_release(mocker: MockerFixture, tcase: TCase):
     mocker.patch('m.git.checkout_branch').return_value = Good(
         'switched to default branch',
     )
+    # Tests are done using m.json
+    mocker.patch('m.ci.config.get_m_filename').return_value = Good('m/m.json')
 
     if tcase.merge_result:
         mocker.patch(
