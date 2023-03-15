@@ -31,3 +31,4 @@ class TCase(CliTestCase):
     create_prs: list[Any] = []
     gh_latest: list[str] = ['0.0.1']
     m_file: str = 'm.json'
+    pr_body_has: str | None = None

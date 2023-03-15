@@ -4,6 +4,7 @@ from typing import cast
 from m.core import Good, Issue, OneOf, io, is_bad, issue, one_of
 from m.github.api import GithubPullRequest, create_pr
 from m.github.ci import compare_sha_url
+from m.github.cli import get_latest_release
 from m.github.graphql.queries.branch_prs import PullRequest
 from m.github.graphql.queries.branch_prs import fetch as fetch_branch_prs
 from m.log import Logger
@@ -16,16 +17,17 @@ from .release_utils import YES_NO, assert_branch, is_yes
 logger = Logger('m.ci.review_release')
 
 
-def release_pr_body(config: Config) -> str:
+def release_pr_body(config: Config, gh_ver: str) -> str:
     """Generate the pull request body.
 
     Args:
         config: The `m` configuration.
+        gh_ver: The current version in Github.
 
     Returns:
         The text to add to the pull request.
     """
-    link = compare_sha_url(config.owner, config.repo, config.version, 'HEAD')
+    link = compare_sha_url(config.owner, config.repo, gh_ver, 'HEAD')
     instructions = (
         '**DO NOT** use the merge button. Instead run `m end_release`.'
         if config.uses_git_flow()
@@ -113,6 +115,7 @@ def create_prs(
     config: Config,
     release_type: str,
     target_ver: str,
+    gh_ver: str,
 ) -> OneOf[Issue, None]:
     """Create release pull request(s).
 
@@ -121,6 +124,7 @@ def create_prs(
         config: The m configuration.
         release_type: 'hotfix' or 'release'.
         target_ver: The version to release.
+        gh_ver: The current version in Github.
 
     Returns:
         An issue if there is a problem while creating or None if successful.
@@ -155,7 +159,7 @@ def create_prs(
         config.repo,
         GithubPullRequest(
             title=title,
-            body=release_pr_body(config),
+            body=release_pr_body(config, gh_ver),
             head=git_branch,
             base=config.get_master_branch(),
         ),
@@ -194,5 +198,6 @@ def review_release(token: str) -> OneOf[Issue, None]:
         for _ in acknowledge_git_status(git_status)
         for _ in git.commit(f'({release_type}) {target_ver}')
         for _ in git.push_branch(branch)
-        for _ in create_prs(token, config, release_type, target_ver)
+        for gh_ver in get_latest_release(token, config.owner, config.repo)
+        for _ in create_prs(token, config, release_type, target_ver, gh_ver)
     ])
