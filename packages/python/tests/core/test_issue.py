@@ -2,6 +2,7 @@ import unittest
 from contextlib import suppress
 
 from m.core import Bad, Issue, issue
+from m.github.graphql.enums import MergeableState
 
 
 class IssueTest(unittest.TestCase):
@@ -66,7 +67,7 @@ def test_issue_yaml():
         cause=exception,
     )
     tuple_data = ('one', 'two')
-    obj = Issue(
+    issue_obj = Issue(
         description='desc',
         message='message',
         cause=sub,
@@ -76,10 +77,28 @@ def test_issue_yaml():
     Issue.yaml_traceback = True
     str_obj = ''
     with suppress(BaseException):
-        str_obj = f'{obj}'
+        str_obj = f'{issue_obj}'
     Issue.yaml_traceback = False
     # asserting that we have the message of the ValueError
     # also making sure we get some colors
     assert 'one' in str_obj
     assert 'two' in str_obj
     assert '\x1b[38;5;153msub-cause\x1b[39m\n' in str_obj
+
+
+def test_enum_yaml():
+    """Making sure enums are displayed as strings."""
+    issue_obj = Issue(
+        description='desc',
+        message='message',
+        # covers enums
+        context={'state': MergeableState.unknown},
+    )
+    Issue.yaml_traceback = True
+    str_obj = ''
+    with suppress(BaseException):
+        str_obj = f'{issue_obj}'
+    Issue.yaml_traceback = False
+    # Serialization may fail if the yaml dumper does not handle the enum.
+    assert 'state' in str_obj
+    assert 'UNKNOWN' in str_obj

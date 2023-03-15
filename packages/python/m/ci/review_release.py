@@ -47,14 +47,16 @@ def release_pr_body(config: Config, gh_ver: str) -> str:
     """)
 
 
-def _git_flow_pr_body(config: Config, branch: str) -> str:
-    link = compare_sha_url(config.owner, config.repo, config.version, 'HEAD')
+def _git_flow_pr_body(config: Config, branch: str, gh_ver: str) -> str:
+    link = compare_sha_url(config.owner, config.repo, gh_ver, 'HEAD')
+    master = config.get_master_branch()
+    develop = config.get_develop_branch()
     return dedent(f"""\
         ## Backport pull request
 
         This pull request attempts to merge commits created during the release
-        process back to the `develop` branch. It should only be merged after
-        the `{branch}` branch has been merged.
+        process back to the `{develop}` branch. It should only be merged after
+        the `{branch}` branch has been merged to `{master}`.
 
         ## Unreleased changes
 
@@ -65,7 +67,7 @@ def _git_flow_pr_body(config: Config, branch: str) -> str:
 
         ## Merging
 
-        If possible this pr should be merged via `m end_release` when this
+        This pull request should be merged via `m end_release` when this
         pull request and the "main" one are approved.
     """)
 
@@ -139,7 +141,7 @@ def create_prs(
             config.repo,
             GithubPullRequest(
                 title=title,
-                body=_git_flow_pr_body(config, git_branch),
+                body=_git_flow_pr_body(config, git_branch, gh_ver),
                 head=git_branch,
                 base=develop_branch,
             ),

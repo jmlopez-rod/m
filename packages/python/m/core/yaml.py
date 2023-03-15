@@ -1,9 +1,30 @@
 from collections import OrderedDict
+from enum import Enum
 from typing import Any, cast
 
 import yaml
 
 tag_prefix = 'tag:yaml.org,2002'
+
+
+class _SafeDumper(yaml.SafeDumper):
+    """Extends SafeDumper to handle enums."""
+
+    # Argument needs to be called `data` because that's the original signature
+    def represent_data(self, data: Any):  # noqa: WPS110
+        """Handle special case when dealing with string enums.
+
+        See https://github.com/yaml/pyyaml/issues/51#issuecomment-734782475.
+
+        Args:
+            data: A python object.
+
+        Returns:
+            A dumper node object.
+        """
+        if isinstance(data, Enum) and isinstance(data, str):
+            return self.represent_data(data.value)
+        return super().represent_data(data)
 
 
 def _ordered_dict_presenter(dumper: yaml.SafeDumper, py_data: OrderedDict):
@@ -44,4 +65,4 @@ def dumps(py_data: Any) -> str:
     Returns:
         A yaml serialized string.
     """
-    return cast(str, yaml.safe_dump(py_data))
+    return cast(str, yaml.dump(py_data, Dumper=_SafeDumper))
