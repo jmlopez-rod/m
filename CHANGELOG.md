@@ -8,6 +8,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.18.0] <a name="0.18.0" href="#0.18.0">-</a> March 15, 2023
+
 - `m init` creates `m.yaml`.
 - release tools handle `m.yaml` files as well as `m.json` files.
 
@@ -231,7 +233,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.17.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.18.0...HEAD
+[0.18.0]: https://github.com/jmlopez-rod/m/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/jmlopez-rod/m/compare/0.16.1...0.17.0
 [0.16.1]: https://github.com/jmlopez-rod/m/compare/0.16.0...0.16.1
 [0.16.0]: https://github.com/jmlopez-rod/m/compare/0.15.2...0.16.0
