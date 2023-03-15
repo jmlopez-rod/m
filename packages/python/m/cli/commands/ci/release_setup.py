@@ -9,10 +9,6 @@ class Arguments(BaseModel):
         default='CHANGELOG.md',
         description='CHANGELOG filename',
     )
-    m_file: str = Field(
-        default='m.json',
-        description='m file name',
-    )
     m_dir: str = Field(
         description='m project directory',
         positional=True,
@@ -37,7 +33,6 @@ def run(arg: Arguments) -> int:
             arg.m_dir,
             None,
             arg.new_ver,
-            arg.m_file,
             arg.changelog,
         ),
     )

@@ -25,7 +25,7 @@ class TCase(CliTestCase):
 
 def _file_exists(name: str, tcase: TCase):
     """Having issues using partial with file_exists_mock."""
-    if str(name) == 'm/m.json':
+    if str(name) == 'm/m.yaml':
         return tcase.m_file_exists
     if str(name) == 'CHANGELOG.md':
         return tcase.changelog_exists
@@ -69,7 +69,7 @@ def _eval_cmd(cmd: str, tcase: TCase):
         expected=read_fixture('m_init_repeat.log', FIXTURE_PATH),
         errors=[
             '[WARNING]',
-            'm/m.json already exists',
+            'm/m.yaml already exists',
         ],
         cleandoc=False,
         new_line=False,
@@ -82,7 +82,7 @@ def _eval_cmd(cmd: str, tcase: TCase):
         gitignore_contents='npm_modules\nhotdog',
         new_gitignore_contents='npm_modules\nhotdog\nm/.m\n',
         changelog='CHANGELOG.md',
-        m_file='m_fake.json',
+        m_file='m_fake.yaml',
     ),
 ])
 def test_m_init(tcase: TCase, mocker: MockerFixture) -> None:
@@ -124,7 +124,7 @@ def test_m_init(tcase: TCase, mocker: MockerFixture) -> None:
     m_call = all_calls[0]
     if tcase.m_file:
         assert m_call.args == (
-            'm/m.json',
+            'm/m.yaml',
             read_fixture(tcase.m_file, FIXTURE_PATH),
         )
 

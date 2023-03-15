@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 
-from m.ci.config import Config, read_config
+from m.ci.config import Config, get_m_filename, read_config
 from m.core import Good, Issue, OneOf, issue, one_of, rw
 from m.git import get_first_commit_sha
 from m.github.ci import compare_sha_url
@@ -101,10 +101,12 @@ def update_changelog_file(
 
 def _update_line_version(line: str, ver: str) -> str:
     stripped_line = line.strip()
-    if not stripped_line.startswith('"version"'):
-        return line
-    comma = ',' if stripped_line.endswith(',') else ''
-    return f'  "version": "{ver}"{comma}'
+    if stripped_line.startswith('"version"'):
+        comma = ',' if stripped_line.endswith(',') else ''
+        return f'  "version": "{ver}"{comma}'
+    if stripped_line.startswith('version'):
+        return f'version: {ver}'
+    return line
 
 
 def _update_config_version(
@@ -119,21 +121,19 @@ def _update_config_version(
 def update_version(
     root: str,
     version: str,
-    m_file: str,
 ) -> OneOf[Issue, int]:
     """Update the version property in m configuration file.
 
     Args:
         root: The directory with the m configuration file.
         version: The new version to write in the m configuration.
-        m_file: Specify either `m.json` or `m.yaml`.
 
     Returns:
         0 if successful or an issue.
     """
-    filename = f'{root}/{m_file}'
     return one_of(lambda: [
         0
+        for filename in get_m_filename(root)
         for config_contents in rw.read_file(filename)
         for new_data in _update_config_version(config_contents, version)
         for _ in rw.write_file(filename, new_data)
@@ -159,7 +159,6 @@ def release_setup(
     m_dir: str,
     config_inst: Config | None,
     new_ver: str,
-    m_file: str = 'm.json',
     changelog: str = 'CHANGELOG.md',
 ) -> OneOf[Issue, None]:
     """Modify all the necessary files to create a release.
@@ -170,7 +169,6 @@ def release_setup(
         m_dir: The directory with the m configuration.
         config_inst: If provided it skips reading the configuration.
         new_ver: The new version to write in the m configuration.
-        m_file: The name of the m configuration file (m.json, m.yaml).
         changelog: The name of the changelog file (defaults to CHANGELOG.md)
 
     Returns:
@@ -180,7 +178,7 @@ def release_setup(
         None
         for config in _read_config(m_dir, config_inst)
         for first_sha in get_first_commit_sha()
-        for _ in update_version(m_dir, new_ver, m_file)
+        for _ in update_version(m_dir, new_ver)
         for _ in update_changelog_file(
             config.owner,
             config.repo,

@@ -35,7 +35,7 @@ def test_m_ci_env_local(tcase: TCase, mocker: MockerFixture) -> None:
     # clear env vars to avoid ci tool specific messages
     mocker.patch.dict(os.environ, {}, clear=True)
     mocker.patch('pathlib.Path.exists').return_value = False
-    mocker.patch('m.ci.config._get_m_filename').return_value = Good(
+    mocker.patch('m.ci.config.get_m_filename').return_value = Good(
         'm_dir_local/m.json',
     )
     mocker.patch('pathlib.Path.mkdir')

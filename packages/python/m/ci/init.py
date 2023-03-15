@@ -43,7 +43,7 @@ def get_repo_info() -> OneOf[Issue, Tuple[str, str]]:
     ])
 
 
-def m_json_body(owner: str, repo: str) -> str:
+def m_config_body(owner: str, repo: str) -> str:
     """Create the basic contents of a m configuration file.
 
     Args:
@@ -51,15 +51,13 @@ def m_json_body(owner: str, repo: str) -> str:
         repo: The repo name.
 
     Returns:
-        A json string to be the content of the `m.json` file.
+        A yaml string to be the content of the `m.yaml` file.
     """
     body = f"""\
-        {{
-          "owner": "{owner}",
-          "repo": "{repo}",
-          "version": "0.0.0",
-          "workflow": "m_flow"
-        }}
+        owner: {owner}
+        repo: {repo}
+        version: 0.0.0
+        workflow: m_flow
     """
     return dedent(body)
 
@@ -70,7 +68,7 @@ def create_m_config() -> OneOf[Issue, str]:
     Returns:
         A `OneOf` containing 0 if successful or an `Issue`.
     """
-    file_name = 'm/m.json'
+    file_name = 'm/m.yaml'
     if Path.exists(Path(file_name)):
         logger.warning(f'{file_name} already exists')
         return Good(None)
@@ -80,7 +78,7 @@ def create_m_config() -> OneOf[Issue, str]:
     return one_of(lambda: [
         file_name
         for owner, repo in get_repo_info()
-        for _ in mio.write_file(file_name, m_json_body(owner, repo))
+        for _ in mio.write_file(file_name, m_config_body(owner, repo))
         for _ in logger.info(f'created {file_name}', {
             'owner': owner,
             'repo': repo,

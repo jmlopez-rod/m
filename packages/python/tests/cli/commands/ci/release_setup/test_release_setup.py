@@ -4,6 +4,7 @@ from datetime import datetime
 from functools import partial
 
 import pytest
+import yaml
 from m.core import Good
 from m.core import rw as mio
 from pytest_mock import MockerFixture
@@ -120,6 +121,42 @@ def test_m_ci_release_setup_errors(mocker: MockerFixture, tcase: TCaseErr):
             ' }\n',
         ],
     ),
+    TCase(
+        cmd='m ci release_setup m 1.2.3',
+        delta_link='https://github.com/gh_owner/gh_repo/compare/0.0.1...HEAD',
+        changelog='cl_basic.md',
+        diff_cl=[
+            '--- before\n',
+            '+++ after\n',
+            '@@ -4,8 +4,16 @@\n',
+            ' \n',
+            ' ## [Unreleased]\n',
+            ' \n',
+            f'+## [1.2.3] <a name="1.2.3" href="#1.2.3">-</a> {TODAY}\n',
+            '+\n',
+            '+\n',
+            '+\n',
+            ' ## [0.2.0] <a name="0.2.0" href="#0.2.0">-</a> August 25, 2021\n',
+            ' desc 0.2\n',
+            ' \n',
+            ' ## [0.1.0] <a name="0.1.0" href="#0.1.0">-</a> August 21, 2021\n',
+            ' desc 0.1\n',
+            '+[unreleased]: https://github.com/gh_owner/gh_repo/compare/1.2.3...HEAD\n',
+            '+[1.2.3]: https://github.com/gh_owner/gh_repo/compare/0.2.0...1.2.3\n',
+            '+[0.2.0]: https://github.com/gh_owner/gh_repo/compare/0.1.0...0.2.0\n',
+            '+[0.1.0]: https://github.com/gh_owner/gh_repo/compare/sha123abc...0.1.0\n',
+        ],
+        m_file='m.yaml',
+        diff_mf=[
+            '--- before\n',
+            '+++ after\n',
+            '@@ -1,3 +1,3 @@\n',
+            ' owner: gh_owner\n',
+            ' repo: gh_repo\n',
+            '-version: 0.0.1\n',
+            '+version: 1.2.3\n',
+        ],
+    ),
 ])
 def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):
     mocker.patch.dict(os.environ, no_color, clear=True)
@@ -130,9 +167,14 @@ def test_m_ci_release_setup(mocker: MockerFixture, tcase: TCase):
     mocker.patch('time.time').return_value = 123456789
     mocker.patch.object(mio, 'read_file', fake)
     mocker.patch('m.git.get_first_commit_sha').return_value = Good('sha123abc')
-    mocker.patch('m.core.json.read_json').return_value = Good(
-        json.loads(get_fixture(tcase.m_file)),
-    )
+    if tcase.m_file.endswith('.json'):
+        mocker.patch('m.core.json.read_json').return_value = Good(
+            json.loads(get_fixture(tcase.m_file)),
+        )
+    else:
+        mocker.patch('m.core.yaml_fp.read_yson').return_value = Good(
+            yaml.safe_load(get_fixture(tcase.m_file)),
+        )
     write_file_mock = mocker.patch('m.core.rw.write_file')
     write_file_mock.return_value = Good(None)
 
