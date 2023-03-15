@@ -79,6 +79,7 @@ env_mock = {'NO_COLOR': 'true'}
         expected=get_fixture('git_flow.log'),
         cleandoc=False,
         new_line=False,
+        pr_body_has='0.0.1',
     ),
     TCase(
         branch='release/0.1.0',
@@ -105,9 +106,13 @@ def test_m_review_release(mocker: MockerFixture, tcase: TCase):
     mocker.patch('m.core.json.read_json').return_value = Good(
         json.loads(get_fixture(tcase.m_file)),
     )
-    mocker.patch('m.ci.review_release.create_pr').side_effect = tcase.create_prs
+    create_pr_mock = mocker.patch('m.ci.review_release.create_pr')
+    create_pr_mock.side_effect = tcase.create_prs
     mocker.patch('builtins.input').side_effect = tcase.user_input
     mocker.patch.object(mio, 'read_file', fake)
+    mocker.patch(
+        'm.ci.review_release.get_latest_release',
+    ).return_value = Good('0.0.1')
     mocker.patch('builtins.input').side_effect = tcase.user_input
     mocker.patch('m.git.commit').return_value = Good('[mocked git commit]')
     mocker.patch('m.git.push_branch').return_value = Good('[mocked git push]')
@@ -118,10 +123,14 @@ def test_m_review_release(mocker: MockerFixture, tcase: TCase):
         mocker.patch('m.github.graphql.api.request').return_value = Good(
             json.loads(get_fixture(tcase.graphql_response)),
         )
-
     mocker.patch(
         'm.ci.end_release.get_latest_release',
     ).side_effect = [Good(ver) for ver in tcase.gh_latest]
 
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
+
+    if tcase.pr_body_has:
+        url = 'https://github.com/gh_owner/gh_repo/compare/0.0.1...HEAD'
+        assert url in create_pr_mock.call_args[0][3].body
+
     assert_streams(std_out, std_err, tcase)

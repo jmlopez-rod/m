@@ -8,6 +8,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.17.0] <a name="0.17.0" href="#0.17.0">-</a> March 14, 2023
+
 - Deprecate `reviewRelease`. Instead use `m review_release`.
 - Add `m review_release`. It creates the backport pull request first so that
   the logs point to the build with actual contents (for git flow projects).
@@ -226,7 +228,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.16.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.17.0...HEAD
+[0.17.0]: https://github.com/jmlopez-rod/m/compare/0.16.1...0.17.0
 [0.16.1]: https://github.com/jmlopez-rod/m/compare/0.16.0...0.16.1
 [0.16.0]: https://github.com/jmlopez-rod/m/compare/0.15.2...0.16.0
 [0.15.2]: https://github.com/jmlopez-rod/m/compare/0.15.1...0.15.2
