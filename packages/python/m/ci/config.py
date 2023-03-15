@@ -159,7 +159,15 @@ class Config(BaseModel):
         return issue(msg, context=err_data) if msg else Good(0)
 
 
-def _get_m_filename(m_dir: str) -> OneOf[Issue, str]:
+def get_m_filename(m_dir: str) -> OneOf[Issue, str]:
+    """Obtain the path to the m configuration file.
+
+    Args:
+        m_dir: The directory with the m configuration.
+
+    Returns:
+        The name of the configuration file or an issue if it doesn't exist.
+    """
     filenames = (f'{m_dir}/m.yaml', f'{m_dir}/m.yml', f'{m_dir}/m.json')
     for filename in filenames:
         if Path(filename).exists():
@@ -178,6 +186,6 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
     """
     return one_of(lambda: [
         Config(m_dir=m_dir, **m_cfg)
-        for m_filename in _get_m_filename(m_dir)
+        for m_filename in get_m_filename(m_dir)
         for m_cfg in yaml_fp.read_yson(m_filename)
     ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))

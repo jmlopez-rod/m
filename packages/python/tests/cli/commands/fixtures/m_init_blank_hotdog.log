@@ -1,4 +1,4 @@
-[INFO] [09:33:09 PM - Nov 29, 1973]: created m/m.json
+[INFO] [09:33:09 PM - Nov 29, 1973]: created m/m.yaml
        {
          "owner": "fizzy",
          "repo": "hotdog"
@@ -8,7 +8,7 @@
 [INFO] [09:33:09 PM - Nov 29, 1973]: setup complete
        {
          "modified_files": [
-           "m/m.json",
+           "m/m.yaml",
            ".gitignore",
            "CHANGELOG.md"
          ]
