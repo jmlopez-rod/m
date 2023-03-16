@@ -1,0 +1,4 @@
+position: 40 # float position is supported
+label: Npm helpers
+collapsible: true # make the category collapsible
+collapsed: true

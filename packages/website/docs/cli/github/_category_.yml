@@ -1,0 +1,4 @@
+position: 30 # float position is supported
+label: Github api
+collapsible: true # make the category collapsible
+collapsed: true
