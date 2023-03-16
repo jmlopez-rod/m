@@ -5,11 +5,11 @@ from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
-    """Retrieve the pull requests associated with a branch.
+    """Retrieve pull requests associated with a branch.
 
     example::
 
-        $ m github branch_prs --owner microsoft --repo typescript
+        $ m github branch_prs --owner jmlopez-rod --repo m release/0.18.0
     """
 
     pretty: bool = Field(
