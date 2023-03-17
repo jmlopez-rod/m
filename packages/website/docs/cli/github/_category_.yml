@@ -5,5 +5,7 @@ collapsed: true
 link:
   type: generated-index
   title: Github API
-customProps:
-  description: This description can be used in the swizzled DocCard
+  description: |
+    The following commands make calls to the Github api. By default they use
+    the environment variable "GITHUB_TOKEN" as the default value for the "token"
+    option. See "m github -h" for more info.
