@@ -7,7 +7,13 @@ import BranchPrsSvg from "./_img/branch_prs.svg";
 
 # m github branch_prs
 
-Obtain pull request information associated with a branch.
+Obtain pull request(s) information associated with a branch.
+
+## Usage
+
+```sh
+m github branch_prs [-h] [--pretty] [--yaml] [--owner OWNER] --repo REPO branch
+```
 
 <BranchPrsSvg />
 
@@ -19,13 +25,13 @@ Name of the branch to query.
 
 ## Options
 
-### --owner
+### --owner &lt;OWNER>
 
 - Default: `env.GITHUB_REPOSITORY_OWNER`.
 
 The Github user or organization that owns the repository.
 
-### --repo
+### --repo &lt;REPO>
 
 The name of the repository.
 

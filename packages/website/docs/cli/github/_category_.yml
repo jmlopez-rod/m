@@ -1,4 +1,9 @@
 position: 30 # float position is supported
-label: Github api
+label: Github API
 collapsible: true # make the category collapsible
 collapsed: true
+link:
+  type: generated-index
+  title: Github API
+customProps:
+  description: This description can be used in the swizzled DocCard

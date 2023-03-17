@@ -1,0 +1,50 @@
+---
+sidebar_position: 30
+sidebar_label: m github pr
+---
+
+import PrSvg from "./_img/pr.svg";
+
+# m github pr
+
+Retrieve a pull request information.
+
+## Usage
+
+```sh
+m github pr [-h] [--owner OWNER] --repo REPO [--files FILES] [--pretty] [--yaml] pr_number
+```
+
+<PrSvg />
+
+## Positional arguments
+
+### pr_number
+
+A valid pull request number.
+
+## Options
+
+### --owner &lt;OWNER>
+
+- Default: `env.GITHUB_REPOSITORY_OWNER`.
+
+The Github user or organization that owns the repository.
+
+### --repo &lt;REPO>
+
+The name of the repository.
+
+### --files &lt;FILES>
+
+- Default: `10`.
+
+The maxium number of modified file names to retrieve.
+
+### --pretty
+
+Format the result using colors and indentation.
+
+### --yaml
+
+Use `yaml` format instead of `json`.

@@ -9,6 +9,12 @@ import LatestReleaseSvg from "./_img/latest_release.svg";
 
 Obtain the latest release for the project.
 
+## Usage
+
+```sh
+m github latest_release [-h] [--owner OWNER] --repo REPO
+```
+
 <LatestReleaseSvg />
 
 ## Bash example
@@ -24,12 +30,12 @@ currentVersion=$(m github latest_release --owner "$owner" --repo "$repo")
 
 ## Options
 
-### --owner
+### --owner &lt;OWNER>
 
 - Default: `env.GITHUB_REPOSITORY_OWNER`.
 
 The Github user or organization that owns the repository.
 
-### --repo
+### --repo &lt;REPO>
 
 The name of the repository.
