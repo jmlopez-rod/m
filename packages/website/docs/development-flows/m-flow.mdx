@@ -1,0 +1,189 @@
+---
+sidebar_position: 20
+sidebar_label: M Flow
+---
+
+import initSvgUrl from "!url-loader!./_img/init.svg";
+import ciChecksSvgUrl from "!url-loader!./_img/ciChecks.svg";
+import { SvgImage } from "@site/src/components/SvgImage";
+
+# M flow
+
+The `m-flow` is a simplified version of the [`git-flow`][git-flow]. It follows
+the same branching model except that it gets rid of the `develop` branch. This
+flow is intended for projects that produce libraries that need to be versioned.
+
+## Use case
+
+The next sections will show how set up and use the `m-flow`. To follow along
+use the [example-library] template, which is a basic node library that provides
+one function.
+
+From here on we will work with the [example-lib-m-flow] repository.
+
+## Setup
+
+Run `m init` to create missing files and/or update existing ones.
+
+<SvgImage href={initSvgUrl} />
+
+The `package.json` file should be made to look similar to the following
+
+```json
+{
+  "name": "@jmlopez-rod/example-lib-m-flow",
+  "version": "0.0.0-PLACEHOLDER",
+  "repository": "https://github.com/jmlopez-rod/example-lib-m-flow",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com/"
+  }
+}
+```
+
+Make sure to replace the scope `@jmlopez-rod` as well as the repository field.
+
+:::note
+
+The version field is set to `0.0.0-PLACEHOLDER` so that we may substitute the
+value before we publish the package.
+
+:::
+
+At this point we may commit the changes and move on to create the scripts to
+fun local builds.
+
+## Scripts
+
+Create the following bash script. For the sake of breverity it has been called
+`m/publish.sh` and it contains all the steps needed to "build" locally.
+
+```bash title="m/publish.sh"
+#!/bin/bash
+set -xeuo pipefail
+
+# source the m environment
+m ci env m > /dev/null
+source m/.m/env.list
+export $(cut -d= -f1 m/.m/env.list)
+
+# build directory
+target=.stage
+
+# start with a clean build directory
+rm -rf "$target"
+mkdir -p "$target"
+
+# move files to the stage directory
+cp -a ./src/. "$target"/
+cp package.json "$target"/package.json
+
+# Set the version
+sed -i -e "s/0.0.0-PLACEHOLDER/$M_TAG/g" "./$target/package.json"
+
+# create package
+(
+    cd "$target" && npm pack
+)
+
+# Only publish with the CI tool
+[ "$M_CI" == "True" ] || exit 0
+
+# Only publishing to github on every pr and master branch
+npmTag=$(m ci npm_tag "$M_TAG")
+npm publish "$target"/*.tgz --tag "$npmTag"
+
+# Only on release
+[ "$M_IS_RELEASE" == "True" ] || exit 0
+m github release --owner "$M_OWNER" --repo "$M_REPO" --version "$M_TAG"
+```
+
+Note how the script contains commands to publish the library as well a command
+to create a release. These commands will only be executed when running in
+Github.
+
+Add `.stage` to the `.gitignore` file and add the following `Makefile`.
+
+```makefile
+ciChecks:
+	./m/publish.sh
+```
+
+Before we can run the script we need to make sure it has proper permissions
+with `chmod +x m/publish.sh`. Now we are ready to run `make ciChecks`.
+
+<SvgImage href={ciChecksSvgUrl} />
+
+:::tip
+
+This type of script is important because we get a chance to inspect all the
+files that get bundled into the package. By creating an empty `.stage` directory
+we get control over what files go into the packages instead of having to add
+files to the `.npmignore` file. This is particular useful with typescript
+projects in which we need to compile files.
+
+:::
+
+## Github actions
+
+Before proceeding creating the workflow it is recommended to work in another
+branch. This will help us make sure that pull requests builds are working.
+
+The branch name can be `topic/workflow-setup`. At this point create the
+following two files.
+
+```properties title=".npmrc"
+@jmlopez-rod:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+```yaml title=".github/workflows/builder.yaml"
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      packages: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkoug
+        uses: actions/checkout@v3
+      - name: M environment
+        run: pip install jmlopez-m
+      - name: Publish
+        run: ./m/publish.sh
+```
+
+Note that on the `.npmrc` file we need to use your username or the name of
+the organization. Commit the files and open up a pull request.
+
+Before you can use the new package you will need change its visibility settings.
+In the Github repository website click on the package name and find its
+settings. Once in there change the `package visibility`. It may start private.
+If you are in an organization set it to `internal` otherwise `public`.
+
+The goal of `m` is always provide a unique version to publish for every pull
+request and branches. If the pull request was successful we should now
+be able to install the package in another project.
+
+```bash
+npm install @jmlopez-rod/example-lib-m-flow@pr2
+```
+
+The above command should be adjusted to use the pr number that was used to
+generate the build. At this point the pull request should be merged so that
+we may start creating the builds in the `master` branch.
+
+[git-flow]: https://nvie.com/posts/a-successful-git-branching-model/
+[github-flow]: https://docs.github.com/en/get-started/quickstart/github-flow
+[example-library]: https://github.com/jmlopez-rod/example-library
+[example-lib-m-flow]: https://github.com/jmlopez-rod/example-lib-m-flow

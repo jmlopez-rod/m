@@ -2,3 +2,11 @@ position: 20 # float position is supported
 label: Release process
 collapsible: true # make the category collapsible
 collapsed: true
+link:
+  type: generated-index
+  title: Release process
+  description: |
+    The release process involves updating the changelog and possibly making
+    some last minute updates. The following commands aim to aid the developer
+    write a proper changelog and create pull requests that automate the
+    a release.

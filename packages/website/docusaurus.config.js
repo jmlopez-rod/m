@@ -2,12 +2,12 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'm',
-  tagline: 'collection of devops tools',
+  tagline: 'devops tools',
   url: 'http://jmlopez-rod.github.io',
   baseUrl: '/m/',
   onBrokenLinks: 'throw',
@@ -72,6 +72,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+        additionalLanguages: ['bash', 'makefile', 'yaml']
       },
     }),
 };
