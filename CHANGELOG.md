@@ -8,6 +8,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.19.0] <a name="0.19.0" href="#0.19.0">-</a> March 21, 2023
+
 - Add `typescript` processor to `m ci celt`.
 
 ## [0.18.1] <a name="0.18.1" href="#0.18.1">-</a> March 15, 2023
@@ -240,7 +242,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.18.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.19.0...HEAD
+[0.19.0]: https://github.com/jmlopez-rod/m/compare/0.18.1...0.19.0
 [0.18.1]: https://github.com/jmlopez-rod/m/compare/0.18.0...0.18.1
 [0.18.0]: https://github.com/jmlopez-rod/m/compare/0.17.0...0.18.0
 [0.17.0]: https://github.com/jmlopez-rod/m/compare/0.16.1...0.17.0
