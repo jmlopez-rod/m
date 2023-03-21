@@ -1,25 +1,23 @@
 import re
-from typing import Dict, List
 
-from ....core import Good, Issue, OneOf
-from ..core.types import FileReport, Violation
+from m.ci.celt.core.types import FileReport, Violation
+from m.core import Good, Issue, OneOf
 
 
-def read_payload(payload: str) -> OneOf[Issue, List[FileReport]]:
-    """Transform a pycodestyle payload to a list of `FileReport` instances.
-
-    This function can be used with flake8 and other tools that emit similar
-    output.
+def read_payload(payload: str) -> OneOf[Issue, list[FileReport]]:
+    """Transform a typescript payload to a list of `FileReport` instances.
 
     Args:
-        payload: The raw payload from pycodestyle.
+        payload: The raw payload from typescript when `--pretty false` option.
 
     Returns:
         A `OneOf` containing an `Issue` or a list of `FileReport` instances.
     """
-    regex = r'(.*):(\d+):(\d+): (\w+) (.*)'
-    report: Dict[str, List[Violation]] = {}
+    regex = r'(.*)\((\d+),(\d+)\): error (\w+): (.*)'
+    report: dict[str, list[Violation]] = {}
     for line in payload.splitlines():
+        if line.startswith(' '):
+            continue
         match = re.match(regex, line)
         if match:
             group = match.groups()

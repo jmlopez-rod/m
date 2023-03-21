@@ -3,7 +3,7 @@ from typing import Dict
 from ...core import Good, Issue, OneOf, issue
 from .core.process import PostProcessor
 from .core.types import Configuration, Transform
-from .post_processors import eslint, pycodestyle, pylint
+from .post_processors import eslint, pycodestyle, pylint, typescript
 
 
 def get_post_processor(
@@ -24,6 +24,7 @@ def get_post_processor(
         'pycodestyle': pycodestyle.read_payload,
         'flake8': pycodestyle.read_payload,
         'pylint': pylint.read_payload,
+        'typescript': typescript.read_payload,
     }
     if name not in mapping:
         return issue(f'{name} is not a supported post processor')

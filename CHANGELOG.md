@@ -8,6 +8,8 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+- Add `typescript` processor to `m ci celt`.
+
 ## [0.18.1] <a name="0.18.1" href="#0.18.1">-</a> March 15, 2023
 
 - Fix pull request description for the git flow (bad comparison link).

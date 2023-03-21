@@ -48,6 +48,10 @@ class Arguments(BaseModel):
     - pylint: expects json output::
 
         pylint -f json --rcfile=[file] [dir]
+
+    - typescript: expects output::
+
+        tsc --pretty false
     """
 
     payload: str = Field(

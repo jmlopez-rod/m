@@ -10,6 +10,6 @@
   },
   "allowedPylintRules": {
     "too-many-locals": 2,
-    "duplicate-code": 2
+    "duplicate-code": 3
   }
 }

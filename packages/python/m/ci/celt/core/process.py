@@ -138,7 +138,7 @@ def get_project_status(
     allowed_rules: Dict[str, int],
     ignored_rules: Dict[str, str],
 ) -> ProjectStatus:
-    """Analize the rules_dictionary with the allowed and ignored rules.
+    """Analyze the rules_dictionary with the allowed and ignored rules.
 
     Args:
         payload: The original payload from the compiler/linter.
@@ -255,7 +255,7 @@ class PostProcessor:
         )
 
     def to_str(self, project: ProjectStatus) -> str:
-        """Strinfigy a `ProjectStatus`.
+        """Stringify a `ProjectStatus`.
 
         Args:
             project: The `ProjectStatus` obtained by running the `run` method.
@@ -266,7 +266,7 @@ class PostProcessor:
         return project_status_str(project, self.celt_config)
 
     def stats_json(self, project: ProjectStatus) -> str:
-        """Strinfigy a `ProjectStatus`.
+        """Stringify a `ProjectStatus`.
 
         Show a dictionary with the total number of violations. Useful when
         writing an entry for the configuration file.

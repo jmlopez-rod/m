@@ -1,0 +1,14 @@
+TS2345 (found 1, allowed 0):
+  tmp.ts:12:20 - Argument of type 'number | null | undefined' is not assignable to parameter of type 'number'.
+
+TS18048 (found 1, allowed 0):
+  tmp.ts:12:30 - 'a.deep' is possibly 'undefined'.
+
+FILES:
+  tmp.ts: found 2
+
+RULES    FOUND  ALLOWED
+TS2345       1        0
+TS18048      1        0
+
+::error::2 extra errors were introduced
