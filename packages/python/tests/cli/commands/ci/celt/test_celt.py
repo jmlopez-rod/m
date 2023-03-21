@@ -30,6 +30,11 @@ class TCase(CliTestCase):
         exit_code=1,
     ),
     TCase(
+        cmd='m ci celt -c @cfg_01.json -t typescript @typescript.txt',
+        expected_file='cfg_01_expected_typescript.txt',
+        exit_code=1,
+    ),
+    TCase(
         cmd='m ci celt -c @cfg_01.json -t invalid_tool @pycodestyle.txt',
         expected_file='cfg_01_invalid_tool.txt',
         exit_code=1,
