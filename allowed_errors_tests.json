@@ -38,6 +38,6 @@
     "line-too-long": 2,
     "duplicate-code": 6,
     "use-dict-literal": 11,
-    "missing-function-docstring": 20
+    "missing-function-docstring": 19
   }
 }
