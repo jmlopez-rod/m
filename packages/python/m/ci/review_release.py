@@ -178,6 +178,14 @@ def create_prs(
     return issue('no prs were created, inspect logs for hints')
 
 
+def _commit_changes(commit_msg: str) -> OneOf[Issue, str]:
+    commit_result = git.commit(commit_msg)
+    if is_bad(commit_result):
+        if 'working tree clean' in f'{commit_result.value}':
+            return Good('')
+    return commit_result
+
+
 def review_release(token: str) -> OneOf[Issue, None]:
     """Create release prs.
 
@@ -197,7 +205,7 @@ def review_release(token: str) -> OneOf[Issue, None]:
         for _ in git.stage_all()
         for git_status in git.raw_status()
         for _ in acknowledge_git_status(git_status)
-        for _ in git.commit(f'({release_type}) {target_ver}')
+        for _ in _commit_changes(f'({release_type}) {target_ver}')
         for _ in git.push_branch(branch)
         for gh_ver in get_latest_release(token, config.owner, config.repo)
         for _ in create_prs(token, config, release_type, target_ver, gh_ver)
