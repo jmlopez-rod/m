@@ -70,6 +70,18 @@ env_mock = {'NO_COLOR': 'true'}
     TCase(
         branch='release/0.1.0',
         exit_code=0,
+        user_input=['yes'],
+        git_commit_result=issue('working tree clean'),
+        create_prs=[
+            Good({'html_url': 'https://pr1-url.com'}),
+        ],
+        expected=get_fixture('m_flow.log'),
+        cleandoc=False,
+        new_line=False,
+    ),
+    TCase(
+        branch='release/0.1.0',
+        exit_code=0,
         m_file='m_git_flow.json',
         user_input=['yes'],
         create_prs=[
@@ -114,7 +126,7 @@ def test_m_review_release(mocker: MockerFixture, tcase: TCase):
         'm.ci.review_release.get_latest_release',
     ).return_value = Good('0.0.1')
     mocker.patch('builtins.input').side_effect = tcase.user_input
-    mocker.patch('m.git.commit').return_value = Good('[mocked git commit]')
+    mocker.patch('m.git.commit').return_value = tcase.git_commit_result
     mocker.patch('m.git.push_branch').return_value = Good('[mocked git push]')
     mocker.patch('m.git.stage_all').return_value = Good('[mocked git add]')
     mocker.patch('m.git.raw_status').return_value = Good('[mocked git status]')

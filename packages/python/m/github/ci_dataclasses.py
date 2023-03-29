@@ -1,14 +1,15 @@
 from typing import List, Optional
 
+from m.pydantic import CamelModel
 from pydantic import BaseModel
 
 
-class Author(BaseModel):
+class Author(CamelModel):
     """An object representing a committer."""
 
     login: str
-    avatar_url: str
-    email: str
+    avatar_url: str | None
+    email: str | None
 
 
 class AssociatedPullRequest(BaseModel):

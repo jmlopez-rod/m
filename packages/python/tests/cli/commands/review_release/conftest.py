@@ -13,6 +13,15 @@ get_fixture = partial(
 
 
 def read_file_fake(filename: str, f_map: dict) -> OneOf[Issue, str]:
+    """Fake read_file function for testing.
+
+    Args:
+        filename: The filename to read.
+        f_map: A map of filenames to fixture names.
+
+    Returns:
+        The contents of the fixture.
+    """
     fname = f_map.get(filename)
     if not fname:
         return issue('filename not mapped', context={'filename': filename})
@@ -30,5 +39,6 @@ class TCase(CliTestCase):
     merge_result: list[Any] = []
     create_prs: list[Any] = []
     gh_latest: list[str] = ['0.0.1']
+    git_commit_result: Any = Good('[mocked git commit]')
     m_file: str = 'm.json'
     pr_body_has: str | None = None

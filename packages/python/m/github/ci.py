@@ -177,21 +177,17 @@ def _get_commit(owner: str, repo: str, raw: Any) -> OneOf[Issue, Commit]:
     nodes = get(commit, 'associatedPullRequests.nodes').get_or_else([])
     if nodes:
         pr = nodes[0]
-        author = pr['author']
+        author = pr.get('author')
         commit_info.associated_pull_request = AssociatedPullRequest(
-            author=Author(
-                login=author['login'],
-                avatar_url=author['avatarUrl'],
-                email=author['email'],
-            ),
-            merged=pr['merged'],
-            pr_number=pr['number'],
-            target_branch=pr['baseRefName'],
-            target_sha=pr['baseRefOid'],
-            pr_branch=pr['headRefName'],
-            pr_sha=pr['headRefOid'],
-            title=pr['title'],
-            body=pr['body'],
+            author=Author(**author),
+            merged=pr.get('merged'),
+            pr_number=pr.get('number'),
+            target_branch=pr.get('baseRefName'),
+            target_sha=pr.get('baseRefOid'),
+            pr_branch=pr.get('headRefName'),
+            pr_sha=pr.get('headRefOid'),
+            title=pr.get('title'),
+            body=pr.get('body'),
         )
     return Good(commit_info)
 
@@ -203,24 +199,20 @@ def _get_pull_request(
     pr = raw.get('pullRequest')
     if not pr:
         return Good(None)
-    author = pr['author']
+    author = pr.get('author', {})
     return Good(
         PullRequest(
-            author=Author(
-                login=author['login'],
-                avatar_url=author['avatarUrl'],
-                email=author['email'],
-            ),
+            author=Author(**author),
             pr_number=pr_number or 0,
-            pr_branch=pr['headRefName'],
-            target_branch=pr['baseRefName'],
-            target_sha=pr['baseRefOid'],
-            url=pr['url'],
-            title=pr['title'],
-            body=pr['body'],
-            file_count=pr['files']['totalCount'],
-            files=[x['path'] for x in pr['files']['nodes']],
-            is_draft=pr['isDraft'],
+            pr_branch=pr.get('headRefName'),
+            target_branch=pr.get('baseRefName'),
+            target_sha=pr.get('baseRefOid'),
+            url=pr.get('url'),
+            title=pr.get('title'),
+            body=pr.get('body'),
+            file_count=pr.get('files', {}).get('totalCount', 0),
+            files=[x['path'] for x in pr.get('files', {}).get('nodes', [])],
+            is_draft=pr.get('isDraft'),
         ),
     )
 
