@@ -13,5 +13,5 @@ else
 # To run specific tests:
 # python -m unittest discover -s packages/python -v -k tests.cli.commands.test_json.CliJsonTest
 # python -m pytest -vv -k test_m_npm
-  pytest -p no:logging packages/python -vv -k test_m_ci_celt
+  pytest -p no:logging packages/python -vv -k test_free_flow
 fi

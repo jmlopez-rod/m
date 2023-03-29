@@ -1,0 +1,50 @@
+{
+  "data": {
+    "repository": {
+      "releases": {
+        "nodes": [
+          {
+            "name": "1.1.1",
+            "tagName": "1.1.1",
+            "publishedAt": "2021-01-01T12:12:12Z"
+          }
+        ]
+      },
+      "commit": {
+        "message": "using head commit\n\nhttps://github.com/actions/checkout#checkout-pull-request-head-commit-instead-of-merge-commit",
+        "author": {
+          "name": "Manuel Lopez",
+          "user": {
+            "login": "jmlopez-rod"
+          }
+        },
+        "oid": "1efe314a67cf65d36ddad7881bf9359dc5588f8f"
+      },
+      "pullRequest": {
+        "headRefName": "testing",
+        "headRefOid": "1efe314a67cf65d36ddad7881bf9359dc5588f8f",
+        "baseRefName": "master",
+        "baseRefOid": "174646b40adabe5ecadc3036d7c977fd726d99d0",
+        "title": "pr 1 title",
+        "body": "testing commits",
+        "url": "https://github.com/jmlopez-rod/gh-actions/pull/1",
+        "author": {
+          "login": "jmlopez-rod",
+          "avatarUrl": "https://avatars.githubusercontent.com/u/1810397?s=50&v=4"
+        },
+        "files": {
+          "totalCount": 2,
+          "nodes": [
+            {
+              "path": ".github/workflows/build.yml"
+            },
+            {
+              "path": "new.txt"
+            }
+          ]
+        },
+        "isDraft": false
+      }
+    }
+  }
+}

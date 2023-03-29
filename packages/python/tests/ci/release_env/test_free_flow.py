@@ -41,6 +41,20 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
         ),
     ),
     TCase(
+        desc='pr - no email field',
+        config={},
+        env_vars={'git_branch': 'refs/pull/1'},
+        gh_res='pr-no-email.json',
+        release_env=ReleaseEnv(
+            build_tag='pr1.b404',
+            python_tag='b1.dev404',
+            is_release=False,
+            is_release_pr=False,
+            is_hotfix_pr=False,
+            workflow=Workflow.free_flow,
+        ),
+    ),
+    TCase(
         desc='local - uses a timestamp since git sha do not work with pip',
         config={},
         env_vars={'ci_env': False, 'run_id': ''},
