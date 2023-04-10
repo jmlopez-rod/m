@@ -1,0 +1,33 @@
+FROM python:3.11.3-slim-bullseye
+
+LABEL org.opencontainers.image.source="https://github.com/jmlopez-rod/m"
+
+ENV TZ=Etc/UTC
+
+WORKDIR /scratch
+
+## Base
+RUN apt-get update \
+  && apt-get install -y \
+    git make \
+    curl bash-completion
+
+## None
+RUN apt update \
+  && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+  && apt install -y nodejs
+
+## PNPM
+ARG PNPM_VERSION=7.15.0
+RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@${PNPM_VERSION}
+
+ENV WORKSPACE=/workspace
+WORKDIR $WORKSPACE
+
+## Python env
+RUN python -m venv $WORKSPACE/venv
+ENV PATH=$WORKSPACE/venv/bin:$PATH
+
+## Libraries
+COPY packages/docker/requirements.txt .
+RUN pip3 install -r requirements.txt
