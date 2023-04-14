@@ -1,0 +1,32 @@
+name: Use them
+reference: use-them
+rule: |
+  When you must use a function expression (as when passing an anonymous function), use arrow
+  function notation.
+reason: |
+  Why? It creates a version of the function that executes in the context of this, which is usually
+  what you want, and is a more concise syntax.
+
+  Why not? If you have a fairly complicated function, you might move that logic out into its own
+  function declaration.
+rules:
+  prefer-arrow-callback: https://eslint.org/docs/latest/rules/prefer-arrow-callback
+examples:
+  - code: |
+      // bad
+      [1, 2, 3].map(function (x) {
+        const y = x + 1;
+        return x * y;
+      });
+
+      // good
+      [1, 2, 3].map((x) => {
+        const y = x + 1;
+        return x * y;
+      });
+    errors:
+      prefer-arrow-callback:
+        - [2, 14, "Unexpected function expression."]
+  - code: |
+      // good
+      [0, null, 1, null, 2].filter(x => x !== null);

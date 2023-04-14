@@ -1,0 +1,6 @@
+name: eslint ui
+description: |
+  This is a sample guide.
+commands:
+  eslint: |
+    eslint --no-eslintrc --config packages/python/tests/style_guide/fixtures/eslint_ui/eslintrc.yaml packages/python/tests/style_guide/fixtures/eslint_ui

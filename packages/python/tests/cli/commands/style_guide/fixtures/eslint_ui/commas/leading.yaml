@@ -1,0 +1,41 @@
+name: Leading commas
+reference: leading-commas
+rule: |
+  **Nope**.
+eslint:
+  trailing-comma: https://eslint.org/docs/latest/rules/trailing-comma
+examples:
+  - code: |
+      // bad
+      const story = [
+        once
+        , upon
+        , aTime
+      ];
+
+      // good
+      const story = [
+        once,
+        upon,
+        aTime,
+      ];
+
+      // bad
+      const hero = {
+        firstName: 'Ada'
+        , lastName: 'Lovelace'
+        , birthYear: 1815
+        , superPower: 'computers'
+      };
+
+      // good
+      const hero = {
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        birthYear: 1815,
+        superPower: 'computers',
+      };
+    errors:
+      trailing-comma:
+        - [5, 9, "Missing trailing comma."]
+        - [20, 27, "Missing trailing comma."]
