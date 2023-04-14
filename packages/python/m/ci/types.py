@@ -19,6 +19,14 @@ class Workflow(str, Enum):  # noqa: WPS600
     m_flow = 'm_flow'
     free_flow = 'free_flow'
 
+    def __str__(self):
+        """Return the string representation of the workflow.
+
+        Returns:
+            The string representation of the workflow.
+        """
+        return self.value
+
 
 class GitFlowConfig(BaseModel):
     """An object mapping branches for the git_flow workflow."""

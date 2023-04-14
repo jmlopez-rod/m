@@ -22,6 +22,14 @@ class HttpMethod(str, Enum):  # noqa: WPS600
     post = 'POST'
     put = 'PUT'
 
+    def __str__(self):
+        """Return the value of the enum.
+
+        Returns:
+            The value of the enum.
+        """
+        return self.value
+
 
 @dataclass
 class FetchedResponse:

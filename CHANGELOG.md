@@ -10,7 +10,15 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [0.19.3] <a name="0.19.3" href="#0.19.3">-</a> April 14, 2023
 
+- `review_release` ignores previously closed prs.
 
+## [0.19.2] <a name="0.19.2" href="#0.19.2">-</a> April 10, 2023
+
+- Support python 3.11. `Foo.BAR` in Python 3.11 no longer returns the member
+  value "bar" when used in the format() function or f-strings the way that prior
+  Python versions used to. Instead, it returns the `Foo.BAR` member class.
+- See https://blog.pecar.me/python-enum. For now the fix involves overriding
+  the magic method `__str__` but should consider using `StrEnum`.
 
 ## [0.19.1] <a name="0.19.1" href="#0.19.1">-</a> March 29, 2023
 
@@ -252,7 +260,8 @@ prs and the latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 [unreleased]: https://github.com/jmlopez-rod/m/compare/0.19.3...HEAD
-[0.19.3]: https://github.com/jmlopez-rod/m/compare/0.19.1...0.19.3
+[0.19.3]: https://github.com/jmlopez-rod/m/compare/0.19.2...0.19.3
+[0.19.2]: https://github.com/jmlopez-rod/m/compare/0.19.1...0.19.2
 [0.19.1]: https://github.com/jmlopez-rod/m/compare/0.19.0...0.19.1
 [0.19.0]: https://github.com/jmlopez-rod/m/compare/0.18.1...0.19.0
 [0.18.1]: https://github.com/jmlopez-rod/m/compare/0.18.0...0.18.1
