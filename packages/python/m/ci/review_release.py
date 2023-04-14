@@ -92,18 +92,19 @@ def acknowledge_git_status(status: str) -> OneOf[Issue, None]:
     return issue('operation cancelled by user')
 
 
-def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
+def inspect_prs(all_prs: list[PullRequest]) -> OneOf[Issue, None]:
     """Inspect the release pull requests.
 
     There should not be any pull requests when calling `review_release`.
     This is a one time operation.
 
     Args:
-        prs: The list of pull requests.
+        all_prs: The list of pull requests.
 
     Returns:
         An issue if prs already exist, None otherwise.
     """
+    prs = [pr for pr in all_prs if pr.closed is False]
     if prs:
         return issue('release is already in review', context={
             'prs': {pr.number: pr.url for pr in prs},

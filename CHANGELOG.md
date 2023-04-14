@@ -8,6 +8,10 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 ## [Unreleased]
 
+## [0.19.3] <a name="0.19.3" href="#0.19.3">-</a> April 14, 2023
+
+- `review_release` ignores previously closed prs.
+
 ## [0.19.2] <a name="0.19.2" href="#0.19.2">-</a> April 10, 2023
 
 - Support python 3.11. `Foo.BAR` in Python 3.11 no longer returns the member
@@ -255,7 +259,8 @@ prs and the latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.19.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.19.3...HEAD
+[0.19.3]: https://github.com/jmlopez-rod/m/compare/0.19.2...0.19.3
 [0.19.2]: https://github.com/jmlopez-rod/m/compare/0.19.1...0.19.2
 [0.19.1]: https://github.com/jmlopez-rod/m/compare/0.19.0...0.19.1
 [0.19.0]: https://github.com/jmlopez-rod/m/compare/0.18.1...0.19.0

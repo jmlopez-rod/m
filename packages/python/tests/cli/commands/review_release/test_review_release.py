@@ -37,6 +37,15 @@ env_mock = {'NO_COLOR': 'true'}
     TCase(
         branch='release/0.1.0',
         exit_code=1,
+        graphql_response='cancelled.json',
+        user_input=['no'],
+        errors=[
+            'operation cancelled by user',
+        ],
+    ),
+    TCase(
+        branch='release/0.1.0',
+        exit_code=1,
         user_input=['no'],
         errors=[
             'operation cancelled by user',
