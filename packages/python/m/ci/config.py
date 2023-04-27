@@ -172,7 +172,10 @@ def get_m_filename(m_dir: str) -> OneOf[Issue, str]:
     for filename in filenames:
         if Path(filename).exists():
             return Good(filename)
-    return issue('m file not found', context={'m_dir': m_dir})
+    return issue('m_file not found', context={
+        'm_dir': m_dir,
+        'valid_m_files': filenames,
+    })
 
 
 def read_config(m_dir: str) -> OneOf[Issue, Config]:

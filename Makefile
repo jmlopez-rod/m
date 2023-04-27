@@ -1,4 +1,4 @@
-ciChecks:
+ci-checks:
 	m/scripts/checks/ci.sh
 
 tests:
@@ -7,11 +7,8 @@ tests:
 mypy:
 	mypy packages/python/m & mypy packages/python/tests
 
-bashTest:
-	cd packages/bash/tests && ./run.sh
-
-localPublish:
-	m/scripts/publish.sh
+localBuild:
+	m/scripts/build.sh
 
 devDocs:
 	cd packages/website && pnpm start
@@ -19,10 +16,20 @@ devDocs:
 deployDocs:
 	cd packages/website && USE_SSH=true npm run deploy
 
+fix:
+	pnpm exec prettier -w .
+
 ## Manual docker maintenance
 
-buildDevContainer:
-	m/bash/build.sh
+buildPy311DevContainer:
+	IMAGE=py311-devcontainer m/bash/build.sh
 
-publishDevContainer:
-	m/bash/publish.sh
+buildPy310DevContainer:
+	IMAGE=py310-devcontainer m/bash/build.sh
+
+publishPy311DevContainer: buildPy311DevContainer
+	PY_VER=311 m/bash/publish.sh
+
+publishPy310DevContainer: buildPy310DevContainer
+	PY_VER=310 m/bash/publish.sh
+

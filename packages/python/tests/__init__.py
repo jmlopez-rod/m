@@ -35,12 +35,13 @@ mio.write_file = mock('m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
 
 if not os.environ.get('CI'):
-    # LOOK AT ME!!! If you are running this locally you'll have to
-    # do a first run with this line disabled. Pytest uses mkdir to
-    # create some directories and doing this messes it up. So if its
-    # the first time, disable and then enable. Only doing this so that
-    # we are reminded that during tests we should mock making directories.
-    Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
+    # We want to make sure that we do not create directories during tests.
+    # To do we we will mock the Path.mkdir function. There is a problem though:
+    # pytest needs this function to create directories for its own purposes.
+    # For this reason we will only mock the function after we create the
+    # m/.m/pytest-ran file.
+    if Path('m/.m/pytest-ran').exists():
+        Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
 
 
 class BlockNetwork(socket.socket):

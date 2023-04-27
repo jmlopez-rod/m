@@ -38,7 +38,7 @@ class ConfigFreeFlowTest(FpTestCase):
         path_exists_mock.side_effect = (False, False, False)
         confg_result = read_config('m')
         self.assert_issue(confg_result, 'read_config failure')
-        assert 'm file not found' in str(confg_result.value)
+        assert 'm_file not found' in str(confg_result.value)
 
     @patch('pathlib.Path.exists')
     @patch('m.core.yaml_fp.read_yson')

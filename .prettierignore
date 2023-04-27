@@ -1,0 +1,8 @@
+.mypy_cache
+pnpm-lock.yaml
+.pnpm-store
+.pytest_cache
+
+# special files meant to test failures
+packages/python/tests/cli/commands/fixtures/bad_json.json
+packages/python/tests/cli/commands/fixtures/error.yaml

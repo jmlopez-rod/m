@@ -1,12 +1,18 @@
 # Changelog
 
-The format of this changelog is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
-The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
+The format of this changelog is based on
+[Keep a Changelog](http://keepachangelog.com/en/1.0.0/). The project adheres to
+[Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
-> Major version zero (0.y.z) is for initial development. Anything may change at any time.
-> The public API should not be considered stable.
+> Major version zero (0.y.z) is for initial development. Anything may change at
+> any time. The public API should not be considered stable.
 
 ## [Unreleased]
+
+- update error message explaining `m.yaml` is missing.
+- no longer publishing to npmjs or github
+- improved devcontainer
+- all files are formatted with prettier
 
 ## [0.19.3] <a name="0.19.3" href="#0.19.3">-</a> April 14, 2023
 
@@ -17,13 +23,13 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 - Support python 3.11. `Foo.BAR` in Python 3.11 no longer returns the member
   value "bar" when used in the format() function or f-strings the way that prior
   Python versions used to. Instead, it returns the `Foo.BAR` member class.
-- See https://blog.pecar.me/python-enum. For now the fix involves overriding
-  the magic method `__str__` but should consider using `StrEnum`.
+- See https://blog.pecar.me/python-enum. For now the fix involves overriding the
+  magic method `__str__` but should consider using `StrEnum`.
 
 ## [0.19.1] <a name="0.19.1" href="#0.19.1">-</a> March 29, 2023
 
-- Prevent failure when pull requests are done by accounts that may not have
-  an email.
+- Prevent failure when pull requests are done by accounts that may not have an
+  email.
 
 ## [0.19.0] <a name="0.19.0" href="#0.19.0">-</a> March 21, 2023
 
@@ -42,14 +48,14 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 ## [0.17.0] <a name="0.17.0" href="#0.17.0">-</a> March 14, 2023
 
 - Deprecate `reviewRelease`. Instead use `m review_release`.
-- Add `m review_release`. It creates the backport pull request first so that
-  the logs point to the build with actual contents (for git flow projects).
+- Add `m review_release`. It creates the backport pull request first so that the
+  logs point to the build with actual contents (for git flow projects).
 - Delegate `m` configuration validation to pydantic.
-- `m.cli.validate_json_payload` handles `yaml` files. Commands that use
-  this validator can now handle `.json`, `.yaml` and `.yml` extensions.
-- `m` configuration file is expected to have extension `.yaml`, `.yml` or `.json`.
-  Projects should continue using `.json` extension for now since `reviewRelease` is
-  is not aware of `m.yaml`.
+- `m.cli.validate_json_payload` handles `yaml` files. Commands that use this
+  validator can now handle `.json`, `.yaml` and `.yml` extensions.
+- `m` configuration file is expected to have extension `.yaml`, `.yml` or
+  `.json`. Projects should continue using `.json` extension for now since
+  `reviewRelease` is is not aware of `m.yaml`.
 - Removed bash test files - everything is covered via `pytest`.
 
 ## [0.16.1] <a name="0.16.1" href="#0.16.1">-</a> March 13, 2023
@@ -60,15 +66,15 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 - Deprecate `endRelease`. Instead we can use `m end_release`.
 - When ending a release it switches to the default branch.
-- Previously a release could only be finished by the user who started it.
-  This can now be done by any user as long as they switch to the release/hotfix
+- Previously a release could only be finished by the user who started it. This
+  can now be done by any user as long as they switch to the release/hotfix
   branch and execute `m end_release`.
 
 ## [0.15.2] <a name="0.15.2" href="#0.15.2">-</a> March 04, 2023
 
-- `m start_release` fails when a project has not done any releases.
-  Command now does an exception for the case when the latest release is `0.0.0`
-  and avoids checking for commits.
+- `m start_release` fails when a project has not done any releases. Command now
+  does an exception for the case when the latest release is `0.0.0` and avoids
+  checking for commits.
 
 ## [0.15.1] <a name="0.15.1" href="#0.15.1">-</a> February 25, 2023
 
@@ -77,26 +83,28 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 ## [0.15.0] <a name="0.15.0" href="#0.15.0">-</a> February 24, 2023
 
 - Deprecate `startRelease` and `startHotfix`. These two bash scripts have been
-  rewritten in python. Instead use can use `m start_release` and `m start_hotfix`.
+  rewritten in python. Instead use can use `m start_release` and
+  `m start_hotfix`.
 - `m release_setup` has been switched to use a logger.
-- `yaml` output has been introduced as well as colors. Currently the only
-  way to disable colors is by using the env var `NO_COLOR=true`.
+- `yaml` output has been introduced as well as colors. Currently the only way to
+  disable colors is by using the env var `NO_COLOR=true`.
 - All cli errors default to `yaml` format.
 
 ## [0.14.0] <a name="0.14.0" href="#0.14.0">-</a> February 20, 2023
 
 - Update `m init` to provide information on what it does
-- Logger formatter defaults to using colors. May be disabled with `NO_COLOR=true` env var.
+- Logger formatter defaults to using colors. May be disabled with
+  `NO_COLOR=true` env var.
 - `m.log.colors` provides the `color` function to format any message with color.
 
 ## [0.13.0] <a name="0.13.0" href="#0.13.0">-</a> February 18, 2023
 
-- Moved `ciTools` to the `m.log` module. From here on `print` statements
-  will be substituted by `logger.info`.
+- Moved `ciTools` to the `m.log` module. From here on `print` statements will be
+  substituted by `logger.info`.
 - `run_main` renamed parameters, use `result_handler` and `issue_handler`.
 - Introducing environment variables `DEBUG_M_[INSERT_SOMETHING_HERE]`. More on
-  that later in the docs. These are meant to make things a bit more verbose in
-  a local environment.
+  that later in the docs. These are meant to make things a bit more verbose in a
+  local environment.
 
 ## [0.12.2] <a name="0.12.2" href="#0.12.2">-</a> February 09, 2023
 
@@ -113,14 +121,14 @@ The project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
 
 _Breaking Changes_:
 
-- cli utilities no longer use `add_parser`, using `command` and pydantic
-  model instead.
+- cli utilities no longer use `add_parser`, using `command` and pydantic model
+  instead.
 - `Issue.data` replaced by `Issue.context`.
 
 ## [0.11.2] <a name="0.5.1" href="#0.5.1">-</a> October 13, 2022
 
-- Github graphql changed the order of releases. This hotfix is
-  explicit about the order in which we want them to obtain the latest release.
+- Github graphql changed the order of releases. This hotfix is explicit about
+  the order in which we want them to obtain the latest release.
 
 ## [0.11.1] <a name="0.11.1" href="#0.11.1">-</a> September 30, 2022
 
@@ -130,8 +138,8 @@ _Breaking Changes_:
 
 ## [0.11.0] <a name="0.11.0" href="#0.11.0">-</a> September 30, 2022
 
-- Version prefix for non releases are now `999.0.0-`. This is done so that
-  the semver may work when installing pull request builds.
+- Version prefix for non releases are now `999.0.0-`. This is done so that the
+  semver may work when installing pull request builds.
 - `fetch_response` has been added so that we may have access to the response
   object as well. This is helpful when we need to inspect response headers.
 
@@ -146,14 +154,15 @@ _Breaking Changes_:
 
 ## [0.9.0] <a name="0.9.0" href="#0.9.0">-</a> June 21, 2022
 
-- Add `build_tag_with_version` to `m` configuration: Allows build tags to
-  use the current version instead of `0.0.0`.
-- Docusaurus have been introduced. There is no docs yet but the static site
-  can be accessed at https://jmlopez-rod.github.io/m/
+- Add `build_tag_with_version` to `m` configuration: Allows build tags to use
+  the current version instead of `0.0.0`.
+- Docusaurus have been introduced. There is no docs yet but the static site can
+  be accessed at https://jmlopez-rod.github.io/m/
 
 ## [0.8.0] <a name="0.8.0" href="#0.8.0">-</a> March 15, 2022
 
-- Make `m` [`mypy` comptabible](https://mypy.readthedocs.io/en/stable/installed_packages.html#creating-pep-561-compatible-packages)
+- Make `m`
+  [`mypy` comptabible](https://mypy.readthedocs.io/en/stable/installed_packages.html#creating-pep-561-compatible-packages)
 - Linting and tests added.
 
 ## [0.7.1] <a name="0.7.1" href="#0.7.1">-</a> March 07, 2022
@@ -162,20 +171,24 @@ _Breaking Changes_:
 
 ## [0.7.0] <a name="0.7.0" href="#0.7.0">-</a> March 06, 2022
 
-_fixes_: `m ci celt` fails when project has no errors [669bc54](https://github.com/jmlopez-rod/m/commit/669bc5430a2fc8e343082165943e6f8b688eaaf0)
+_fixes_: `m ci celt` fails when project has no errors
+[669bc54](https://github.com/jmlopez-rod/m/commit/669bc5430a2fc8e343082165943e6f8b688eaaf0)
 
-_changes_: Trying not to use `Popen` to make bash calls [6babc6be](https://github.com/jmlopez-rod/m/commit/6babc6bee7bb6ec23e1301456f587e9bab2a688d)
+_changes_: Trying not to use `Popen` to make bash calls
+[6babc6be](https://github.com/jmlopez-rod/m/commit/6babc6bee7bb6ec23e1301456f587e9bab2a688d)
 
-_features_: Publishing to [`npmjs`](https://www.npmjs.com/package/@jmlopez/m) and [`pypi`](https://pypi.org/project/jmlopez-m/). Only releases are published to the public registries. In github we can access the package from
-prs and the latest on the `master` branch.
+_features_: Publishing to [`npmjs`](https://www.npmjs.com/package/@jmlopez/m)
+and [`pypi`](https://pypi.org/project/jmlopez-m/). Only releases are published
+to the public registries. In github we can access the package from prs and the
+latest on the `master` branch.
 
 ## [0.6.0] <a name="0.6.0" href="#0.6.0">-</a> September 14, 2021
 
 - `m ci celt` has `-i` option to ignore error allowance. This is helpful when
   working on single files or the whole project and we want to see all the errors
   without having to edit the configuration.
-- `m ci celt` accepts `-1` as a valid value for the `-m` option. This will
-  print all the errors instead of partially showing them.
+- `m ci celt` accepts `-1` as a valid value for the `-m` option. This will print
+  all the errors instead of partially showing them.
 - `-s` option in `celt` removes error allownances that are set to zero.
 
 ## [0.5.0] <a name="0.5.0" href="#0.5.0">-</a> September 11, 2021
@@ -197,9 +210,9 @@ prs and the latest on the `master` branch.
 
 ## [0.3.1] <a name="0.3.1" href="#0.3.1">-</a> September 02, 2021
 
-- Fix startRelease and startHotfix scripts. When starting a release, the
-  script cannot detect the latest version by fetching the tags when using
-  the git-flow because the latest tag is in the master branch not develop.
+- Fix startRelease and startHotfix scripts. When starting a release, the script
+  cannot detect the latest version by fetching the tags when using the git-flow
+  because the latest tag is in the master branch not develop.
 
 ## [0.3.0] <a name="0.3.0" href="#0.3.0">-</a> September 01, 2021
 
@@ -220,12 +233,11 @@ prs and the latest on the `master` branch.
 
 ## [0.2.0] <a name="0.2.0" href="#0.2.0">-</a> August 25, 2021
 
-- Add `-m, --max-lines` to `m ci lint` command. It allows us to specify
-  the maximum lines that the command should display per error. It
-  defaults to 5.
-- Fix releaseSetup.sh output. With the deprecation of `call_main` and
-  a previous change that was done to it, the releaseSetup and other
-  commands display 0 after a successful run.
+- Add `-m, --max-lines` to `m ci lint` command. It allows us to specify the
+  maximum lines that the command should display per error. It defaults to 5.
+- Fix releaseSetup.sh output. With the deprecation of `call_main` and a previous
+  change that was done to it, the releaseSetup and other commands display 0
+  after a successful run.
 
 ## [0.1.0] <a name="0.1.0" href="#0.1.0">-</a> August 21, 2021
 
@@ -244,9 +256,9 @@ prs and the latest on the `master` branch.
   - pycodestyle
   - pylint
 
-  The tool allows us to make the linters continue with the ci process as long
-  as we do not introduce any more errors. See more details by checking the
-  help options `m ci lint -h`.
+  The tool allows us to make the linters continue with the ci process as long as
+  we do not introduce any more errors. See more details by checking the help
+  options `m ci lint -h`.
 
 ## [0.0.2] <a name="0.0.2" href="#0.0.2">-</a> July 28, 2021
 
@@ -295,4 +307,5 @@ prs and the latest on the `master` branch.
 [0.1.0]: https://github.com/jmlopez-rod/m/compare/0.0.3...0.1.0
 [0.0.3]: https://github.com/jmlopez-rod/m/compare/0.0.2...0.0.3
 [0.0.2]: https://github.com/jmlopez-rod/m/compare/0.0.1...0.0.2
-[0.0.1]: https://github.com/jmlopez-rod/m/compare/bf286e270e13c75dfed289a3921289092477c058...0.0.1
+[0.0.1]:
+  https://github.com/jmlopez-rod/m/compare/bf286e270e13c75dfed289a3921289092477c058...0.0.1

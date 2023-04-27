@@ -1,4 +1,4 @@
 #!/bin/bash
 set -xeuo pipefail
 
-./packages/python/tests/run.sh
+pip install poetry==1.4.2

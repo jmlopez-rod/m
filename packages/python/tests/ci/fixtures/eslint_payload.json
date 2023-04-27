@@ -35,10 +35,7 @@
         "endLine": 2,
         "endColumn": 15,
         "fix": {
-          "range": [
-            31,
-            34
-          ],
+          "range": [31, 34],
           "text": "\"0\""
         }
       }
@@ -75,10 +72,7 @@
         "endLine": 3,
         "endColumn": 1,
         "fix": {
-          "range": [
-            32,
-            32
-          ],
+          "range": [32, 32],
           "text": ";"
         }
       }

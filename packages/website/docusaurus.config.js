@@ -22,7 +22,8 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/jmlopez-rod/m/tree/master/packages/create-docusaurus/templates/shared/',
+          editUrl:
+            'https://github.com/jmlopez-rod/m/tree/master/packages/create-docusaurus/templates/shared/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -72,7 +73,7 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['bash', 'makefile', 'yaml']
+        additionalLanguages: ['bash', 'makefile', 'yaml'],
       },
     }),
 };

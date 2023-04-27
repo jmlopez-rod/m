@@ -14,19 +14,18 @@ Process a compiler or linter's output to determine if a process should stop.
 ~$ m ci celt -t eslint @tmp.json -c '{"allowedEslintRules":{"semi":1}}'
 ```
 
-Depending on the tool that is chosen the configuration should have an
-entry of the form `"allowed[ToolName]Rules"` or `"ignored[ToolName]Rules"`.
-Only the first letter of the tool should be capitalized to conform to
-the camel case style.
+Depending on the tool that is chosen the configuration should have an entry of
+the form `"allowed[ToolName]Rules"` or `"ignored[ToolName]Rules"`. Only the
+first letter of the tool should be capitalized to conform to the camel case
+style.
 
-The entry should define a map of rule ids to the number of allowed
-violations. In the case of `ignored[ToolName]Rules` we may define
-the rule id and assign an explanation as to why its being ignored.
+The entry should define a map of rule ids to the number of allowed violations.
+In the case of `ignored[ToolName]Rules` we may define the rule id and assign an
+explanation as to why its being ignored.
 
-In the examples above we use `@config.json`. This means it
-will read the file `config.json`. You can use any file that you want.
-One option is to use `eslintrc.json` or create a brand new file called
-`allowed_errors.json`.
+In the examples above we use `@config.json`. This means it will read the file
+`config.json`. You can use any file that you want. One option is to use
+`eslintrc.json` or create a brand new file called `allowed_errors.json`.
 
 ## Tools
 
@@ -82,8 +81,8 @@ m ci celt [-h] -t TOOL [-c CONFIG] [-m MAX_LINES] [-r FILE_REGEX] [-p FILE_PREFI
 
 ### payload
 
-The output of a compiler or linter. Defaults to `@-` to read from stdin.
-A file may be specified by prefixing a filename with `@`.
+The output of a compiler or linter. Defaults to `@-` to read from stdin. A file
+may be specified by prefixing a filename with `@`.
 
 ## Options
 

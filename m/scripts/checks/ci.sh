@@ -3,7 +3,6 @@ set -xeuo pipefail
 
 m message open 'setup' 'update paths'
 export PYTHONPATH="${PWD}/packages/python"
-export PATH="${PWD}/packages/bash/lib:$PATH"
 
 m message sibling_block 'setup' 'lint' 'run flake8 on source code'
 # Use regex to filter files: --file-regex='.*(npm_tag|http)\.py$'
