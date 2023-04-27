@@ -15,3 +15,6 @@ else
 # python -m pytest -vv -k test_m_npm
   pytest -p no:logging packages/python -vv -k test_m_review_release
 fi
+
+mkdir -p m/.m
+touch m/.m/pytest-ran
