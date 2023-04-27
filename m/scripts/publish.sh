@@ -5,10 +5,9 @@ export PYTHONPATH="${PWD}/packages/python"
 set -xeuo pipefail
 
 # Only publish with the CI tool
-[ "$M_CI" == "True" ] || exit 0
+[ "${M_CI:-False}" == "True" ] || exit 0
 
-# Only on release
-[ "$M_IS_RELEASE" == "True" ] || exit 0
+# this script should only be called by github.
 
 # Release to pypi on releases
 python3 -m twine upload .stage-pypi/dist/*
