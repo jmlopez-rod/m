@@ -1,25 +1,25 @@
 [
   {
-      "type": "convention",
-      "module": "python.m.ci.linter.pycodestyle",
-      "obj": "read_payload",
-      "line": 8,
-      "column": 0,
-      "path": "packages/python/m/ci/linter/pycodestyle.py",
-      "symbol": "missing-function-docstring",
-      "message": "Missing function or method docstring",
-      "message-id": "C0116"
+    "type": "convention",
+    "module": "python.m.ci.linter.pycodestyle",
+    "obj": "read_payload",
+    "line": 8,
+    "column": 0,
+    "path": "packages/python/m/ci/linter/pycodestyle.py",
+    "symbol": "missing-function-docstring",
+    "message": "Missing function or method docstring",
+    "message-id": "C0116"
   },
   {
-      "type": "convention",
-      "module": "python.m.cli.commands.ci.init",
-      "obj": "run",
-      "line": 14,
-      "column": 4,
-      "path": "packages/python/m/cli/commands/ci/init.py",
-      "symbol": "import-outside-toplevel",
-      "message": "Import outside toplevel (ci.init.init_repo)\nlong message",
-      "message-id": "C0415"
+    "type": "convention",
+    "module": "python.m.cli.commands.ci.init",
+    "obj": "run",
+    "line": 14,
+    "column": 4,
+    "path": "packages/python/m/cli/commands/ci/init.py",
+    "symbol": "import-outside-toplevel",
+    "message": "Import outside toplevel (ci.init.init_repo)\nlong message",
+    "message-id": "C0415"
   },
   {
     "type": "convention",
@@ -31,5 +31,5 @@
     "symbol": "import-outside-toplevel",
     "message": "Import outside toplevel (ci.init.init_repo)\nlong message",
     "message-id": "C0415"
-}
+  }
 ]

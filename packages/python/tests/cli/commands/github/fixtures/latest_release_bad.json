@@ -6,9 +6,7 @@
     "errors": [
       {
         "type": "NOT_FOUND",
-        "path": [
-          "repository"
-        ],
+        "path": ["repository"],
         "locations": [
           {
             "line": 2,

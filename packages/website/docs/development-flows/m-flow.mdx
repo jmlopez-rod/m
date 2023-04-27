@@ -3,9 +3,9 @@ sidebar_position: 20
 sidebar_label: M Flow
 ---
 
-import initSvgUrl from "!url-loader!./_img/init.svg";
-import ciChecksSvgUrl from "!url-loader!./_img/ciChecks.svg";
-import { SvgImage } from "@site/src/components/SvgImage";
+import initSvgUrl from '!url-loader!./_img/init.svg';
+import ciChecksSvgUrl from '!url-loader!./_img/ciChecks.svg';
+import { SvgImage } from '@site/src/components/SvgImage';
 
 # M flow
 
@@ -15,9 +15,9 @@ flow is intended for projects that produce libraries that need to be versioned.
 
 ## Use case
 
-The next sections will show how set up and use the `m-flow`. To follow along
-use the [example-library] template, which is a basic node library that provides
-one function.
+The next sections will show how set up and use the `m-flow`. To follow along use
+the [example-library] template, which is a basic node library that provides one
+function.
 
 From here on we will work with the [example-lib-m-flow] repository.
 
@@ -50,8 +50,8 @@ value before we publish the package.
 
 :::
 
-At this point we may commit the changes and move on to create the scripts to
-fun local builds.
+At this point we may commit the changes and move on to create the scripts to fun
+local builds.
 
 ## Scripts
 
@@ -109,8 +109,8 @@ ciChecks:
 	./m/publish.sh
 ```
 
-Before we can run the script we need to make sure it has proper permissions
-with `chmod +x m/publish.sh`. Now we are ready to run `make ciChecks`.
+Before we can run the script we need to make sure it has proper permissions with
+`chmod +x m/publish.sh`. Now we are ready to run `make ciChecks`.
 
 <SvgImage href={ciChecksSvgUrl} />
 
@@ -163,8 +163,8 @@ jobs:
         run: ./m/publish.sh
 ```
 
-Note that on the `.npmrc` file we need to use your username or the name of
-the organization. Commit the files and open up a pull request.
+Note that on the `.npmrc` file we need to use your username or the name of the
+organization. Commit the files and open up a pull request.
 
 Before you can use the new package you will need change its visibility settings.
 In the Github repository website click on the package name and find its
@@ -172,16 +172,16 @@ settings. Once in there change the `package visibility`. It may start private.
 If you are in an organization set it to `internal` otherwise `public`.
 
 The goal of `m` is always provide a unique version to publish for every pull
-request and branches. If the pull request was successful we should now
-be able to install the package in another project.
+request and branches. If the pull request was successful we should now be able
+to install the package in another project.
 
 ```bash
 npm install @jmlopez-rod/example-lib-m-flow@pr2
 ```
 
 The above command should be adjusted to use the pr number that was used to
-generate the build. At this point the pull request should be merged so that
-we may start creating the builds in the `master` branch.
+generate the build. At this point the pull request should be merged so that we
+may start creating the builds in the `master` branch.
 
 [git-flow]: https://nvie.com/posts/a-successful-git-branching-model/
 [github-flow]: https://docs.github.com/en/get-started/quickstart/github-flow

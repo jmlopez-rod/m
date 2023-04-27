@@ -3,6 +3,7 @@ __pycache__
 .stage*
 m/.m
 .coverage
+.pnpm-store
 
 # Dependencies
 node_modules

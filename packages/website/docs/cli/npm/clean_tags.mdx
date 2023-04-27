@@ -8,15 +8,15 @@ $ m npm clean_tags [@scope/name]
 ```
 
 The command will use `npm` to find all the tags that point to non-existing
-versions of an npm package and remove them. The output will be a a json
-list of the output of the removal command provided by `npm`.
+versions of an npm package and remove them. The output will be a a json list of
+the output of the removal command provided by `npm`.
 
 An output of an empty array means that no npm tags were removed.
 
 ## Procedure
 
-Removes empty `npm` tags. The implementation roughly does the following.
-It calls npm to find out the tags of a package
+Removes empty `npm` tags. The implementation roughly does the following. It
+calls npm to find out the tags of a package
 
 ```shell
 ~$ npm info @jmlopez-rod/m dist-tags --json

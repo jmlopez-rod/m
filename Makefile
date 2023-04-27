@@ -16,6 +16,9 @@ devDocs:
 deployDocs:
 	cd packages/website && USE_SSH=true npm run deploy
 
+fix:
+	pnpm exec prettier -w .
+
 ## Manual docker maintenance
 
 buildPy311DevContainer:
