@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- update error message explaining `m.yaml` is missing.
+- no longer publishing to npmjs or github
+- improved devcontainer
+- all files are formatted with prettier
+
 ## [0.19.3] <a name="0.19.3" href="#0.19.3">-</a> April 14, 2023
 
 - `review_release` ignores previously closed prs.
