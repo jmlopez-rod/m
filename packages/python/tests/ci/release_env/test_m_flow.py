@@ -53,8 +53,8 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
         env_vars={'git_branch': 'refs/pull/1'},
         gh_res='pr1.json',
         release_env=ReleaseEnv(
-            build_tag='1.1.1-pr1.b404',
-            python_tag='1.1.1b1.dev404',
+            build_tag='1.2.0-pr1.b404',
+            python_tag='1.2.0b1.dev404',
             is_release=False,
             is_release_pr=False,
             is_hotfix_pr=False,

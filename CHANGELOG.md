@@ -9,6 +9,9 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- The `build_tag_with_version` bumps the current version to the next minor
+  version and uses it when generating the m tag.
+
 ## [0.20.2] <a name="0.20.2" href="#0.20.2">-</a> April 27, 2023
 
 - no changes once again.

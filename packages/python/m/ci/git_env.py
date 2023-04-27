@@ -220,7 +220,10 @@ def _build_tag_prefix(config: Config) -> str:
     if config.uses_free_flow():
         return ''
     if config.build_tag_with_version:
-        return f'{config.version}'
+        ver = config.version.split('-')[0]
+        parts = [int(x) for x in ver.split('.')]
+        minor_ver = parts[1] + 1
+        return f'{parts[0]}.{minor_ver}.0'
     return '0.0.0'
 
 
