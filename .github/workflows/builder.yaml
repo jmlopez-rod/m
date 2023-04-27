@@ -199,6 +199,7 @@ jobs:
 
   release:
     needs: [build, tests, flake8, mypy, pylint, prettier]
+    if: ${{ needs.build.outputs.m-is-release == 'True' }}
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
@@ -215,7 +216,7 @@ jobs:
           path: /opt/venv/m
           key: venv-py311-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Save build
+      - name: Restore build
         uses: actions/cache/restore@v3
         with:
           path: ./.stage-pypi
@@ -223,5 +224,4 @@ jobs:
 
       - name: Release
         run: |
-          ls -al .stage-pypi
-          echo "m-is-release: ${{ needs.build.outputs.m-is-release }}"
+          ./m/scripts/publish.sh
