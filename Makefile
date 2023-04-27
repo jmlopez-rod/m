@@ -7,8 +7,8 @@ tests:
 mypy:
 	mypy packages/python/m & mypy packages/python/tests
 
-localPublish:
-	m/scripts/publish.sh
+localBuild:
+	m/scripts/build.sh
 
 devDocs:
 	cd packages/website && pnpm start

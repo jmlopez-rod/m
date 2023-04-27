@@ -34,7 +34,7 @@ jobs:
           python3 -m venv /opt/venv/m
           poetry install
 
-      - name: venv cache
+      - name: Cache venv
         uses: actions/cache@v3
         with:
           path: /opt/venv/m
@@ -55,7 +55,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: venv cache
+      - name: Cache venv
         uses: actions/cache@v3
         with:
           path: /opt/venv/m
@@ -76,7 +76,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: venv cache
+      - name: Cache venv
         uses: actions/cache@v3
         with:
           path: /opt/venv/m
@@ -104,7 +104,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: venv cache
+      - name: Cache venv
         uses: actions/cache@v3
         with:
           path: /opt/venv/m
@@ -130,7 +130,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: venv cache
+      - name: Cache venv
         uses: actions/cache@v3
         with:
           path: /opt/venv/m
@@ -166,33 +166,62 @@ jobs:
         run: |
           pnpm exec prettier -c .
 
-  # build:
-  #   runs-on: ubuntu-22.04
-  #   permissions: write-all
-  #   container:
-  #     image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
-  #     credentials:
-  #       username: ${{ github.actor }}
-  #       password: ${{ secrets.GITHUB_TOKEN }}
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
+  build:
+    needs: setup
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      m-is-release: ${{ steps.build.outputs.m-is-release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-  #     - name: PATH setup
-  #       run: |
-  #         echo "./packages/bash/lib:/opt/venv/m/bin" >> $GITHUB_PATH
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: /opt/venv/m
+          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
 
-  #     - name: Install
-  #       run: |
-  #         python3 -m venv /opt/venv/m
-  #         poetry install
-  #         pnpm install
+      - name: Build
+        id: build
+        run: |
+          ./m/scripts/build.sh
 
-  #     - name: Checks
-  #       run: ./m/scripts/checks/ci.sh
+      - name: Save build
+        uses: actions/cache/save@v3
+        with:
+          path: ./.stage-pypi
+          key: build-${{ github.sha }}
 
-  #     - name: Publish
-  #       run: ./m/scripts/publish.sh
+  release:
+    needs: [build, tests, flake8, mypy, pylint, prettier]
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: /opt/venv/m
+          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Save build
+        uses: actions/cache/restore@v3
+        with:
+          path: ./.stage-pypi
+          key: build-${{ github.sha }}
+
+      - name: Release
+        run: |
+          ls -al .stage-pypi
+          echo "m-is-release: ${{ needs.build.outputs.m-is-release }}"
