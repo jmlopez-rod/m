@@ -27,4 +27,5 @@ ENV POETRY_HOME=/opt/venv/poetry
 ENV POETRY_CACHE_DIR=/opt/venv/.cache/pypoetry
 
 ## PATH setup
+ENV PATH=./packages/bash/lib:/opt/venv/m/bin:${PATH}
 RUN echo ". /root/.bashrc.d/bash_aliases.sh" >>/root/.bashrc

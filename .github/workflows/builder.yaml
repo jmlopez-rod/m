@@ -6,39 +6,90 @@ on:
   pull_request:
     branches: [master]
 
+env:
+  VIRTUAL_ENV: /opt/venv/m
+  PYTHONPATH: ./packages/python
+  TWINE_USERNAME: __token__
+  FORCE_COLOR: 1
+  MYPY_FORCE_COLOR: 1
+
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-22.04
-    permissions: write-all
+    strategy:
+      matrix:
+        py-ver: [py310, py311]
     container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-      env:
-        VIRTUAL_ENV: /opt/venv/m
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PYTHONPATH: ./packages/python
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        FORCE_COLOR: 1
-        MYPY_FORCE_COLOR: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: PATH setup
-        run: |
-          echo "./packages/bash/lib:/opt/venv/m/bin" >> $GITHUB_PATH
 
       - name: Install
         run: |
           python3 -m venv /opt/venv/m
           poetry install
-          pnpm install
 
-      - name: Checks
-        run: ./m/scripts/checks/ci.sh
+      - name: venv cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/venv/m
+          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Publish
-        run: ./m/scripts/publish.sh
+  tests:
+    needs: setup
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        py-ver: [py310, py311]
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: venv cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/venv/m
+          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: run tests
+        run: ./packages/python/tests/run.sh
+
+  # build:
+  #   runs-on: ubuntu-22.04
+  #   permissions: write-all
+  #   container:
+  #     image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+  #     credentials:
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.GITHUB_TOKEN }}
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+
+  #     - name: PATH setup
+  #       run: |
+  #         echo "./packages/bash/lib:/opt/venv/m/bin" >> $GITHUB_PATH
+
+  #     - name: Install
+  #       run: |
+  #         python3 -m venv /opt/venv/m
+  #         poetry install
+  #         pnpm install
+
+  #     - name: Checks
+  #       run: ./m/scripts/checks/ci.sh
+
+  #     - name: Publish
+  #       run: ./m/scripts/publish.sh
