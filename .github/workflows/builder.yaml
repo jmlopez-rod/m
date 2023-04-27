@@ -16,9 +16,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
       env:
+        VIRTUAL_ENV: /opt/venv/m
         PYTHONPATH: ./packages/python
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPMJS_TOKEN: ${{ secrets.NPMJS_TOKEN }}
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         FORCE_COLOR: 1
@@ -29,7 +28,7 @@ jobs:
 
       - name: PATH setup
         run: |
-          echo "./packages/bash/lib" >> $GITHUB_PATH
+          echo "./packages/bash/lib:/opt/venv/m/bin" >> $GITHUB_PATH
 
       - name: Install
         run: |
