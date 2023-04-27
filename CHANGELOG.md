@@ -278,6 +278,7 @@ latest on the `master` branch.
 - As a library, it facilities the creation of clis similar to m.
 
 [unreleased]: https://github.com/jmlopez-rod/m/compare/0.20.1...HEAD
+[0.20.1]: https://github.com/jmlopez-rod/m/compare/0.20.1...0.20.1
 [0.20.1]: https://github.com/jmlopez-rod/m/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/jmlopez-rod/m/compare/0.19.3...0.20.0
 [0.19.3]: https://github.com/jmlopez-rod/m/compare/0.19.2...0.19.3
