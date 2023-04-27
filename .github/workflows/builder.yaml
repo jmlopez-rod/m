@@ -32,6 +32,7 @@ jobs:
 
       - name: Install
         run: |
+          python3 -m venv /opt/venv/m
           poetry install
           pnpm install
 
