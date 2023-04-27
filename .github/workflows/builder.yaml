@@ -17,6 +17,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
       env:
         VIRTUAL_ENV: /opt/venv/m
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         PYTHONPATH: ./packages/python
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
