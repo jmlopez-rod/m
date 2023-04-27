@@ -9,6 +9,10 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.20.2] <a name="0.20.2" href="#0.20.2">-</a> April 27, 2023
+
+- no changes once again.
+
 ## [0.20.1] <a name="0.20.1" href="#0.20.1">-</a> April 27, 2023
 
 - no changes, making sure the release process works.
@@ -277,7 +281,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.20.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.20.2...HEAD
+[0.20.2]: https://github.com/jmlopez-rod/m/compare/0.20.1...0.20.2
 [0.20.1]: https://github.com/jmlopez-rod/m/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/jmlopez-rod/m/compare/0.19.3...0.20.0
 [0.19.3]: https://github.com/jmlopez-rod/m/compare/0.19.2...0.19.3
