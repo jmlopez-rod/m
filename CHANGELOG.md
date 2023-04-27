@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.21.0] <a name="0.21.0" href="#0.21.0">-</a> April 27, 2023
+
 - The `build_tag_with_version` bumps the current version to the next minor
   version and uses it when generating the m tag.
 
@@ -284,7 +286,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.20.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.21.0...HEAD
+[0.21.0]: https://github.com/jmlopez-rod/m/compare/0.20.2...0.21.0
 [0.20.2]: https://github.com/jmlopez-rod/m/compare/0.20.1...0.20.2
 [0.20.1]: https://github.com/jmlopez-rod/m/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/jmlopez-rod/m/compare/0.19.3...0.20.0
