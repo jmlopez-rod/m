@@ -12,6 +12,7 @@ env:
   TWINE_USERNAME: __token__
   FORCE_COLOR: 1
   MYPY_FORCE_COLOR: 1
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   setup:
@@ -62,6 +63,58 @@ jobs:
 
       - name: run tests
         run: ./packages/python/tests/run.sh
+
+  flake8:
+    needs: setup
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: venv cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/venv/m
+          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+
+      - name: lint src
+        run: |
+          m ci celt -t flake8 -c @allowed_errors.json < <(flake8 packages/python/m)
+
+      - name: lint tests
+        run: |
+          m ci celt -t flake8 -c @allowed_errors_tests.json < <(flake8 packages/python/tests --config .flake8-tests)
+
+  mypy:
+    needs: setup
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: venv cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/venv/m
+          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+
+      - name: src
+        run: |
+          mypy ./packages/python/m
+
+      - name: tests
+        run: |
+          mypy ./packages/python/tests
 
   # build:
   #   runs-on: ubuntu-22.04
