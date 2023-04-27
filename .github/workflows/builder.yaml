@@ -175,6 +175,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       m-is-release: ${{ steps.build.outputs.m-is-release }}
+      m-tag: ${{ steps.build.outputs.m-tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
