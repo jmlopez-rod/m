@@ -1,13 +1,16 @@
 {
   "name": "M DevContainer",
-  "image": "ghcr.io/jmlopez-rod/m-devcontainer:latest",
+  "image": "m-devcontainer",
+  // "image": "ghcr.io/jmlopez-rod/m-devcontainer:latest",
   "runArgs": ["--rm", "--network=host", "--name=m-devcontainer"],
-  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && /opt/m_helpers/_init.sh",
   "containerEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
     "CONTAINER_WORKSPACE": "${containerWorkspaceFolder}"
   },
   "mounts": [
+    "source=opt_pnpm,target=/opt/pnpm,type=volume",
+    "source=opt_venv,target=/opt/venv,type=volume",
     "source=m-vscode-server-extensions,target=/root/.vscode-server/extensions,type=volume",
     "source=m-vscode-server-extensions-insiders,target=/root/.vscode-server-insiders/extensions,type=volume"
   ],
@@ -44,6 +47,7 @@
         "python.linting.mypyArgs": ["--config-file=mypy.ini"]
       },
       "extensions": [
+        "GitHub.copilot",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "ms-python.python",

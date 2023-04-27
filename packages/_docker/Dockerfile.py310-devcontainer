@@ -1,0 +1,30 @@
+FROM python:3.10.9-slim-bullseye
+
+LABEL org.opencontainers.image.source="https://github.com/jmlopez-rod/m"
+
+ENV TZ=Etc/UTC
+
+WORKDIR /scratch
+
+## Base
+COPY packages/_docker/devcontainer/basic_deps.sh .
+RUN ./basic_deps.sh
+
+## Node and PNPM
+COPY packages/_docker/devcontainer/node_pnpm.sh .
+RUN ./node_pnpm.sh
+
+## Python
+COPY packages/_docker/devcontainer/python.sh .
+RUN ./python.sh
+
+## Copy Scripts
+COPY packages/_docker/helpers /opt/m_helpers
+COPY packages/_docker/home /root
+
+## Poetry Settings
+ENV POETRY_HOME=/opt/venv/poetry
+ENV POETRY_CACHE_DIR=/opt/venv/.cache/pypoetry
+
+## PATH setup
+RUN echo ". /root/.bashrc.d/bash_aliases.sh" >>/root/.bashrc

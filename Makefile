@@ -7,9 +7,6 @@ tests:
 mypy:
 	mypy packages/python/m & mypy packages/python/tests
 
-bashTest:
-	cd packages/bash/tests && ./run.sh
-
 localPublish:
 	m/scripts/publish.sh
 
@@ -21,8 +18,11 @@ deployDocs:
 
 ## Manual docker maintenance
 
-buildDevContainer:
-	m/bash/build.sh
+buildPy311DevContainer:
+	IMAGE=py311-devcontainer m/bash/build.sh
+
+buildPy310DevContainer:
+	IMAGE=py310-devcontainer m/bash/build.sh
 
 publishDevContainer:
 	m/bash/publish.sh
