@@ -23,6 +23,7 @@ function prompter() {
 
 function _git_prompter() {
   local arrow='\342\236\234'
+  local green='\[\033[01;32m\]'
   local branch
   local git_status
   local colors
@@ -85,7 +86,7 @@ function _git_prompter() {
   blue="\[$BLUE\]"
   gray="\[$GRAY\]"
 
-  dkInfo="devcontainer"
+  dkInfo="devcontainer@py$PYTHON_VERSION"
 
   echo "$statusColor$arrow $green$dkInfo$white:$blue$repo ${gray}[$statusColor$branch$status$gray] $gray$relPath"
 }
