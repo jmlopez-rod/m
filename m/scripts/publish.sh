@@ -13,4 +13,4 @@ set -xeuo pipefail
 python3 -m twine upload .stage-pypi/dist/*
 
 # Let github know we released
-m github release --owner "$M_OWNER" --repo "$M_REPO" --version "$M_TAG"
+m github release --owner jmlopez-rod --repo m --version "$M_TAG"

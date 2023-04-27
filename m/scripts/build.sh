@@ -16,4 +16,5 @@ m/scripts/build/pypi.sh || m message error 'pypi build failure'
 
 {
   echo "m-is-release=$M_IS_RELEASE"
+  echo "m-tag=$M_TAG"
 } >> "$GITHUB_OUTPUT"
