@@ -1,0 +1,15 @@
+name: 'm env'
+description: 'ensure the m environment is defined'
+inputs:
+
+outputs:
+  # random-number:
+  #   description: 'Random number'
+  #   value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v3
+    - run: ls -al
+      shell: bash
+    - run: ${GITHUB_ACTION_PATH}/ensure-m.sh
