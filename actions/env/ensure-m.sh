@@ -2,9 +2,7 @@
 
 set -exuo pipefail
 
-ls -al
-
-mPath=$(which m)
+mPath=$(which m || echo '')
 if [ "$mPath" == '' ]; then
   echo 'm is not installed'
 else
