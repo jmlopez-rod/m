@@ -7,3 +7,4 @@ runs:
     - run: ls -al
       shell: bash
     - run: ${GITHUB_ACTION_PATH}/ensure-m.sh
+      shell: bash
