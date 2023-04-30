@@ -41,7 +41,9 @@ runs:
 
     - name: compute m env
       if: steps.cache.outputs.cache-hit != 'true'
-      run: m ci env m > m/.m/env.json
+      run: |
+        mkdir -p m/.m
+        m ci env m > m/.m/env.json
       shell: bash
 
     - name: save cache
