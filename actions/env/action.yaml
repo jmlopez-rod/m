@@ -9,7 +9,7 @@ runs:
         echo "should-checkout=$([ -d m ] && echo 'false' || echo 'true')" >> $GITHUB_OUTPUT
       shell: bash
     - name: checkout
-      if: ${{ steps.ensure-m-dir.outputs.should-checkout == true }}
+      if: ${{ steps.ensure-m-dir.outputs.should-checkout == 'true' }}
       uses: actions/checkout@v3
     - name: ensure m
       run: ${GITHUB_ACTION_PATH}/ensure-m.sh
