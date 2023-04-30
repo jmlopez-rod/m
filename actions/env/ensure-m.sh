@@ -4,7 +4,7 @@ set -exuo pipefail
 
 mPath=$(which m || echo '')
 if [ "$mPath" == '' ]; then
-  echo 'm is not installed'
+  pip install jmlopez-m
 else
   echo 'installed'
 fi

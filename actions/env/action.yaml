@@ -3,6 +3,16 @@ description: 'ensure the m environment is defined'
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v3
-    - run: ${GITHUB_ACTION_PATH}/ensure-m.sh
+    - name: ensure m directory
+      id: ensure-m-dir
+      run: |
+        echo "should-checkout=$([ -d m ] && echo 'false' || echo 'true')" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: checkout
+      if: ${{ steps.ensure-m-dir.outputs.should-checkout == true }}
+      uses: actions/checkout@v3
+    - name: ensure m
+      run: ${GITHUB_ACTION_PATH}/ensure-m.sh
+      shell: bash
+    - run: m --version
       shell: bash
