@@ -22,7 +22,7 @@ runs:
     - name: ensure m directory
       id: ensure-m-dir
       run: |
-        mDirExists=$([ -d m ] && echo 'true' || echo 'false')"
+        mDirExists="$([ -d m ] && echo 'true' || echo 'false')"
         {
           echo "m-dir-exists=$mDirExists"
         } >> "$GITHUB_OUTPUT"
