@@ -1,18 +1,62 @@
 name: 'm env'
 description: 'ensure the m environment is defined'
+inputs:
+  m-version:
+    description: m version to install
+    default: latest
+    required: false
+outputs:
+  is-release:
+    description: whether the build is meant to be a release
+    value: ${{ steps.exports.outputs.is-release }}
 runs:
   using: 'composite'
   steps:
+    - name: restore cache
+      id: cache
+      uses: actions/cache/restore@v3
+      with:
+        path: m/.m
+        key: m-env-cache-${{ github.run_id }}
+
     - name: ensure m directory
       id: ensure-m-dir
       run: |
-        echo "should-checkout=$([ -d m ] && echo 'false' || echo 'true')" >> $GITHUB_OUTPUT
+        mDirExists=$([ -d m ] && echo 'true' || echo 'false')"
+        {
+          echo "m-dir-exists=$mDirExists"
+        } >> "$GITHUB_OUTPUT"
       shell: bash
+
     - name: checkout
-      if: ${{ steps.ensure-m-dir.outputs.should-checkout == 'true' }}
+      if:
+        steps.cache.outputs.cache-hit != 'true' &&
+        steps.ensure-m-dir.outputs.m-dir-exists != 'true'
       uses: actions/checkout@v3
+
     - name: ensure m
-      run: ${GITHUB_ACTION_PATH}/ensure-m.sh
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: ${GITHUB_ACTION_PATH}/ensure-m.sh ${{ inputs.m-version }}
       shell: bash
-    - run: m --version
+
+    - name: compute m env
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: m ci env m > m/.m/env.json
+      shell: bash
+
+    - name: save cache
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: m/.m
+        key: m-env-cache-${{ github.run_id }}
+
+    - name: export env vars
+      id: exports
+      run: |
+        cat m/.m/env.list >> "$GITHUB_ENV"
+        source m/.m/env.list
+        {
+          echo "is-release=$M_IS_RELEASE"
+        } >> "$GITHUB_OUTPUT"
       shell: bash
