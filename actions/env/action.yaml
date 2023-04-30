@@ -5,6 +5,14 @@ inputs:
     description: m version to install
     default: latest
     required: false
+  checkout:
+    description: forces the checkout of the repository
+    default: false
+    required: false
+  ensure-m:
+    description: forces the installation of m if not available
+    default: false
+    required: false
 outputs:
   is-release:
     description: whether the build is meant to be a release
@@ -30,12 +38,14 @@ runs:
 
     - name: checkout
       if:
+        # prettier-ignore
         steps.cache.outputs.cache-hit != 'true' &&
-        steps.ensure-m-dir.outputs.m-dir-exists != 'true'
+        steps.ensure-m-dir.outputs.m-dir-exists != 'true' ||
+        inputs.checkout == 'true'
       uses: actions/checkout@v3
 
     - name: ensure m
-      if: steps.cache.outputs.cache-hit != 'true'
+      if: steps.cache.outputs.cache-hit != 'true' || inputs.ensure-m == 'true'
       run: ${GITHUB_ACTION_PATH}/ensure-m.sh ${{ inputs.m-version }}
       shell: bash
 
