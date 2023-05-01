@@ -5,5 +5,5 @@ runs:
   steps:
     - name: github release
       run: |
-        m github release --owner "$M_OWNER" --repo "$M_REPO" --version "$M_TAG"
+        m github release --owner "$M_OWNER" --repo "$M_REPO" --version "$M_TAG" | m json
       shell: bash
