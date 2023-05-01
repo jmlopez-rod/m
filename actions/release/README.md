@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: m env
         uses: jmlopez-rod/m/actions/env@x.y.z
+        with:
+          ensure-m: true
       - name: release
         uses: jmlopez-rod/m/actions/release@x.y.z
 ```
