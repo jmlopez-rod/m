@@ -7,7 +7,6 @@ on:
     branches: [master]
 
 env:
-  VIRTUAL_ENV: /opt/venv/m
   PYTHONPATH: ./packages/python
   FORCE_COLOR: 1
   MYPY_FORCE_COLOR: 1
@@ -16,28 +15,13 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        py-ver: [py310, py311]
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      - name: Ensure poetry
+        uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
       - name: Install
-        run: |
-          python3 -m venv /opt/venv/m
-          poetry install
-
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: /opt/venv/m
-          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
+        run: poetry install
 
   tests:
     needs: setup
@@ -53,13 +37,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: /opt/venv/m
-          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
-
+      - name: Ensure poetry
+        uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
+      - name: Install
+        run: poetry install
       - name: run tests
         run: ./packages/python/tests/run.sh
 
@@ -74,12 +55,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+      - name: Ensure poetry
+        uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
+      - name: Install
+        run: poetry install
 
       - name: lint src
         shell: bash
@@ -102,12 +81,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+      - name: Ensure poetry
+        uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
+      - name: Install
+        run: poetry install
 
       - name: src
         run: |
@@ -129,11 +106,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+      - name: Ensure poetry
+        uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
+      - name: Install
+        run: poetry install
 
       - name: src
         shell: bash
@@ -180,11 +156,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+      - name: Ensure poetry
+        uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
+      - name: Install
+        run: poetry install
 
       - name: Build
         id: build
