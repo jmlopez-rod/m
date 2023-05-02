@@ -1,0 +1,26 @@
+name: 'm ensure-poetry'
+description: 'ensure that poetry is installed and cache the venv'
+inputs:
+  poetry-version:
+    description: poetry version to install
+    default: latest
+    required: false
+runs:
+  using: 'composite'
+  steps:
+    - name: ensure poetry
+      id: venv-cache
+      shell: bash
+      run: ${GITHUB_ACTION_PATH}/ensure-poetry.sh ${{ inputs.poetry-version }}
+
+    - name: Setup venv cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/venv
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: ${{ runner.os }}-venv-
+
+    - name: Setup venv
+      shell: bash
+      run: |
+        python3 -m venv /opt/venv/workspace
