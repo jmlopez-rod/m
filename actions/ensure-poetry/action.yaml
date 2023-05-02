@@ -5,6 +5,14 @@ inputs:
     description: poetry version to install
     default: latest
     required: false
+  venv-base-path:
+    description: basepath for the venv
+    default: /opt/venv
+    required: false
+  venv-name:
+    description: name of the venv
+    default: workspace
+    required: false
 runs:
   using: 'composite'
   steps:
@@ -18,4 +26,5 @@ runs:
     - name: ensure poetry
       id: venv-cache
       shell: bash
-      run: ${GITHUB_ACTION_PATH}/ensure-poetry.sh ${{ inputs.poetry-version }}
+      run: |
+        ${GITHUB_ACTION_PATH}/ensure-poetry.sh ${{ inputs.poetry-version }} ${{ inputs.venv-base-path }} ${{ inputs.venv-base-path }} ${{ inputs.venv-name }}

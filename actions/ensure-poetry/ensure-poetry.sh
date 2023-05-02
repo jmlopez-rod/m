@@ -1,11 +1,13 @@
 #!/bin/bash
 
 poetryVersion="${1:-latest}"
+venvBasePath="${2:-/opt/venv}"
+venvName="${3:-workspace}"
 
 set -exuo pipefail
 
-python3 -m venv /opt/venv/workspace
-. /opt/venv/workspace/bin/activate
+python3 -m venv "$venvBasePath/$venvName"
+. "$venvBasePath/$venvName/bin/activate"
 
 poetryPath=$(which poetry || echo '')
 if [ "$poetryPath" == '' ]; then
@@ -17,9 +19,9 @@ if [ "$poetryPath" == '' ]; then
 fi
 
 {
-  echo "POETRY_HOME=/opt/venv/poetry"
-  echo "POETRY_CACHE_DIR=/opt/venv/.cache/pypoetry"
-  echo "VIRTUAL_ENV=/opt/venv/workspace"
+  echo "POETRY_HOME=$venvBasePath/poetry"
+  echo "POETRY_CACHE_DIR=$venvBasePath/.cache/pypoetry"
+  echo "VIRTUAL_ENV=$venvBasePath/$venvName"
 } >> "$GITHUB_ENV"
 
-echo "/opt/venv/workspace/bin" >> $GITHUB_PATH
+echo "$venvBasePath/$venvName/bin" >> $GITHUB_PATH
