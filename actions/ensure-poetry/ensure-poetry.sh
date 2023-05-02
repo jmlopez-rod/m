@@ -3,11 +3,10 @@
 poetryVersion="${1:-latest}"
 venvBasePath="${2:-/opt/venv}"
 venvName="${3:-workspace}"
-pythonVer="${4:-}"
 
 set -exuo pipefail
 
-"python${pythonVer}" -m venv "$venvBasePath/$venvName"
+python -m venv "$venvBasePath/$venvName"
 . "$venvBasePath/$venvName/bin/activate"
 
 poetryPath=$(which poetry || echo '')
