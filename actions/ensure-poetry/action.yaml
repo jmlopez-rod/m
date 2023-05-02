@@ -32,4 +32,4 @@ runs:
       id: venv-cache
       shell: bash
       run: |
-        ${GITHUB_ACTION_PATH}/ensure-poetry.sh ${{ inputs.poetry-version }} ${{ inputs.venv-base-path }} ${{ inputs.venv-base-path }} ${{ inputs.venv-name }} ${{ inputs.python-version }}
+        ${GITHUB_ACTION_PATH}/ensure-poetry.sh ${{ inputs.poetry-version }} ${{ inputs.venv-base-path }} ${{ inputs.venv-name }} ${{ inputs.python-version }}
