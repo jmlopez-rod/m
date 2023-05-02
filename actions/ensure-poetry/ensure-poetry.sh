@@ -7,9 +7,9 @@ set -exuo pipefail
 poetryPath=$(which poetry || echo '')
 if [ "$poetryPath" == '' ]; then
   if [ "$poetryVersion" == 'latest' ]; then
-    pip install poetry==$poetryVersion
+    pip install poetry
   else
-    pip install poetry==$poetryVersion
+    pip install "poetry==$poetryVersion"
   fi
 fi
 
