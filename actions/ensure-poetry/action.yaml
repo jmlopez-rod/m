@@ -8,11 +8,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: ensure poetry
-      id: venv-cache
-      shell: bash
-      run: ${GITHUB_ACTION_PATH}/ensure-poetry.sh ${{ inputs.poetry-version }}
-
     - name: Setup venv cache
       uses: actions/cache@v3
       with:
@@ -20,7 +15,7 @@ runs:
         key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
         restore-keys: ${{ runner.os }}-venv-
 
-    - name: Setup venv
+    - name: ensure poetry
+      id: venv-cache
       shell: bash
-      run: |
-        python3 -m venv /opt/venv/workspace
+      run: ${GITHUB_ACTION_PATH}/ensure-poetry.sh ${{ inputs.poetry-version }}

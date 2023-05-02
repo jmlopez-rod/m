@@ -4,6 +4,9 @@ poetryVersion="${1:-latest}"
 
 set -exuo pipefail
 
+python3 -m venv /opt/venv/workspace
+. /opt/venv/workspace/bin/activate
+
 poetryPath=$(which poetry || echo '')
 if [ "$poetryPath" == '' ]; then
   if [ "$poetryVersion" == 'latest' ]; then
