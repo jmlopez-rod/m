@@ -65,6 +65,8 @@ jobs:
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
           cache-key: '3.11.3'
+      - name: env
+        run: env
       - name: lint src
         shell: bash
         run: |
