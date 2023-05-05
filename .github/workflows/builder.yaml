@@ -21,13 +21,12 @@ jobs:
         py-ver: ['3.10.11', '3.11.3']
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.py-ver }}
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          cache-key: poetry-py-${{ matrix.py-ver }}
+          cache-key: ${{ matrix.py-ver }}
       - run: poetry install
 
   tests:
@@ -35,14 +34,18 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        py-ver: [py310, py311]
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        py-ver: ['3.10.11', '3.11.3']
+        # py-ver: [py310, py311]
+    # container:
+    #   image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
+    #   credentials:
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.py-ver }}
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
           cache-key: ${{ matrix.py-ver }}
@@ -61,7 +64,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          cache-key: py311
+          cache-key: '3.11.3'
       - name: lint src
         shell: bash
         run: |
@@ -83,7 +86,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          cache-key: py311
+          cache-key: '3.11.3'
       - run: mypy ./packages/python/m
       - run: mypy ./packages/python/tests
 
@@ -99,7 +102,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          cache-key: py311
+          cache-key: '3.11.3'
       - name: src
         shell: bash
         run: |
@@ -134,7 +137,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          cache-key: py311
+          cache-key: '3.11.3'
       - name: Build
         id: build
         run: ./m/scripts/build.sh
@@ -161,7 +164,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          cache-key: py311
+          cache-key: '3.11.3'
       - name: Restore build
         uses: actions/cache/restore@v3
         with:
