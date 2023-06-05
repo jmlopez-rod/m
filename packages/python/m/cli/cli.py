@@ -1,4 +1,5 @@
 import argparse
+import argcomplete
 import sys
 from typing import Any, Callable, cast
 
@@ -73,6 +74,7 @@ def _main_parser(
             run_func = mod_inst.run
             if params_count(run_func) == 2:
                 run_func(None, subp)
+    argcomplete.autocomplete(argp)
     return argp.parse_args()
 
 
