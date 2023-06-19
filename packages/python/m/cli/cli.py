@@ -1,8 +1,8 @@
 import argparse
-import argcomplete
 import sys
 from typing import Any, Callable, cast
 
+import argcomplete
 from m.core import Issue, OneOf
 from m.core.fp import is_bad
 from m.log import Logger
