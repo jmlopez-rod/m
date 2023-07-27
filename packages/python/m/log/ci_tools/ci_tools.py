@@ -1,4 +1,4 @@
-from m.core.io import env
+from m.core import io as mio
 
 from .providers.github import tool as gh_tool
 from .providers.local import tool as local_tool
@@ -13,6 +13,7 @@ def get_ci_tool() -> ProviderModule:
         A `ProviderModule` instance with methods to provide messages in
         a CI environment.
     """
+    env = mio.env
     if env('GITHUB_ACTIONS'):
         return gh_tool
     if env('TC') or env('TEAMCITY'):

@@ -9,6 +9,10 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Fix circular import bug. `python -c 'from m.core.io import env'` should not
+  fail.
+- Completions for the `m` cli [#86](https://github.com/jmlopez-rod/m/pull/86).
+
 ## [0.21.0] <a name="0.21.0" href="#0.21.0">-</a> April 27, 2023
 
 - The `build_tag_with_version` bumps the current version to the next minor
