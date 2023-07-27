@@ -2,7 +2,7 @@ import json
 import logging
 import textwrap
 
-from m.core.io import is_python_info_enabled, is_traceback_enabled
+from m.core import io as mio
 
 from .ci_tools.ci_tools import get_ci_tool
 from .ci_tools.types import Message
@@ -59,8 +59,8 @@ class CiFormatter(logging.Formatter):
         super().__init__(datefmt=datefmt)
         self.opened_blocks: list[str] = []
         self.ci_tool = get_ci_tool()
-        self.show_traceback = is_traceback_enabled()
-        self.debug_python = is_python_info_enabled()
+        self.show_traceback = mio.is_traceback_enabled()
+        self.debug_python = mio.is_python_info_enabled()
 
     def format(self, record):
         """Format a record as based on the CI environment.

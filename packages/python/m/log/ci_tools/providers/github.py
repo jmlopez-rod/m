@@ -2,8 +2,9 @@ import logging
 from typing import cast
 
 from m.color import color
-from m.core import Issue, OneOf, issue, one_of
-from m.core.io import env_model
+from m.core import Issue, OneOf
+from m.core import io as mio
+from m.core import issue, one_of
 from m.log.misc import default_record_fmt, format_context, format_location
 from pydantic import BaseModel, Field
 
@@ -37,7 +38,7 @@ def env_vars() -> OneOf[Issue, EnvVars]:
                 server_url=server_url,
                 run_url=run_url,
             )
-            for env in env_model(GithubEnvVars)
+            for env in mio.env_model(GithubEnvVars)
             for run_url in (
                 f'{server_url}/{env.repo}/actions/runs/{env.run_id}',
             )
