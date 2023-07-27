@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.22.0] <a name="0.22.0" href="#0.22.0">-</a> July 27, 2023
+
 - Fix circular import bug. `python -c 'from m.core.io import env'` should not
   fail.
 - Completions for the `m` cli [#86](https://github.com/jmlopez-rod/m/pull/86).
@@ -290,7 +292,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.21.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.22.0...HEAD
+[0.22.0]: https://github.com/jmlopez-rod/m/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/jmlopez-rod/m/compare/0.20.2...0.21.0
 [0.20.2]: https://github.com/jmlopez-rod/m/compare/0.20.1...0.20.2
 [0.20.1]: https://github.com/jmlopez-rod/m/compare/0.20.0...0.20.1
