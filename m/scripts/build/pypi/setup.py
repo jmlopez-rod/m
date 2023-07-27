@@ -34,6 +34,7 @@ setuptools.setup(
         'pyyaml',
         'packaging',
         'pygments>=2.14.0',
+        'argcomplete',
     ],
     package_data={'m': ['py.typed']},
     packages=setuptools.find_packages(where='src'),
