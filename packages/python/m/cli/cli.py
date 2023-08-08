@@ -35,8 +35,10 @@ def _main_parser(
         formatter_class=raw,
         description=main_meta['description'] if main_meta else '...',
     )
+
     if add_args:
         add_args(argp)
+
     subp = argp.add_subparsers(
         title='commands',
         dest='command_name',
@@ -44,7 +46,9 @@ def _main_parser(
         help='additional help',
         metavar='<command>',
     )
+
     names = sorted(mod.keys())
+
     for name in names:
         if isinstance(mod[name], dict):
             meta_mod = meta[name]
@@ -74,6 +78,7 @@ def _main_parser(
             run_func = mod_inst.run
             if params_count(run_func) == 2:
                 run_func(None, subp)
+
     argcomplete.autocomplete(argp)
     return argp.parse_args()
 

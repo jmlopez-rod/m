@@ -1,10 +1,10 @@
 from m.cli import command, run_main
 from m.cli.handlers import create_dict_handler
-from m.core.io import env
+from m.github.argumets import RepoAndOwnerArgs
 from pydantic import BaseModel, Field
 
 
-class Arguments(BaseModel):
+class Arguments(RepoAndOwnerArgs):
     """Retrieve pull requests associated with a branch.
 
     example::
@@ -19,14 +19,6 @@ class Arguments(BaseModel):
     yaml: bool = Field(
         default=False,
         description='use yaml format',
-    )
-    owner: str = Field(
-        default=env('GITHUB_REPOSITORY_OWNER'),
-        description='repo owner',
-    )
-    repo: str = Field(
-        description='repo name',
-        required=True,
     )
     branch: str = Field(
         description='branch name',
