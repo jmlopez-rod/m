@@ -112,7 +112,7 @@ def merge_prs(
     if first_pr.merged or first_pr.closed:
         msg = f'{master_branch} branch pr already merged/closed'
         logger.warning(msg, context={
-            'pr_info': first_pr.dict(),
+            'pr_info': first_pr.model_dump(),
         })
         first_merged_result = Good(None)
     else:
@@ -153,7 +153,7 @@ def _merge_second_pr(
     base_ref = pr.base_ref_name
     if pr.merged or pr.closed:
         logger.warning(f'{base_ref} branch pr already merged/closed', context={
-            'pr_info': pr.dict(),
+            'pr_info': pr.model_dump(),
         })
         return Good(None)
     ver = target_ver

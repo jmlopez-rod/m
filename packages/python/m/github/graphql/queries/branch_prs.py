@@ -4,7 +4,7 @@ from typing import Any, Callable
 from m.core import Issue, OneOf, one_of
 from m.core.json import get
 from m.pydantic import CamelModel
-from pydantic import BaseModel, parse_obj_as
+from pydantic import BaseModel, TypeAdapter
 
 from ..api import graphql
 from ..enums import MergeableState, PullRequestReviewState
@@ -116,7 +116,7 @@ def fetch(
         A list of pull requests connected to the branch or an issue.
     """
     return _fetch(
-        lambda raw: parse_obj_as(list[PullRequest], raw),
+        lambda raw: TypeAdapter(list[PullRequest]).validate_python(raw),
         token,
         owner,
         repo,

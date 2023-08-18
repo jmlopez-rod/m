@@ -57,14 +57,18 @@ class Arguments(BaseModel):
     payload: str = Field(
         default='@-',
         description='data: @- (stdin), @filename (file), string',
-        validator=validate_payload,
-        positional=True,
+        json_schema_extra={
+            'validator': validate_payload,
+            'positional': True,
+        },
     )
 
     tool: str = Field(
-        aliases=['t', 'tool'],
         description='name of a supported compiler/linter',
-        required=True,
+        json_schema_extra={
+            'required': True,
+            'aliases': ['t', 'tool'],
+        },
     )
 
     config: Any = Field(

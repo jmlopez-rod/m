@@ -11,17 +11,21 @@ class Arguments(BaseModel):
     """
 
     type: str = Field(
-        proxy=add_arg(
-            '--type',
-            required=True,
-            choices=['release', 'hotfix'],
-            help='verification type',
-        ),
+        json_schema_extra={
+            'proxy': add_arg(
+                '--type',
+                required=True,
+                choices=['release', 'hotfix'],
+                help='verification type',
+            ),
+        },
     )
     m_dir: str = Field(
         description='m project directory',
-        positional=True,
-        required=True,
+        json_schema_extra={
+            'required': True,
+            'positional': True,
+        },
     )
 
 

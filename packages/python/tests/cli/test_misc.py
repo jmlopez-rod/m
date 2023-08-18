@@ -71,7 +71,7 @@ def test_run_main_issue(mocker: MockerFixture):
 
 def test_boolean_arg():
     """We can use `--no-[x]` in arguments."""
-    schema = SampleModel.schema()
+    schema = SampleModel.model_json_schema()
     field = schema['properties']['sort']
     arg_inputs = handle_field('sort', field)
     assert arg_inputs.args == ['--no-s', '--no-sort']

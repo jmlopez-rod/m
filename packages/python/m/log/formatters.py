@@ -25,7 +25,7 @@ class JsonFormatter(logging.Formatter):
         ci_info = record_dict.get('ci_info', Message(msg=record.msg))
         replacements = {
             **record_dict,
-            **ci_info.dict(),
+            **ci_info.model_dump(),
             'asctime': self.formatTime(record, self.datefmt),
             'context': context,
         }

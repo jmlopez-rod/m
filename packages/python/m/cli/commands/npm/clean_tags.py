@@ -13,7 +13,9 @@ class Arguments(BaseModel):
 
     package_name: str = Field(
         description='name of the npm package',
-        positional=True,
+        json_schema_extra={
+            'positional': True,
+        },
     )
 
 

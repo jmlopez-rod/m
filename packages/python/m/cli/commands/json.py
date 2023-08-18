@@ -30,8 +30,10 @@ class Arguments(BaseModel):
     payload: Any = Field(
         default='@-',
         description='json data: @- (stdin), @filename (file), string',
-        validator=validate_json_payload,
-        positional=True,
+        json_schema_extra={
+            'validator': validate_json_payload,
+            'positional': True,
+        },
     )
 
     sort_keys: bool = Field(

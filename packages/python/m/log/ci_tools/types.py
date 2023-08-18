@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from m.core import Issue, OneOf
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class EnvVars(BaseModel):
@@ -43,10 +43,7 @@ class Message(BaseModel):
     )
     end_col: str | None = Field(default=None, description='end column number')
 
-    class Config:
-        """Allow other types."""
-
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 @dataclass

@@ -6,17 +6,21 @@ class Arguments(BaseModel):
     """Prompt user for the next valid semantic version."""
 
     type: str = Field(
-        proxy=add_arg(
-            '--type',
-            required=True,
-            choices=['release', 'hotfix'],
-            help='verification type',
-        ),
+        json_schema_extra={
+            'proxy': add_arg(
+                '--type',
+                required=True,
+                choices=['release', 'hotfix'],
+                help='verification type',
+            ),
+        },
     )
     version: str = Field(
         description='version to bump',
-        positional=True,
-        required=True,
+        json_schema_extra={
+            'required': True,
+            'positional': True,
+        },
     )
 
 

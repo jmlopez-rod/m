@@ -42,26 +42,34 @@ class Arguments(BaseModel):
     payload: Any = Field(
         default='@-',
         description='json data: @- (stdin), @filename (file), string',
-        validator=validate_json_payload,
-        positional=True,
+        json_schema_extra={
+            'validator': validate_json_payload,
+            'positional': True,
+        },
     )
 
     query: list[str] = Field(
         description='path to json data',
-        nargs='+',
-        positional=True,
+        json_schema_extra={
+            'nargs': '+',
+            'positional': True,
+        },
     )
 
     warn: bool = Field(
         default=False,
-        aliases=['w', 'warn'],
         description='print warning messages instead of errors',
+        json_schema_extra={
+            'aliases': ['w', 'warn'],
+        },
     )
 
     separator: str = Field(
         default='\n',
-        aliases=['s', 'separator'],
         description='separator for multiple values',
+        json_schema_extra={
+            'aliases': ['s', 'separator'],
+        },
     )
 
 

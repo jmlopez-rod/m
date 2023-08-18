@@ -74,7 +74,7 @@ def create_pr(
         The Github response if successful.
     """
     endpoint = _repos(owner, repo, 'pulls')
-    return request(token, endpoint, HttpMethod.post, pr_info.dict())
+    return request(token, endpoint, HttpMethod.post, pr_info.model_dump())
 
 
 def merge_pr(

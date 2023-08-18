@@ -100,7 +100,7 @@ def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
     if not Path.exists(target_dir):
         Path.mkdir(target_dir, parents=True)
     return one_of(lambda: [
-        json.loads(m_env.json())
+        json.loads(m_env.model_dump_json())
         for m_env in get_m_env(m_dir)
         for env_list in _m_env_vars(m_env)
         for _ in mio.write_file(f'{m_dir}/.m/env.list', env_list)
