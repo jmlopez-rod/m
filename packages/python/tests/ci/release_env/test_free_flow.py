@@ -70,8 +70,8 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
     ),
 ])
 def test_m_flow(tcase: TCase, mocker: MockerFixture) -> None:
-    config = CONFIG.copy(update=tcase.config)
-    env_vars = ENV_VARS.copy(update=tcase.env_vars)
+    config = CONFIG.model_copy(update=tcase.config)
+    env_vars = ENV_VARS.model_copy(update=tcase.env_vars)
 
     config.workflow = Workflow.free_flow
 

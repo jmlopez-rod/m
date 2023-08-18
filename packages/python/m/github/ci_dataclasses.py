@@ -8,8 +8,8 @@ class Author(CamelModel):
     """An object representing a committer."""
 
     login: str
-    avatar_url: str | None
-    email: str | None
+    avatar_url: str | None = None
+    email: str | None = None
 
 
 class AssociatedPullRequest(BaseModel):

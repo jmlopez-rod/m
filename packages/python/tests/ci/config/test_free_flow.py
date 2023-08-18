@@ -60,8 +60,8 @@ class ConfigFreeFlowTest(FpTestCase):
             if err.cause:
                 msgs = str(err.cause)
                 assert '2 validation errors for Config' in msgs
-                assert 'owner\n  field required' in msgs
-                assert 'repo\n  field required' in msgs
+                assert 'owner\n  Field required' in msgs
+                assert 'repo\n  Field required' in msgs
             else:
                 raise AssertionError('issue data should be a string')
 
@@ -91,7 +91,7 @@ class ConfigFreeFlowTest(FpTestCase):
 
     def test_verify_version(self):
         """On free-flow there are no releases."""
-        config = self.base_config.copy()
+        config = self.base_config.model_copy()
         _test = config.verify_version
         gh_latest = ''
         self.assert_ok(_test(gh_latest, False, False))

@@ -51,7 +51,7 @@ class ConfigMFlowTest(FpTestCase):
             )
 
     def test_verify_version(self):
-        config = self.base_config.copy()
+        config = self.base_config.model_copy()
         _test = config.verify_version
         # Init Repo
         config.version = '0.0.0'

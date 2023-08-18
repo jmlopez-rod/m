@@ -10,11 +10,13 @@ class Arguments(BaseModel):
     """
 
     github_token: str = Field(
-        proxy=add_arg(
-            '--github-token',
-            default=env('GITHUB_TOKEN'),
-            help='Github PAT (default: env.GITHUB_TOKEN)',
-        ),
+        json_schema_extra={
+            'proxy': add_arg(
+                '--github-token',
+                default=env('GITHUB_TOKEN'),
+                help='Github PAT (default: env.GITHUB_TOKEN)',
+            ),
+        },
     )
 
 
