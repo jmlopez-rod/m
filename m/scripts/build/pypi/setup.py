@@ -30,7 +30,7 @@ setuptools.setup(
     ],
     install_requires=[
         'typing_extensions',
-        'pydantic',
+        'pydantic>=2.1.0',
         'pyyaml',
         'packaging',
         'pygments>=2.14.0',
