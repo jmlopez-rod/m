@@ -1,20 +1,26 @@
-from m.cli import command, create_json_handler, create_yaml_handler, run_main
-from pydantic import BaseModel, Field
+from m.cli import (
+    Arg,
+    BaseModel,
+    command,
+    create_json_handler,
+    create_yaml_handler,
+    run_main,
+)
 
 
 class Arguments(BaseModel):
     """Create the [m_dir]/.m/env.list file."""
 
-    pretty: bool = Field(
+    pretty: bool = Arg(
         default=False,
-        description='format json payload with indentation',
+        help='format json payload with indentation',
     )
-    yaml: bool = Field(
+    yaml: bool = Arg(
         default=False,
-        description='use yaml format',
+        help='use yaml format',
     )
-    m_dir: str = Field(
-        description='m project directory',
+    m_dir: str = Arg(
+        help='m project directory',
         positional=True,
         required=True,
     )

@@ -1,22 +1,21 @@
-from m.cli import command
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command
 
 
 class Arguments(BaseModel):
     """Close and immediately open another block."""
 
-    to_close: str = Field(
-        description='block name to close',
+    to_close: str = Arg(
+        help='block name to close',
         positional=True,
         required=True,
     )
-    name: str = Field(
-        description='block name to open',
+    name: str = Arg(
+        help='block name to open',
         positional=True,
         required=True,
     )
-    description: str = Field(
-        description='block description',
+    description: str = Arg(
+        help='block description',
         positional=True,
         required=True,
     )

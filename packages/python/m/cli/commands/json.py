@@ -1,7 +1,7 @@
 from typing import Any
 
-from m.cli import command, validate_json_payload
-from pydantic import BaseModel, Field
+from m.cli import Arg, command, validate_json_payload
+from pydantic import BaseModel
 
 
 class Arguments(BaseModel):
@@ -27,16 +27,16 @@ class Arguments(BaseModel):
     - yq: https://mikefarah.gitbook.io/yq/
     """
 
-    payload: Any = Field(
+    payload: Any = Arg(
         default='@-',
-        description='json data: @- (stdin), @filename (file), string',
-        validator=validate_json_payload,
+        help='json data: @- (stdin), @filename (file), string',
         positional=True,
+        validator=validate_json_payload,
     )
 
-    sort_keys: bool = Field(
+    sort_keys: bool = Arg(
         default=False,
-        description='sort the output of dictionaries alphabetically by key',
+        help='sort the output of dictionaries alphabetically by key',
     )
 
 

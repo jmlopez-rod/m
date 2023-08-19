@@ -1,12 +1,13 @@
 from typing import Any
 
 from m.cli import (
+    Arg,
     command,
     create_issue_handler,
     run_main,
     validate_json_payload,
 )
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class Arguments(BaseModel):
@@ -39,29 +40,29 @@ class Arguments(BaseModel):
     - yq: https://mikefarah.gitbook.io/yq/
     """
 
-    payload: Any = Field(
+    payload: Any = Arg(
         default='@-',
-        description='json data: @- (stdin), @filename (file), string',
+        help='json data: @- (stdin), @filename (file), string',
         validator=validate_json_payload,
         positional=True,
     )
 
-    query: list[str] = Field(
-        description='path to json data',
-        nargs='+',
+    query: list[str] = Arg(
+        help='path to json data',
         positional=True,
+        nargs='+',
     )
 
-    warn: bool = Field(
+    warn: bool = Arg(
         default=False,
+        help='print warning messages instead of errors',
         aliases=['w', 'warn'],
-        description='print warning messages instead of errors',
     )
 
-    separator: str = Field(
+    separator: str = Arg(
         default='\n',
+        help='separator for multiple values',
         aliases=['s', 'separator'],
-        description='separator for multiple values',
     )
 
 

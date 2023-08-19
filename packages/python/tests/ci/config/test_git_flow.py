@@ -51,5 +51,5 @@ class ConfigGitFlowTest(FpTestCase):
 
     def test_verify_version(self):
         """Test is already covered by the m_flow tests."""
-        config = self.base_config.copy()
+        config = self.base_config.model_copy()
         self.assertEqual(config.workflow, Workflow.git_flow)

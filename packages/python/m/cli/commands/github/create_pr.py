@@ -1,6 +1,5 @@
-from m.cli import command, run_main, validate_payload
+from m.cli import Arg, BaseModel, command, run_main, validate_payload
 from m.core.io import env
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -19,29 +18,29 @@ class Arguments(BaseModel):
             @file_with_pr_body | m json
     """
 
-    owner: str = Field(
+    owner: str = Arg(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        description='repo owner',
+        help='repo owner',
     )
-    repo: str = Field(
-        description='repo name',
+    repo: str = Arg(
+        help='repo name',
         required=True,
     )
-    head: str = Field(
-        description='name of the branch where the changes are implemented',
+    head: str = Arg(
+        help='name of the branch where the changes are implemented',
         required=True,
     )
-    base: str = Field(
-        description='name of the branch you want the changes pulled into',
+    base: str = Arg(
+        help='name of the branch you want the changes pulled into',
         required=True,
     )
-    title: str = Field(
-        description='pull request title',
+    title: str = Arg(
+        help='pull request title',
         required=True,
     )
-    body: str = Field(
+    body: str = Arg(
         default='@-',
-        description='data: @- (stdin), @filename (file), string',
+        help='data: @- (stdin), @filename (file), string',
         validator=validate_payload,
         positional=True,
     )

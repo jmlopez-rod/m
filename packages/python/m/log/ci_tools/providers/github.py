@@ -33,7 +33,7 @@ def env_vars() -> OneOf[Issue, EnvVars]:
     return one_of(
         lambda: [
             EnvVars(
-                **env.dict(),
+                **env.model_dump(),
                 ci_env=True,
                 server_url=server_url,
                 run_url=run_url,

@@ -1,5 +1,4 @@
-from m.cli import command
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command
 
 
 class Arguments(BaseModel):
@@ -9,8 +8,8 @@ class Arguments(BaseModel):
     Not all CI Tools support nesting.
     """
 
-    name: str = Field(
-        description='block name to close',
+    name: str = Arg(
+        help='block name to close',
         positional=True,
         required=True,
     )

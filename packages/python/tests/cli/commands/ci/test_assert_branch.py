@@ -27,14 +27,14 @@ class TCase(CliTestCase):
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd='m ci assert_branch --type release m',
-        config_mock=base_config.copy(update={'workflow': 'oops'}),
+        config_mock=base_config.model_copy(update={'workflow': 'oops'}),
         git_branch='master',
         errors=['invalid m workflow'],
         exit_code=1,
     ),
     TCase(
         cmd='m ci assert_branch --type release m',
-        config_mock=base_config.copy(update={'workflow': Workflow.m_flow}),
+        config_mock=base_config.model_copy(update={'workflow': Workflow.m_flow}),
         git_branch='topic/active-branch',
         errors=["invalid branch for 'release' using m_flow"],
         exit_code=1,
@@ -48,17 +48,17 @@ class TCase(CliTestCase):
     ),
     TCase(
         cmd='m ci assert_branch --type release m',
-        config_mock=base_config.copy(update={'workflow': Workflow.m_flow}),
+        config_mock=base_config.model_copy(update={'workflow': Workflow.m_flow}),
         git_branch='master',
     ),
     TCase(
         cmd='m ci assert_branch --type hotfix m',
-        config_mock=base_config.copy(update={'workflow': Workflow.m_flow}),
+        config_mock=base_config.model_copy(update={'workflow': Workflow.m_flow}),
         git_branch='master',
     ),
     TCase(
         cmd='m ci assert_branch --type release m',
-        config_mock=base_config.copy(
+        config_mock=base_config.model_copy(
             update={
                 'm_flow': MFlowConfig(master_branch='prod'),
                 'workflow': Workflow.m_flow,
@@ -68,17 +68,17 @@ class TCase(CliTestCase):
     ),
     TCase(
         cmd='m ci assert_branch --type release m',
-        config_mock=base_config.copy(update={'workflow': Workflow.git_flow}),
+        config_mock=base_config.model_copy(update={'workflow': Workflow.git_flow}),
         git_branch='develop',
     ),
     TCase(
         cmd='m ci assert_branch --type hotfix m',
-        config_mock=base_config.copy(update={'workflow': Workflow.git_flow}),
+        config_mock=base_config.model_copy(update={'workflow': Workflow.git_flow}),
         git_branch='master',
     ),
     TCase(
         cmd='m ci assert_branch --type release m',
-        config_mock=base_config.copy(
+        config_mock=base_config.model_copy(
             update={
                 'git_flow': GitFlowConfig(
                     master_branch='prod',
@@ -91,7 +91,7 @@ class TCase(CliTestCase):
     ),
     TCase(
         cmd='m ci assert_branch --type hotfix m',
-        config_mock=base_config.copy(
+        config_mock=base_config.model_copy(
             update={
                 'git_flow': GitFlowConfig(
                     master_branch='prod',

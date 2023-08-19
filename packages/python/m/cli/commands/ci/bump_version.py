@@ -1,20 +1,17 @@
-from m.cli import add_arg, command, run_main
-from pydantic import BaseModel, Field
+from m.cli import Arg, ArgProxy, BaseModel, command, run_main
 
 
 class Arguments(BaseModel):
     """Prompt user for the next valid semantic version."""
 
-    type: str = Field(
-        proxy=add_arg(
-            '--type',
-            required=True,
-            choices=['release', 'hotfix'],
-            help='verification type',
-        ),
+    type: str = ArgProxy(
+        '--type',
+        required=True,
+        choices=['release', 'hotfix'],
+        help='verification type',
     )
-    version: str = Field(
-        description='version to bump',
+    version: str = Arg(
+        help='version to bump',
         positional=True,
         required=True,
     )

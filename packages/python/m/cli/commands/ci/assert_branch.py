@@ -1,5 +1,4 @@
-from m.cli import add_arg, command, run_main
-from pydantic import BaseModel, Field
+from m.cli import Arg, ArgProxy, BaseModel, command, run_main
 
 
 class Arguments(BaseModel):
@@ -10,18 +9,16 @@ class Arguments(BaseModel):
     we want to make and the workflow that we are using.
     """
 
-    type: str = Field(
-        proxy=add_arg(
-            '--type',
-            required=True,
-            choices=['release', 'hotfix'],
-            help='verification type',
-        ),
-    )
-    m_dir: str = Field(
-        description='m project directory',
-        positional=True,
+    type: str = ArgProxy(
+        '--type',
         required=True,
+        choices=['release', 'hotfix'],
+        help='verification type',
+    )
+    m_dir: str = Arg(
+        help='m project directory',
+        required=True,
+        positional=True,
     )
 
 

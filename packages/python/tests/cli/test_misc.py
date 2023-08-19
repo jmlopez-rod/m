@@ -1,17 +1,16 @@
 from typing import Any, cast
 
-from m.cli import run_main
+from m.cli import Arg, BaseModel, run_main
 from m.cli.engine.parsers.boolean import handle_field
 from m.core import Bad, Good, Issue, issue
-from pydantic import BaseModel, Field
 from pytest_mock import MockerFixture
 
 
 class SampleModel(BaseModel):
-    sort: bool = Field(
+    sort: bool = Arg(
         default=True,
         aliases=['s', 'sort'],
-        description='some description',
+        help='some description',
     )
 
 
@@ -71,7 +70,7 @@ def test_run_main_issue(mocker: MockerFixture):
 
 def test_boolean_arg():
     """We can use `--no-[x]` in arguments."""
-    schema = SampleModel.schema()
+    schema = SampleModel.model_json_schema()
     field = schema['properties']['sort']
     arg_inputs = handle_field('sort', field)
     assert arg_inputs.args == ['--no-s', '--no-sort']

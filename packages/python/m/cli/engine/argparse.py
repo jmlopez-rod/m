@@ -29,7 +29,7 @@ def add_model(
         parser: The ArgumentParser instance.
         model: The pydantic model declaring the cli options.
     """
-    schema = model.schema()
+    schema = model.model_json_schema()
     parser.description = schema['description']
     parser.formatter_class = argparse.RawTextHelpFormatter
     for name, field in schema['properties'].items():
@@ -49,7 +49,7 @@ def _run_wrapper(
         return 0
     if isinstance(arg, argparse.Namespace):
         arg_dict = arg.__dict__
-        opt = cmd_inputs.model.parse_obj(arg_dict)
+        opt = cmd_inputs.model.model_validate(arg_dict)
         len_run_params = params_count(run_func)
         args = [opt, arg][:len_run_params]
         return run_func(*args)

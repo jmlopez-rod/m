@@ -1,6 +1,6 @@
 from re import sub
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 def to_camel(snake_case: str) -> str:
@@ -23,8 +23,7 @@ class CamelModel(BaseModel):
         https://medium.com/analytics-vidhya/camel-case-models-with-fast-api-and-pydantic-5a8acb6c0eee
     """
 
-    class Config:
-        """Config to allow camel case properties."""
-
-        alias_generator = to_camel
-        allow_population_by_field_name = True
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+    )

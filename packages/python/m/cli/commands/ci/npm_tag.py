@@ -1,5 +1,4 @@
-from m.cli import command
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command
 
 
 class Arguments(BaseModel):
@@ -20,8 +19,8 @@ class Arguments(BaseModel):
         latest
     """
 
-    npm_tag: str = Field(
-        description='npm package version',
+    npm_tag: str = Arg(
+        help='npm package version',
         positional=True,
         required=True,
     )

@@ -2,6 +2,7 @@ import argparse as ap
 from dataclasses import dataclass
 from typing import Any, Callable, TypeVar
 
+import typing_extensions
 from pydantic import BaseModel
 
 
@@ -22,6 +23,9 @@ class FuncArgs:
     kwargs: dict[str, Any]
 
 
+@typing_extensions.deprecated(
+    'The `add_arg` method is deprecated; use `m.cli.ArgProxy` instead.',
+)
 def add_arg(*args, **kwargs) -> FuncArgs:
     """Wrap FuncArgs arguments in a function.
 
@@ -32,7 +36,8 @@ def add_arg(*args, **kwargs) -> FuncArgs:
     Returns:
         A FuncArgs instance.
     """
-    return FuncArgs(args=list(args), kwargs=kwargs)
+    # `m` does not reference this function anymore, excluding from coverage
+    return FuncArgs(args=list(args), kwargs=kwargs)  # pragma: no cover
 
 
 @dataclass

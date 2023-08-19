@@ -141,7 +141,7 @@ def env_model(model: type[BaseModelT]) -> OneOf[Issue, BaseModelT]:
     Returns:
         A `OneOf` with the values of the environment variables or an issue.
     """
-    schema = model.schema()
+    schema = model.model_json_schema()
     missing: list[str] = []
     env_values: dict[str, str] = {}
     for name, field in schema['properties'].items():

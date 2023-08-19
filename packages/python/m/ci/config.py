@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from packaging.version import Version
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from ..core import Good, Issue, OneOf, issue, one_of, yaml_fp
 from .types import Branches, GitFlowConfig, MFlowConfig, Workflow
@@ -45,10 +45,7 @@ class Config(BaseModel):
     )
     build_tag_with_version: bool = False
 
-    class Config:
-        """Config to allow enums to be displayed as strings."""
-
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
     def uses_git_flow(self):
         """Check if configuration is using the git flow.
