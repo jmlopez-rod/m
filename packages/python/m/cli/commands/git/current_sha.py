@@ -1,5 +1,4 @@
-from m.cli import command, run_main
-from pydantic import BaseModel
+from m.cli import BaseModel, command, run_main
 
 
 class Arguments(BaseModel):

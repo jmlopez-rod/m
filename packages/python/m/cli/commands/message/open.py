@@ -1,17 +1,16 @@
-from m.cli import command
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command
 
 
 class Arguments(BaseModel):
     """Open a block to group several messages in the build log."""
 
-    name: str = Field(
-        description='block name to open',
+    name: str = Arg(
+        help='block name to open',
         positional=True,
         required=True,
     )
-    description: str = Field(
-        description='block description',
+    description: str = Arg(
+        help='block description',
         positional=True,
         required=True,
     )

@@ -1,5 +1,4 @@
-from m.cli import command
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command
 
 
 class Arguments(BaseModel):
@@ -11,22 +10,22 @@ class Arguments(BaseModel):
         ::warning file=app.js,line=1,col=5::Missing semicolon
     """
 
-    message: str = Field(
-        description='warning message',
+    message: str = Arg(
+        help='warning message',
         positional=True,
         required=True,
     )
-    file: str | None = Field(  # noqa: WPS110 - required by Github
+    file: str | None = Arg(  # noqa: WPS110 - required by Github
         aliases=['f', 'file'],
-        description='filename where warning occurred',
+        help='filename where warning occurred',
     )
-    line: str | None = Field(
+    line: str | None = Arg(
         aliases=['l', 'line'],
-        description='line where warning occurred',
+        help='line where warning occurred',
     )
-    col: str | None = Field(
+    col: str | None = Arg(
         aliases=['c', 'col'],
-        description='column where warning occurred',
+        help='column where warning occurred',
     )
 
 

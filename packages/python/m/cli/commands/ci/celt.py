@@ -1,9 +1,14 @@
 import sys
 from typing import Any, cast
 
-from m.cli import command, validate_json_payload, validate_payload
+from m.cli import (
+    Arg,
+    BaseModel,
+    command,
+    validate_json_payload,
+    validate_payload,
+)
 from m.core import is_bad, one_of
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -54,67 +59,63 @@ class Arguments(BaseModel):
         tsc --pretty false
     """
 
-    payload: str = Field(
+    payload: str = Arg(
         default='@-',
-        description='data: @- (stdin), @filename (file), string',
-        json_schema_extra={
-            'validator': validate_payload,
-            'positional': True,
-        },
+        help='data: @- (stdin), @filename (file), string',
+        validator=validate_payload,
+        positional=True,
     )
 
-    tool: str = Field(
-        description='name of a supported compiler/linter',
-        json_schema_extra={
-            'required': True,
-            'aliases': ['t', 'tool'],
-        },
+    tool: str = Arg(
+        help='name of a supported compiler/linter',
+        required=True,
+        aliases=['t', 'tool'],
     )
 
-    config: Any = Field(
+    config: Any = Arg(
         default='{}',  # noqa: P103 - json object, not attempting to format
         aliases=['c', 'config'],
-        description='config data: @filename (file), string',
+        help='config data: @filename (file), string',
         validator=validate_json_payload,
     )
 
-    max_lines: int = Field(
+    max_lines: int = Arg(
         default=5,
         aliases=['m', 'max_lines'],
-        description='max number of error lines to print, use -1 for all',
+        help='max number of error lines to print, use -1 for all',
     )
 
-    file_regex: str | None = Field(
+    file_regex: str | None = Arg(
         aliases=['r', 'file_regex'],
-        description='regex expression to filter files',
+        help='regex expression to filter files',
     )
 
-    file_prefix: str | None = Field(
+    file_prefix: str | None = Arg(
         aliases=['p', 'file_prefix'],
-        description="replace file prefix with 'old1|old2:new'",
+        help="replace file prefix with 'old1|old2:new'",
     )
 
-    ignore_error_allowance: bool = Field(
+    ignore_error_allowance: bool = Arg(
         default=False,
         aliases=['i', 'ignore_error_allowance'],
-        description='set every error allowance to 0',
+        help='set every error allowance to 0',
     )
 
-    stats_only: bool = Field(
+    stats_only: bool = Arg(
         default=False,
         aliases=['s', 'stats_only'],
-        description='display a dictionary with current total violations',
+        help='display a dictionary with current total violations',
     )
 
-    full_message: bool = Field(
+    full_message: bool = Arg(
         default=False,
         aliases=['f', 'full_message'],
-        description='display the full error message',
+        help='display the full error message',
     )
 
-    traceback: bool = Field(
+    traceback: bool = Arg(
         default=False,
-        description='display the exception traceback if available',
+        help='display the exception traceback if available',
     )
 
 

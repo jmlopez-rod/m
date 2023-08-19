@@ -1,6 +1,6 @@
-from m.cli import command, create_json_handler, create_yaml_handler, run_main
+from m.cli import Arg, BaseModel, command, run_main
+from m.cli.handlers import create_json_handler, create_yaml_handler
 from m.core.io import env
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -20,28 +20,28 @@ class Arguments(BaseModel):
     Or use the `--pretty` option to avoid piping.
     """
 
-    owner: str = Field(
+    owner: str = Arg(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        description='repo owner',
+        help='repo owner',
     )
-    repo: str = Field(
-        description='repo name',
+    repo: str = Arg(
+        help='repo name',
         required=True,
     )
-    files: int = Field(
+    files: int = Arg(
         default=10,
-        description='max number of files to retrieve',
+        help='max number of files to retrieve',
     )
-    pretty: bool = Field(
+    pretty: bool = Arg(
         default=False,
-        description='format json payload with indentation',
+        help='format json payload with indentation',
     )
-    yaml: bool = Field(
+    yaml: bool = Arg(
         default=False,
-        description='use yaml format',
+        help='use yaml format',
     )
-    pr_number: int = Field(
-        description='the pr number',
+    pr_number: int = Arg(
+        help='the pr number',
         positional=True,
         required=True,
     )

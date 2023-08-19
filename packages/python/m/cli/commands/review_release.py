@@ -1,17 +1,14 @@
-from m.cli import add_arg, command, run_main
+from m.cli import ArgProxy, BaseModel, command, run_main
 from m.core.io import env
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
     """Create Github pull request(s) to review the release."""
 
-    github_token: str = Field(
-        proxy=add_arg(
-            '--github-token',
-            default=env('GITHUB_TOKEN'),
-            help='Github PAT (default: env.GITHUB_TOKEN)',
-        ),
+    github_token: str = ArgProxy(
+        '--github-token',
+        default=env('GITHUB_TOKEN'),
+        help='Github PAT (default: env.GITHUB_TOKEN)',
     )
 
 

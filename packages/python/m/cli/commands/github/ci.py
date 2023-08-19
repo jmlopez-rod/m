@@ -1,6 +1,5 @@
-from m.cli import command, run_main
+from m.cli import Arg, BaseModel, command, run_main
 from m.core.io import env
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -30,30 +29,30 @@ class Arguments(BaseModel):
     github actions.
     """
 
-    owner: str = Field(
+    owner: str = Arg(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        description='repo owner',
+        help='repo owner',
     )
-    repo: str = Field(
-        description='repo name',
+    repo: str = Arg(
+        help='repo name',
         required=True,
     )
-    sha: str = Field(
-        description='commit sha',
+    sha: str = Arg(
+        help='commit sha',
         required=True,
     )
-    pr: int | None = Field(description='pull request number')
-    file_count: int = Field(
+    pr: int | None = Arg(help='pull request number')
+    file_count: int = Arg(
         default=10,
-        description='max number of files to retrieve',
+        help='max number of files to retrieve',
     )
-    include_release: bool = Field(
+    include_release: bool = Arg(
         default=False,
-        description='include the last release information',
+        help='include the last release information',
     )
-    merge_commit: bool = Field(
+    merge_commit: bool = Arg(
         default=False,
-        description='set if the sha is a merge commit sha (from github)',
+        help='set if the sha is a merge commit sha (from github)',
     )
 
 

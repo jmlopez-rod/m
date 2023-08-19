@@ -1,5 +1,4 @@
-from m.cli import command, run_main
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command, run_main
 
 
 class Arguments(BaseModel):
@@ -11,11 +10,9 @@ class Arguments(BaseModel):
     This command will find those empty tags and remove them.
     """
 
-    package_name: str = Field(
-        description='name of the npm package',
-        json_schema_extra={
-            'positional': True,
-        },
+    package_name: str = Arg(
+        help='name of the npm package',
+        positional=True,
     )
 
 

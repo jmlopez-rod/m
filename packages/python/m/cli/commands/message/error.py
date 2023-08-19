@@ -1,5 +1,4 @@
-from m.cli import command
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command
 
 
 class Arguments(BaseModel):
@@ -15,22 +14,22 @@ class Arguments(BaseModel):
     The procedure exits with non-zero code.
     """
 
-    message: str = Field(
-        description='error message',
+    message: str = Arg(
+        help='error message',
         positional=True,
         required=True,
     )
-    file: str | None = Field(  # noqa: WPS110 - required by Github
+    file: str | None = Arg(  # noqa: WPS110 - required by Github
         aliases=['f', 'file'],
-        description='filename where error occurred',
+        help='filename where error occurred',
     )
-    line: str | None = Field(
+    line: str | None = Arg(
         aliases=['l', 'line'],
-        description='line where error occurred',
+        help='line where error occurred',
     )
-    col: str | None = Field(
+    col: str | None = Arg(
         aliases=['c', 'col'],
-        description='column where error occurred',
+        help='column where error occurred',
     )
 
 

@@ -1,6 +1,5 @@
-from m.cli import command, run_main
+from m.cli import Arg, BaseModel, command, run_main
 from m.core.io import env
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -19,20 +18,20 @@ class Arguments(BaseModel):
     `GITHUB_REPOSITORY_OWNER`.
     """
 
-    owner: str = Field(
+    owner: str = Arg(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        description='repo owner',
+        help='repo owner',
     )
-    repo: str = Field(
-        description='repo name',
+    repo: str = Arg(
+        help='repo name',
         required=True,
     )
-    version: str = Field(
-        description='version to release',
+    version: str = Arg(
+        help='version to release',
         required=True,
     )
-    branch: str | None = Field(
-        description='The branch where the git tag will be created',
+    branch: str | None = Arg(
+        help='The branch where the git tag will be created',
     )
 
 

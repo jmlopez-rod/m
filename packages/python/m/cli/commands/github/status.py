@@ -1,6 +1,5 @@
-from m.cli import add_arg, command, run_main
+from m.cli import Arg, ArgProxy, BaseModel, command, run_main
 from m.core.io import env
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -22,36 +21,34 @@ class Arguments(BaseModel):
     `GITHUB_REPOSITORY_OWNER`.
     """
 
-    owner: str = Field(
+    owner: str = Arg(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        description='repo owner',
+        help='repo owner',
     )
-    repo: str = Field(
-        description='repo name',
+    repo: str = Arg(
+        help='repo name',
         required=True,
     )
-    sha: str = Field(
-        description='commit sha',
+    sha: str = Arg(
+        help='commit sha',
         required=True,
     )
-    context: str = Field(
-        description='unique identifier for the status (a name?)',
+    context: str = Arg(
+        help='unique identifier for the status (a name?)',
         required=True,
     )
-    state: str = Field(
-        proxy=add_arg(
-            '--state',
-            required=True,
-            choices=['error', 'failure', 'pending', 'success'],
-            help='the state of the status',
-        ),
+    state: str = ArgProxy(
+        '--state',
+        required=True,
+        choices=['error', 'failure', 'pending', 'success'],
+        help='the state of the status',
     )
-    description: str = Field(
-        description='a short description of the status',
+    description: str = Arg(
+        help='a short description of the status',
         required=True,
     )
-    url: str | None = Field(
-        description='URL to associate with this status',
+    url: str | None = Arg(
+        help='URL to associate with this status',
     )
 
 

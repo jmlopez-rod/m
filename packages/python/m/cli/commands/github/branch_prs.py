@@ -1,7 +1,6 @@
-from m.cli import command, run_main
+from m.cli import Arg, BaseModel, command, run_main
 from m.cli.handlers import create_dict_handler
 from m.core.io import env
-from pydantic import BaseModel, Field
 
 
 class Arguments(BaseModel):
@@ -12,24 +11,24 @@ class Arguments(BaseModel):
         $ m github branch_prs --owner jmlopez-rod --repo m release/0.18.0
     """
 
-    pretty: bool = Field(
+    pretty: bool = Arg(
         default=False,
-        description='format json payload with indentation',
+        help='format json payload with indentation',
     )
-    yaml: bool = Field(
+    yaml: bool = Arg(
         default=False,
-        description='use yaml format',
+        help='use yaml format',
     )
-    owner: str = Field(
+    owner: str = Arg(
         default=env('GITHUB_REPOSITORY_OWNER'),
-        description='repo owner',
+        help='repo owner',
     )
-    repo: str = Field(
-        description='repo name',
+    repo: str = Arg(
+        help='repo name',
         required=True,
     )
-    branch: str = Field(
-        description='branch name',
+    branch: str = Arg(
+        help='branch name',
         required=True,
         positional=True,
     )

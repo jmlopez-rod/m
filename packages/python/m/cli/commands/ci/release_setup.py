@@ -1,21 +1,20 @@
-from m.cli import command, run_main
-from pydantic import BaseModel, Field
+from m.cli import Arg, BaseModel, command, run_main
 
 
 class Arguments(BaseModel):
     """Update the config and changelog files."""
 
-    changelog: str = Field(
+    changelog: str = Arg(
         default='CHANGELOG.md',
-        description='CHANGELOG filename',
+        help='CHANGELOG filename',
     )
-    m_dir: str = Field(
-        description='m project directory',
+    m_dir: str = Arg(
+        help='m project directory',
         positional=True,
         required=True,
     )
-    new_ver: str = Field(
-        description='the new version',
+    new_ver: str = Arg(
+        help='the new version',
         positional=True,
         required=True,
     )
