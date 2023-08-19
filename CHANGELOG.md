@@ -9,6 +9,31 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Migrated to [pydantic v2](https://docs.pydantic.dev/dev-v2/migration/).
+- Added `m.cli.Arg` and `m.cli.ArgProxy`. These are replacements for pydantic's
+  `Field` since this function no longer supports the `extra` keyword arguments.
+- Deprecated `add_arg`. Instead of
+
+  ```python
+    prop: str = Field(
+        json_schema_extra={
+            'proxy': add_arg(
+                '--opt',
+                help='help description',
+            ),
+        },
+    )
+  ```
+
+  we can write
+
+  ```python
+    prop: str = ArgProxy(
+      '--opt',
+      help='help description',
+    )
+  ```
+
 ## [0.22.1] <a name="0.22.1" href="#0.22.1">-</a> July 27, 2023
 
 - Add `argcomplete` as a dependency.

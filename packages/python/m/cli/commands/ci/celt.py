@@ -1,13 +1,8 @@
 import sys
 from typing import Any, cast
 
-from m.cli import (
-    Arg,
-    BaseModel,
-    command,
-    validate_json_payload,
-    validate_payload,
-)
+from m.cli import Arg, BaseModel, command
+from m.cli.validators import validate_json_payload, validate_payload
 from m.core import is_bad, one_of
 
 
