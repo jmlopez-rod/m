@@ -24,7 +24,7 @@ class FuncArgs:
 
 
 @typing_extensions.deprecated(
-    'The `add_arg` method is deprecated; use `m.cli.ArgProxy` instead.'
+    'The `add_arg` method is deprecated; use `m.cli.ArgProxy` instead.',
 )
 def add_arg(*args, **kwargs) -> FuncArgs:
     """Wrap FuncArgs arguments in a function.
@@ -35,8 +35,7 @@ def add_arg(*args, **kwargs) -> FuncArgs:
 
     Returns:
         A FuncArgs instance.
-
-   """
+    """
     # `m` does not reference this function anymore, excluding from coverage
     return FuncArgs(args=list(args), kwargs=kwargs)  # pragma: no cover
 

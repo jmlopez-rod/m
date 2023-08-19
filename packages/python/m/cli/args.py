@@ -56,7 +56,7 @@ def Arg(  # noqa: N802, WPS211
     )
 
 
-def ArgProxy(*args, **kwargs) -> Any:
+def ArgProxy(*args, **kwargs) -> Any:  # noqa: N802
     """Wrap function to provide all argparse inputs.
 
     This is a escape hatch and does not provide any typings.
@@ -73,5 +73,5 @@ def ArgProxy(*args, **kwargs) -> Any:
     return FieldInfo.from_field(
         json_schema_extra={
             'proxy': FuncArgs(args=list(args), kwargs=kwargs),
-        }
+        },
     )
