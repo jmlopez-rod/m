@@ -28,6 +28,8 @@ The format of this changelog is based on
 - Added `m.core.Res`. This is an alias for `OneOf[Issue, G]` so that we only
   have to specify the type of the "Result" or "Response".
 - Added `exception` method and other wrappers to the `Logger` class.
+- Added `parse_model` and `load_model` to `m.pydantic`. These utilities allow us
+  to parse and load a data from files.
 - Deprecated `add_arg`. Instead of
 
   ```python
