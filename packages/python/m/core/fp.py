@@ -99,7 +99,7 @@ class Bad(Generic[B, G]):
         """
         return cast(Bad[B, K], self)
 
-    def flat_map_bad(self, fct: Callable[[B], Bad[B, G] | Good[B, G]]) -> Bad[B, G] | Good[B, G]:
+    def flat_map_bad(self, fct: Callable[[B], OneOf[B, G]]) -> OneOf[B, G]:
         """Apply the input function if this is a `Bad` value.
 
         Args:

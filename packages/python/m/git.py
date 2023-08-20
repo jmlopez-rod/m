@@ -1,4 +1,4 @@
-from m.core import Good, Res, issue, one_of, subprocess
+from m.core import Good, Res, hone, one_of, subprocess
 
 
 def get_branch() -> Res[str]:
@@ -16,9 +16,8 @@ def stage_all() -> Res[str]:
     Returns:
         A `OneOf` containing an `Issue` or the response from `git add .`.
     """
-    return subprocess.eval_cmd('git add .').flat_map_bad(
-        lambda err: issue('git add failure', cause=err),
-    )
+    res = subprocess.eval_cmd('git add .')
+    return res.flat_map_bad(hone('git add failure'))
 
 
 def commit(msg: str) -> Res[str]:
@@ -30,9 +29,8 @@ def commit(msg: str) -> Res[str]:
     Returns:
         A `OneOf` containing an `Issue` or the response from the git command.
     """
-    return subprocess.eval_cmd(f'git commit -m "{msg}"').flat_map_bad(
-        lambda err: issue('git commit failure', cause=err),
-    )
+    res = subprocess.eval_cmd(f'git commit -m "{msg}"')
+    return res.flat_map_bad(hone('git commit failure'))
 
 
 def push_branch(branch: str) -> Res[str]:
@@ -44,9 +42,8 @@ def push_branch(branch: str) -> Res[str]:
     Returns:
         A `OneOf` containing an `Issue` or the response from the command.
     """
-    return subprocess.eval_cmd(f'git push -u origin "{branch}"').flat_map_bad(
-        lambda err: issue('git push failure', cause=err),
-    )
+    res = subprocess.eval_cmd(f'git push -u origin "{branch}"')
+    return res.flat_map_bad(hone('git push failure'))
 
 
 def stash() -> Res[str]:
@@ -78,9 +75,8 @@ def checkout_branch(branch: str, create: bool = True) -> Res[str]:
         A `OneOf` containing an `Issue` of the git response.
     """
     opt = '-b' if create else ''
-    return subprocess.eval_cmd(f'git checkout {opt} {branch}').flat_map_bad(
-        lambda err: issue('git checkout failure', cause=err),
-    )
+    res = subprocess.eval_cmd(f'git checkout {opt} {branch}')
+    return res.flat_map_bad(hone('git checkout failure'))
 
 
 def get_first_commit_sha() -> Res[str]:

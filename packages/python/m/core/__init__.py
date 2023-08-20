@@ -1,7 +1,7 @@
 # noqa: WPS412
 from .fp import Bad, Good, OneOf, is_bad
 from .issue import Issue, IssueDict
-from .one_of import issue, non_issue, one_of
+from .one_of import hone, issue, non_issue, one_of
 from .types import Res
 
 __all__ = [  # noqa: WPS410
@@ -15,4 +15,5 @@ __all__ = [  # noqa: WPS410
     'Bad',
     'is_bad',
     'Res',
+    'hone',
 ]

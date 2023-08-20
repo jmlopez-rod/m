@@ -8,7 +8,7 @@ from typing import Union
 from . import rw
 from .fp import Good, OneOf
 from .issue import Issue
-from .one_of import issue, one_of
+from .one_of import hone, issue, one_of
 
 
 def read_json(
@@ -25,17 +25,12 @@ def read_json(
         A `Good` containing the parsed contents of the json file.
     """
     empty: str = '' if error_if_empty else 'null'
+    context = {'filename': filename or 'SYS.STDIN'}
     return one_of(lambda: [
         json_data
         for json_str in rw.read_file(filename)
         for json_data in parse_json(json_str or empty, error_if_empty)
-    ]).flat_map_bad(
-        lambda err: issue(
-            'failed to read json file',
-            cause=err,
-            context={'filename': filename or 'SYS.STDIN'},
-        ),
-    )
+    ]).flat_map_bad(hone('failed to read json file', context=context))
 
 
 def parse_json(

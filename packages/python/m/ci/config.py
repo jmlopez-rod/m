@@ -3,7 +3,7 @@ from pathlib import Path
 from packaging.version import Version
 from pydantic import BaseModel, ConfigDict
 
-from ..core import Good, Issue, OneOf, issue, one_of, yaml_fp
+from ..core import Good, Issue, OneOf, hone, issue, one_of, yaml_fp
 from .types import Branches, GitFlowConfig, MFlowConfig, Workflow
 
 
@@ -188,4 +188,4 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
         Config(m_dir=m_dir, **m_cfg)
         for m_filename in get_m_filename(m_dir)
         for m_cfg in yaml_fp.read_yson(m_filename)
-    ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))
+    ]).flat_map_bad(hone('read_config failure'))

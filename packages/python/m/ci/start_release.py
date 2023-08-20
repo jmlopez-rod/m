@@ -1,4 +1,4 @@
-from m.core import Bad, Good, Issue, OneOf, io, issue, one_of
+from m.core import Bad, Good, Issue, OneOf, hone, io, issue, one_of
 from m.github.cli import get_latest_release
 from m.log import Logger
 
@@ -55,7 +55,7 @@ def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
                 True
                 for cmd_out in git.stash()
                 for _ in logger.info('ran `git stash`', {'git': cmd_out})
-            ]).flat_map_bad(lambda err: issue('git stash failure', cause=err))
+            ]).flat_map_bad(hone('git stash failure'))
     return issue(
         'releases can only be done in a clean git state',
         context={

@@ -12,6 +12,19 @@ The format of this changelog is based on
 - Migrated to [pydantic v2](https://docs.pydantic.dev/dev-v2/migration/).
 - Added `m.cli.Arg` and `m.cli.ArgProxy`. These are replacements for pydantic's
   `Field` since this function no longer supports the `extra` keyword arguments.
+- Added `m.core.hone`. Helps avoid writing a lambda when trying to handle an
+  `Issue`. Instead of
+
+  ```python
+  res.flat_map_bad(lambda err: issue('new error message', cause=err, context=context))
+  ```
+
+  we can write
+
+  ```python
+  res.flat_map_bad(hone('git stash failure', context=context))
+  ```
+
 - Added `m.core.Res`. This is an alias for `OneOf[Issue, G]` so that we only
   have to specify the type of the "Result" or "Response".
 - Deprecated `add_arg`. Instead of

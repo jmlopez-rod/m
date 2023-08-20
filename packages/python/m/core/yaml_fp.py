@@ -6,7 +6,7 @@ import yaml
 from . import rw
 from .issue import Issue
 from .json import parse_json
-from .one_of import Good, OneOf, issue, one_of
+from .one_of import Good, OneOf, hone, issue, one_of
 
 ParserFunction = Callable[[str, bool], OneOf[Issue, Any]]
 
@@ -54,14 +54,9 @@ def read_yson(
     }
     ext = Path(filename).suffix
     parser = file_map.get(ext, parse_json)
+    context = {'filename': filename or 'SYS.STDIN'}
     return one_of(lambda: [
         json_data
         for json_str in rw.read_file(filename)
         for json_data in parser(json_str or empty, error_if_empty)
-    ]).flat_map_bad(
-        lambda err: issue(
-            f'failed to read "{ext}" file',
-            cause=err,
-            context={'filename': filename or 'SYS.STDIN'},
-        ),
-    )
+    ]).flat_map_bad(hone(f'failed to read "{ext}" file', context=context))
