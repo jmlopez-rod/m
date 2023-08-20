@@ -39,6 +39,9 @@ The format of this changelog is based on
   narrowing in the negative case we have to rely on `isinstance` to check if an
   object is `Good` or `Bad` and be able to access the `value` without having to
   cast. See https://github.com/python/typing/discussions/1013.
+- Deprecated `is_good` and `is_bad`. Instead use `isinstance` to check if an
+  object is `Good` or `Bad`. Doing so will prevent having to cast the object to
+  be able to extract the value when using `OneOf`.
 
 ## [0.22.1] <a name="0.22.1" href="#0.22.1">-</a> July 27, 2023
 

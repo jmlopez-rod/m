@@ -3,7 +3,7 @@ from typing import Any, cast
 
 from m.cli import Arg, BaseModel, command
 from m.cli.validators import validate_json_payload, validate_payload
-from m.core import is_bad, one_of
+from m.core import Bad, one_of
 
 
 class Arguments(BaseModel):
@@ -121,7 +121,7 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments):
     from m.ci.celt.core.process import PostProcessor
-    from m.ci.celt.core.types import Configuration, ProjectStatus
+    from m.ci.celt.core.types import Configuration
     from m.ci.celt.post_processor import get_post_processor
     from m.core.issue import Issue
     from m.log import Logger
@@ -140,12 +140,14 @@ def run(arg: Arguments):
         for tool in tool_either
         for project in tool.run(arg.payload, arg.config)
     ])
-    if is_bad(either):
+    if isinstance(either, Bad):
         Issue.show_traceback = arg.traceback
         logger.error_block('celt failure', either.value)
         return 1
+    # We can do the check for tool_either but the next cast is valid
+    # because either would have failed if tool_either was Bad.
     tool = cast(PostProcessor, tool_either.value)
-    project = cast(ProjectStatus, either.value)
+    project = either.value
     output = (
         tool.stats_json(project)
         if arg.stats_only

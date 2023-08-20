@@ -1,6 +1,6 @@
-from typing import cast
+from typing import Any
 
-from m.core import Good, Issue, OneOf, issue, one_of
+from m.core import Bad, Good, Issue, OneOf, issue, one_of
 from m.log import EnvVars
 from pydantic import BaseModel
 
@@ -55,7 +55,10 @@ def _extra_checks(
     git_env: GitEnv,
     is_release_pr: bool,
     is_hotfix_pr: bool,
-) -> OneOf[Issue, int]:
+) -> OneOf[Issue, Any]:
+    # If successful we return None, we do not care about the value thus we
+    # are specifying `Any` so that a Bad value may be compatible with other
+    # `OneOf`s.
     master_branch = config.get_master_branch()
     develop_branch = _get_develop_branch(config)
     valid_branches = (
@@ -71,7 +74,7 @@ def _extra_checks(
             'current_target_branch': git_env.target_branch,
             'workflow': str(config.workflow),
         })
-    return Good(0)
+    return Good(None)
 
 
 def get_release_env(
@@ -100,9 +103,8 @@ def get_release_env(
             is_release_pr=is_release_pr,
             is_hotfix_pr=is_hotfix_pr,
         )
-        if check_result.is_bad:
-            # casting is done since it contains a bad value.
-            return cast(OneOf[Issue, ReleaseEnv], check_result)
+        if isinstance(check_result, Bad):
+            return check_result
     return one_of(lambda: [
         ReleaseEnv(
             build_tag=build_tag,

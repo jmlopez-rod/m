@@ -1,7 +1,7 @@
 from textwrap import dedent
 from typing import cast
 
-from m.core import Good, Issue, OneOf, io, is_bad, issue, one_of
+from m.core import Bad, Good, Issue, OneOf, io, issue, one_of
 from m.github.api import GithubPullRequest, create_pr
 from m.github.ci import compare_sha_url
 from m.github.cli import get_latest_release
@@ -147,13 +147,13 @@ def create_prs(
                 base=develop_branch,
             ),
         ).map(lambda res: cast(str, res.get('html_url', '')))
-        if is_bad(backport_pr):
+        if isinstance(backport_pr, Bad):
             logger.warning(
                 'unable to create backport pull request',
                 backport_pr.value,
             )
         else:
-            all_prs[title] = cast(str, backport_pr.value)
+            all_prs[title] = backport_pr.value
     title = f'({release_type}) {target_ver}'
     release_pr = create_pr(
         gh_token,
@@ -166,13 +166,13 @@ def create_prs(
             base=config.get_master_branch(),
         ),
     ).map(lambda res: cast(str, res.get('html_url', '')))
-    if is_bad(release_pr):
+    if isinstance(release_pr, Bad):
         logger.warning(
             'unable to create release pull request',
             release_pr.value,
         )
     else:
-        all_prs[title] = cast(str, release_pr.value)
+        all_prs[title] = release_pr.value
     if all_prs:
         logger.info('pull requests created', context=all_prs)
         return Good(None)
@@ -181,7 +181,7 @@ def create_prs(
 
 def _commit_changes(commit_msg: str) -> OneOf[Issue, str]:
     commit_result = git.commit(commit_msg)
-    if is_bad(commit_result):
+    if isinstance(commit_result, Bad):
         if 'working tree clean' in f'{commit_result.value}':
             return Good('')
     return commit_result

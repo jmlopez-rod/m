@@ -3,8 +3,7 @@ import sys
 from typing import Any, Callable, cast
 
 import argcomplete
-from m.core import Issue, OneOf
-from m.core.fp import is_bad
+from m.core import Bad, Issue, OneOf
 from m.log import Logger
 
 from ..core.io import env
@@ -148,7 +147,7 @@ def run_main(
     except Exception as ex:
         issue_handler(Issue('unknown caught exception', cause=ex))
         return 2
-    if is_bad(res):
+    if isinstance(res, Bad):
         problem = res.value
         if isinstance(problem, Issue):
             issue_handler(problem)

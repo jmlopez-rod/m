@@ -1,4 +1,4 @@
-from m.core import Good, Issue, OneOf, io, is_bad, issue, one_of
+from m.core import Bad, Good, Issue, OneOf, io, issue, one_of
 from m.github.cli import get_latest_release
 from m.log import Logger
 
@@ -134,7 +134,7 @@ def after_checkout(branch_checkout: str, stashed: bool) -> OneOf[Issue, None]:
     })
     if stashed:
         pop_result = git.stash_pop()
-        if is_bad(pop_result):
+        if isinstance(pop_result, Bad):
             logger.warning('`git stash pop` issue', pop_result.value)
         else:
             logger.info('stashed files have been restored')
@@ -143,7 +143,7 @@ def after_checkout(branch_checkout: str, stashed: bool) -> OneOf[Issue, None]:
 
 def _get_commits(gh_ver: str) -> OneOf[Issue, list[str] | None]:
     either = git.get_commits(gh_ver)
-    if is_bad(either):
+    if isinstance(either, Bad):
         logger.warning(
             'unable to retrieve unreleased commits - skipping checks',
             either.value,

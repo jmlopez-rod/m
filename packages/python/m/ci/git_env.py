@@ -1,5 +1,4 @@
 import re
-from typing import cast
 
 from m.ci.versioning import VersionInputs, build_m_tag, build_py_tag
 from m.core.maybe import maybe
@@ -7,7 +6,7 @@ from m.log import EnvVars
 from pydantic import BaseModel
 
 from ..core import Issue, issue
-from ..core.fp import Good, OneOf
+from ..core.fp import Bad, Good, OneOf
 from ..github.ci import (
     Commit,
     CommitInfo,
@@ -15,7 +14,6 @@ from ..github.ci import (
     Release,
     get_ci_run_info,
 )
-from ..github.ci_dataclasses import GithubCiRunInfo
 from .config import Config
 
 
@@ -276,10 +274,10 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
         file_count=0,
         include_release=True,
     )
-    if git_env_box.is_bad:
-        return issue('git_env failure', cause=cast(Issue, git_env_box.value))
+    if isinstance(git_env_box, Bad):
+        return issue('git_env failure', cause=git_env_box.value)
 
-    res = cast(GithubCiRunInfo, git_env_box.value)
+    res = git_env_box.value
     pr = res.pull_request
     git_env.sha = res.commit.sha
     git_env.target_branch = pr.target_branch if pr else branch

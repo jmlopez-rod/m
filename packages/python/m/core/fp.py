@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Callable, Generic, Iterator, TypeGuard, TypeVar, Union, cast
 
+import typing_extensions
+
 # Note: disabling WPS110 in .flake8 for this file.
 #   Reason for this, the variable name "value".
 A = TypeVar('A')  # pylint: disable=invalid-name
@@ -180,6 +182,9 @@ class Good(Generic[B, G]):
 OneOf = Bad[B, G] | Good[B, G]
 
 
+@typing_extensions.deprecated(
+    'The `is_bad` type guard is deprecated; use `isinstance(inst, Bad)` instead.',
+)
 def is_bad(inst: OneOf[B, G]) -> TypeGuard[Bad[B, G]]:
     """Assert that a OneOf instance is a `Bad`.
 
@@ -189,9 +194,13 @@ def is_bad(inst: OneOf[B, G]) -> TypeGuard[Bad[B, G]]:
     Returns:
         True if the instance is a `Bad`.
     """
-    return isinstance(inst, Bad)
+    # `m` does not reference this function anymore, excluding from coverage
+    return isinstance(inst, Bad)  # pragma: no cover
 
 
+@typing_extensions.deprecated(
+    'The `is_good` type guard is deprecated; use `isinstance(inst, Good)` instead.',
+)
 def is_good(inst: OneOf[B, G]) -> TypeGuard[Good[B, G]]:
     """Assert that a OneOf instance is a `Good`.
 
@@ -201,4 +210,5 @@ def is_good(inst: OneOf[B, G]) -> TypeGuard[Good[B, G]]:
     Returns:
         True if the instance is a `Good`.
     """
-    return isinstance(inst, Good)
+    # `m` does not reference this function anymore, excluding from coverage
+    return isinstance(inst, Good)  # pragma: no cover
