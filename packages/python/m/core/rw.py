@@ -48,3 +48,18 @@ def write_file(filename: str, text: str) -> OneOf[Issue, int]:
             cause=ex,
         )
     return Good(0)
+
+
+def assert_file_exists(path: str) -> OneOf[Issue, Path]:
+    """Assert that a file exists.
+
+    Args:
+        path: The path to the file.
+
+    Returns:
+        A `Good` containing the `Path` if the file exists.
+    """
+    path_inst = Path(path)
+    if path_inst.exists():
+        return Good(path_inst)
+    return issue('file does not exist', context={'path': path})
