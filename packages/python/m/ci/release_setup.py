@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 
 from m.ci.config import Config, get_m_filename, read_config
-from m.core import Good, Issue, OneOf, issue, one_of, rw
+from m.core import Good, Res, issue, one_of, rw
 from m.git import get_first_commit_sha
 from m.github.ci import compare_sha_url
 from m.log import Logger
@@ -30,7 +30,7 @@ def new_changelog(
     repo: str,
     new_ver: str,
     first_sha: str,
-) -> OneOf[Issue, str]:
+) -> Res[str]:
     """Modify the contents of a CHANGELOG.
 
     It adds a new entry with the new version the new changelog contents.
@@ -77,7 +77,7 @@ def update_changelog_file(
     new_ver: str,
     first_sha: str,
     filename: str = 'CHANGELOG.md',
-) -> OneOf[Issue, int]:
+) -> Res[int]:
     """Add the new version entry to be released to the CHANGELOG.
 
     Args:
@@ -112,7 +112,7 @@ def _update_line_version(line: str, ver: str) -> str:
 def _update_config_version(
     config_contents: str,
     ver: str,
-) -> OneOf[Issue, str]:
+) -> Res[str]:
     lines = config_contents.split('\n')
     new_lines = [_update_line_version(line, ver) for line in lines]
     return Good('\n'.join(new_lines))
@@ -121,7 +121,7 @@ def _update_config_version(
 def update_version(
     root: str,
     version: str,
-) -> OneOf[Issue, int]:
+) -> Res[int]:
     """Update the version property in m configuration file.
 
     Args:
@@ -141,7 +141,7 @@ def update_version(
     ])
 
 
-def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
+def _success_release_setup(config: Config, new_ver: str) -> Res[int]:
     link = compare_sha_url(config.owner, config.repo, config.version, 'HEAD')
     return logger.info('setup complete', {
         'new_version': new_ver,
@@ -149,7 +149,7 @@ def _success_release_setup(config: Config, new_ver: str) -> OneOf[Issue, int]:
     })
 
 
-def _read_config(m_dir: str, config: Config | None) -> OneOf[Issue, Config]:
+def _read_config(m_dir: str, config: Config | None) -> Res[Config]:
     if config:
         return Good(config)
     return read_config(m_dir)
@@ -160,7 +160,7 @@ def release_setup(
     config_inst: Config | None,
     new_ver: str,
     changelog: str = 'CHANGELOG.md',
-) -> OneOf[Issue, None]:
+) -> Res[None]:
     """Modify all the necessary files to create a release.
 
     These include: CHANGELOG.md and the m configuration file.

@@ -1,10 +1,9 @@
 import logging
-from typing import cast
 
 from m.color import color
-from m.core import Issue, OneOf
+from m.core import Issue, OneOf, hone
 from m.core import io as mio
-from m.core import issue, one_of
+from m.core import one_of
 from m.log.misc import default_record_fmt, format_context, format_location
 from pydantic import BaseModel, Field
 
@@ -43,9 +42,7 @@ def env_vars() -> OneOf[Issue, EnvVars]:
                 f'{server_url}/{env.repo}/actions/runs/{env.run_id}',
             )
         ],
-    ).flat_map_bad(lambda x: issue(
-        'GH Actions env_vars failure', cause=cast(Issue, x),
-    ))
+    ).flat_map_bad(hone('GH Actions env_vars failure'))
 
 
 def _gh_format(msg_type: str, msg: Message, message: str, postfix: str) -> str:

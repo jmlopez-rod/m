@@ -3,7 +3,7 @@ import time
 from functools import partial
 from typing import Callable
 
-from m.core import Good, Issue, OneOf, issue, one_of
+from m.core import Good, Issue, Res, issue, one_of
 from m.github.api import merge_pr
 from m.github.cli import get_latest_release
 from m.github.graphql.enums import MergeableState
@@ -20,7 +20,7 @@ logger = Logger('m.ci.start_release')
 _checks_per_line = 30
 
 
-def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
+def inspect_prs(prs: list[PullRequest]) -> Res[None]:
     """Inspect the release pull requests.
 
     Attempts to warn the users of possible issues that may be encountered.
@@ -51,8 +51,8 @@ def inspect_prs(prs: list[PullRequest]) -> OneOf[Issue, None]:
 
 
 def wait_until(
-    predicate: Callable[[], OneOf[Issue, bool]],
-) -> OneOf[Issue, None]:
+    predicate: Callable[[], Res[bool]],
+) -> Res[None]:
     """Sleep until the predicate function returns False.
 
     Will print a `.` (dot) every 10 seconds thus every 6 dots
@@ -88,7 +88,7 @@ def merge_prs(
     config: Config,
     prs: list[PullRequest],
     target_ver: str,
-) -> OneOf[Issue, None]:
+) -> Res[None]:
     """Merge the given prs.
 
     Args:
@@ -108,7 +108,7 @@ def merge_prs(
     if len(prs) == 2:
         second_pr = prs[second_index]
 
-    first_merged_result: OneOf[Issue, None]
+    first_merged_result: Res[None]
     if first_pr.merged or first_pr.closed:
         msg = f'{master_branch} branch pr already merged/closed'
         logger.warning(msg, context={
@@ -137,7 +137,7 @@ def _not_released(
     owner: str,
     repo: str,
     ver: str,
-) -> OneOf[Issue, bool]:
+) -> Res[bool]:
     latest = get_latest_release(token, owner, repo)
     return latest.map(lambda current_ver: current_ver != ver)
 
@@ -147,7 +147,7 @@ def _merge_second_pr(
     config: Config,
     pr: PullRequest | None,
     target_ver: str,
-) -> OneOf[Issue, None]:
+) -> Res[None]:
     if not pr:
         return Good(None)
     base_ref = pr.base_ref_name
@@ -170,13 +170,13 @@ def _merge_second_pr(
     ])
 
 
-def _switch_branch(branch: str, checkout: str) -> OneOf[Issue, None]:
+def _switch_branch(branch: str, checkout: str) -> Res[None]:
     return logger.info(f'release complete - switching to "{branch}" branch', {
         'git': f'{checkout}\n',
     }).map(lambda _: None)
 
 
-def end_release(gh_token: str) -> OneOf[Issue, None]:
+def end_release(gh_token: str) -> Res[None]:
     """End the release process.
 
     Args:

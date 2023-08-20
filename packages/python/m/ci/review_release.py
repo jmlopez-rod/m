@@ -1,7 +1,7 @@
 from textwrap import dedent
 from typing import cast
 
-from m.core import Good, Issue, OneOf, io, is_bad, issue, one_of
+from m.core import Bad, Good, Res, io, issue, one_of
 from m.github.api import GithubPullRequest, create_pr
 from m.github.ci import compare_sha_url
 from m.github.cli import get_latest_release
@@ -72,7 +72,7 @@ def _git_flow_pr_body(config: Config, branch: str, gh_ver: str) -> str:
     """)
 
 
-def acknowledge_git_status(status: str) -> OneOf[Issue, None]:
+def acknowledge_git_status(status: str) -> Res[None]:
     """Display the current git status and ask developer to confirm.
 
     Args:
@@ -92,7 +92,7 @@ def acknowledge_git_status(status: str) -> OneOf[Issue, None]:
     return issue('operation cancelled by user')
 
 
-def inspect_prs(all_prs: list[PullRequest]) -> OneOf[Issue, None]:
+def inspect_prs(all_prs: list[PullRequest]) -> Res[None]:
     """Inspect the release pull requests.
 
     There should not be any pull requests when calling `review_release`.
@@ -118,7 +118,7 @@ def create_prs(
     release_type: str,
     target_ver: str,
     gh_ver: str,
-) -> OneOf[Issue, None]:
+) -> Res[None]:
     """Create release pull request(s).
 
     Args:
@@ -147,13 +147,13 @@ def create_prs(
                 base=develop_branch,
             ),
         ).map(lambda res: cast(str, res.get('html_url', '')))
-        if is_bad(backport_pr):
+        if isinstance(backport_pr, Bad):
             logger.warning(
                 'unable to create backport pull request',
                 backport_pr.value,
             )
         else:
-            all_prs[title] = cast(str, backport_pr.value)
+            all_prs[title] = backport_pr.value
     title = f'({release_type}) {target_ver}'
     release_pr = create_pr(
         gh_token,
@@ -166,28 +166,28 @@ def create_prs(
             base=config.get_master_branch(),
         ),
     ).map(lambda res: cast(str, res.get('html_url', '')))
-    if is_bad(release_pr):
+    if isinstance(release_pr, Bad):
         logger.warning(
             'unable to create release pull request',
             release_pr.value,
         )
     else:
-        all_prs[title] = cast(str, release_pr.value)
+        all_prs[title] = release_pr.value
     if all_prs:
         logger.info('pull requests created', context=all_prs)
         return Good(None)
     return issue('no prs were created, inspect logs for hints')
 
 
-def _commit_changes(commit_msg: str) -> OneOf[Issue, str]:
+def _commit_changes(commit_msg: str) -> Res[str]:
     commit_result = git.commit(commit_msg)
-    if is_bad(commit_result):
+    if isinstance(commit_result, Bad):
         if 'working tree clean' in f'{commit_result.value}':
             return Good('')
     return commit_result
 
 
-def review_release(token: str) -> OneOf[Issue, None]:
+def review_release(token: str) -> Res[None]:
     """Create release prs.
 
     Args:

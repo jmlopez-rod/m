@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Any, Callable, TypeVar, cast
 
 from pydantic import ValidationError
@@ -95,3 +96,39 @@ def non_issue(inst: OneOf[Issue, G]) -> G:
     # The assert statement can go away with the -O flag.
     assert not inst.is_bad  # noqa: S101
     return cast(G, inst.value)
+
+
+def _hone(
+    msg: str,
+    context: object,
+    description: str,
+    include_traceback: bool,
+    iss: Exception,
+) -> OneOf[Issue, Any]:
+    return issue(
+        msg,
+        cause=iss,
+        context=context,
+        description=description,
+        include_traceback=include_traceback,
+    )
+
+
+def hone(
+    msg: str,
+    context: object | None = None,
+    description: str | None = None,
+    include_traceback: bool = True,
+) -> Callable[[Issue], OneOf[Issue, Any]]:
+    """Create a function to repackage the issue with a new message and context.
+
+    Args:
+        msg: The new message.
+        context: The new context.
+        description: The new description.
+        include_traceback: Whether to include the traceback.
+
+    Returns:
+        A function that takes an issue and returns a new issue.
+    """
+    return partial(_hone, msg, context, description, include_traceback)

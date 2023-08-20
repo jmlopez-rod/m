@@ -2,7 +2,7 @@ import logging
 from functools import partial
 from typing import Callable, cast
 
-from m.core.fp import Good, OneOf
+from m.core import Good, Res
 from m.core.issue import Issue
 
 from .ci_tools.types import Message
@@ -43,7 +43,7 @@ def log_func_wrapper(
     msg: str | Message,
     context: dict | Issue | None = None,
     exit_code: int = 0,
-) -> OneOf[Issue, int]:
+) -> Res[int]:
     """Call a logger function with a message and log data.
 
     Args:
@@ -67,7 +67,7 @@ def log_func_wrapper(
     return Good(exit_code)
 
 
-class Logger:
+class Logger:  # noqa: WPS230 - loggers have many attributes
     """Wrapper for python Logger to enable inserting logs in fp loops.
 
     This is also so that we may attach context data for a message.
@@ -75,6 +75,7 @@ class Logger:
     We can access the actual logger by using `inst`.
     """
 
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, name: str):
         """Initialize the Logger.
 
@@ -85,6 +86,9 @@ class Logger:
         self.debug = partial(log_func_wrapper, self.inst.debug)
         self.info = partial(log_func_wrapper, self.inst.info)  # noqa: WPS110
         self.warning = partial(log_func_wrapper, self.inst.warning)
+        self.exception = partial(log_func_wrapper, self.inst.exception)
+        self.critical = partial(log_func_wrapper, self.inst.critical)
+        self.log = partial(log_func_wrapper, self.inst.log)
         self.prompt = partial(
             log_func_wrapper,
             cast(PromptLogger, self.inst).prompt,
@@ -96,7 +100,7 @@ class Logger:
         name: str,
         description: str,
         stderr: bool = False,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Group log lines.
 
         Signals the formatter that the next log lines should be placed in a
@@ -122,7 +126,7 @@ class Logger:
         self,
         name: str,
         stderr: bool = False,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Close a group log lines.
 
         Signals the formatter that the current group of lines should end.
@@ -146,7 +150,7 @@ class Logger:
         self,
         msg: str | Message,
         context: dict | Issue,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Display an error block.
 
         Args:
@@ -166,7 +170,7 @@ class Logger:
         self,
         msg: str | Message,
         context: dict | Issue,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Display a warning block.
 
         Args:

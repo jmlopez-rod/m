@@ -12,6 +12,22 @@ The format of this changelog is based on
 - Migrated to [pydantic v2](https://docs.pydantic.dev/dev-v2/migration/).
 - Added `m.cli.Arg` and `m.cli.ArgProxy`. These are replacements for pydantic's
   `Field` since this function no longer supports the `extra` keyword arguments.
+- Added `m.core.hone`. Helps avoid writing a lambda when trying to handle an
+  `Issue`. Instead of
+
+  ```python
+  res.flat_map_bad(lambda err: issue('new error message', cause=err, context=context))
+  ```
+
+  we can write
+
+  ```python
+  res.flat_map_bad(hone('git stash failure', context=context))
+  ```
+
+- Added `m.core.Res`. This is an alias for `OneOf[Issue, G]` so that we only
+  have to specify the type of the "Result" or "Response".
+- Added `exception` method and other wrappers to the `Logger` class.
 - Deprecated `add_arg`. Instead of
 
   ```python
@@ -33,6 +49,15 @@ The format of this changelog is based on
       help='help description',
     )
   ```
+
+- `OneOf` is no longer a base class for `Bad` and `Good`. Instead we use
+  `Union[Bad, Good]` to define a `OneOf`. Since python does not support type
+  narrowing in the negative case we have to rely on `isinstance` to check if an
+  object is `Good` or `Bad` and be able to access the `value` without having to
+  cast. See https://github.com/python/typing/discussions/1013.
+- Deprecated `is_good` and `is_bad`. Instead use `isinstance` to check if an
+  object is `Good` or `Bad`. Doing so will prevent having to cast the object to
+  be able to extract the value when using `OneOf`.
 
 ## [0.22.1] <a name="0.22.1" href="#0.22.1">-</a> July 27, 2023
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from m.core import Issue, OneOf, http
+from m.core import Res, http
 from pydantic import BaseModel
 
 from .request import request
@@ -19,7 +19,7 @@ def create_release(
     repo: str,
     version: str,
     branch: str | None = None,
-) -> OneOf[Issue, Any]:
+) -> Res[Any]:
     """Send a payload to create a release in github.
 
     Args:
@@ -61,7 +61,7 @@ def create_pr(
     owner: str,
     repo: str,
     pr_info: GithubPullRequest,
-) -> OneOf[Issue, Any]:
+) -> Res[Any]:
     """Send a payload to create a pull request in github.
 
     Args:
@@ -83,7 +83,7 @@ def merge_pr(
     repo: str,
     pr_number: int,
     commit_title: str | None,
-) -> OneOf[Issue, Any]:
+) -> Res[Any]:
     """Send a payload to merge a pull request in github.
 
     Args:
@@ -117,7 +117,7 @@ def commit_status(
     owner: str,
     repo: str,
     sha_info: GithubShaStatus,
-) -> OneOf[Issue, Any]:
+) -> Res[Any]:
     """Set a status for a sha.
 
     The valid states are::

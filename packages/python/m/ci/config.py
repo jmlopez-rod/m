@@ -3,7 +3,7 @@ from pathlib import Path
 from packaging.version import Version
 from pydantic import BaseModel, ConfigDict
 
-from ..core import Good, Issue, OneOf, issue, one_of, yaml_fp
+from ..core import Good, Res, hone, issue, one_of, yaml_fp
 from .types import Branches, GitFlowConfig, MFlowConfig, Workflow
 
 
@@ -113,7 +113,7 @@ class Config(BaseModel):
         gh_latest: str,
         is_release_pr: bool,
         is_release: bool,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Verify that the configuration version is valid.
 
         Args:
@@ -156,7 +156,7 @@ class Config(BaseModel):
         return issue(msg, context=err_data) if msg else Good(0)
 
 
-def get_m_filename(m_dir: str) -> OneOf[Issue, str]:
+def get_m_filename(m_dir: str) -> Res[str]:
     """Obtain the path to the m configuration file.
 
     Args:
@@ -175,7 +175,7 @@ def get_m_filename(m_dir: str) -> OneOf[Issue, str]:
     })
 
 
-def read_config(m_dir: str) -> OneOf[Issue, Config]:
+def read_config(m_dir: str) -> Res[Config]:
     """Read an m configuration file.
 
     Args:
@@ -188,4 +188,4 @@ def read_config(m_dir: str) -> OneOf[Issue, Config]:
         Config(m_dir=m_dir, **m_cfg)
         for m_filename in get_m_filename(m_dir)
         for m_cfg in yaml_fp.read_yson(m_filename)
-    ]).flat_map_bad(lambda x: issue('read_config failure', cause=x))
+    ]).flat_map_bad(hone('read_config failure'))

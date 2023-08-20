@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 from m.core import rw as mio
 from m.log import EnvVars, get_ci_tool
 from pydantic import BaseModel
 
-from ..core import Issue, fp, issue, one_of
+from ..core import Res, fp, hone, one_of
 from .config import Config, read_config
 from .git_env import GitEnv, get_git_env
 from .release_env import ReleaseEnv, get_release_env
@@ -21,7 +21,7 @@ class MEnv(BaseModel):
     release_env: ReleaseEnv
 
 
-def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
+def get_m_env(m_dir: str) -> Res[MEnv]:
     """Obtain the M Environment object.
 
     Args:
@@ -42,10 +42,10 @@ def get_m_env(m_dir: str) -> fp.OneOf[Issue, MEnv]:
         for env_vars in ci_tool.env_vars()
         for git_env in get_git_env(config, env_vars)
         for release_env in get_release_env(config, env_vars, git_env)
-    ]).flat_map_bad(lambda x: issue('get_m_env failure', cause=cast(Issue, x)))
+    ]).flat_map_bad(hone('get_m_env failure'))
 
 
-def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
+def _m_env_vars(m_env: MEnv) -> Res[str]:
     """Serialize the m environment variables.
 
     Args:
@@ -86,7 +86,7 @@ def _m_env_vars(m_env: MEnv) -> fp.OneOf[Issue, str]:
     return fp.Good('\n'.join(lines))
 
 
-def write_m_env_vars(m_dir: str) -> fp.OneOf[Issue, Any]:
+def write_m_env_vars(m_dir: str) -> Res[Any]:
     """Write a file with the M environment variables.
 
     Args:

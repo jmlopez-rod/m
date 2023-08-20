@@ -1,4 +1,4 @@
-from m.core import Good, Issue, OneOf, issue
+from m.core import Good, Res, issue
 
 YES_NO = ('yes', 'no')
 
@@ -15,7 +15,7 @@ def is_yes(user_response: str) -> bool:
     return user_response == 'yes'
 
 
-def assert_branch(branch: str, step: str) -> OneOf[Issue, tuple[str, str]]:
+def assert_branch(branch: str, step: str) -> Res[tuple[str, str]]:
     """Assert that a release step is done in the proper branch.
 
     This can only happen in `release/x.y.z` or `hotfix/x.y.z`.

@@ -1,13 +1,12 @@
 import re
-from typing import cast
 
 from m.ci.versioning import VersionInputs, build_m_tag, build_py_tag
 from m.core.maybe import maybe
 from m.log import EnvVars
 from pydantic import BaseModel
 
-from ..core import Issue, issue
-from ..core.fp import Good, OneOf
+from ..core import Res, issue
+from ..core.fp import Bad, Good
 from ..github.ci import (
     Commit,
     CommitInfo,
@@ -15,7 +14,6 @@ from ..github.ci import (
     Release,
     get_ci_run_info,
 )
-from ..github.ci_dataclasses import GithubCiRunInfo
 from .config import Config
 
 
@@ -161,7 +159,7 @@ class GitEnv(BaseModel):
         hotfix_prefix = get_hotfix_prefix(config)
         return self.pull_request.is_release_pr(hotfix_prefix)
 
-    def get_build_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
+    def get_build_tag(self, config: Config, run_id: str) -> Res[str]:
         """Create a build tag for the current commit.
 
         It is tempting to use the config_version when creating a build tag for
@@ -199,7 +197,7 @@ class GitEnv(BaseModel):
             return Good(build_m_tag(ver_input, config))
         return Good('SKIP')
 
-    def get_py_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
+    def get_py_tag(self, config: Config, run_id: str) -> Res[str]:
         """Create a python tag for the current commit.
 
         Args:
@@ -246,7 +244,7 @@ def _remove_strings(str_content: str, words: list[str]) -> str:
     return re.sub('|'.join(words), '', str_content)
 
 
-def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
+def get_git_env(config: Config, env_vars: EnvVars) -> Res[GitEnv]:
     """Obtain the git environment by asking Github's API.
 
     Args:
@@ -276,10 +274,10 @@ def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
         file_count=0,
         include_release=True,
     )
-    if git_env_box.is_bad:
-        return issue('git_env failure', cause=cast(Issue, git_env_box.value))
+    if isinstance(git_env_box, Bad):
+        return issue('git_env failure', cause=git_env_box.value)
 
-    res = cast(GithubCiRunInfo, git_env_box.value)
+    res = git_env_box.value
     pr = res.pull_request
     git_env.sha = res.commit.sha
     git_env.target_branch = pr.target_branch if pr else branch

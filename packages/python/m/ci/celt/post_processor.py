@@ -1,6 +1,6 @@
 from typing import Dict
 
-from ...core import Good, Issue, OneOf, issue
+from ...core import Good, Res, issue
 from .core.process import PostProcessor
 from .core.types import Configuration, Transform
 from .post_processors import eslint, pycodestyle, pylint, typescript
@@ -9,7 +9,7 @@ from .post_processors import eslint, pycodestyle, pylint, typescript
 def get_post_processor(
     name: str,
     celt_config: Configuration,
-) -> OneOf[Issue, PostProcessor]:
+) -> Res[PostProcessor]:
     """Find an available post processor based on the key provided.
 
     Args:
