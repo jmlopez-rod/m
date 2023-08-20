@@ -49,7 +49,7 @@ def parse_model(model: type[GenericModel], model_data: Any) -> Res[GenericModel]
     try:
         return Good(TypeAdapter(model).validate_python(model_data))
     except Exception as ex:
-        return issue('parse_data_as_failure', cause=ex)
+        return issue('parse_model_failure', cause=ex)
 
 
 DataTransformer = Callable[[Any], Res[Any]]
