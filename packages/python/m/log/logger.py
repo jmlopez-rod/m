@@ -67,7 +67,7 @@ def log_func_wrapper(
     return Good(exit_code)
 
 
-class Logger:
+class Logger:  # noqa: WPS230 - loggers have many attributes
     """Wrapper for python Logger to enable inserting logs in fp loops.
 
     This is also so that we may attach context data for a message.
@@ -75,6 +75,7 @@ class Logger:
     We can access the actual logger by using `inst`.
     """
 
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, name: str):
         """Initialize the Logger.
 
@@ -85,6 +86,9 @@ class Logger:
         self.debug = partial(log_func_wrapper, self.inst.debug)
         self.info = partial(log_func_wrapper, self.inst.info)  # noqa: WPS110
         self.warning = partial(log_func_wrapper, self.inst.warning)
+        self.exception = partial(log_func_wrapper, self.inst.exception)
+        self.critical = partial(log_func_wrapper, self.inst.critical)
+        self.log = partial(log_func_wrapper, self.inst.log)
         self.prompt = partial(
             log_func_wrapper,
             cast(PromptLogger, self.inst).prompt,

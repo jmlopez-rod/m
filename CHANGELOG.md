@@ -27,6 +27,7 @@ The format of this changelog is based on
 
 - Added `m.core.Res`. This is an alias for `OneOf[Issue, G]` so that we only
   have to specify the type of the "Result" or "Response".
+- Added `exception` method and other wrappers to the `Logger` class.
 - Deprecated `add_arg`. Instead of
 
   ```python
