@@ -1,7 +1,7 @@
-from m.core import Good, Issue, OneOf, issue, one_of, subprocess
+from m.core import Good, Res, issue, one_of, subprocess
 
 
-def get_branch() -> OneOf[Issue, str]:
+def get_branch() -> Res[str]:
     """Get the current git branch name.
 
     Returns:
@@ -10,7 +10,7 @@ def get_branch() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git rev-parse --abbrev-ref HEAD')
 
 
-def stage_all() -> OneOf[Issue, str]:
+def stage_all() -> Res[str]:
     """Stage the current changes in the branch.
 
     Returns:
@@ -21,7 +21,7 @@ def stage_all() -> OneOf[Issue, str]:
     )
 
 
-def commit(msg: str) -> OneOf[Issue, str]:
+def commit(msg: str) -> Res[str]:
     """Create a commit.
 
     Args:
@@ -35,7 +35,7 @@ def commit(msg: str) -> OneOf[Issue, str]:
     )
 
 
-def push_branch(branch: str) -> OneOf[Issue, str]:
+def push_branch(branch: str) -> Res[str]:
     """Push branch.
 
     Args:
@@ -49,7 +49,7 @@ def push_branch(branch: str) -> OneOf[Issue, str]:
     )
 
 
-def stash() -> OneOf[Issue, str]:
+def stash() -> Res[str]:
     """Stash the current changes in the branch.
 
     Returns:
@@ -58,7 +58,7 @@ def stash() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git stash')
 
 
-def stash_pop() -> OneOf[Issue, str]:
+def stash_pop() -> Res[str]:
     """Pop the changes stored in the git stash.
 
     Returns:
@@ -67,7 +67,7 @@ def stash_pop() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git stash pop')
 
 
-def checkout_branch(branch: str, create: bool = True) -> OneOf[Issue, str]:
+def checkout_branch(branch: str, create: bool = True) -> Res[str]:
     """Checkout a branch.
 
     Args:
@@ -83,7 +83,7 @@ def checkout_branch(branch: str, create: bool = True) -> OneOf[Issue, str]:
     )
 
 
-def get_first_commit_sha() -> OneOf[Issue, str]:
+def get_first_commit_sha() -> Res[str]:
     """Find the first commit sha in the repository.
 
     Returns:
@@ -92,7 +92,7 @@ def get_first_commit_sha() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git rev-list --max-parents=0 HEAD')
 
 
-def get_current_commit_sha() -> OneOf[Issue, str]:
+def get_current_commit_sha() -> Res[str]:
     """Find the sha of the current commit.
 
     Returns:
@@ -101,7 +101,7 @@ def get_current_commit_sha() -> OneOf[Issue, str]:
     return subprocess.eval_cmd('git rev-parse HEAD')
 
 
-def get_remote_url() -> OneOf[Issue, str]:
+def get_remote_url() -> Res[str]:
     """Find the remote url of the repo.
 
     Returns:
@@ -113,7 +113,7 @@ def get_remote_url() -> OneOf[Issue, str]:
 def get_commits(
     first: str,
     latest: str = 'HEAD',
-) -> OneOf[Issue, list[str] | None]:
+) -> Res[list[str] | None]:
     """Get a list of all the commits between two tags.
 
     May return `None` in the special case when `first` is `0.0.0`.
@@ -149,7 +149,7 @@ def _extract_status(msg: str) -> tuple[str, str]:
     return '?', 'unknown'
 
 
-def get_status() -> OneOf[Issue, tuple[str, str]]:
+def get_status() -> Res[tuple[str, str]]:
     """Find the current git status.
 
     Returns:
@@ -164,7 +164,7 @@ def get_status() -> OneOf[Issue, tuple[str, str]]:
     )
 
 
-def raw_status() -> OneOf[Issue, str]:
+def raw_status() -> Res[str]:
     """Obtain the output of "git status".
 
     Returns:
