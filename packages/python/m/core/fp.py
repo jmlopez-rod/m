@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Callable, Generic, Iterator, TypeGuard, TypeVar, Union, cast
 
 # Note: disabling WPS110 in .flake8 for this file.
@@ -36,36 +38,98 @@ class StopBadIteration(Exception):  # noqa: N818 - This is for internal use
         self.bad = bad
 
 
-class OneOf(Generic[B, G]):
-    """An instance of `OneOf` is an instance of either `Bad` or `Good`."""
+class Bad(Generic[B, G]):
+    """The bad side of the disjoint union."""
 
-    is_bad: bool
-    value: B | G
+    value: B
+    is_bad = True
 
-    def __init__(self, bad: bool, value: B | G):
-        """Initialize a `OneOf`.
+    def __init__(self, value: B):
+        """Initialize a `Bad` instance.
 
         Args:
-            bad:
-                Set to `True` if the instance holds a `Bad` value.
-            value:
-                The value of the instance.
+            value: The "bad" value to store in the instance.
         """
-        self.is_bad = bad
         self.value = value
 
     def __iter__(self) -> Iterator[G]:
-        """Iterate over instances that contain a "good" value.
+        """Iterate over values of an instance.
 
-        Yields:
-            The value if the instance is a "Good" value.
+        The intention is to raise a `StopBadIteration` exception to
+        be able to break out of for loop comprehensions.
 
         Raises:
             StopBadIteration: If the instance has a "Bad" value.
         """
-        if self.is_bad:
-            raise StopBadIteration(self)
-        yield cast(G, self.value)
+        raise StopBadIteration(self)
+
+    def iter(self) -> Iterator[G]:
+        """Shortcut to transform to a list.
+
+        Can be used as `list(x.iter())`. It will either contain a value or be
+        an empty list.
+
+        Yields:
+            The value if the instance is a "Good" value.
+        """
+        empty = ()
+        yield from empty
+
+    def get_or_else(self, default: LazyArg[G]) -> G:
+        """Return the value if its Good or the given argument if its a Bad.
+
+        Args:
+            default: The default value in case the instance is "Bad".
+
+        Returns:
+            Either the value or the default specified by "default".
+        """
+        return lazy_arg(default)
+
+    def map(self, _fct: Callable[[G], K]) -> 'Bad[B, K]':
+        """Apply the function to its value if this is a `Good` instance.
+
+        Args:
+            _fct: The function to apply to the "Good" value.
+
+        Returns:
+            Itself if its a `Bad` otherwise another instance of `Good`.
+        """
+        return cast(Bad[B, K], self)
+
+    def flat_map_bad(self, fct: Callable[[B], Bad[B, G] | Good[B, G]]) -> Bad[B, G] | Good[B, G]:
+        """Apply the input function if this is a `Bad` value.
+
+        Args:
+            fct: The function to apply to the "Bad" value.
+
+        Returns:
+            Itself if its a `Good` otherwise another instance of `Bad`.
+        """
+        return fct(self.value)
+
+
+class Good(Generic[B, G]):
+    """The good side of the disjoint union."""
+
+    value: G
+    is_bad = False
+
+    def __init__(self, value: G):
+        """Initialize a `Good` instance.
+
+        Args:
+            value: The "good" value to store in the instance.
+        """
+        self.value = value
+
+    def __iter__(self) -> Iterator[G]:
+        """Iterate over the value of the instance.
+
+        Yields:
+            The value of the instance.
+        """
+        yield self.value
 
     def iter(self):
         """Shortcut to transform to a list.
@@ -79,7 +143,18 @@ class OneOf(Generic[B, G]):
         if not self.is_bad:
             yield self.value
 
-    def map(self, fct: Callable[[G], K]) -> 'OneOf[B, K]':
+    def get_or_else(self, _default: LazyArg[G]) -> G:
+        """Return the value.
+
+        Args:
+            _default: The default value in case the instance is "Bad".
+
+        Returns:
+            Either the value or the default specified by "default".
+        """
+        return self.value
+
+    def map(self, fct: Callable[[G], K]) -> 'Good[B, K]':
         """Apply the function to its value if this is a `Good` instance.
 
         Args:
@@ -88,63 +163,21 @@ class OneOf(Generic[B, G]):
         Returns:
             Itself if its a `Bad` otherwise another instance of `Good`.
         """
-        return (
-            cast(OneOf[B, K], self)
-            if self.is_bad
-            else Good(fct(cast(G, self.value)))
-        )
+        return Good(fct(self.value))
 
-    def flat_map_bad(self, fct: Callable[[B], 'OneOf']) -> 'OneOf':
+    def flat_map_bad(self, _fct: Callable[[B], OneOf[B, G]]) -> OneOf[B, G]:
         """Apply the input function if this is a `Bad` value.
 
         Args:
-            fct: The function to apply to the "Bad" value.
+            _fct: The function to apply to the "Bad" value.
 
         Returns:
             Itself if its a `Good` otherwise another instance of `Bad`.
         """
-        return fct(cast(B, self.value)) if self.is_bad else self
-
-    def get_or_else(self, default: LazyArg[G]) -> G:
-        """Return the value if its Good or the given argument if its a Bad.
-
-        Args:
-            default: The default value in case the instance is "Bad".
-
-        Returns:
-            Either the value or the default specified by "default".
-        """
-        return lazy_arg(default) if self.is_bad else cast(G, self.value)
+        return self
 
 
-class Bad(OneOf[B, G]):
-    """The bad side of the disjoint union."""
-
-    is_bad: bool = False
-    value: B
-
-    def __init__(self, one_of_value: B):
-        """Initialize a `Bad` instance.
-
-        Args:
-            one_of_value: The "bad" value.
-        """
-        super().__init__(bad=True, value=one_of_value)
-
-
-class Good(OneOf[B, G]):
-    """The good side of the disjoint union."""
-
-    is_bad: bool = False
-    value: G
-
-    def __init__(self, one_of_value):
-        """Initialize a `Bad` instance.
-
-        Args:
-            one_of_value: The "bad" value.
-        """
-        super().__init__(bad=False, value=one_of_value)
+OneOf = Bad[B, G] | Good[B, G]
 
 
 def is_bad(inst: OneOf[B, G]) -> TypeGuard[Bad[B, G]]:
@@ -156,7 +189,7 @@ def is_bad(inst: OneOf[B, G]) -> TypeGuard[Bad[B, G]]:
     Returns:
         True if the instance is a `Bad`.
     """
-    return inst.is_bad
+    return isinstance(inst, Bad)
 
 
 def is_good(inst: OneOf[B, G]) -> TypeGuard[Good[B, G]]:
@@ -168,4 +201,4 @@ def is_good(inst: OneOf[B, G]) -> TypeGuard[Good[B, G]]:
     Returns:
         True if the instance is a `Good`.
     """
-    return not inst.is_bad
+    return isinstance(inst, Good)

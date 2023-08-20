@@ -34,6 +34,12 @@ The format of this changelog is based on
     )
   ```
 
+- `OneOf` is no longer a base class for `Bad` and `Good`. Instead we use
+  `Union[Bad, Good]` to define a `OneOf`. Since python does not support type
+  narrowing in the negative case we have to rely on `isinstance` to check if an
+  object is `Good` or `Bad` and be able to access the `value` without having to
+  cast. See https://github.com/python/typing/discussions/1013.
+
 ## [0.22.1] <a name="0.22.1" href="#0.22.1">-</a> July 27, 2023
 
 - Add `argcomplete` as a dependency.

@@ -62,11 +62,11 @@ def m_config_body(owner: str, repo: str) -> str:
     return dedent(body)
 
 
-def create_m_config() -> OneOf[Issue, str]:
+def create_m_config() -> OneOf[Issue, str | None]:
     """Create the m configuration file.
 
     Returns:
-        A `OneOf` containing 0 if successful or an `Issue`.
+        The name of the m file or none if successful. Otherwise an `Issue`.
     """
     file_name = 'm/m.yaml'
     if Path.exists(Path(file_name)):
