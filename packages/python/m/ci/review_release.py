@@ -1,7 +1,7 @@
 from textwrap import dedent
 from typing import cast
 
-from m.core import Bad, Good, Issue, OneOf, io, issue, one_of
+from m.core import Bad, Good, Res, io, issue, one_of
 from m.github.api import GithubPullRequest, create_pr
 from m.github.ci import compare_sha_url
 from m.github.cli import get_latest_release
@@ -72,7 +72,7 @@ def _git_flow_pr_body(config: Config, branch: str, gh_ver: str) -> str:
     """)
 
 
-def acknowledge_git_status(status: str) -> OneOf[Issue, None]:
+def acknowledge_git_status(status: str) -> Res[None]:
     """Display the current git status and ask developer to confirm.
 
     Args:
@@ -92,7 +92,7 @@ def acknowledge_git_status(status: str) -> OneOf[Issue, None]:
     return issue('operation cancelled by user')
 
 
-def inspect_prs(all_prs: list[PullRequest]) -> OneOf[Issue, None]:
+def inspect_prs(all_prs: list[PullRequest]) -> Res[None]:
     """Inspect the release pull requests.
 
     There should not be any pull requests when calling `review_release`.
@@ -118,7 +118,7 @@ def create_prs(
     release_type: str,
     target_ver: str,
     gh_ver: str,
-) -> OneOf[Issue, None]:
+) -> Res[None]:
     """Create release pull request(s).
 
     Args:
@@ -179,7 +179,7 @@ def create_prs(
     return issue('no prs were created, inspect logs for hints')
 
 
-def _commit_changes(commit_msg: str) -> OneOf[Issue, str]:
+def _commit_changes(commit_msg: str) -> Res[str]:
     commit_result = git.commit(commit_msg)
     if isinstance(commit_result, Bad):
         if 'working tree clean' in f'{commit_result.value}':
@@ -187,7 +187,7 @@ def _commit_changes(commit_msg: str) -> OneOf[Issue, str]:
     return commit_result
 
 
-def review_release(token: str) -> OneOf[Issue, None]:
+def review_release(token: str) -> Res[None]:
     """Create release prs.
 
     Args:

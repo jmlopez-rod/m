@@ -1,4 +1,4 @@
-from m.core import Good, Issue, OneOf, issue, one_of
+from m.core import Good, Res, issue, one_of
 from m.log import Logger
 
 from .. import git
@@ -12,7 +12,7 @@ def _verify_branch(
     config: Config,
     branch: str,
     assertion_type: str,
-) -> OneOf[Issue, int]:
+) -> Res[int]:
     workflow = config.workflow
     logger.info(f'verifying "{branch}" branch', {
         'workflow': str(workflow),
@@ -50,7 +50,7 @@ def _verify_branch(
     return Good(0)
 
 
-def assert_branch(assertion_type: str, m_dir: str) -> OneOf[Issue, Config]:
+def assert_branch(assertion_type: str, m_dir: str) -> Res[Config]:
     """Make sure git is using the correct branch based on the workflow.
 
     Args:

@@ -1,7 +1,7 @@
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
-from ....core import Good, Issue, OneOf, issue, one_of
+from ....core import Good, Res, issue, one_of
 from .io import project_stats_json, project_status_str
 from .types import (
     Configuration,
@@ -17,7 +17,7 @@ from .types import (
 def replace_filenames(
     payload: str,
     file_prefix: Optional[str],
-) -> OneOf[Issue, str]:
+) -> Res[str]:
     """Replace the prefix of file names.
 
     Args:
@@ -180,7 +180,7 @@ def process(
     allowed_rules: Dict[str, int],
     ignored_rules: Dict[str, str],
     celt_config: Configuration,
-) -> OneOf[Issue, ProjectStatus]:
+) -> Res[ProjectStatus]:
     """Process the output of a compiler/linter.
 
     Args:
@@ -231,7 +231,7 @@ class PostProcessor:
         self,
         payload: str,
         config: Dict[str, Any],
-    ) -> OneOf[Issue, ProjectStatus]:
+    ) -> Res[ProjectStatus]:
         """Run the processor on the given payload.
 
         Args:

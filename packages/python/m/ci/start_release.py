@@ -1,4 +1,4 @@
-from m.core import Bad, Good, Issue, OneOf, hone, io, issue, one_of
+from m.core import Bad, Good, Res, hone, io, issue, one_of
 from m.github.cli import get_latest_release
 from m.log import Logger
 
@@ -11,7 +11,7 @@ from .release_utils import YES_NO, is_yes
 logger = Logger('m.ci.start_release')
 
 
-def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
+def assert_git_status(status: str, description: str) -> Res[bool]:
     """Assert that the current branch is in a clean state.
 
     This action may stash some changes. This happens when the developer works
@@ -68,7 +68,7 @@ def assert_git_status(status: str, description: str) -> OneOf[Issue, bool]:
 def verify_release(
     commits: list[str] | None,
     hotfix: bool,
-) -> OneOf[Issue, None]:
+) -> Res[None]:
     """Compare the number of commits to verify if the release should proceed.
 
     In some cases we may start a hotfix without realizing that there are
@@ -117,7 +117,7 @@ def verify_release(
     return Good(None)
 
 
-def after_checkout(branch_checkout: str, stashed: bool) -> OneOf[Issue, None]:
+def after_checkout(branch_checkout: str, stashed: bool) -> Res[None]:
     """Notify the user that the branch has switched.
 
     Optionally if there are stashed changes they will be popped.
@@ -141,7 +141,7 @@ def after_checkout(branch_checkout: str, stashed: bool) -> OneOf[Issue, None]:
     return Good(None)
 
 
-def _get_commits(gh_ver: str) -> OneOf[Issue, list[str] | None]:
+def _get_commits(gh_ver: str) -> Res[list[str] | None]:
     either = git.get_commits(gh_ver)
     if isinstance(either, Bad):
         logger.warning(
@@ -152,7 +152,7 @@ def _get_commits(gh_ver: str) -> OneOf[Issue, list[str] | None]:
     return either
 
 
-def start_release(gh_token: str, hotfix: bool = False) -> OneOf[Issue, None]:
+def start_release(gh_token: str, hotfix: bool = False) -> Res[None]:
     """Start the release process.
 
     Args:

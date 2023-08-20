@@ -2,7 +2,7 @@ import logging
 from functools import partial
 from typing import Callable, cast
 
-from m.core.fp import Good, OneOf
+from m.core import Good, Res
 from m.core.issue import Issue
 
 from .ci_tools.types import Message
@@ -43,7 +43,7 @@ def log_func_wrapper(
     msg: str | Message,
     context: dict | Issue | None = None,
     exit_code: int = 0,
-) -> OneOf[Issue, int]:
+) -> Res[int]:
     """Call a logger function with a message and log data.
 
     Args:
@@ -96,7 +96,7 @@ class Logger:
         name: str,
         description: str,
         stderr: bool = False,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Group log lines.
 
         Signals the formatter that the next log lines should be placed in a
@@ -122,7 +122,7 @@ class Logger:
         self,
         name: str,
         stderr: bool = False,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Close a group log lines.
 
         Signals the formatter that the current group of lines should end.
@@ -146,7 +146,7 @@ class Logger:
         self,
         msg: str | Message,
         context: dict | Issue,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Display an error block.
 
         Args:
@@ -166,7 +166,7 @@ class Logger:
         self,
         msg: str | Message,
         context: dict | Issue,
-    ) -> OneOf[Issue, int]:
+    ) -> Res[int]:
         """Display a warning block.
 
         Args:

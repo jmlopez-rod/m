@@ -5,8 +5,8 @@ from m.core.maybe import maybe
 from m.log import EnvVars
 from pydantic import BaseModel
 
-from ..core import Issue, issue
-from ..core.fp import Bad, Good, OneOf
+from ..core import Res, issue
+from ..core.fp import Bad, Good
 from ..github.ci import (
     Commit,
     CommitInfo,
@@ -159,7 +159,7 @@ class GitEnv(BaseModel):
         hotfix_prefix = get_hotfix_prefix(config)
         return self.pull_request.is_release_pr(hotfix_prefix)
 
-    def get_build_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
+    def get_build_tag(self, config: Config, run_id: str) -> Res[str]:
         """Create a build tag for the current commit.
 
         It is tempting to use the config_version when creating a build tag for
@@ -197,7 +197,7 @@ class GitEnv(BaseModel):
             return Good(build_m_tag(ver_input, config))
         return Good('SKIP')
 
-    def get_py_tag(self, config: Config, run_id: str) -> OneOf[Issue, str]:
+    def get_py_tag(self, config: Config, run_id: str) -> Res[str]:
         """Create a python tag for the current commit.
 
         Args:
@@ -244,7 +244,7 @@ def _remove_strings(str_content: str, words: list[str]) -> str:
     return re.sub('|'.join(words), '', str_content)
 
 
-def get_git_env(config: Config, env_vars: EnvVars) -> OneOf[Issue, GitEnv]:
+def get_git_env(config: Config, env_vars: EnvVars) -> Res[GitEnv]:
     """Obtain the git environment by asking Github's API.
 
     Args:

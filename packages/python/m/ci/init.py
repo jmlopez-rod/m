@@ -3,7 +3,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import List, Tuple
 
-from m.core import Good, Issue, OneOf, issue, one_of
+from m.core import Good, Res, issue, one_of
 from m.core import rw as mio
 from m.core import subprocess
 from m.git import get_remote_url
@@ -12,7 +12,7 @@ from m.log import Logger
 logger = Logger('m.cli.init')
 
 
-def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
+def parse_ssh_url(ssh_url: str) -> Res[Tuple[str, str]]:
     """Find the owner and repo from an ssh url.
 
     Args:
@@ -30,7 +30,7 @@ def parse_ssh_url(ssh_url: str) -> OneOf[Issue, Tuple[str, str]]:
     )
 
 
-def get_repo_info() -> OneOf[Issue, Tuple[str, str]]:
+def get_repo_info() -> Res[Tuple[str, str]]:
     """Get the owner and repo name from the current repository.
 
     Returns:
@@ -62,7 +62,7 @@ def m_config_body(owner: str, repo: str) -> str:
     return dedent(body)
 
 
-def create_m_config() -> OneOf[Issue, str | None]:
+def create_m_config() -> Res[str | None]:
     """Create the m configuration file.
 
     Returns:
@@ -86,7 +86,7 @@ def create_m_config() -> OneOf[Issue, str | None]:
     ])
 
 
-def create_changelog() -> OneOf[Issue, str | None]:
+def create_changelog() -> Res[str | None]:
     """Create the changelog file.
 
     Returns:
@@ -115,7 +115,7 @@ def create_changelog() -> OneOf[Issue, str | None]:
     ])
 
 
-def _update_gitignore(file_name: str, body: str) -> OneOf[Issue, str | None]:
+def _update_gitignore(file_name: str, body: str) -> Res[str | None]:
     """List of things that should be in a gitignore file.
 
     Args:
@@ -138,7 +138,7 @@ def _update_gitignore(file_name: str, body: str) -> OneOf[Issue, str | None]:
     ])
 
 
-def update_gitignore() -> OneOf[Issue, str | None]:
+def update_gitignore() -> Res[str | None]:
     """Update the gitignore file.
 
     Adds the m/.m directory to the list.
@@ -156,7 +156,7 @@ def update_gitignore() -> OneOf[Issue, str | None]:
     ])
 
 
-def init_repo() -> OneOf[Issue, None]:
+def init_repo() -> Res[None]:
     """Initialize a repository with the basic project configurations.
 
     Returns:

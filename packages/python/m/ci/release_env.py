@@ -1,6 +1,6 @@
 from typing import Any
 
-from m.core import Bad, Good, Issue, OneOf, issue, one_of
+from m.core import Bad, Good, Res, issue, one_of
 from m.log import EnvVars
 from pydantic import BaseModel
 
@@ -25,7 +25,7 @@ def _verify_version(
     gh_latest: str,
     is_release_pr: bool,
     is_release: bool,
-) -> OneOf[Issue, int]:
+) -> Res[int]:
     if config.workflow in {Workflow.git_flow, Workflow.m_flow}:
         if config.uses_git_flow():
             pr_branch = git_env.get_pr_branch()
@@ -55,7 +55,7 @@ def _extra_checks(
     git_env: GitEnv,
     is_release_pr: bool,
     is_hotfix_pr: bool,
-) -> OneOf[Issue, Any]:
+) -> Res[Any]:
     # If successful we return None, we do not care about the value thus we
     # are specifying `Any` so that a Bad value may be compatible with other
     # `OneOf`s.
@@ -81,7 +81,7 @@ def get_release_env(
     config: Config,
     env_vars: EnvVars,
     git_env: GitEnv,
-) -> OneOf[Issue, ReleaseEnv]:
+) -> Res[ReleaseEnv]:
     """Provide the release environment information.
 
     Args:
