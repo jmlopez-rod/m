@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.23.0] <a name="0.23.0" href="#0.23.0">-</a> August 21, 2023
+
 - Migrated to [pydantic v2](https://docs.pydantic.dev/dev-v2/migration/).
 - Add `ruff` support to `m ci celt` command.
 
@@ -354,7 +356,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.22.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.23.0...HEAD
+[0.23.0]: https://github.com/jmlopez-rod/m/compare/0.22.1...0.23.0
 [0.22.1]: https://github.com/jmlopez-rod/m/compare/0.22.0...0.22.1
 [0.22.0]: https://github.com/jmlopez-rod/m/compare/0.21.0...0.22.0
 [0.21.0]: https://github.com/jmlopez-rod/m/compare/0.20.2...0.21.0
