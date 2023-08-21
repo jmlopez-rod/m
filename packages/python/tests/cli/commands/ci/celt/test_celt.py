@@ -35,6 +35,16 @@ class TCase(CliTestCase):
         exit_code=1,
     ),
     TCase(
+        cmd='m ci celt -c @cfg_01.json -t ruff @ruff.json',
+        expected_file='cfg_01_expected_ruff.txt',
+        exit_code=1,
+    ),
+    TCase(
+        cmd='m ci celt -c @cfg_01.json -t ruff @cfg_01.json',
+        expected_file='cfg_01_expected_ruff_err.txt',
+        exit_code=1,
+    ),
+    TCase(
         cmd='m ci celt -c @cfg_01.json -t invalid_tool @pycodestyle.txt',
         expected_file='cfg_01_invalid_tool.txt',
         exit_code=1,

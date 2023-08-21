@@ -52,6 +52,10 @@ class Arguments(BaseModel):
     - typescript: expects output::
 
         tsc --pretty false
+
+    - ruff: expects json output::
+
+        ruff check --format json [dir]
     """
 
     payload: str = Arg(

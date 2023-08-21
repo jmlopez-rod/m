@@ -1,0 +1,13 @@
+E501 (found 3, allowed 0):
+  /workspaces/m/packages/python/m/ci/git_env.py:66:89 - Line too long (89 > 88 characters)
+  /workspaces/m/packages/python/m/cli/args.py:43:89 - Line too long (91 > 88 characters)
+  /workspaces/m/packages/python/m/cli/args.py:71:89 - Line too long (91 > 88 characters)
+
+FILES:
+  /workspaces/m/packages/python/m/ci/git_env.py: found 1
+  /workspaces/m/packages/python/m/cli/args.py: found 2
+
+RULES  FOUND  ALLOWED
+E501       3        0
+
+::error::3 extra errors were introduced
