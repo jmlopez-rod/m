@@ -1,5 +1,3 @@
-from typing import Any
-
 from m.core import Good, Res, hone, json, one_of
 from m.pydantic import parse_model
 from pydantic import BaseModel
@@ -18,13 +16,9 @@ class RuffViolation(BaseModel):
     """A violation from ruff."""
 
     code: str
-    end_location: Location
     filename: str
-    fix: Any
     location: Location
     message: str
-    noqa_row: int
-    url: str
 
 
 Report = dict[str, list[Violation]]
