@@ -1,0 +1,15 @@
+::error::celt failure
+::group::error
+       {
+         "message": "invalid_ruff_output_payload",
+         "context": {
+           "suggestion": "run ruff check --format json"
+         },
+         "cause": {
+           "message": "parse_model_failure",
+           "cause": {
+             "message": "1 validation error for list[RuffViolation]\n  Input should be a valid list [type=list_type, input_value={}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.2/v/list_type"
+           }
+         }
+       }
+::endgroup::

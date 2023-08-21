@@ -71,6 +71,14 @@ Should be called with the `--pretty false` option.
 m ci celt -t typescript -c @config.json < <(tsc --pretty false)
 ```
 
+### ruff
+
+Should be called with the `--format json` option.
+
+```bash
+m ci celt -t ruff -c @config.json < <(ruff check --format json [dir])
+```
+
 ## Usage
 
 ```sh

@@ -1,0 +1,50 @@
+[
+  {
+    "code": "E501",
+    "end_location": {
+      "column": 90,
+      "row": 66
+    },
+    "filename": "/workspaces/m/packages/python/m/ci/git_env.py",
+    "fix": null,
+    "location": {
+      "column": 89,
+      "row": 66
+    },
+    "message": "Line too long (89 > 88 characters)",
+    "noqa_row": 66,
+    "url": "https://beta.ruff.rs/docs/rules/line-too-long"
+  },
+  {
+    "code": "E501",
+    "end_location": {
+      "column": 92,
+      "row": 43
+    },
+    "filename": "/workspaces/m/packages/python/m/cli/args.py",
+    "fix": null,
+    "location": {
+      "column": 89,
+      "row": 43
+    },
+    "message": "Line too long (91 > 88 characters)",
+    "noqa_row": 44,
+    "url": "https://beta.ruff.rs/docs/rules/line-too-long"
+  },
+  {
+    "code": "E501",
+    "end_location": {
+      "column": 92,
+      "row": 71
+    },
+    "filename": "/workspaces/m/packages/python/m/cli/args.py",
+    "fix": null,
+    "location": {
+      "column": 89,
+      "row": 71
+    },
+    "message": "Line too long (91 > 88 characters)",
+    "noqa_row": 72,
+    "url": "https://beta.ruff.rs/docs/rules/line-too-long"
+  }
+]

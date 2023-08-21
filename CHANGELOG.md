@@ -10,6 +10,12 @@ The format of this changelog is based on
 ## [Unreleased]
 
 - Migrated to [pydantic v2](https://docs.pydantic.dev/dev-v2/migration/).
+- Add `ruff` support to `m ci celt` command.
+
+  ```bash
+  m ci celt -t ruff -c @config.json < <(ruff check --format json [dir])
+  ```
+
 - Added `m.cli.Arg` and `m.cli.ArgProxy`. These are replacements for pydantic's
   `Field` since this function no longer supports the `extra` keyword arguments.
 - Added `m.core.hone`. Helps avoid writing a lambda when trying to handle an
