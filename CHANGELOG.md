@@ -9,6 +9,12 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Deprecated `run_cli(__file__)` usage. Instead of `__file__` we should provide
+  the module containing the cli commands.
+- Any module can be used as a cli command. The only requirement is that it
+  contains a `__main__` module. From there we can use
+  `run_cli('full.path.to.commands.module)` to run the cli.
+
 ## [0.23.0] <a name="0.23.0" href="#0.23.0">-</a> August 21, 2023
 
 - Migrated to [pydantic v2](https://docs.pydantic.dev/dev-v2/migration/).

@@ -18,7 +18,7 @@ def main_args(parser: argparse.ArgumentParser) -> None:
 def main():
     """Execute the cli."""
     logging_config(logging.NOTSET)
-    run_cli(__file__, main_args)
+    run_cli('m.cli.commands', main_args)
 
 
 if __name__ == '__main__':  # pragma: no cover

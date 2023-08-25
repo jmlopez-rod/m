@@ -1,6 +1,8 @@
 import argparse
 import sys
+from os import path as pth
 from typing import Any, Callable, cast
+from warnings import warn
 
 import argcomplete
 from m.core import Bad, Issue, OneOf
@@ -78,7 +80,7 @@ def _main_parser(
 
 
 def run_cli(
-    file_path: str,
+    commands_module: str,
     add_args: Callable[[argparse.ArgumentParser], None] | None = None,
 ) -> None:
     """Run the cli application.
@@ -88,16 +90,24 @@ def run_cli(
         def add_args(argp):
             argp.add_argument(...)
         def main():
-            run_cli(__file__, add_args)
+            run_cli('m.cli.commands', add_args)
 
     We only need `add_args` if we need to gain access to the
     `argparse.ArgumentParser` instance.
 
     Args:
-        file_path: The full name of the file: __file__.
+        commands_module: The full name of the module containing the commands.
         add_args: Optional callback to gain access to the ArgumentParser.
     """
-    mod, meta = get_cli_command_modules(file_path)
+    # NOTE: This is a deprecated feature and will be removed in the future.
+    if '/' in commands_module:  # pragma: no cover
+        warn(
+            '`run_cli(__file__)` is deprecated, use `run_cli("commands.module") instead',
+            DeprecationWarning,
+        )
+        root = pth.split(pth.split(commands_module)[0])[1]
+        commands_module = f'{root}.cli.commands'
+    mod, meta = get_cli_command_modules(commands_module)
     arg = _main_parser(mod, meta, add_args)
 
     run_func = None
