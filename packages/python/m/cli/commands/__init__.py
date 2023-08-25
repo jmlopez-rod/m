@@ -1,9 +1,8 @@
-from inspect import cleandoc
+from m.cli import Meta
 
-_DESC = """
-    See the help for each of the following supported commands.
-"""
-
-meta = {
-    'description': cleandoc(_DESC),
-}
+meta = Meta(
+    help='execute commands',
+    description="""
+        See the help for each of the following supported commands.
+    """,
+)

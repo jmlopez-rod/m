@@ -1,10 +1,8 @@
-from inspect import cleandoc
+from m.cli import Meta
 
-_DESC = """
-    A few commands to help write basic bash scripts.
-"""
-
-meta = {
-    'help': 'execute git commands',
-    'description': cleandoc(_DESC),
-}
+meta = Meta(
+    help='execute git commands',
+    description="""
+        A few commands to help write basic bash scripts.
+    """,
+)

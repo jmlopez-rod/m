@@ -1,11 +1,9 @@
-from inspect import cleandoc
+from m.cli import Meta
 
-_DESC = """
-    The following commands provide local support in the continuous
-    integration flow.
-"""
-
-meta = {
-    'help': 'continuous integration utilities',
-    'description': cleandoc(_DESC),
-}
+meta = Meta(
+    help='continuous integration utilities',
+    description="""
+        The following commands provide local support in the continuous
+        integration flow.
+    """,
+)

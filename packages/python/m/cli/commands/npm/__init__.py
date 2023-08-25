@@ -1,10 +1,10 @@
-from inspect import cleandoc
+from m.cli import Meta
 
-_DESC = """
+_desc = """
     The following commands make calls via npm. `npm` is required.
 """
 
-meta = {
-    'help': 'npm utilities',
-    'description': cleandoc(_DESC),
-}
+meta = Meta(
+    help='npm utilities',
+    description=_desc,
+)
