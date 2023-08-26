@@ -11,9 +11,16 @@ The format of this changelog is based on
 
 - Deprecated `run_cli(__file__)` usage. Instead of `__file__` we should provide
   the module containing the cli commands.
-- Any module can be used as a cli command. The only requirement is that it
-  contains a `__main__` module. From there we can use
-  `run_cli('full.path.to.commands.module)` to run the cli.
+- Any module can be used as a cli command. If the module is a package then we
+  can use the `__main__.py` file to define the cli commands. In here we use
+  `run_cli('full.path.to.commands.module')` to run the cli.
+- Deprecate use of `name` parameter in `command` decorator. This is no longer
+  needed since we can use the module name as the command name or any other name
+  if manually defining the cli.
+- Add `Meta` to help define information about a group of cli commands.
+- Add `create_cli_commands` and `create_subcommands` to manually define a cli.
+  There can be used in the `run_cli` function which now has the `extra_commands`
+  parameters.
 
 ## [0.23.0] <a name="0.23.0" href="#0.23.0">-</a> August 21, 2023
 
