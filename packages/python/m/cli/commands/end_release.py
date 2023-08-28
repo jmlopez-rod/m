@@ -16,7 +16,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='end_release',
     help='end the release process',
     model=Arguments,
 )

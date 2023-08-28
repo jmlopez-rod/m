@@ -36,7 +36,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='release',
     help='create a github release',
     model=Arguments,
 )

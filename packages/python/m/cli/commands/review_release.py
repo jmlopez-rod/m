@@ -13,7 +13,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='review_release',
     help='create release pull requests',
     model=Arguments,
 )

@@ -12,7 +12,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='branch',
     help='display the current git branch',
     model=Arguments,
 )

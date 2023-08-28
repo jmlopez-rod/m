@@ -21,7 +21,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='latest_release',
     help='get the latest release for a repo',
     model=Arguments,
 )

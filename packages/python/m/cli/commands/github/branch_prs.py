@@ -35,7 +35,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='branch_prs',
     help='get prs associated with a branch',
     model=Arguments,
 )

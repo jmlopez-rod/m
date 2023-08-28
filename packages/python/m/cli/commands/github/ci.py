@@ -57,7 +57,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='ci',
     help='continuous integration information',
     model=Arguments,
 )

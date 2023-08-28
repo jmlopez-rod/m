@@ -6,7 +6,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='init',
     help='initialize an m project',
     model=Arguments,
 )

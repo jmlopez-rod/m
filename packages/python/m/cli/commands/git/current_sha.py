@@ -12,7 +12,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='current_sha',
     help='display the current commit sha',
     model=Arguments,
 )

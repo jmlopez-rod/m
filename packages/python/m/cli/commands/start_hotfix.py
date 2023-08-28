@@ -19,7 +19,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='start_hotfix',
     help='start the release process for a hotfix',
     model=Arguments,
 )

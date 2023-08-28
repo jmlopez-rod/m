@@ -27,7 +27,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='env',
     help='create a list of env variables',
     model=Arguments,
 )

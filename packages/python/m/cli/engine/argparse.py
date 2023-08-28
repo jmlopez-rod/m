@@ -82,6 +82,7 @@ def command(
     Returns:
         A transformed run function aware of the arguments model.
     """
-    if name:
+    # m no longer uses the name argument but we keep it for now
+    if name:  # pragma: no cover
         warn('`name` is no longer needed, please remove it', DeprecationWarning)
     return partial(_handle_decorated_func, CommandInputs(help, model))

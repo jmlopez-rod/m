@@ -34,7 +34,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='error',
     help='report an error',
     model=Arguments,
 )

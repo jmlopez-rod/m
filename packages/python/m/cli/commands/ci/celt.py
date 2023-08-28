@@ -119,7 +119,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='celt',
     help='process the output of compiler/linter',
     model=Arguments,
 )
