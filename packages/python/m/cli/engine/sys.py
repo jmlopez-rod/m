@@ -1,12 +1,15 @@
+import argparse as ap
 from glob import iglob
 from importlib import import_module
 from os import path as pth
+from typing import Callable, cast
 
 from ..args import Meta
 from .types import (
     CliCommands,
     CliSubcommands,
     CommandModule,
+    CommandModuleMap,
     DecoratedRunFunction,
     MetaModule,
 )
@@ -71,7 +74,7 @@ def get_command_modules(commands_module: str) -> dict[str, CommandModule]:
     return mod
 
 
-def get_cli_command_modules(commands_module: str) -> CliCommands:
+def import_cli_commands(commands_module: str) -> CliCommands:
     """Gather the commands and subcommands for the cli.
 
     Args:
@@ -81,6 +84,11 @@ def get_cli_command_modules(commands_module: str) -> CliCommands:
         An instance of CliCommands gathered from the commands_module.
     """
     cmd_module = import_module(commands_module)
+    if hasattr(cmd_module, 'create_cli_commands'):
+        # No extra checks for now, if a module has this we assume that
+        # it has the right signature.
+        return cast(CliCommands, cmd_module.create_cli_commands())
+
     commands: dict[str, CommandModule | CliSubcommands] = {}
     root_cmd = get_command_modules(commands_module)
 
@@ -88,8 +96,7 @@ def get_cli_command_modules(commands_module: str) -> CliCommands:
         commands[key] = cmd_mod
 
     root = pth.split(cmd_module.__file__ or '')[0]
-    subcommands = list(iglob(f'{root}/*'))
-    for cmd_name in subcommands:
+    for cmd_name in iglob(f'{root}/*'):
         if cmd_name.endswith('.py') or cmd_name.endswith('__'):
             continue
         name = pth.split(cmd_name)[1]
@@ -104,7 +111,7 @@ def get_cli_command_modules(commands_module: str) -> CliCommands:
     )
 
 
-def create_subcommands(
+def subcommands(
     meta: MetaModule | None = None,
     **commands: DecoratedRunFunction,
 ) -> CliSubcommands:
@@ -126,7 +133,7 @@ def create_subcommands(
     )
 
 
-def create_cli_commands(
+def cli_commands(
     root_meta: MetaModule | None = None,
     **commands: DecoratedRunFunction | CliSubcommands,
 ) -> CliCommands:
@@ -153,22 +160,59 @@ def create_cli_commands(
     )
 
 
-def merge_cli_commands(base: CliCommands, overrides: CliCommands) -> CliCommands:
+def command_group(
+    *,
+    help: str,   # noqa: WPS125
+    description: str,
+    add_arguments: Callable[[ap.ArgumentParser], None] | None = None,
+) -> MetaModule:
+    """Create an instance of a MetaModule.
+
+    Named `cmd_group` since it is used to describe the group of commands.
+
+    Args:
+        help: quick help describing the module.
+        description: Detailed description about the module.
+        add_arguments: Optional function to handle the argparse instance.
+
+    Returns:
+        An instance of a MetaModule.
+    """
+    return MetaModule(
+        meta=Meta(help=help, description=description),
+        add_arguments=add_arguments,
+    )
+
+
+# A function to resolve merge conflicts between two Subcommands.
+SubCmdResolution = Callable[[CommandModuleMap, CommandModuleMap], CommandModuleMap]
+
+
+def merge_cli_commands(
+    base: CliCommands,
+    overrides: CliCommands,
+    **resolutions: SubCmdResolution,
+) -> CliCommands:
     """Merge two CliCommands instances.
+
+    Resolutions may be provided to resolve merge conflicts between two
+    subcommands.
 
     Args:
         base: The base CliCommands instance.
         overrides: The overrides CliCommands instance.
+        resolutions: A dictionary of resolutions for subcommands.
 
     Returns:
         A new CliCommands instance.
     """
     commands: dict[str, CommandModule | CliSubcommands] = {**base.commands}
     for cmd_name, cmd_item in overrides.commands.items():
-        commands[cmd_name] = _get_new_command(cmd_name, commands, cmd_item)
+        resolution = resolutions.get(cmd_name)
+        commands[cmd_name] = _get_new_command(cmd_name, commands, cmd_item, resolution)
 
     return CliCommands(
-        meta=overrides.meta,
+        meta=base.meta or overrides.meta,
         commands=commands,
     )
 
@@ -177,6 +221,7 @@ def _get_new_command(
     name: str,
     commands: dict[str, CommandModule | CliSubcommands],
     new_command_item: CliSubcommands | CommandModule,
+    resolution: SubCmdResolution | None = None,
 ) -> CliSubcommands | CommandModule:
     if name in commands:
         if isinstance(new_command_item, CliSubcommands):
@@ -184,9 +229,26 @@ def _get_new_command(
             if isinstance(current_command_item, CliSubcommands):
                 return CliSubcommands(
                     meta=new_command_item.meta or current_command_item.meta,
-                    subcommands={
-                        **current_command_item.subcommands,
-                        **new_command_item.subcommands,
-                    },
+                    subcommands=_merge_subcommands(
+                        current_command_item,
+                        new_command_item,
+                        resolution,
+                    ),
                 )
     return new_command_item
+
+
+def _merge_subcommands(
+    current_command_item: CliSubcommands,
+    new_command_item: CliSubcommands,
+    resolution: SubCmdResolution | None = None,
+) -> CommandModuleMap:
+    if resolution:
+        return resolution(
+            current_command_item.subcommands,
+            new_command_item.subcommands,
+        )
+    return {
+        **current_command_item.subcommands,
+        **new_command_item.subcommands,
+    }

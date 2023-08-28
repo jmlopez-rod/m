@@ -55,6 +55,9 @@ class CommandModule:
     run: DecoratedRunFunction
 
 
+CommandModuleMap = dict[str, CommandModule]
+
+
 @dataclass
 class MetaModule:
     """Container to store a metadata dictionary from a "meta" module."""
@@ -68,7 +71,7 @@ class CliSubcommands:
     """Container to store subcommands."""
 
     # Dictionary of subcommands.
-    subcommands: dict[str, CommandModule]
+    subcommands: CommandModuleMap
 
     # Each subcommand needs to provide metadata to create the help message.
     meta: MetaModule | None
