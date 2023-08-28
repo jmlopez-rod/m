@@ -1,7 +1,4 @@
-import logging
-
 from m.cli import (
-    Arg,
     CliCommands,
     cli_commands,
     command,
@@ -11,7 +8,7 @@ from m.cli import (
     merge_cli_commands,
     subcommands,
 )
-from m.log import logging_config
+from m.cli.args import Arg
 from tests.cli_samples.calc import BaseArgs
 
 
@@ -30,8 +27,12 @@ class AddArgs(ThreeArgs):
     model=AddArgs,
 )
 def add_numbers(arg: AddArgs) -> int:
-    """See description in AddArgs."""
-    print(arg.x + arg.y + arg.z)
+    """See description in AddArgs.
+
+    Returns:
+        The programs exit code.
+    """
+    print(arg.x + arg.y + arg.z)  # noqa: WPS421
     return 0
 
 
@@ -56,16 +57,15 @@ def create_cli_commands() -> CliCommands:
     return merge_cli_commands(
         base_cli_cmds,
         overrides,
-        calculator=lambda a, b: dict(
-            add=a['add'],
-            add3=b['add3'],
-        ),
+        calculator=lambda a, b: {
+            'add': a['add'],
+            'add3': b['add3'],
+        },
     )
 
 
 def main():
     """Execute the cli."""
-    logging_config(logging.NOTSET)
     cli_cmds = create_cli_commands()
     exec_cli(cli_cmds)
 

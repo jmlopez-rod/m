@@ -24,7 +24,7 @@ class TCase(CliTestCase):
 
 
 def _file_exists(name: str, tcase: TCase):
-    """Having issues using partial with file_exists_mock."""
+    # Having issues using partial with file_exists_mock.
     if str(name) == 'm/m.yaml':
         return tcase.m_file_exists
     if str(name) == 'CHANGELOG.md':

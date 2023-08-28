@@ -50,8 +50,8 @@ def run_cli(
 
     if prog.value.code != exit_code:
         # display the captured stderr to debug
-        print(std_out.getvalue(), file=sys.stdout)
-        print(std_err.getvalue(), file=sys.stderr)
+        print(std_out.getvalue(), file=sys.stdout)  # noqa: WPS421
+        print(std_err.getvalue(), file=sys.stderr)  # noqa: WPS421
     assert prog.value.code == exit_code
 
     return std_out.getvalue(), std_err.getvalue()

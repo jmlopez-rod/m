@@ -10,7 +10,7 @@ from ..util import compare_values
 
 
 def success_func():
-    print('does nothing')
+    print('does nothing')  # noqa: WPS421
 
 
 def failure_func():

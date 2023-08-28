@@ -12,7 +12,7 @@ CMD = ('m', 'github', 'create_pr')
 
 
 def _file_exists(name: str):
-    """Having issues using partial with file_exists_mock."""
+    # Having issues using partial with file_exists_mock.
     return file_exists_mock(name, FIXTURE_PATH)
 
 

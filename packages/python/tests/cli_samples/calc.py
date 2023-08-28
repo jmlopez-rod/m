@@ -18,13 +18,18 @@ class HelloArg(BaseModel):
 
     name: str = Arg(help='your name', positional=True, required=True)
 
+
 @command(
     help='say hello',
     model=HelloArg,
 )
 def say_hello(arg: HelloArg) -> int:
-    """See description in HelloArg."""
-    print(f'Hello {arg.name}')
+    """See description in HelloArg.
+
+    Returns:
+        The programs exit code.
+    """
+    print(f'Hello {arg.name}')  # noqa: WPS421
     return 0
 
 
@@ -37,6 +42,7 @@ class BaseArgs(BaseModel):
     x: int = Arg(help='first number', positional=True, required=True)
     y: int = Arg(help='second number', positional=True, required=True)
 
+
 class AddArgs(BaseArgs):
     """Add two numbers."""
 
@@ -46,8 +52,12 @@ class AddArgs(BaseArgs):
     model=AddArgs,
 )
 def add_numbers(arg: AddArgs) -> int:
-    """See description in AddArgs."""
-    print(arg.x + arg.y)
+    """See description in AddArgs.
+
+    Returns:
+        The programs exit code.
+    """
+    print(arg.x + arg.y)  # noqa: WPS421
     return 0
 
 
@@ -60,17 +70,25 @@ class MultiplyArgs(BaseArgs):
     model=MultiplyArgs,
 )
 def multiply_numbers(arg: MultiplyArgs) -> int:
-    """See description in MultiplyArgs."""
-    print(arg.x * arg.y)
+    """See description in MultiplyArgs.
+
+    Returns:
+        The programs exit code.
+    """
+    print(arg.x * arg.y)  # noqa: WPS421
     return 0
 
 
 def create_cli_commands() -> CliCommands:
-    """Create the cli commands."""
+    """Create the cli commands.
+
+    Returns:
+        The cli commands.
+    """
     return cli_commands(
         command_group(
             help='CLI ROOT - will not display',
-            description="""Custom description for the cli."""
+            description='Custom description for the cli.',
         ),
         say_hello=say_hello,
         calculator=subcommands(
@@ -94,6 +112,7 @@ def create_cli_commands() -> CliCommands:
             mul=multiply_numbers,
         ),
     )
+
 
 def main():
     """Execute the cli."""

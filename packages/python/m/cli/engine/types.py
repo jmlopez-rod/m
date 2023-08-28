@@ -43,7 +43,7 @@ def add_arg(*args, **kwargs) -> FuncArgs:
 # This is the actual signature of the run function after the `command`
 # annotation is set on it.
 DecoratedRunFunction = Callable[
-    [str, ap.Namespace | None, ap._SubParsersAction | None],  # noqa: WPS437, WPS465
+    [str, ap.Namespace | None, ap._SubParsersAction | None],  # noqa: WPS437, WPS465 # pylint:disable=protected-access
     int,
 ]
 
