@@ -5,6 +5,7 @@ from m.cli import (
     CliCommands,
     cli_commands,
     command,
+    command_group,
     exec_cli,
     import_cli_commands,
     merge_cli_commands,
@@ -39,6 +40,16 @@ def create_cli_commands() -> CliCommands:
     base_cli_cmds = import_cli_commands('tests.cli_samples.calc')
     overrides = cli_commands(
         calculator=subcommands(
+            add3=add_numbers,
+        ),
+        mini=subcommands(
+            command_group(
+                help='calculator 3',
+                description='no override',
+            ),
+            add=add_numbers,
+        ),
+        calc=subcommands(
             add3=add_numbers,
         ),
     )

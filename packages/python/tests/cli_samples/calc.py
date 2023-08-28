@@ -83,6 +83,16 @@ def create_cli_commands() -> CliCommands:
             add=add_numbers,
             mul=multiply_numbers,
         ),
+        calc=subcommands(
+            command_group(
+                help='repeat of calculator',
+                description="""
+                    This is a description for the calc group.
+                """,
+            ),
+            add=add_numbers,
+            mul=multiply_numbers,
+        ),
     )
 
 def main():
