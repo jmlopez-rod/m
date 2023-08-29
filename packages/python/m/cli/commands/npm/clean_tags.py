@@ -13,11 +13,11 @@ class Arguments(BaseModel):
     package_name: str = Arg(
         help='name of the npm package',
         positional=True,
+        required=True,
     )
 
 
 @command(
-    name='clean_tags',
     help='remove empty npm tags',
     model=Arguments,
 )

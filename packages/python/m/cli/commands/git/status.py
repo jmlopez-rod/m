@@ -29,7 +29,6 @@ def _get_status(status_desc: tuple[str, str]) -> str:
 
 
 @command(
-    name='status',
     help='display the current git status',
     model=Arguments,
 )

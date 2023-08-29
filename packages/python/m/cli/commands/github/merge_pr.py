@@ -35,7 +35,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='merge_pr',
     help='merge a pull request',
     model=Arguments,
 )

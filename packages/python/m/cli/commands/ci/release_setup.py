@@ -21,7 +21,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='release_setup',
     help='modify the config and changelog files',
     model=Arguments,
 )

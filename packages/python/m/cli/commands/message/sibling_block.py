@@ -22,7 +22,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='sibling_block',
     help='close and open a sibling block',
     model=Arguments,
 )

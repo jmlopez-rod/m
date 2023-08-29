@@ -29,7 +29,9 @@ def run_cli(
     cmd: str | list[str],
     exit_code: int,
     mocker: MockerFixture,
+    main_func: Callable[[], Any] | None = None,
 ) -> Tuple[str, str]:
+    main_func_def = main_func or main
     std_out = StringIO()
     std_err = StringIO()
     argv = cmd if isinstance(cmd, list) else cmd.split(' ')
@@ -40,7 +42,7 @@ def run_cli(
     prog = None
     with pytest.raises(SystemExit) as prog_block:
         prog = prog_block
-        main()
+        main_func_def()
     # Would be nice to be able to reset via a the mocker
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
@@ -48,8 +50,8 @@ def run_cli(
 
     if prog.value.code != exit_code:
         # display the captured stderr to debug
-        print(std_out.getvalue(), file=sys.stdout)
-        print(std_err.getvalue(), file=sys.stderr)
+        print(std_out.getvalue(), file=sys.stdout)  # noqa: WPS421
+        print(std_err.getvalue(), file=sys.stderr)  # noqa: WPS421
     assert prog.value.code == exit_code
 
     return std_out.getvalue(), std_err.getvalue()

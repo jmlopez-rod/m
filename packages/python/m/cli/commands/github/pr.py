@@ -48,7 +48,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='pr',
     help='get information on a pull request',
     model=Arguments,
 )

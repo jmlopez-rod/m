@@ -12,7 +12,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='first_sha',
     help='display the first commit sha',
     model=Arguments,
 )

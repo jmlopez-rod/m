@@ -53,7 +53,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='status',
     help='create a commit status',
     model=Arguments,
 )

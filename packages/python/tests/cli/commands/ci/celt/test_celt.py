@@ -11,7 +11,7 @@ FIXTURE_PATH = 'cli/commands/ci/celt/fixtures'
 
 
 def _file_exists(name: str):
-    """Having issues using partial with file_exists_mock."""
+    # Having issues using partial with file_exists_mock.
     return file_exists_mock(name, FIXTURE_PATH)
 
 

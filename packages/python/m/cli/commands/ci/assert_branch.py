@@ -23,7 +23,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='assert_branch',
     help='assert that we are working on the correct branch',
     model=Arguments,
 )

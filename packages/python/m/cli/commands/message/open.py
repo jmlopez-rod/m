@@ -17,7 +17,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='open',
     help='open a block',
     model=Arguments,
 )

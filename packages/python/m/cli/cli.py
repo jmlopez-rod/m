@@ -1,15 +1,23 @@
 import argparse
 import sys
+from os import path as pth
 from typing import Any, Callable, cast
+from warnings import warn
 
 import argcomplete
+import typing_extensions
 from m.core import Bad, Issue, OneOf
 from m.log import Logger
 
 from ..core.io import env
 from .engine.misc import params_count
-from .engine.sys import get_cli_command_modules
-from .engine.types import CmdMap, CommandModule, MetaMap, NestedCmdMap
+from .engine.sys import default_meta, default_root_meta, import_cli_commands
+from .engine.types import (
+    CliCommands,
+    CliSubcommands,
+    CommandModule,
+    MetaModule,
+)
 from .handlers import create_issue_handler, create_json_handler
 from .validators import validate_non_empty_str
 
@@ -21,21 +29,18 @@ default_result_handler = create_json_handler(pretty=False)
 default_issue_handler = create_issue_handler(use_warning=False)
 
 
-def _main_parser(
-    mod: NestedCmdMap,
-    meta: MetaMap,
-    add_args: Callable[[argparse.ArgumentParser], None] | None = None,
-) -> argparse.Namespace:
-    main_meta = meta['_root'].meta
+def _main_parser(cli_commands: CliCommands) -> argparse.Namespace:
+    root_meta_module = cli_commands.meta or default_root_meta
+    root_meta = root_meta_module.meta
     raw = argparse.RawTextHelpFormatter
     # NOTE: In the future we will need to extend from this class to be able to
     #   override the error method to be able to print CI environment messages.
     argp = argparse.ArgumentParser(
         formatter_class=raw,
-        description=main_meta['description'] if main_meta else '...',
+        description=root_meta['description'] if root_meta else '...',
     )
-    if add_args:
-        add_args(argp)
+    if root_meta_module.add_arguments:
+        root_meta_module.add_arguments(argp)
     subp = argp.add_subparsers(
         title='commands',
         dest='command_name',
@@ -43,10 +48,12 @@ def _main_parser(
         help='additional help',
         metavar='<command>',
     )
-    names = sorted(mod.keys())
+    names = sorted(cli_commands.commands.keys())
     for name in names:
-        if isinstance(mod[name], dict):
-            meta_mod = meta[name]
+        cmd_item = cli_commands.commands[name]
+        if isinstance(cmd_item, CliSubcommands):
+            subcmd_mod = cmd_item
+            meta_mod = subcmd_mod.meta or default_meta
             meta_dict = meta_mod.meta
             parser = subp.add_parser(
                 name,
@@ -63,53 +70,58 @@ def _main_parser(
                 help='additional help',
                 metavar='<command>',
             )
-            sub_mod = cast(CmdMap, mod[name])
+            sub_mod = subcmd_mod.subcommands
             for subname in sorted(sub_mod.keys()):
                 run_func = sub_mod[subname].run
-                if params_count(run_func) == 2:
-                    run_func(None, subsubp)
+                if params_count(run_func) == 3:
+                    run_func(subname, None, subsubp)
         else:
-            mod_inst = cast(CommandModule, mod[name])
+            mod_inst = cmd_item
             run_func = mod_inst.run
-            if params_count(run_func) == 2:
-                run_func(None, subp)
+            if params_count(run_func) == 3:
+                run_func(name, None, subp)
     argcomplete.autocomplete(argp)
     return argp.parse_args()
 
 
-def run_cli(
-    file_path: str,
-    add_args: Callable[[argparse.ArgumentParser], None] | None = None,
-) -> None:
-    """Run the cli application.
+def exec_cli(cli_commands: CliCommands) -> None:
+    """Execute the cli application.
 
     usage::
 
-        def add_args(argp):
-            argp.add_argument(...)
-        def main():
-            run_cli(__file__, add_args)
+        def create_cli_commands() -> CliCommands:
+            # We may import CliCommand objects from other projects and create
+            # a new one with them.
+            return import_cli_commands('cli.command.module')
 
-    We only need `add_args` if we need to gain access to the
-    `argparse.ArgumentParser` instance.
+        def main():
+            cli_commands = create_cli_commands()
+            exec_cli(cli_commands)
+
+    This is the preferred way to execute the cli application as it will allow
+    other potential applications to use the cli commands.
 
     Args:
-        file_path: The full name of the file: __file__.
-        add_args: Optional callback to gain access to the ArgumentParser.
+        cli_commands: The cli commands to execute.
     """
-    mod, meta = get_cli_command_modules(file_path)
-    arg = _main_parser(mod, meta, add_args)
+    arg = _main_parser(cli_commands)
 
     run_func = None
+    command_name = ''
 
-    if hasattr(arg, 'subcommand_name'):
-        sub_mod = cast(CmdMap, mod[arg.command_name])
-        run_func = sub_mod[arg.subcommand_name].run
+    commands = cli_commands.commands
+    # WPS421 encourages to use try/except instead of hasattr but in this
+    # case we want explicitly before using it.
+    if hasattr(arg, 'subcommand_name'):  # noqa: WPS421
+        command_name = arg.subcommand_name
+        sub_mod = cast(CliSubcommands, commands[arg.command_name])
+        run_func = sub_mod.subcommands[command_name].run
     else:
-        run_func = cast(CommandModule, mod[arg.command_name]).run
+        command_name = arg.command_name
+        run_func = cast(CommandModule, commands[command_name]).run
 
     len_run_args = params_count(run_func)
-    run_args = [arg, None][:len_run_args]
+    run_args = [command_name, arg, None][:len_run_args]
     exit_code = 0
     try:
         # mypy is having a hard time figuring out the type of run_args
@@ -120,6 +132,53 @@ def run_cli(
         )
         exit_code = 5
     sys.exit(exit_code)
+
+
+@typing_extensions.deprecated(
+    '`run_cli` deprecated; use `exec_cli` instead.',
+)
+def run_cli(
+    commands_module: str | None,
+    add_args: Callable[[argparse.ArgumentParser], None] | None = None,
+) -> None:  # pragma: no cover
+    """Run the cli application.
+
+    Deprecated, use `exec_cli` instead.
+
+    usage::
+
+        def add_args(argp):
+            argp.add_argument(...)
+        def main():
+            run_cli('m.cli.commands', add_args)
+
+    We only need `add_args` if we need to gain access to the
+    `argparse.ArgumentParser` instance.
+
+    Args:
+        commands_module: The full name of the module containing the commands.
+        add_args: Optional callback to gain access to the ArgumentParser.
+    """
+    # NOTE: This is a deprecated feature and will be removed in the future.
+    if commands_module and '/' in commands_module:
+        warn(
+            '`run_cli(__file__)` is deprecated, use `run_cli("commands.module") instead',
+            DeprecationWarning,
+        )
+        root = pth.split(pth.split(commands_module)[0])[1]
+        commands_module = f'{root}.cli.commands'
+    cli_commands: CliCommands = CliCommands(commands={}, meta=default_root_meta)
+    if commands_module:
+        cli_commands = import_cli_commands(commands_module)
+    if add_args:
+        warn('run_cli add_args is deprecated, use meta.add_arguments instead', DeprecationWarning)
+        if not cli_commands.meta:
+            cli_commands.meta = MetaModule(
+                meta=default_root_meta.meta,
+                add_arguments=add_args,
+            )
+        cli_commands.meta.add_arguments = add_args
+    exec_cli(cli_commands)
 
 
 def run_main(

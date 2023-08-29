@@ -30,7 +30,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='warn',
     help='report a warning',
     model=Arguments,
 )

@@ -41,7 +41,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='json',
     help='format json data',
     model=Arguments,
 )

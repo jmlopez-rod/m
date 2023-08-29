@@ -1,3 +1,4 @@
+from inspect import cleandoc
 from typing import Any, Callable, Literal
 
 from pydantic.fields import FieldInfo
@@ -75,3 +76,26 @@ def ArgProxy(*args, **kwargs) -> Any:  # noqa: N802
             'proxy': FuncArgs(args=list(args), kwargs=kwargs),
         },
     )
+
+
+def Meta(  # noqa: N802
+    *,
+    help: str,  # noqa: WPS125
+    description: str,
+) -> dict[str, str]:
+    """Create the meta dictionary for a subcommand description.
+
+    In the case of the root command the `help` may be set to empty since it
+    is not used.
+
+    Args:
+        help: The help message for the subcommand.
+        description: The description for the command/subcommand.
+
+    Returns:
+        A dictionary with the help and description.
+    """
+    return {
+        'help': help,
+        'description': cleandoc(description),
+    }

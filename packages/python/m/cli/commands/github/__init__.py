@@ -1,14 +1,9 @@
-from inspect import cleandoc
+from m.cli import Meta, cli_integration_token
 
-from m.cli import cli_integration_token
-
-_DESC = """
-    The following commands make calls to the Github api.
-"""
-
-meta = {
-    'help': 'call the github api',
-    'description': cleandoc(_DESC),
-}
-
+meta = Meta(
+    help='call the github api',
+    description="""
+        The following commands make calls to the Github api.
+    """,
+)
 add_arguments = cli_integration_token('github', 'GITHUB_TOKEN')

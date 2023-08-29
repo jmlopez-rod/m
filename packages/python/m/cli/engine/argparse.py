@@ -1,6 +1,7 @@
 import argparse
 from functools import partial
 from typing import Callable
+from warnings import warn
 
 from pydantic import BaseModel
 
@@ -40,11 +41,12 @@ def add_model(
 def _run_wrapper(
     run_func: Callable[..., int],
     cmd_inputs: CommandInputs,
+    cmd_name: str,
     arg: argparse.Namespace | None,
     parser: argparse._SubParsersAction | None,  # noqa: WPS437
 ) -> int:
     if parser:
-        sub_parser = parser.add_parser(cmd_inputs.name, help=cmd_inputs.help)
+        sub_parser = parser.add_parser(cmd_name, help=cmd_inputs.help)
         add_model(sub_parser, cmd_inputs.model)
         return 0
     if isinstance(arg, argparse.Namespace):
@@ -65,9 +67,10 @@ def _handle_decorated_func(cmd_inputs: CommandInputs, func: Callable):
 
 
 def command(
-    name: str,
+    *,
     help: str,  # noqa: WPS125
     model: type[BaseModel],
+    name: str | None = None,
 ) -> partial[partial[int]]:
     """Apply a decorator to the `run` function to make it into a command.
 
@@ -79,4 +82,7 @@ def command(
     Returns:
         A transformed run function aware of the arguments model.
     """
-    return partial(_handle_decorated_func, CommandInputs(name, help, model))
+    # m no longer uses the name argument but we keep it for now
+    if name:  # pragma: no cover
+        warn('`name` is no longer needed, please remove it', DeprecationWarning)
+    return partial(_handle_decorated_func, CommandInputs(help, model))

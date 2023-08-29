@@ -67,7 +67,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='jsonq',
     help='query json data',
     model=Arguments,
 )

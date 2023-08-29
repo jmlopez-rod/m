@@ -9,6 +9,25 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Any module can be used as a cli command. If the module is a package then we
+  can use the `__main__.py` file to define the cli commands.
+- Deprecated `run_cli` usage. Instead use `exec_cli`. This was done so that we
+  can delegate the responsibility of coming up with cli commands to other
+  functions.
+- If `run_cli` was using the `add_arg` parameter then define the `add_arguments`
+  function at the root of the command modules. See `m/cli/commands/__init__.py`
+  as an example.
+- Add `import_cli_commands`. This function allows us to import cli commands from
+  a module and use them in the `exec_cli` function.
+- Add `cli_commands`, `command_group` and `subcommands` to `m.cli`. These are
+  functions to help generate cli commands to be used in `exec_cli`.
+- Add `merge_cli_commands` to `m.cli`. This function allows us to merge cli
+  commands from different modules to create a single cli command.
+- Deprecate use of `name` parameter in `command` decorator. This is no longer
+  needed since we can use the module name as the command name or any other name
+  if manually defining the cli.
+- Add `Meta` to help define information about a group of cli commands.
+
 ## [0.23.0] <a name="0.23.0" href="#0.23.0">-</a> August 21, 2023
 
 - Migrated to [pydantic v2](https://docs.pydantic.dev/dev-v2/migration/).

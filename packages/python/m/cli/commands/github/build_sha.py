@@ -38,7 +38,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='build_sha',
     help='get the correct commit sha',
     model=Arguments,
 )

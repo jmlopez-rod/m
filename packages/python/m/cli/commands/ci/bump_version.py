@@ -18,7 +18,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='bump_version',
     help='prompt for the next version',
     model=Arguments,
 )

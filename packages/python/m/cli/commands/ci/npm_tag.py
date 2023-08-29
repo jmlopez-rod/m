@@ -27,7 +27,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='npm_tag',
     help='display an npm tag',
     model=Arguments,
 )

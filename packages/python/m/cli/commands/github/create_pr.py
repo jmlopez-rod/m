@@ -47,7 +47,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='create_pr',
     help='create a pull request',
     model=Arguments,
 )

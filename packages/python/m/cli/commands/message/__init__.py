@@ -1,6 +1,6 @@
-from inspect import cleandoc
+from m.cli import Meta
 
-_DESC = """
+_desc = """
     CI/CD tools provide ways of interacting with them via shell messages.
 
     Github Actions:
@@ -13,7 +13,7 @@ _DESC = """
     display those messages.
 """
 
-meta = {
-    'help': 'display messages',
-    'description': cleandoc(_DESC),
-}
+meta = Meta(
+    help='display messages',
+    description=_desc,
+)

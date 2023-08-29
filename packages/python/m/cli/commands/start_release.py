@@ -20,7 +20,6 @@ class Arguments(BaseModel):
 
 
 @command(
-    name='start_release',
     help='start the release process',
     model=Arguments,
 )
