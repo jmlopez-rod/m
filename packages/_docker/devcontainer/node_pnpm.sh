@@ -9,7 +9,7 @@ curl -sL https://deb.nodesource.com/setup_16.x | bash -
 apt-get install -y nodejs
 
 # PNPM
-PNPM_VERSION=7.15.0
-curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@${PNPM_VERSION}
+PNPM_VERSION=8.7.0
+curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=${PNPM_VERSION} SHELL="$(which bash)" bash -
 
 npm config set update-notifier false

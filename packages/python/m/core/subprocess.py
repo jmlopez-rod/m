@@ -25,3 +25,24 @@ def eval_cmd(cmd: str) -> OneOf[Issue, str]:
             context={'cmd': cmd, 'output': out},
         )
     return Good(out.strip())
+
+
+def exec_pnpm(pnpm_args: list[str]) -> OneOf[Issue, None]:
+    """Execute pnpm with the given arguments.
+
+    This command will execute the pnpm command in the current working directory.
+
+    Args:
+        pnpm_args: The arguments to pass to pnpm.
+
+    Returns:
+        None if successful.
+    """
+    # delegating the rest of the work to pnpm
+    exit_code = sub.call(['pnpm', *pnpm_args], shell=False)  # noqa: S603, S607
+    if exit_code:
+        return issue('non_zero_pnpm_exit_code', context={
+            'pnpm_args': pnpm_args,
+            'exit_code': exit_code,
+        })
+    return Good(None)

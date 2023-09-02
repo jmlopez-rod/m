@@ -27,6 +27,8 @@ The format of this changelog is based on
   needed since we can use the module name as the command name or any other name
   if manually defining the cli.
 - Add `Meta` to help define information about a group of cli commands.
+- Add `RemainderArgs` to `m.cli`. This is helpful to specify that we want to
+  obtain the rest of the arguments so that we may pass it to another process.
 
 ## [0.23.0] <a name="0.23.0" href="#0.23.0">-</a> August 21, 2023
 

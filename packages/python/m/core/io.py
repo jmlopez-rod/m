@@ -15,7 +15,7 @@ logger = Logger('m.core.io')
 
 
 def _is_true(name: str) -> bool:
-    return env(name, 'false') == 'true'
+    return env(name, 'false') in {'true', '1', 'True'}
 
 
 def is_traceback_enabled() -> bool:

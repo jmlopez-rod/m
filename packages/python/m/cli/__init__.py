@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .args import Arg, ArgProxy, Meta
+from .args import Arg, ArgProxy, Meta, RemainderArgs
 from .cli import cli_integration_token, exec_cli, run_cli, run_main
 from .engine.argparse import command
 from .engine.sys import (
@@ -47,6 +47,7 @@ __all__ = (  # noqa: WPS410
     'FuncArgs',
     'Arg',
     'ArgProxy',
+    'RemainderArgs',
     'BaseModel',
     'Meta',
     'MetaModule',
