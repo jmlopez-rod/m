@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from m.color.colors import color
@@ -54,13 +55,20 @@ def _repo_info() -> tuple[str, str]:
     rel_path = cwd.replace(repo_path, '^', 1)
     return repo, rel_path
 
+def _container_info() -> str:
+    name = os.environ.get('DK_CONTAINER_NAME', 'devcontainer')
+    version = os.environ.get('DK_CONTAINER_VERSION')
+    if version:
+        return f'{name}@{version}'
+    return name
+
 def _git_prompter(current_branch: str) -> str:
     branch = _branch_display(current_branch)
     status_res = git.get_status(check_stash=True)
     status, _ = status_res.get_or_else(('unknown', 'unknown'))
     status_color = STATUS_COLORS.get(status, UNKNOWN_COLOR)
     arrow = f'{status_color}\u279C'
-    container_sec = color('{green}', 'container', '{white}:')
+    container_sec = color('{green}', _container_info(), '{white}:')
     branch_sec = _branch_sec(branch, status)
     repo, rel_path = _repo_info()
     repo_sec = color('{blue}', repo)

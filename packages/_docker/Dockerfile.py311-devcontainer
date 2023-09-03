@@ -29,3 +29,7 @@ ENV POETRY_CACHE_DIR=/opt/venv/.cache/pypoetry
 ## PATH setup
 ENV PATH=./packages/bash/lib:/opt/venv/m/bin:${PATH}
 RUN echo "\n. /root/.bashrc.d/bash_aliases.sh" >>/root/.bashrc
+
+## Devcontainer info
+ENV DK_CONTAINER_NAME='m-devcontainer'
+ENV DK_CONTAINER_VERSION='3.11.3'
