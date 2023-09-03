@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.24.0] <a name="0.24.0" href="#0.24.0">-</a> September 03, 2023
+
 - Any module can be used as a cli command. If the module is a package then we
   can use the `__main__.py` file to define the cli commands.
 - Deprecated `run_cli` usage. Instead use `exec_cli`. This was done so that we
@@ -375,7 +377,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.23.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.24.0...HEAD
+[0.24.0]: https://github.com/jmlopez-rod/m/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/jmlopez-rod/m/compare/0.22.1...0.23.0
 [0.22.1]: https://github.com/jmlopez-rod/m/compare/0.22.0...0.22.1
 [0.22.0]: https://github.com/jmlopez-rod/m/compare/0.21.0...0.22.0
