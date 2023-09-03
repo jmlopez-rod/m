@@ -9,6 +9,7 @@ class Color:
     aqua = '\033[96m'
     white = '\033[97m'
     green = '\033[92m'
+    orange = '\033[38;5;172m'
     yellow = '\033[93m'
     gray = '\033[90m'
     red = '\033[91m'
@@ -17,6 +18,7 @@ class Color:
     bold_blue = bold + blue
     bold_aqua = bold + aqua
     bold_green = bold + green
+    bold_orange = bold + orange
     bold_yellow = bold + yellow
     bold_gray = bold + gray
     bold_red = bold + red

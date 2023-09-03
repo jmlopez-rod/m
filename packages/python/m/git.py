@@ -96,6 +96,14 @@ def get_current_commit_sha() -> Res[str]:
     """
     return subprocess.eval_cmd('git rev-parse HEAD')
 
+def get_repo_path() -> Res[str]:
+    """Get the absolute path to the repository.
+
+    Returns:
+        An issue or a string of the path to the repo.
+    """
+    return subprocess.eval_cmd('git rev-parse --show-toplevel')
+
 
 def get_remote_url() -> Res[str]:
     """Find the remote url of the repo.
@@ -142,7 +150,7 @@ def _extract_status(msg: str) -> tuple[str, str]:
     for substr, key in matches:
         if substr in msg:
             return key, substr
-    return '?', 'unknown'
+    return 'unknown', 'unknown'
 
 
 def get_status() -> Res[tuple[str, str]]:

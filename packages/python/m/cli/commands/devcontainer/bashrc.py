@@ -22,6 +22,8 @@ def run() -> int:
         'alias pnpm="m devcontainer pnpm"',
         'alias np="m devcontainer pnpm"',
         "alias cd='HOME=$MDC_WORKSPACE cd'",
+        'function prompter() { export PS1="$(m devcontainer prompter)"; }',
+        'export PROMPT_COMMAND=prompter',
     ]
     print('\n'.join(snippet))  # noqa: WPS421
     return 0
