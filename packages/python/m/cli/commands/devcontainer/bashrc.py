@@ -24,6 +24,9 @@ def run() -> int:
         "alias cd='HOME=$MDC_WORKSPACE cd'",
         'function prompter() { export PS1="$(m devcontainer prompter)"; }',
         'export PROMPT_COMMAND=prompter',
+        'export VIRTUAL_ENV="$MDC_VENV_WORKSPACE"',
+        'export PATH="$VIRTUAL_ENV/bin:$PATH"',
+        '. "$VIRTUAL_ENV/bin/activate"',
     ]
     print('\n'.join(snippet))  # noqa: WPS421
     return 0
