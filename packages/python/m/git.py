@@ -153,13 +153,18 @@ def _extract_status(msg: str) -> tuple[str, str]:
     return 'unknown', 'unknown'
 
 
-def get_status() -> Res[tuple[str, str]]:
+def get_status(*, check_stash: bool = False) -> Res[tuple[str, str]]:
     """Find the current git status.
 
     Returns:
         A `OneOf` containing an `Issue` or a word denoting the git status.
     """
     res = subprocess.eval_cmd('git status')
+    if check_stash:
+        stash_files = subprocess.eval_cmd('git stash show').get_or_else('')
+        has_untracked = res.get_or_else('').startswith('Untracked files')
+        if not has_untracked and stash_files:
+            return Good(('stash', 'stash'))
     return one_of(
         lambda: [
             _extract_status(msg)

@@ -6,17 +6,21 @@ from m.core import Bad, subprocess
 from m import git
 
 UNKNOWN_COLOR = '\033[38;5;20m'
+
+# https://www.compart.com/en/unicode/
+# https://gitmoji.dev/
 STATUS_SYMBOLS = {
-    'unknown': '???',
-    'untracked': '?',
-    'stash': '+',
-    'ahead': '>',
-    'behind': '<',
-    'clean': '✔',
-    'staged': '●',
-    'dirty': '✖',
-    'diverged': '!',
+    'unknown': '🧐',  # contender: ???
+    'untracked': '🌱',
+    'stash': '\u271A',  # Heavy Greek Cross
+    'ahead': '\u25B6', # Black Right-Pointing Triangle
+    'behind': '\u25C0', # Black Left-Pointing Triangle
+    'clean': '\u2714', # Heavy Check Mark
+    'staged': '🌭', # contender: \u25CF Black Circle
+    'dirty': '\u2716',  # Heavy Multiplication X
+    'diverged': '💥',  # contender: !
 }
+
 STATUS_COLORS = {
     'unknown': UNKNOWN_COLOR,  # dark blue
     'untracked': '\033[38;5;76m',  # mid lime-green
@@ -40,7 +44,7 @@ def _branch_display(current_branch: str) -> str:
 def _branch_sec(branch: str, status: str) -> str:
     s_color = STATUS_COLORS.get(status, UNKNOWN_COLOR)
     s_sym = STATUS_SYMBOLS.get(status, '???')
-    branch_info = color(s_color, branch, '{bold}', s_color, s_sym)
+    branch_info = color(s_color, f'{s_sym} {branch}')
     return color('{gray}[', branch_info, '{gray}]')
 
 def _repo_info() -> tuple[str, str]:
@@ -52,9 +56,10 @@ def _repo_info() -> tuple[str, str]:
 
 def _git_prompter(current_branch: str) -> str:
     branch = _branch_display(current_branch)
-    status, _ = git.get_status().get_or_else(('unknown', 'unknown'))
+    status_res = git.get_status(check_stash=True)
+    status, _ = status_res.get_or_else(('unknown', 'unknown'))
     status_color = STATUS_COLORS.get(status, UNKNOWN_COLOR)
-    arrow = f'{status_color}\\342\\236\\234'
+    arrow = f'{status_color}\u279C'
     container_sec = color('{green}', 'container', '{white}:')
     branch_sec = _branch_sec(branch, status)
     repo, rel_path = _repo_info()
