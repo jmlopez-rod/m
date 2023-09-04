@@ -13,11 +13,13 @@ class Arguments(BaseModel):
     work_dir: str = Arg(
         help='the work directory containing package.json',
         positional=True,
+        required=True,
     )
 
     pnpm_dir: str = Arg(
         help='the directory where pnpm data will be stored',
         positional=True,
+        required=True,
     )
 
 

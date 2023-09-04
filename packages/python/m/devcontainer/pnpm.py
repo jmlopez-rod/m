@@ -23,10 +23,11 @@ PNPM_MOUNTED_COMMANDS = (
     'up',
     'update',
 )
+SUGGESTION = 'suggestion'
 
 
 def create_symlink(link: Path, source: Path) -> None:
-    """Creates a symlink that is linked to a source.
+    """Create a symlink that is linked to a source.
 
     This is a destructive operation - if the link exists it will be removed.
 
@@ -58,7 +59,7 @@ def _setup_node_modules(work_dir: str, pnpm_dir: str) -> Res[str]:
         return issue('non_devcontainer_setup', context={
             'work_node_modules': str(work_node_modules),
             'pnpm_node_modules': str(pnpm_node_modules),
-            'suggestion': [
+            SUGGESTION: [
                 'stop devcontainer',
                 'remove all node_modules found in the project directory',
                 'reopen project in devcontainer',
@@ -70,11 +71,19 @@ def _setup_node_modules(work_dir: str, pnpm_dir: str) -> Res[str]:
     return Good(f'{work_node_modules} -> {pnpm_node_modules}')
 
 
-def _setup_package(work_dir: str, pnpm_dir: str) -> str:
+def _setup_package(work_dir: str, pnpm_dir: str) -> Res[str]:
     work_package = Path(work_dir) / 'package.json'
     pnpm_package = Path(pnpm_dir) / 'package.json'
+    if not work_package.exists():
+        return issue('missing_package_json', context={
+            'work_dir': str(work_dir),
+            SUGGESTION: [
+                'directory does not have package.json',
+                'you may create one with pnpm init',
+            ],
+        })
     create_symlink(pnpm_package, work_package)
-    return f'{pnpm_package} -> {work_package}'
+    return Good(f'{pnpm_package} -> {work_package}')
 
 
 def _setup_npmrc(work_dir: str, pnpm_dir: str) -> Res[str]:
@@ -106,14 +115,17 @@ def pnpm_setup(work_dir: str, pnpm_dir: str) -> Res[None]:
     Returns:
         A `PnpmSetupSummary` instance.
     """
+    package_res = _setup_package(work_dir, pnpm_dir)
+    if isinstance(package_res, Bad):
+        return Bad(package_res.value)
+    package_summary = package_res.value
+
     Path(pnpm_dir).mkdir(parents=True, exist_ok=True)
 
     node_modules_res = _setup_node_modules(work_dir, pnpm_dir)
     if isinstance(node_modules_res, Bad):
         return Bad(node_modules_res.value)
     node_modules_summary = node_modules_res.value
-
-    package_summary = _setup_package(work_dir, pnpm_dir)
 
     npmrc_res = _setup_npmrc(work_dir, pnpm_dir)
     if isinstance(npmrc_res, Bad):
@@ -127,10 +139,10 @@ def pnpm_setup(work_dir: str, pnpm_dir: str) -> Res[None]:
         pnpm_lock_summary = f'MISSING {work_lock}'
         logger.warning('pnpm_lock_missing', context={
             'work_lock': pnpm_lock_summary,
-            'suggestion': 'run `pnpm install` to generate the lock file',
+            SUGGESTION: 'run `pnpm install` to generate the lock file',
         })
-    elif work_lock.is_symlink():
-        pnpm_lock_summary = 'unlinked symlink {work_lock}'
+    if work_lock.is_symlink():
+        pnpm_lock_summary = f'unlinked symlink {work_lock}'
         work_lock.unlink()
 
     summary = PnpmSetupSummary(
@@ -192,7 +204,7 @@ def _get_workspaces(workdir: str) -> Res[tuple[str, str]]:
         return issue('missing_env_var', context={
             'MDC_WORKSPACE': workspace,
             'MDC_PNPM_WORKSPACE': pnpm_workspace,
-            'suggestion': 'are you running this command from a devcontainer?',
+            SUGGESTION: 'are you running this command from a devcontainer?',
         })
     if not workdir.startswith(workspace):
         return issue('invalid_devcontainer_pnpm_use', context={
