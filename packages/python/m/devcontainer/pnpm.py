@@ -3,7 +3,7 @@ import shutil
 from pathlib import Path
 
 from m.core import Bad, Good, Res, issue
-from m.core.subprocess import eval_cmd, exec_pnpm
+from m.core import subprocess as sub
 from m.log import Logger
 from pydantic import BaseModel
 
@@ -167,9 +167,7 @@ def _pnpm(work_dir: str, pnpm_dir: str, pnpm_args: list[str]) -> Res[None]:
         None if successful, otherwise an error message.
     """
     error = None
-    if not Path(f'{work_dir}/package.json').exists():
-        error = f'{work_dir}/package.json does not exist'
-    elif not Path(f'{work_dir}/node_modules').is_symlink():
+    if not Path(f'{work_dir}/node_modules').is_symlink():
         error = f'{work_dir}/node_modules is not a symlink'
     elif not Path(f'{pnpm_dir}/.npmrc').is_symlink():
         error = f'{pnpm_dir}/.npmrc is not a symlink'
@@ -177,7 +175,7 @@ def _pnpm(work_dir: str, pnpm_dir: str, pnpm_args: list[str]) -> Res[None]:
         return issue('invalid_pnpm_setup', context={'error': error})
 
     os.chdir(pnpm_dir)
-    store_path_res = eval_cmd('pnpm store path')
+    store_path_res = sub.eval_cmd('pnpm store path')
     if isinstance(store_path_res, Bad):
         return Bad(store_path_res.value)
     logger.info('executing_pnpm_in_mounted_volume', context={
@@ -185,7 +183,7 @@ def _pnpm(work_dir: str, pnpm_dir: str, pnpm_args: list[str]) -> Res[None]:
         'pnpm_dir': pnpm_dir,
     })
 
-    pnpm_res = exec_pnpm(pnpm_args)
+    pnpm_res = sub.exec_pnpm(pnpm_args)
     if isinstance(pnpm_res, Bad):
         return pnpm_res
 
@@ -211,7 +209,7 @@ def _get_workspaces(workdir: str) -> Res[tuple[str, str]]:
             'workdir': workdir,
             'workspace': workspace,
             'suggestions': [
-                'pnpm alias should only be run in the workdir',
+                'pnpm alias should only be run in the `workspace`',
                 'the original `pnpm` may be used by running `command pnpm`',
             ],
         })
@@ -237,7 +235,7 @@ def run_pnpm(pnpm_args: list[str], *, force_cd: bool) -> Res[None]:
     pnpm_command = pnpm_args[0] if pnpm_args else None
     is_cd_command = pnpm_command in PNPM_MOUNTED_COMMANDS
     if not force_cd and (not pnpm_command or not is_cd_command):
-        pnpm_res = exec_pnpm(pnpm_args)
+        pnpm_res = sub.exec_pnpm(pnpm_args)
         if isinstance(pnpm_res, Bad):
             return pnpm_res
         return Good(None)

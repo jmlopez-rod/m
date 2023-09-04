@@ -13,7 +13,7 @@ else
 # To run specific tests:
 # python -m unittest discover -s packages/python -v -k tests.cli.commands.test_json.CliJsonTest
 # python -m pytest -vv -k test_m_npm
-  pytest -p no:logging packages/python -vv -k test_pnpm_setup
+  pytest -p no:logging packages/python -vv -k test_pnpm_cli[pnpm_error_bad_store]
 fi
 
 mkdir -p m/.m
