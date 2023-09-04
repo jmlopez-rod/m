@@ -67,7 +67,7 @@ def _container_info() -> str:
         dk_version = version.replace('0.0.0-', '')
         if dk_version.startswith('local'):
             dk_version = '[DEV]'
-        return f'{name}@{version}'
+        return f'{name}@{dk_version}'
     return name
 
 
