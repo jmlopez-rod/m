@@ -11,7 +11,7 @@ class TCase(CliTestCase):
 
     cmd_args: str
     environ: dict[str, str]
-    cmd: str  = 'm devcontainer require_env_vars'
+    cmd: str = 'm devcontainer require_env_vars'
     exit_code: int = 2
 
 
@@ -28,7 +28,7 @@ class TCase(CliTestCase):
             'missing_env_vars',
             '"VAR1": "one"',
             '"VAR2": "two"',
-        ]
+        ],
     ),
 ])
 def test_require_env_vars(tcase: TCase, mocker: MockerFixture) -> None:
