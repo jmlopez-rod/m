@@ -1,5 +1,6 @@
 {
   "name": "M DevContainer",
+  // "image": "m-devcontainer",
   "image": "ghcr.io/jmlopez-rod/m-devcontainer-py311:latest",
   "runArgs": ["--rm", "--network=host", "--name=m-devcontainer"],
   "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && /opt/m_helpers/_init.sh",
