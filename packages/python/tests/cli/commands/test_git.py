@@ -1,5 +1,5 @@
 import pytest
-from m.core import Good
+from m.core import Good, issue
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase, assert_streams, run_cli
 
@@ -35,6 +35,30 @@ from m import git
             Good('Untracked files'),
         ],
         expected='untracked',
+    ),
+    TCase(
+        cmd='m git status --check-stashed',
+        eval_cmd_side_effects=[
+            Good('Untracked files'),
+            Good('some stashed files'),
+        ],
+        expected='untracked',
+    ),
+    TCase(
+        cmd='m git status --check-stashed',
+        eval_cmd_side_effects=[
+            Good('Your branch is ahead'),
+            Good('some stashed files'),
+        ],
+        expected='stash',
+    ),
+    TCase(
+        cmd='m git status --check-stashed',
+        eval_cmd_side_effects=[
+            Good('Your branch is ahead'),
+            issue('something wrong with stash'),
+        ],
+        expected='ahead',
     ),
 ])
 def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
@@ -80,6 +104,12 @@ def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
         cmd='...',
         eval_cmd_side_effects=[Good('raw status')],
         expected='raw status',
+    ),
+    TCase(
+        runner=git.get_repo_path,
+        cmd='...',
+        eval_cmd_side_effects=[Good('/workspace/repo')],
+        expected='/workspace/repo',
     ),
     TCase(
         runner=lambda: git.push_branch('release/1.2.3'),
