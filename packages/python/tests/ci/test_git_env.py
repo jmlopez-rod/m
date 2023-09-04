@@ -30,7 +30,7 @@ class GitEnvTest(FpTestCase):
         git_sha='git-sha-abc-123',
     )
 
-    def test_local(self):
+    def test_local(self) -> None:
         self.env_vars.ci_env = False
         result = get_git_env(self.config, self.env_vars)
         self.assert_ok(result)
@@ -43,7 +43,7 @@ class GitEnvTest(FpTestCase):
             ).__dict__,
         )
 
-    def test_read_git_env_fail(self):
+    def test_read_git_env_fail(self) -> None:
         self.env_vars.ci_env = True
         with patch('m.github.graphql.api.graphql') as graphql_mock:
             graphql_mock.return_value = issue('made up issue')
@@ -52,7 +52,7 @@ class GitEnvTest(FpTestCase):
             self.assertIsNotNone(err.cause)
             self.assertEqual(err.cause.message, 'made up issue')
 
-    def test_bad_github_response(self):
+    def test_bad_github_response(self) -> None:
         self.env_vars.ci_env = True
         with patch('m.github.graphql.api.graphql') as graphql_mock:
             graphql_mock.side_effect = [Good({}), Good({})]
@@ -63,7 +63,7 @@ class GitEnvTest(FpTestCase):
                 '`repository` path was not found',
             )
 
-    def test_pass(self):
+    def test_pass(self) -> None:
         self.env_vars.ci_env = True
         with patch('m.github.graphql.api.graphql') as graphql_mock:
             graphql_mock.side_effect = [

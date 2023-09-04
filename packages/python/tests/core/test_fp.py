@@ -1,6 +1,7 @@
 import unittest
+from typing import Any, TypeVar
 
-from m.core import one_of
+from m.core import OneOf, Res, one_of
 from m.core.fp import Bad, Good
 from m.core.maybe import non_null
 from m.core.one_of import to_one_of
@@ -8,28 +9,36 @@ from tests.conftest import assert_issue
 
 from ..util import compare_values
 
+GenericT = TypeVar('GenericT')
 
-def success_func():
+
+def success_func() -> None:
     print('does nothing')  # noqa: WPS421
 
 
-def failure_func():
+def failure_func() -> None:
     raise Exception('fails')
 
 
+def identity(x: GenericT) -> GenericT:
+    return x
+
+
 class OneOfTest(unittest.TestCase):
-    def test_instances(self):
-        left, right = [Bad(False), Good(1)]
+    def test_instances(self) -> None:
+        left: OneOf[bool, Any] = Bad(False)
+        right: OneOf[Any, int] = Good(1)
         compare_values(self, [
             [left.is_bad, True, '"left" should be Bad(False)'],
             [right.is_bad, False, '"right" should be Good(1)'],
         ])
 
-    def test_iteration(self):
+    def test_iteration(self) -> None:
         self.assertListEqual(list(Bad('err').iter()), [])
         self.assertListEqual(list(Good(100).iter()), [100])
-        bad = one_of(lambda x: x)
-        left = one_of(lambda: list(Bad('error')))
+        # Need this to trigger an unknown error
+        bad = one_of(lambda x: x)  # type: ignore
+        left: OneOf[Any, Any] = one_of(lambda: list(Bad('error')))
         right = one_of(lambda: list(Good(99)))
         self.assertIsInstance(bad, Bad)
         self.assertIsInstance(left, Bad)
@@ -38,22 +47,22 @@ class OneOfTest(unittest.TestCase):
         self.assertEqual(right.value, 99)
 
 
-def test_empty_one_of():
-    bad = one_of(lambda: [])
+def test_empty_one_of() -> None:
+    bad: Res[int] = one_of(lambda: [])
     assert_issue(bad, 'one_of empty response - iteration missing a OneOf')
 
 
-def test_fp_map():
+def test_fp_map() -> None:
     bad = Bad('to the bone').map(lambda _: 'not reachable')
     assert bad.is_bad
     assert bad.value == 'to the bone'
-    good = Good('x').map(lambda msg: f'{msg}^2')
+    good: OneOf[Any, str] = Good('x').map(lambda msg: f'{msg}^2')
     assert not good.is_bad
     assert isinstance(good, Good)
     assert good.value == 'x^2'
 
 
-def test_to_one_of():
+def test_to_one_of() -> None:
     good = to_one_of(success_func, 'will not fail')
     assert not good.is_bad
     assert good.value == 0

@@ -10,7 +10,7 @@ from m.ci.celt.post_processor import get_post_processor
 from ...util import FpTestCase, read_fixture
 
 
-def assert_str_has(target_str: str, substrings: List[str]):
+def assert_str_has(target_str: str, substrings: List[str]) -> None:
     """Assert that a string has a set of substrings.
 
     Args:
@@ -28,16 +28,16 @@ def _post_processor(name: str) -> PostProcessor:
 
 
 @pytest.fixture(autouse=True, scope='class')
-def _no_color(class_mocker):
+def _no_color(class_mocker) -> None:
     class_mocker.patch.dict(os.environ, {'NO_COLOR': 'true'}, clear=True)
 
 
 class CeltTest(FpTestCase):
-    def test_unknown_post_processor_fail(self):
+    def test_unknown_post_processor_fail(self) -> None:
         eslint = get_post_processor('unknown', Configuration())
         self.assert_issue(eslint, 'unknown is not a supported post processor')
 
-    def test_eslint_fail(self):
+    def test_eslint_fail(self) -> None:
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload.json')
         result = eslint.run(payload, {})
@@ -63,7 +63,7 @@ class CeltTest(FpTestCase):
         """
         self.assertEqual(json_stats, inspect.cleandoc(expected))
 
-    def test_eslint_fail_errors(self):
+    def test_eslint_fail_errors(self) -> None:
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload.json')
         config = {
@@ -92,7 +92,7 @@ class CeltTest(FpTestCase):
             'no-unused-vars      3        0',
         ])
 
-    def test_eslint_fail_reduce(self):
+    def test_eslint_fail_reduce(self) -> None:
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload.json')
         config = {
@@ -111,7 +111,7 @@ class CeltTest(FpTestCase):
             '11 errors were removed - lower error allowance',
         )
 
-    def test_eslint_ok(self):
+    def test_eslint_ok(self) -> None:
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload.json')
         config = {
@@ -129,7 +129,7 @@ class CeltTest(FpTestCase):
             'project has 5 errors to clear',
         ])
 
-    def test_eslint_no_errors(self):
+    def test_eslint_no_errors(self) -> None:
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload_clear.json')
         result = eslint.run(payload, {})
@@ -149,7 +149,7 @@ class CeltTest(FpTestCase):
         """
         self.assertEqual(json_stats, inspect.cleandoc(expected))
 
-    def test_eslint_no_errors_reduce(self):
+    def test_eslint_no_errors_reduce(self) -> None:
         eslint = _post_processor('eslint')
         payload = read_fixture('eslint_payload_clear.json')
         config = {'allowedEslintRules': {'semi': 10, 'other': 5}}
@@ -162,7 +162,7 @@ class CeltTest(FpTestCase):
             '15 errors were removed - lower error allowance',
         )
 
-    def test_pycodestyle_fail(self):
+    def test_pycodestyle_fail(self) -> None:
         pycodestyle = _post_processor('pycodestyle')
         payload = read_fixture('pycodestyle_payload.txt')
         result = pycodestyle.run(payload, {})
@@ -181,12 +181,12 @@ class CeltTest(FpTestCase):
             '5 extra errors were introduced',
         )
 
-    def test_pylint_fail_bad_json(self):
+    def test_pylint_fail_bad_json(self) -> None:
         pylint = _post_processor('pylint')
         result = pylint.run('bad_json', {})
         self.assert_issue(result, 'failed to parse the json data')
 
-    def test_pylint_fail(self):
+    def test_pylint_fail(self) -> None:
         pylint = _post_processor('pylint')
         payload = read_fixture('pylint_payload.json')
         result = pylint.run(payload, {})
@@ -204,7 +204,7 @@ class CeltTest(FpTestCase):
             '2 extra errors were introduced',
         )
 
-    def test_pylint_fail_full_message(self):
+    def test_pylint_fail_full_message(self) -> None:
         pylint = _post_processor('pylint')
         payload = read_fixture('pylint_payload.json')
         pylint.celt_config.full_message = True
@@ -219,7 +219,7 @@ class CeltTest(FpTestCase):
             'long message',
         ])
 
-    def test_pylint_fail_max_lines(self):
+    def test_pylint_fail_max_lines(self) -> None:
         pylint = _post_processor('pylint')
         payload = read_fixture('pylint_payload.json')
         pylint.celt_config.max_lines = 0
@@ -234,7 +234,7 @@ class CeltTest(FpTestCase):
             '... and 1 more',
         ])
 
-    def test_pylint_fail_order(self):
+    def test_pylint_fail_order(self) -> None:
         pylint = _post_processor('pylint')
         payload = read_fixture('pylint_payload_order.json')
         result = pylint.run(payload, {})

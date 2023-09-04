@@ -1,4 +1,3 @@
-from typing import cast
 from unittest.mock import patch
 
 from m.ci.config import (
@@ -24,7 +23,7 @@ class ConfigGitFlowTest(FpTestCase):
         m_flow=MFlowConfig(),
     )
 
-    def test_pass(self):
+    def test_pass(self) -> None:
         with patch('m.core.yaml_fp.read_yson') as read_json_mock:
             read_json_mock.return_value = Good(
                 dict(
@@ -35,7 +34,7 @@ class ConfigGitFlowTest(FpTestCase):
                 ),
             )
             result = read_config('m')
-            config = cast(Config, self.assert_ok(result))
+            config = self.assert_ok(result)
             self.assertIsInstance(config, Config)
             self.assertEqual(
                 {
@@ -49,7 +48,7 @@ class ConfigGitFlowTest(FpTestCase):
                 }, config.__dict__,
             )
 
-    def test_verify_version(self):
+    def test_verify_version(self) -> None:
         """Test is already covered by the m_flow tests."""
         config = self.base_config.model_copy()
         self.assertEqual(config.workflow, Workflow.git_flow)
