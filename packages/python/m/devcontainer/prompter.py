@@ -59,6 +59,9 @@ def _container_info() -> str:
     name = os.environ.get('DK_CONTAINER_NAME', 'devcontainer')
     version = os.environ.get('DK_CONTAINER_VERSION')
     if version:
+        dk_version = version.replace('0.0.0-', '')
+        if dk_version.startswith('local'):
+            dk_version = '[DEV]'
         return f'{name}@{version}'
     return name
 
