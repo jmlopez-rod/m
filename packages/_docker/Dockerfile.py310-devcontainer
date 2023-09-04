@@ -25,7 +25,7 @@ COPY packages/_docker/home /root
 ## Poetry Settings
 
 ## PATH setup
-ENV PATH=/root/.local/share/pnpm:/opt/venv/m/bin:${PATH}
+ENV PATH=./packages/bash/lib:/root/.local/share/pnpm:/opt/venv/m/bin:${PATH}
 
 ## May possibly be delegated to `m` installation
 ENV POETRY_HOME=/opt/venv/poetry

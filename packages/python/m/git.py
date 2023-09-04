@@ -96,6 +96,7 @@ def get_current_commit_sha() -> Res[str]:
     """
     return subprocess.eval_cmd('git rev-parse HEAD')
 
+
 def get_repo_path() -> Res[str]:
     """Get the absolute path to the repository.
 
@@ -155,6 +156,12 @@ def _extract_status(msg: str) -> tuple[str, str]:
 
 def get_status(*, check_stash: bool = False) -> Res[tuple[str, str]]:
     """Find the current git status.
+
+    Note that checking for stashed changes is not part of the regular git
+    status. To opt in you must set `check_stash=True`.
+
+    Args:
+        check_stash: Check if there are any stashed changes.
 
     Returns:
         A `OneOf` containing an `Issue` or a word denoting the git status.

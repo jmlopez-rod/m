@@ -27,7 +27,7 @@ from m import git
         eval_cmd_side_effects=[
             Good('some unknown message'),
         ],
-        expected='?',
+        expected='unknown',
     ),
     TCase(
         cmd='m git status',
