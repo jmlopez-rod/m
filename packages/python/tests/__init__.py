@@ -33,6 +33,7 @@ def mock(func_name: str):
 
 mio.write_file = mock('m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
+subprocess.call = mock('m.core.subprocess.exec_pnpm')
 
 if not os.environ.get('CI'):
     # We want to make sure that we do not create directories during tests.
