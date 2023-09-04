@@ -25,6 +25,20 @@ PNPM_MOUNTED_COMMANDS = (
 )
 
 
+def create_symlink(link: Path, source: Path) -> None:
+    """Creates a symlink that is linked to a source.
+
+    This is a destructive operation - if the link exists it will be removed.
+
+    Args:
+        link: The path to the link.
+        source: The path to the source.
+    """
+    if link.exists() or link.is_symlink():
+        link.unlink()
+    link.symlink_to(source)
+
+
 class PnpmSetupSummary(BaseModel):
     """Summary of the pnpm setup operation."""
 
@@ -52,19 +66,14 @@ def _setup_node_modules(work_dir: str, pnpm_dir: str) -> Res[str]:
         })
 
     pnpm_node_modules.mkdir(exist_ok=True)
-    if work_node_modules.exists() or work_node_modules.is_symlink():
-        work_node_modules.unlink()
-    # work_node_modules is meant to be the link - not actual data
-    work_node_modules.symlink_to(pnpm_node_modules)
+    create_symlink(work_node_modules, pnpm_node_modules)
     return Good(f'{work_node_modules} -> {pnpm_node_modules}')
 
 
 def _setup_package(work_dir: str, pnpm_dir: str) -> str:
     work_package = Path(work_dir) / 'package.json'
     pnpm_package = Path(pnpm_dir) / 'package.json'
-    if pnpm_package.exists() or pnpm_package.is_symlink():
-        pnpm_package.unlink()
-    pnpm_package.symlink_to(work_package)
+    create_symlink(pnpm_package, work_package)
     return f'{pnpm_package} -> {work_package}'
 
 
@@ -78,9 +87,7 @@ def _setup_npmrc(work_dir: str, pnpm_dir: str) -> Res[str]:
             'npmrc_work': f'MISSING {npmrc_work}',
             'npmrc_home': f'MISSING {npmrc_home}',
         })
-    if npmrc_pnpm.exists() or npmrc_pnpm.is_symlink():
-        npmrc_pnpm.unlink()
-    npmrc_pnpm.symlink_to(npmrc_path)
+    create_symlink(npmrc_pnpm, npmrc_path)
     return Good(f'{npmrc_pnpm} -> {npmrc_path}')
 
 
@@ -123,7 +130,7 @@ def pnpm_setup(work_dir: str, pnpm_dir: str) -> Res[None]:
             'suggestion': 'run `pnpm install` to generate the lock file',
         })
     elif work_lock.is_symlink():
-        pnpm_lock_summary = 'unlinked {work_lock}'
+        pnpm_lock_summary = 'unlinked symlink {work_lock}'
         work_lock.unlink()
 
     summary = PnpmSetupSummary(
@@ -174,9 +181,7 @@ def _pnpm(work_dir: str, pnpm_dir: str, pnpm_args: list[str]) -> Res[None]:
     pnpm_lock = Path(pnpm_dir) / 'pnpm-lock.yaml'
     if not work_lock.exists():
         shutil.move(str(pnpm_lock), str(work_lock))
-    if pnpm_lock.exists() or pnpm_lock.is_symlink():
-        pnpm_lock.unlink()
-    pnpm_lock.symlink_to(work_lock)
+    create_symlink(pnpm_lock, work_lock)
     return Good(None)
 
 
