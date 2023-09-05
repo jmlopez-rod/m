@@ -9,6 +9,22 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Add `devcontainer` command group to `m` cli. It includes
+  - `bashrc`: used to print a snippet that should be source on a `.bashrc` file.
+  - `greet`: displays a message with devcontainer information. To be used in the
+    `postStartCommand` section of a devcontainer file.
+  - `pnpm_setup`: to be used in the `postStartCommand` to setup all the the
+    necessary symlinks for `pnpm` to be efficient in all docker containers
+    regardless of the host.
+  - `pnpm`: a wrapper around `pnpm` to perform the `pnpm` command in a mounted
+    volume.
+  - `prompter`: a command line prompt that can be used in bash to display the
+    current git status.
+  - `require_env_vars`: meant to stop a bash script if the specified env vars
+    are not defined.
+- Add `RemainderArgs` to `m.cli`. This is helpful to specify that we want to
+  obtain the rest of the arguments so that we may pass it to another process.
+
 ## [0.24.0] <a name="0.24.0" href="#0.24.0">-</a> September 03, 2023
 
 - Any module can be used as a cli command. If the module is a package then we

@@ -9,6 +9,29 @@ from .engine.types import FuncArgs
 _Unset: Any = PydanticUndefined
 
 
+def RemainderArgs(  # noqa: N802
+    *,
+    help: str | None = _Unset,  # noqa: WPS125
+) -> Any:
+    """Provide a list of unrecognized arguments.
+
+    This is a escape hatch and does not provide any typings. May be
+    useful for commands that need to pass arguments to other commands.
+
+    Args:
+        help: Human-readable description.
+
+    Returns:
+        A new [`FieldInfo`][pydantic.fields.FieldInfo], the return annotation is
+        `Any` so `Arg` can be used on type annotated fields without causing a typing error.
+    """
+    return FieldInfo.from_field(
+        [],
+        description=help,
+        json_schema_extra={'__remainder_args': True},
+    )
+
+
 def Arg(  # noqa: N802, WPS211
     default: Any = PydanticUndefined,
     *,

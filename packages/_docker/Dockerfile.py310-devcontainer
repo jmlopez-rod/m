@@ -23,9 +23,15 @@ COPY packages/_docker/helpers /opt/m_helpers
 COPY packages/_docker/home /root
 
 ## Poetry Settings
-ENV POETRY_HOME=/opt/venv/poetry
-ENV POETRY_CACHE_DIR=/opt/venv/.cache/pypoetry
 
 ## PATH setup
-ENV PATH=./packages/bash/lib:/opt/venv/m/bin:${PATH}
-RUN echo ". /root/.bashrc.d/bash_aliases.sh" >>/root/.bashrc
+ENV PATH=./packages/bash/lib:/root/.local/share/pnpm:/opt/venv/m/bin:${PATH}
+
+## May possibly be delegated to `m` installation
+ENV POETRY_HOME=/opt/venv/poetry
+ENV POETRY_CACHE_DIR=/opt/venv/.cache/pypoetry
+RUN echo "\n. /root/.bashrc.d/bash_aliases.sh" >>/root/.bashrc
+
+## Devcontainer info
+ENV DK_CONTAINER_NAME='m-devcontainer'
+ENV DK_CONTAINER_VERSION='3.10.9'

@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime
 from functools import partial
 
 import pytest
@@ -11,7 +10,6 @@ from tests.cli.conftest import assert_streams, run_cli
 
 from .conftest import TCase, get_fixture, read_file_fake
 
-TODAY = datetime.now().strftime('%B %d, %Y')
 env_mock = {'NO_COLOR': 'true'}
 
 

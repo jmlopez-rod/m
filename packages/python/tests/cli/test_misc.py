@@ -1,8 +1,9 @@
 from typing import Any, cast
+from unittest.mock import MagicMock
 
 from m.cli import Arg, BaseModel, run_main
 from m.cli.engine.parsers.boolean import handle_field
-from m.core import Bad, Good, Issue, issue
+from m.core import Bad, Good, Issue, Res, issue
 from pytest_mock import MockerFixture
 
 
@@ -14,15 +15,15 @@ class SampleModel(BaseModel):
     )
 
 
-def failure_func():
+def failure_func() -> Res[Any]:
     raise RuntimeError('failure')
 
 
-def handlers(mocker: MockerFixture):
+def handlers(mocker: MockerFixture) -> tuple[MagicMock, MagicMock]:
     return mocker.stub(), mocker.stub()
 
 
-def test_run_main_success(mocker: MockerFixture):
+def test_run_main_success(mocker: MockerFixture) -> None:
     on_success, on_failure = handlers(mocker)
     exit_code = run_main(lambda: Good('some output'), on_success, on_failure)
     assert exit_code == 0
@@ -30,7 +31,7 @@ def test_run_main_success(mocker: MockerFixture):
     on_failure.assert_not_called()
 
 
-def test_run_main_unknown_error(mocker: MockerFixture):
+def test_run_main_unknown_error(mocker: MockerFixture) -> None:
     on_success, on_failure = handlers(mocker)
     exit_code = run_main(failure_func, on_success, on_failure)
     assert exit_code == 2
@@ -42,7 +43,7 @@ def test_run_main_unknown_error(mocker: MockerFixture):
     on_success.assert_not_called()
 
 
-def test_run_main_non_issue(mocker: MockerFixture):
+def test_run_main_non_issue(mocker: MockerFixture) -> None:
     on_success, on_failure = handlers(mocker)
     exit_code = run_main(
         lambda: cast(Bad[Issue, Any], Bad('oops')),
@@ -57,7 +58,7 @@ def test_run_main_non_issue(mocker: MockerFixture):
     on_success.assert_not_called()
 
 
-def test_run_main_issue(mocker: MockerFixture):
+def test_run_main_issue(mocker: MockerFixture) -> None:
     on_success, on_failure = handlers(mocker)
     exit_code = run_main(lambda: issue('oops'), on_success, on_failure)
     assert exit_code == 1
@@ -68,7 +69,7 @@ def test_run_main_issue(mocker: MockerFixture):
     on_success.assert_not_called()
 
 
-def test_boolean_arg():
+def test_boolean_arg() -> None:
     """We can use `--no-[x]` in arguments."""
     schema = SampleModel.model_json_schema()
     field = schema['properties']['sort']

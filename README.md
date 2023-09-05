@@ -25,7 +25,11 @@ sudo mv /tmp/foo /usr/share/zsh/site-functions/_m
 
 ## development
 
-Start by opening the devcontainer in VSCode. Once there open a terminal and run
+If you are working on a non-intel machine (M1/M2 Macs) you can run
+`make buildPy311DevContainer` and update `devcontainer.json` to use the
+`m-devcontainer` image.
+
+Open the devcontainer in VSCode. Once there open a terminal and run
 
 ```
 poetry install

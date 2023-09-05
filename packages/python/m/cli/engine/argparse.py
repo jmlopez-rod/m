@@ -6,7 +6,7 @@ from warnings import warn
 from pydantic import BaseModel
 
 from .misc import params_count
-from .parsers import boolean, positional, proxy, standard
+from .parsers import boolean, positional, proxy, remainder, standard
 from .types import AnyMap, CommandInputs, FuncArgs
 
 
@@ -17,6 +17,8 @@ def _parse_field(name: str, field: AnyMap) -> FuncArgs:
         return boolean.handle_field(name, field)
     if proxy.should_handle(field):
         return proxy.handle_field(field)
+    if remainder.should_handle(field):
+        return remainder.handle_field(name, field)
     return standard.handle_field(name, field)
 
 

@@ -38,7 +38,7 @@ class CiDataclassesTest(FpTestCase):
         is_draft=False,
     )
 
-    def test_commit_get_pr_branch(self):
+    def test_commit_get_pr_branch(self) -> None:
         associated_pr = self.associated_pr.model_copy()
         commit = self.commit.model_copy()
         commit.associated_pull_request = None
@@ -49,7 +49,7 @@ class CiDataclassesTest(FpTestCase):
         associated_pr.pr_branch = 'pr-branch-name'
         self.assertEqual(commit.get_pr_branch(), 'pr-branch-name')
 
-    def test_commit_is_release(self):
+    def test_commit_is_release(self) -> None:
         associated_pr = self.associated_pr.model_copy()
         commit = self.commit.model_copy()
         commit.associated_pull_request = associated_pr
@@ -63,7 +63,7 @@ class CiDataclassesTest(FpTestCase):
         associated_pr.pr_branch = 'release'
         self.assertTrue(commit.is_release(release_prefix))
 
-    def test_pr_is_release_pr(self):
+    def test_pr_is_release_pr(self) -> None:
         pr = self.pr.model_copy()
         # Not a release pr
         self.assertFalse(pr.is_release_pr(None))

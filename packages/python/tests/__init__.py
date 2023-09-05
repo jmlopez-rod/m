@@ -1,4 +1,5 @@
 import os
+import shutil
 import socket
 import subprocess
 from functools import partial
@@ -9,6 +10,7 @@ from m.core import rw as mio
 
 original_write_file = mio.write_file
 original_mkdir = Path.mkdir
+original_shutil_move = shutil.move
 
 
 # Disabling yaml output - during tests we want to focus on json data
@@ -33,6 +35,8 @@ def mock(func_name: str):
 
 mio.write_file = mock('m.core.rw.write_file')
 subprocess.check_output = mock('m.core.subprocess.eval_cmd')
+subprocess.call = mock('m.core.subprocess.exec_pnpm')
+shutil.move = mock('shutil.move')
 
 if not os.environ.get('CI'):
     # We want to make sure that we do not create directories during tests.

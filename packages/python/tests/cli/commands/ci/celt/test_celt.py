@@ -10,12 +10,12 @@ from tests.util import file_exists_mock, read_fixture, read_fixture_mock
 FIXTURE_PATH = 'cli/commands/ci/celt/fixtures'
 
 
-def _file_exists(name: str):
+def _file_exists(name: str) -> bool:
     # Having issues using partial with file_exists_mock.
     return file_exists_mock(name, FIXTURE_PATH)
 
 
-def _get_fixture(name: str):
+def _get_fixture(name: str) -> str:
     return read_fixture(name, FIXTURE_PATH)
 
 
