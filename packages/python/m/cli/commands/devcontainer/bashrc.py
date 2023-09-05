@@ -26,6 +26,10 @@ def run() -> int:
         'export PROMPT_COMMAND=prompter',
         'export VIRTUAL_ENV="$MDC_VENV_WORKSPACE"',
         'export PATH="$VIRTUAL_ENV/bin:$PATH"',
+        'if [ ! -d "$VIRTUAL_ENV" ]; then',
+        '  echo "NOTICE: creating virtual environment $VIRTUAL_ENV"',
+        '  python3 -m venv "$VIRTUAL_ENV"',
+        'fi',
         '. "$VIRTUAL_ENV/bin/activate"',
     ]
     print('\n'.join(snippet))  # noqa: WPS421
