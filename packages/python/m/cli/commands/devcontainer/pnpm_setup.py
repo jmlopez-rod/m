@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class Arguments(BaseModel):
     """Setup pnpm in the devcontainer.
 
-    This command is meant to be run from inside the devcontainer. It will
+    This command is meant run from inside the devcontainer. It will
     create several symbolic links so that the pnpm data may be stored in a
     volume and thus be able to be shared with other devcontainers.
     """

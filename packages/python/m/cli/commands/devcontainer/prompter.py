@@ -4,12 +4,12 @@ from m.cli import BaseModel, command
 class Arguments(BaseModel):
     """Command line prompter.
 
-    The goal is to display useful git information in the prompt.
+    The goal is to display useful git information in the shell prompt.
     """
 
 
 @command(
-    help='print out a bash snippet that exports variables',
+    help='print out a shell prompt with git info',
     model=Arguments,
 )
 def run() -> int:
