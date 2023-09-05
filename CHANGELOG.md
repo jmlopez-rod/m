@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.25.0] <a name="0.25.0" href="#0.25.0">-</a> September 05, 2023
+
 - Add `devcontainer` command group to `m` cli. It includes
   - `bashrc`: used to print a snippet that should be source on a `.bashrc` file.
   - `greet`: displays a message with devcontainer information. To be used in the
@@ -393,7 +395,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.24.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.25.0...HEAD
+[0.25.0]: https://github.com/jmlopez-rod/m/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/jmlopez-rod/m/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/jmlopez-rod/m/compare/0.22.1...0.23.0
 [0.22.1]: https://github.com/jmlopez-rod/m/compare/0.22.0...0.22.1
