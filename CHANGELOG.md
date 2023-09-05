@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.25.1] <a name="0.25.1" href="#0.25.1">-</a> September 05, 2023
+
+- Fix issues with `pnpm_setup` not creating a directory as well as virtual
+  environment for a project.
+
 ## [0.25.0] <a name="0.25.0" href="#0.25.0">-</a> September 05, 2023
 
 - Add `devcontainer` command group to `m` cli. It includes
@@ -395,7 +400,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.25.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.25.1...HEAD
+[0.25.1]: https://github.com/jmlopez-rod/m/compare/0.25.0...0.25.1
 [0.25.0]: https://github.com/jmlopez-rod/m/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/jmlopez-rod/m/compare/0.23.0...0.24.0
 [0.23.0]: https://github.com/jmlopez-rod/m/compare/0.22.1...0.23.0

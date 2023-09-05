@@ -82,6 +82,8 @@ def _setup_package(work_dir: str, pnpm_dir: str) -> Res[str]:
                 'you may create one with pnpm init',
             ],
         })
+    # ensure the pnpm directory exists otherwise symlink will fail
+    Path(pnpm_dir).mkdir(parents=True, exist_ok=True)
     create_symlink(pnpm_package, work_package)
     return Good(f'{pnpm_package} -> {work_package}')
 
@@ -119,8 +121,6 @@ def pnpm_setup(work_dir: str, pnpm_dir: str) -> Res[None]:
     if isinstance(package_res, Bad):
         return Bad(package_res.value)
     package_summary = package_res.value
-
-    Path(pnpm_dir).mkdir(parents=True, exist_ok=True)
 
     node_modules_res = _setup_node_modules(work_dir, pnpm_dir)
     if isinstance(node_modules_res, Bad):
