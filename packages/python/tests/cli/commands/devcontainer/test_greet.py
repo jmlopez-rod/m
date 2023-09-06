@@ -49,7 +49,7 @@ class TCase(CliTestCase):
             """),
     ),
 ])
-def test_bashrc(tcase: TCase, mocker: MockerFixture) -> None:
+def test_greet(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, env_mock, clear=True)
     mocker.patch('time.time').return_value = 123456789
     cmd_args = ' '.join(tcase.cmd_args)

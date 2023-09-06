@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from m.devcontainer.bashrc import bashrc_snippet
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
 from tests.cli.conftest import assert_streams, run_cli
@@ -12,23 +13,7 @@ class TCase(CliTestCase):
     environ: dict[str, str]
     cmd: str = 'm devcontainer bashrc'
     exit_code: int = 0
-
-
-# end of snippet - making sure we keep track of this changes in testing.
-snippet_end = (
-    'alias pnpm="m devcontainer pnpm"',
-    'alias np="m devcontainer pnpm"',
-    "alias cd='HOME=$MDC_WORKSPACE cd'",
-    'function prompter() { export PS1="$(m devcontainer prompter)"; }',
-    'export PROMPT_COMMAND=prompter',
-    'export VIRTUAL_ENV="$MDC_VENV_WORKSPACE"',
-    'export PATH="$VIRTUAL_ENV/bin:$PATH"',
-    'if [ ! -d "$VIRTUAL_ENV" ]; then',
-    '  echo "NOTICE: creating virtual environment $VIRTUAL_ENV"',
-    '  python3 -m venv "$VIRTUAL_ENV"',
-    'fi',
-    '. "$VIRTUAL_ENV/bin/activate"',
-)
+    cleandoc: bool = False
 
 
 @pytest.mark.parametrize('tcase', [
@@ -39,7 +24,7 @@ snippet_end = (
             "export MDC_WORKSPACE='ERROR_UNKNOWN_WORKSPACE'",
             "export MDC_PNPM_WORKSPACE='/opt/pnpm/ERROR_UNKNOWN_WORKSPACE'",
             "export MDC_VENV_WORKSPACE='/opt/venv/ERROR_UNKNOWN_WORKSPACE'",
-            *snippet_end,
+            bashrc_snippet,
         ]),
     ),
     TCase(
@@ -49,7 +34,7 @@ snippet_end = (
             "export MDC_WORKSPACE='/__w/sub_folder/repo_name'",
             "export MDC_PNPM_WORKSPACE='/opt/pnpm/repo_name'",
             "export MDC_VENV_WORKSPACE='/opt/venv/repo_name'",
-            *snippet_end,
+            bashrc_snippet,
         ]),
     ),
     TCase(
@@ -59,7 +44,7 @@ snippet_end = (
             "export MDC_WORKSPACE='/workspace/repo_name'",
             "export MDC_PNPM_WORKSPACE='/opt/pnpm/repo_name'",
             "export MDC_VENV_WORKSPACE='/opt/venv/repo_name'",
-            *snippet_end,
+            bashrc_snippet,
         ]),
     ),
 ])

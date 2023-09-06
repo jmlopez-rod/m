@@ -9,6 +9,10 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.25.2] <a name="0.25.2" href="#0.25.2">-</a> September 06, 2023
+
+- `bashrc` code snippet avoids alias declaration in a CI environment.
+
 ## [0.25.1] <a name="0.25.1" href="#0.25.1">-</a> September 05, 2023
 
 - Fix issues with `pnpm_setup` not creating a directory as well as virtual
@@ -400,7 +404,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.25.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.25.2...HEAD
+[0.25.2]: https://github.com/jmlopez-rod/m/compare/0.25.1...0.25.2
 [0.25.1]: https://github.com/jmlopez-rod/m/compare/0.25.0...0.25.1
 [0.25.0]: https://github.com/jmlopez-rod/m/compare/0.24.0...0.25.0
 [0.24.0]: https://github.com/jmlopez-rod/m/compare/0.23.0...0.24.0

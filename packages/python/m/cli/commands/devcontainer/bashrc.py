@@ -15,22 +15,12 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run() -> int:
+    from m.devcontainer.bashrc import bashrc_snippet
     from m.devcontainer.env import devcontainer_env_vars
 
     snippet = [
         devcontainer_env_vars().to_bash(),
-        'alias pnpm="m devcontainer pnpm"',
-        'alias np="m devcontainer pnpm"',
-        "alias cd='HOME=$MDC_WORKSPACE cd'",
-        'function prompter() { export PS1="$(m devcontainer prompter)"; }',
-        'export PROMPT_COMMAND=prompter',
-        'export VIRTUAL_ENV="$MDC_VENV_WORKSPACE"',
-        'export PATH="$VIRTUAL_ENV/bin:$PATH"',
-        'if [ ! -d "$VIRTUAL_ENV" ]; then',
-        '  echo "NOTICE: creating virtual environment $VIRTUAL_ENV"',
-        '  python3 -m venv "$VIRTUAL_ENV"',
-        'fi',
-        '. "$VIRTUAL_ENV/bin/activate"',
+        bashrc_snippet,
     ]
     print('\n'.join(snippet))  # noqa: WPS421
     return 0
