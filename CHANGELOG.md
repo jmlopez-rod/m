@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.26.0] <a name="0.26.0" href="#0.26.0">-</a> September 09, 2023
+
 - Add `--section` to `m devcontainer bashrc` so that we may specify a bashrc
   snippet that we want to print.
 - Add `--bashrc` to `m ci env` to print a bashrc snippet.
@@ -408,7 +410,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.25.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.26.0...HEAD
+[0.26.0]: https://github.com/jmlopez-rod/m/compare/0.25.2...0.26.0
 [0.25.2]: https://github.com/jmlopez-rod/m/compare/0.25.1...0.25.2
 [0.25.1]: https://github.com/jmlopez-rod/m/compare/0.25.0...0.25.1
 [0.25.0]: https://github.com/jmlopez-rod/m/compare/0.24.0...0.25.0
