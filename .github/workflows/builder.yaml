@@ -18,26 +18,16 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        py-ver: [py310, py311]
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        py-ver: ['3.10.11', '3.11.3']
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install
-        run: |
-          python3 -m venv /opt/venv/m
-          poetry install
-
-      - name: Cache venv
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          path: /opt/venv/m
-          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
+          python-version: ${{ matrix.py-ver }}
+      - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
+        with:
+          cache-key: ${{ matrix.py-ver }}
+      - run: poetry install
 
   tests:
     needs: setup
@@ -45,22 +35,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        py-ver: [py310, py311]
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        py-ver: ['3.10.11', '3.11.3']
+        # py-ver: [py310, py311]
+    # container:
+    #   image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
+    #   credentials:
+    #     username: ${{ github.actor }}
+    #     password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
-          path: /opt/venv/m
-          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
-
+          python-version: ${{ matrix.py-ver }}
+      - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
+        with:
+          cache-key: ${{ matrix.py-ver }}
       - name: run tests
         run: ./packages/python/tests/run.sh
 
@@ -73,20 +62,16 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
-
+          cache-key: '3.11.3'
+      - name: env
+        run: env
       - name: lint src
         shell: bash
         run: |
           m ci celt -t flake8 -c @allowed_errors.json < <(flake8 packages/python/m)
-
       - name: lint tests
         shell: bash
         run: |
@@ -101,22 +86,12 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
-
-      - name: src
-        run: |
-          mypy ./packages/python/m
-
-      - name: tests
-        run: |
-          mypy ./packages/python/tests
+          cache-key: '3.11.3'
+      - run: mypy ./packages/python/m
+      - run: mypy ./packages/python/tests
 
   pylint:
     needs: setup
@@ -127,20 +102,14 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
-
+          cache-key: '3.11.3'
       - name: src
         shell: bash
         run: |
           m ci celt -t pylint -m 10 -c @allowed_errors.json < <(pylint ./packages/python/m --rcfile=.pylintrc -f json)
-
       - name: tests
         shell: bash
         run: |
@@ -148,23 +117,13 @@ jobs:
 
   prettier:
     runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: pnpm install
-        run: |
-          pnpm install
-
-      - name: prettier
-        shell: bash
-        run: |
-          pnpm exec prettier -c .
+      - uses: actions/checkout@v3
+      - uses: jmlopez-rod/m/actions/ensure-pnpm@actions-cache
+        with:
+          pnpm-version: 7.15.0
+      - run: pnpm install
+      - run: pnpm exec prettier -c .
 
   build:
     needs: setup
@@ -178,20 +137,13 @@ jobs:
       m-is-release: ${{ steps.build.outputs.m-is-release }}
       m-tag: ${{ steps.build.outputs.m-tag }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
-
+          cache-key: '3.11.3'
       - name: Build
         id: build
-        run: |
-          ./m/scripts/build.sh
-
+        run: ./m/scripts/build.sh
       - name: Save build
         uses: actions/cache/save@v3
         with:
@@ -212,21 +164,15 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         M_TAG: ${{ needs.build.outputs.m-tag }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: jmlopez-rod/m/actions/ensure-poetry@actions-cache
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
-
+          cache-key: '3.11.3'
       - name: Restore build
         uses: actions/cache/restore@v3
         with:
           path: ./.stage-pypi
           key: build-${{ github.sha }}
-
       - name: Release
         run: |
           ./m/scripts/publish.sh
