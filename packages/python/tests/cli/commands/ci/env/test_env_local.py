@@ -16,21 +16,36 @@ def _get_fixture(name: str):
 
 
 class TCase(CliTestCase):
+    test_name: str
+    cmd: str
     git_branch: str
     current_commit_sha: str
     m_list_file: str
     m_list_contents: str
 
 
-@pytest.mark.parametrize('tcase', [
-    TCase(
-        cmd='m ci env m_dir_local',
-        git_branch='master',
-        current_commit_sha='abc123',
-        m_list_file='m_dir_local/.m/env.list',
-        m_list_contents='m_dir_local/m_expected.list',
-    ),
-])
+@pytest.mark.parametrize(
+    'tcase',
+    [
+        TCase(
+            test_name='default',
+            cmd='m ci env m_dir_local',
+            git_branch='master',
+            current_commit_sha='abc123',
+            m_list_file='m_dir_local/.m/env.list',
+            m_list_contents='m_dir_local/m_expected.list',
+        ),
+        TCase(
+            test_name='bashrc',
+            cmd='m ci env m_dir_local --bashrc',
+            git_branch='master',
+            current_commit_sha='abc123',
+            m_list_file='m_dir_local/.m/env.list',
+            m_list_contents='m_dir_local/m_expected.list',
+        ),
+    ],
+    ids=lambda tcase: tcase.test_name,
+)
 def test_m_ci_env_local(tcase: TCase, mocker: MockerFixture) -> None:
     # clear env vars to avoid ci tool specific messages
     mocker.patch.dict(os.environ, {}, clear=True)
@@ -55,7 +70,10 @@ def test_m_ci_env_local(tcase: TCase, mocker: MockerFixture) -> None:
     write_file_mock = mocker.patch('m.core.rw.write_file')
     write_file_mock.return_value = Good(None)
 
-    run_cli(tcase.cmd, tcase.exit_code, mocker)
+    stdout, _ = run_cli(tcase.cmd, tcase.exit_code, mocker)
+    if tcase.cmd.endswith('--bashrc'):
+        assert 'export M_DIR=m_dir_local' in stdout
+        return
     write_file_mock.assert_called_once()
     file_name, file_contents = write_file_mock.call_args[0]
     assert file_name == tcase.m_list_file

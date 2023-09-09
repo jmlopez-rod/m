@@ -9,6 +9,10 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Add `--section` to `m devcontainer bashrc` so that we may specify a bashrc
+  snippet that we want to print.
+- Add `--bashrc` to `m ci env` to print a bashrc snippet.
+
 ## [0.25.2] <a name="0.25.2" href="#0.25.2">-</a> September 06, 2023
 
 - `bashrc` code snippet avoids alias declaration in a CI environment.
