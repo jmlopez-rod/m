@@ -45,7 +45,7 @@ def get_m_env(m_dir: str) -> Res[MEnv]:
     ]).flat_map_bad(hone('get_m_env failure'))
 
 
-def _m_env_vars(m_env: MEnv) -> Res[str]:
+def _m_env_vars(m_env: MEnv) -> Res[list[str]]:
     """Serialize the m environment variables.
 
     Args:
@@ -83,7 +83,7 @@ def _m_env_vars(m_env: MEnv) -> Res[str]:
         'M_IS_HOTFIX_PR': release.is_hotfix_pr,
     }
     lines = [f'{env_key}={env_val}' for env_key, env_val in env.items()]
-    return fp.Good('\n'.join(lines))
+    return fp.Good(lines)
 
 
 def write_m_env_vars(m_dir: str) -> Res[Any]:
@@ -93,7 +93,7 @@ def write_m_env_vars(m_dir: str) -> Res[Any]:
         m_dir: The directory with the m configuration.
 
     Returns:
-        An issue of the m environment instance.
+        An issue or the m environment instance.
     """
     target_dir = Path(f'{m_dir}/.m')
 
@@ -103,5 +103,29 @@ def write_m_env_vars(m_dir: str) -> Res[Any]:
         json.loads(m_env.model_dump_json())
         for m_env in get_m_env(m_dir)
         for env_list in _m_env_vars(m_env)
-        for _ in mio.write_file(f'{m_dir}/.m/env.list', env_list)
+        for _ in mio.write_file(f'{m_dir}/.m/env.list', '\n'.join(env_list))
+    ])
+
+
+def _lower_bool(line: str) -> str:
+    return line.replace('=False', '=false').replace('=True', '=true')
+
+
+def bashrc_snippet(m_dir: str) -> Res[str]:
+    """Create a bash snippet that exports the M environment variables.
+
+    Args:
+        m_dir: The directory with the m configuration.
+
+    Returns:
+        An issue or a bash snippet.
+    """
+    return one_of(lambda: [
+        '\n'.join([
+            f'export {assignment}'
+            for line in env_list
+            for assignment in fp.Good(_lower_bool(line))
+        ])
+        for m_env in get_m_env(m_dir)
+        for env_list in _m_env_vars(m_env)
     ])

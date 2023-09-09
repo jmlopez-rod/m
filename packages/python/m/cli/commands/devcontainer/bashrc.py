@@ -1,4 +1,4 @@
-from m.cli import BaseModel, command
+from m.cli import ArgProxy, BaseModel, command
 
 
 class Arguments(BaseModel):
@@ -9,14 +9,33 @@ class Arguments(BaseModel):
     facilitate the development in a devcontainer workflow.
     """
 
+    section: str | None = ArgProxy(
+        '--section',
+        choices=['env', 'devex', 'venv'],
+        help='section to print out',
+    )
+
 
 @command(
     help='print out a bash snippet that exports variables',
     model=Arguments,
 )
-def run() -> int:
-    from m.devcontainer.bashrc import bashrc_snippet
+def run(args: Arguments) -> int:
+    from m.devcontainer.bashrc import (
+        bashrc_snippet,
+        devex_snippet,
+        venv_snippet,
+    )
     from m.devcontainer.env import devcontainer_env_vars
+
+    if args.section:
+        sections = {
+            'env': devcontainer_env_vars().to_bash(),
+            'devex': devex_snippet,
+            'venv': venv_snippet,
+        }
+        print(sections.get(args.section, ''))  # noqa: WPS421
+        return 0
 
     snippet = [
         devcontainer_env_vars().to_bash(),

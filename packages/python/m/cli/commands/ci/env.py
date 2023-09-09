@@ -9,7 +9,12 @@ from m.cli import (
 
 
 class Arguments(BaseModel):
-    """Create the [m_dir]/.m/env.list file."""
+    """Create the [m_dir]/.m/env.list file.
+
+    With the `bashrc` option it will print a bashrc snippet and no file will
+    be created. Note that boolean values are lowercased in the snippet. This
+    eventually be the case for generated env.list file.
+    """
 
     pretty: bool = Arg(
         default=False,
@@ -24,6 +29,10 @@ class Arguments(BaseModel):
         positional=True,
         required=True,
     )
+    bashrc: bool = Arg(
+        default=False,
+        help='print bashrc snippet',
+    )
 
 
 @command(
@@ -31,7 +40,13 @@ class Arguments(BaseModel):
     model=Arguments,
 )
 def run(arg: Arguments) -> int:
-    from m.ci.m_env import write_m_env_vars
+    from m.ci.m_env import bashrc_snippet, write_m_env_vars
+
+    if arg.bashrc:
+        return run_main(
+            lambda: bashrc_snippet(arg.m_dir),
+            result_handler=print,
+        )
 
     result_handler = (
         create_yaml_handler(arg.pretty)

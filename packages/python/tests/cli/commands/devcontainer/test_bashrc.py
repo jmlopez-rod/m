@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from m.devcontainer.bashrc import bashrc_snippet
+from m.devcontainer.bashrc import bashrc_snippet, devex_snippet
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
 from tests.cli.conftest import assert_streams, run_cli
@@ -13,6 +13,7 @@ class TCase(CliTestCase):
     environ: dict[str, str]
     cmd: str = 'm devcontainer bashrc'
     exit_code: int = 0
+    section: str | None = None
     cleandoc: bool = False
 
 
@@ -47,6 +48,11 @@ class TCase(CliTestCase):
             bashrc_snippet,
         ]),
     ),
+    TCase(
+        section='devex',
+        environ={'CONTAINER_WORKSPACE': '/workspace/repo_name'},
+        expected=devex_snippet,
+    ),
 ])
 def test_bashrc(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch.dict(
@@ -54,5 +60,8 @@ def test_bashrc(tcase: TCase, mocker: MockerFixture) -> None:
         {'NO_COLOR': 'true', **tcase.environ},
         clear=True,
     )
-    std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
+    cmd = tcase.cmd
+    if tcase.section:
+        cmd = f'{cmd} --section {tcase.section}'
+    std_out, std_err = run_cli(cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
