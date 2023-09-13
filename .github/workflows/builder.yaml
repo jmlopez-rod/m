@@ -155,6 +155,7 @@ jobs:
           git config user.email github-actions@github.com
           git remote -v
           git ls-remote --tags origin -l "v0*"
+          node --version
 
   prettier:
     runs-on: ubuntu-22.04
@@ -166,12 +167,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git remote -v
-          git ls-remote --tags origin -l "v0*"
 
       - name: pnpm install
         run: |
