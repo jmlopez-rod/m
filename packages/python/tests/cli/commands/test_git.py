@@ -1,5 +1,5 @@
 import pytest
-from m.core import Good, issue
+from m.core import Bad, Good, issue
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase, assert_streams, run_cli
 
@@ -59,6 +59,22 @@ from m import git
             issue('something wrong with stash'),
         ],
         expected='ahead',
+    ),
+    TCase(
+        cmd='m git tag_release --version 1.2.3',
+        eval_cmd_side_effects=[
+            Good(''),
+            Good('local create - major'),
+            Good('remote create - major'),
+            Good('local create - minor'),
+            Good('remote create - minor'),
+        ],
+        expected='\n'.join([
+            'local create - major',
+            'remote create - major',
+            'local create - minor',
+            'remote create - minor',
+        ]),
     ),
 ])
 def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
@@ -122,6 +138,46 @@ def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
         cmd='...',
         eval_cmd_side_effects=[Good('created commit')],
         expected='created commit',
+    ),
+    TCase(
+        runner=lambda: git.list_tags('0*'),
+        cmd='...',
+        eval_cmd_side_effects=[
+            Good('sha1\trefs/tags/0.7.0\nsha2\trefs/tags/0.7.1\n\n'),
+        ],
+        expected_value={
+            '0.7.0': 'sha1',
+            '0.7.1': 'sha2',
+        },
+    ),
+    TCase(
+        runner=lambda: git.update_git_tag('v1.2', 'sha1', ['v1.2', 'v1.3']),
+        cmd='...',
+        eval_cmd_side_effects=[
+            Good('local delete'),
+            Good('remote delete'),
+            Good('local create'),
+            Good('remote create'),
+        ],
+        expected='local delete\nremote delete\nlocal create\nremote create',
+    ),
+    TCase(
+        runner=lambda: git.update_git_tag('v1.2', 'sha1', ['v1.3']),
+        cmd='...',
+        eval_cmd_side_effects=[
+            Good('local create'),
+            Good('remote create'),
+        ],
+        expected='local create\nremote create',
+    ),
+    TCase(
+        runner=lambda: git.update_git_tag('v1.2', 'sha1', ['v1.2']),
+        cmd='...',
+        eval_cmd_side_effects=[
+            Good('local remove'),
+            Bad('oops, cannot delete tag'),
+        ],
+        expected='oops, cannot delete tag',
     ),
 ])
 def test_m_git_fns(tcase: TCase, mocker: MockerFixture) -> None:

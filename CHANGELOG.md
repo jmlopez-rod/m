@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Add `m git tag_release`. This command allows us to tag a release. It is meant
+  to be used after `m github release` to create git tags that keep track of the
+  major and minor versions of a project. It assumes that the version provided is
+  a valid semver of the form `x.y.z`.
+
 ## [0.26.0] <a name="0.26.0" href="#0.26.0">-</a> September 09, 2023
 
 - Add `--section` to `m devcontainer bashrc` so that we may specify a bashrc
