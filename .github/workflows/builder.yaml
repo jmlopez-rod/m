@@ -148,6 +148,11 @@ jobs:
 
   testing:
     runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - run: |
