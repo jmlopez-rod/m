@@ -1,4 +1,4 @@
-from m.core import Good, Res, hone, one_of, subprocess
+from m.core import Bad, Good, Res, hone, one_of, subprocess
 
 
 def get_branch() -> Res[str]:
@@ -187,3 +187,71 @@ def raw_status() -> Res[str]:
         A `OneOf` containing an `Issue` or the output of "git status".
     """
     return subprocess.eval_cmd('git status')
+
+
+def _list_tags(tag_response: str) -> dict[str, str]:
+    lines = tag_response.strip().splitlines()
+    split_lines = (line.split('\trefs/tags/') for line in lines)
+    return {tag: sha for sha, tag in split_lines}
+
+
+def list_tags(pattern: str) -> Res[dict[str, str]]:
+    """List all the tags matching a pattern.
+
+    Args:
+        pattern: The pattern to match.
+
+    Returns:
+        A `OneOf` containing an `Issue` or a string specifying the branch.
+    """
+    cmd = f'git ls-remote --tags origin -l "{pattern}"'
+    return one_of(
+        lambda: [
+            _list_tags(output)
+            for output in subprocess.eval_cmd(cmd)
+        ],
+    )
+
+
+def remove_git_tag(tag) -> Res[str]:
+    """Remove a git tag.
+
+    Args:
+        tag: The tag to remove.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the response from the git command.
+    """
+    return one_of(lambda: [
+        f'{local}\n{remote}'
+        for local in subprocess.eval_cmd(f'git tag -d {tag}')
+        for remote in subprocess.eval_cmd(f'git push origin :refs/tags/{tag}')
+    ])
+
+
+def update_git_tag(tag: str, sha: str, remote_tags: list[str]) -> Res[str]:
+    """Create or move a git tag.
+
+    The remote_tags should be provided to determine if we need to remove them
+    before moving the tag. See https://stackoverflow.com/a/28280404 for more
+    details on the git commands.
+
+    Args:
+        tag: The tag to set.
+        sha: The commit sha to set the tag to.
+        remote_tags: The list of remote tags.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the response from the git command.
+    """
+    removal_output = ''
+    if tag in remote_tags:
+        removal_res = remove_git_tag(tag)
+        if isinstance(removal_res, Bad):
+            return Bad(removal_res.value)
+        removal_output = f'{removal_res.value}\n'
+    return one_of(lambda: [
+        f'{removal_output}{local}\n{remote}'
+        for local in subprocess.eval_cmd(f'git tag {tag} {sha}')
+        for remote in subprocess.eval_cmd(f'git push origin {tag}')
+    ])
