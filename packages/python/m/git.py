@@ -255,3 +255,29 @@ def update_git_tag(tag: str, sha: str, remote_tags: list[str]) -> Res[str]:
         for local in subprocess.eval_cmd(f'git tag {tag} {sha}')
         for remote in subprocess.eval_cmd(f'git push origin {tag}')
     ])
+
+
+def tag_release(version: str, sha: str) -> Res[str]:
+    """Create a git tags for a release.
+
+    This is done to keep a major and minor versions tags pointing to the latest.
+
+    Args:
+        version: The version to tag.
+        sha: The commit sha to tag.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the response from the git command.
+    """
+    v_parts = version.split('.')
+    # Assuming the version is valid
+    major, minor = v_parts[0], v_parts[1]
+    major_tag = f'v{major}'
+    minor_tag = f'v{major}.{minor}'
+
+    return one_of(lambda: [
+        '\n'.join([major_out, minor_out])
+        for all_tags in list_tags(f'v{major}*')
+        for major_out in update_git_tag(major_tag, sha, list(all_tags))
+        for minor_out in update_git_tag(minor_tag, sha, list(all_tags))
+    ])

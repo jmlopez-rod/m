@@ -60,6 +60,22 @@ from m import git
         ],
         expected='ahead',
     ),
+    TCase(
+        cmd='m git tag_release --version 1.2.3',
+        eval_cmd_side_effects=[
+            Good(''),
+            Good('local create - major'),
+            Good('remote create - major'),
+            Good('local create - minor'),
+            Good('remote create - minor'),
+        ],
+        expected='\n'.join([
+            'local create - major',
+            'remote create - major',
+            'local create - minor',
+            'remote create - minor',
+        ]),
+    ),
 ])
 def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
     eval_cmd = mocker.patch('m.core.subprocess.eval_cmd')
