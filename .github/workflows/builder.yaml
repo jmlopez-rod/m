@@ -179,7 +179,7 @@ jobs:
       m-tag: ${{ steps.build.outputs.m-tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache venv
         uses: actions/cache@v3
@@ -190,6 +190,10 @@ jobs:
       - name: Build
         id: build
         run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git remote -v
+          git ls-remote --tags origin -l "v0*"
           ./m/scripts/build.sh
 
       - name: Save build
@@ -213,7 +217,7 @@ jobs:
         M_TAG: ${{ needs.build.outputs.m-tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Cache venv
         uses: actions/cache@v3
@@ -229,4 +233,7 @@ jobs:
 
       - name: Release
         run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git remote -v
           ./m/scripts/publish.sh
