@@ -9,6 +9,10 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.27.3] <a name="0.27.3" href="#0.27.3">-</a> September 13, 2023
+
+- Typo on code. I hope this is the last hotfix for `m git tag_release`.
+
 ## [0.27.2] <a name="0.27.2" href="#0.27.2">-</a> September 13, 2023
 
 - Fix `m git tag_release` when executing on github actions. Need to first fetch
@@ -434,7 +438,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.27.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.27.3...HEAD
+[0.27.3]: https://github.com/jmlopez-rod/m/compare/0.27.2...0.27.3
 [0.27.2]: https://github.com/jmlopez-rod/m/compare/0.27.1...0.27.2
 [0.27.1]: https://github.com/jmlopez-rod/m/compare/0.27.0...0.27.1
 [0.27.0]: https://github.com/jmlopez-rod/m/compare/0.26.0...0.27.0

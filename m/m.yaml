@@ -1,5 +1,5 @@
 owner: jmlopez-rod
 repo: m
-version: 0.27.2
+version: 0.27.3
 workflow: m_flow
 build_tag_with_version: true

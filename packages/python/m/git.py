@@ -227,7 +227,7 @@ def remove_git_tag(tag) -> Res[str]:
     tag_ref = f'refs/tags/{tag}'
     return one_of(lambda: [
         f'{local}\n{remote}'
-        for _ in subprocess.eval_cmd(f'git fetch +{tag_ref}:{tag_ref}')
+        for _ in subprocess.eval_cmd(f'git fetch origin +{tag_ref}:{tag_ref}')
         for local in subprocess.eval_cmd(f'git tag -d {tag}')
         for remote in subprocess.eval_cmd(f'git push origin :{tag_ref}')
     ])
