@@ -11,7 +11,15 @@ The format of this changelog is based on
 
 ## [0.27.1] <a name="0.27.1" href="#0.27.1">-</a> September 13, 2023
 
-- `git` unable to fetch tags in workflow (investigating).
+- No changes to library. This release is to verify that `m git tag_release`
+  works in github workflows. Please note that if you are running in a container
+  you will need to add
+
+  ```
+  git config --global --add safe.directory "$GITHUB_WORKSPACE"
+  ```
+
+  before running `m git tag_release`.
 
 ## [0.27.0] <a name="0.27.0" href="#0.27.0">-</a> September 13, 2023
 

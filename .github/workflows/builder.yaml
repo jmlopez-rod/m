@@ -146,24 +146,6 @@ jobs:
         run: |
           m ci celt -t pylint -m 10 -c @allowed_errors_tests.json < <(pylint ./packages/python/tests --rcfile=packages/python/tests/.pylintrc -f json)
 
-  testing:
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          ls -al
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git remote -v
-          git ls-remote --tags origin -l "v0*"
-          node --version
-
   prettier:
     runs-on: ubuntu-22.04
     container:
@@ -208,10 +190,6 @@ jobs:
       - name: Build
         id: build
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git remote -v
-          git ls-remote --tags origin -l "v0*"
           ./m/scripts/build.sh
 
       - name: Save build
@@ -251,7 +229,5 @@ jobs:
 
       - name: Release
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git remote -v
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           ./m/scripts/publish.sh
