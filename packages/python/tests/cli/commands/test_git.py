@@ -154,6 +154,7 @@ def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
         runner=lambda: git.update_git_tag('v1.2', 'sha1', ['v1.2', 'v1.3']),
         cmd='...',
         eval_cmd_side_effects=[
+            Good('fetch delete'),
             Good('local delete'),
             Good('remote delete'),
             Good('local create'),
