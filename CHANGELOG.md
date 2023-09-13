@@ -9,6 +9,18 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.27.1] <a name="0.27.1" href="#0.27.1">-</a> September 13, 2023
+
+- No changes to library. This release is to verify that `m git tag_release`
+  works in github workflows. Please note that if you are running in a container
+  you will need to add
+
+  ```
+  git config --global --add safe.directory "$GITHUB_WORKSPACE"
+  ```
+
+  before running `m git tag_release`.
+
 ## [0.27.0] <a name="0.27.0" href="#0.27.0">-</a> September 13, 2023
 
 - Add `m git tag_release`. This command allows us to tag a release. It is meant
@@ -417,7 +429,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.27.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.27.1...HEAD
+[0.27.1]: https://github.com/jmlopez-rod/m/compare/0.27.0...0.27.1
 [0.27.0]: https://github.com/jmlopez-rod/m/compare/0.26.0...0.27.0
 [0.26.0]: https://github.com/jmlopez-rod/m/compare/0.25.2...0.26.0
 [0.25.2]: https://github.com/jmlopez-rod/m/compare/0.25.1...0.25.2
