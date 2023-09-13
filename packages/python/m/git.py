@@ -216,16 +216,20 @@ def list_tags(pattern: str) -> Res[dict[str, str]]:
 def remove_git_tag(tag) -> Res[str]:
     """Remove a git tag.
 
+    It is important to remove the local tag before removing the remote tag.
+
     Args:
         tag: The tag to remove.
 
     Returns:
         A `OneOf` containing an `Issue` or the response from the git command.
     """
+    tag_ref = f'refs/tags/{tag}'
     return one_of(lambda: [
         f'{local}\n{remote}'
+        for _ in subprocess.eval_cmd(f'git fetch +{tag_ref}:{tag_ref}')
         for local in subprocess.eval_cmd(f'git tag -d {tag}')
-        for remote in subprocess.eval_cmd(f'git push origin :refs/tags/{tag}')
+        for remote in subprocess.eval_cmd(f'git push origin :{tag_ref}')
     ])
 
 
