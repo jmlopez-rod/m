@@ -233,7 +233,13 @@ def remove_git_tag(tag) -> Res[str]:
     ])
 
 
-def update_git_tag(tag: str, sha: str, remote_tags: list[str]) -> Res[str]:
+def update_git_tag(
+    tag: str,
+    sha: str,
+    remote_tags: list[str],
+    *,
+    skip: bool = False,
+) -> Res[str]:
     """Create or move a git tag.
 
     The remote_tags should be provided to determine if we need to remove them
@@ -244,10 +250,13 @@ def update_git_tag(tag: str, sha: str, remote_tags: list[str]) -> Res[str]:
         tag: The tag to set.
         sha: The commit sha to set the tag to.
         remote_tags: The list of remote tags.
+        skip: Skip process if set to true.
 
     Returns:
         A `OneOf` containing an `Issue` or the response from the git command.
     """
+    if skip:
+        return Good(f'skipping {tag}')
     removal_output = ''
     if tag in remote_tags:
         removal_res = remove_git_tag(tag)
@@ -261,7 +270,7 @@ def update_git_tag(tag: str, sha: str, remote_tags: list[str]) -> Res[str]:
     ])
 
 
-def tag_release(version: str, sha: str) -> Res[str]:
+def tag_release(version: str, sha: str, *, major_only: bool) -> Res[str]:
     """Create a git tags for a release.
 
     This is done to keep a major and minor versions tags pointing to the latest.
@@ -269,6 +278,7 @@ def tag_release(version: str, sha: str) -> Res[str]:
     Args:
         version: The version to tag.
         sha: The commit sha to tag.
+        major_only: Only create the major tag.
 
     Returns:
         A `OneOf` containing an `Issue` or the response from the git command.
@@ -283,5 +293,10 @@ def tag_release(version: str, sha: str) -> Res[str]:
         '\n'.join([major_out, minor_out])
         for all_tags in list_tags(f'v{major}*')
         for major_out in update_git_tag(major_tag, sha, list(all_tags))
-        for minor_out in update_git_tag(minor_tag, sha, list(all_tags))
+        for minor_out in update_git_tag(
+            minor_tag,
+            sha,
+            list(all_tags),
+            skip=major_only,
+        )
     ])

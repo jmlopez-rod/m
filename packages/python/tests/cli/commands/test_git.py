@@ -76,6 +76,19 @@ from m import git
             'remote create - minor',
         ]),
     ),
+    TCase(
+        cmd='m git tag_release --version 1.2.3 --major-only',
+        eval_cmd_side_effects=[
+            Good(''),
+            Good('local create - major'),
+            Good('remote create - major'),
+        ],
+        expected='\n'.join([
+            'local create - major',
+            'remote create - major',
+            'skipping v1.2',
+        ]),
+    ),
 ])
 def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
     eval_cmd = mocker.patch('m.core.subprocess.eval_cmd')
