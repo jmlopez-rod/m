@@ -16,4 +16,4 @@ python3 -m twine upload .stage-pypi/dist/*
 m github release --owner jmlopez-rod --repo m --version "$M_TAG"
 
 # Create v tags
-m git tag_release --version "$M_TAG"
+m git tag_release --version "$M_TAG" --major-only

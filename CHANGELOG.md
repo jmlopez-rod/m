@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Add `--major-only` option to `m git tag_release`. This option allows us to
+  only update the major version tag.
+- This project is switching to only moving the `major` tag and drops the minor
+  version tag.
+
 ## [0.27.3] <a name="0.27.3" href="#0.27.3">-</a> September 13, 2023
 
 - Typo on code. I hope this is the last hotfix for `m git tag_release`.

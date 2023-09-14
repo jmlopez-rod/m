@@ -30,6 +30,10 @@ class Arguments(BaseModel):
         default='',
         help='sha to tag',
     )
+    major_only: bool = Arg(
+        default=False,
+        help='only create major tag',
+    )
 
 
 @command(
@@ -39,6 +43,6 @@ class Arguments(BaseModel):
 def run(arg: Arguments) -> int:
     from m import git
     return run_main(
-        lambda: git.tag_release(arg.version, arg.sha),
+        lambda: git.tag_release(arg.version, arg.sha, major_only=arg.major_only),
         result_handler=print,
     )
