@@ -8,7 +8,7 @@ def _to_opt(option: str) -> str:
     return f'--{opt}'
 
 
-def _to_list(options: dict[str, str | list[str]]) -> list[str]:
+def _to_list(options: dict[str, str | list[str] | bool]) -> list[str]:
     """Convert a dict to a list of strings.
 
     Args:
@@ -24,6 +24,8 @@ def _to_list(options: dict[str, str | list[str]]) -> list[str]:
         if isinstance(opt_val, list):
             for opt_val_item in opt_val:
                 options_list.append(f'{opt_name} {opt_val_item}')
+        elif isinstance(opt_val, bool) and opt_val:
+            options_list.append(opt_name)
         else:
             options_list.append(f'{opt_name} {opt_val}')
     return options_list
@@ -38,7 +40,7 @@ class ShellCommand(BaseModel):
     # Arguments to pass to the program.
     # If the key starts with `--` it will be passed as is. Otherwise it will be
     # considered as a python property and will be passed as `--key`.
-    options: dict[str, str | list[str]] = {}
+    options: dict[str, str | list[str] | bool] = {}
 
     # Positional arguments to pass to the program.
     positional: list[str] = []
