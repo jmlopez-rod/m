@@ -3,3 +3,14 @@ repo: m
 version: 0.28.0
 workflow: m_flow
 build_tag_with_version: true
+docker_images:
+  architectures:
+    amd64: Ubuntu-20.04
+  base_path: m/docker
+  images:
+    - name: Image 1
+      docker_file: Dockerfile.image1
+      target_stage: first
+    - name: Image 2
+      docker_file: Dockerfile.image1
+      target_stage: second

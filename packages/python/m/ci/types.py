@@ -43,3 +43,36 @@ class MFlowConfig(BaseModel):
     master_branch: str | Branches = Branches.master
     release_prefix: str | Branches = Branches.release
     hotfix_prefix: str | Branches = Branches.hotfix
+
+
+class DockerImage(BaseModel):
+    """Information describing how to a docker image."""
+
+    # Name to describe the image
+    name: str
+
+    # Name of the docker file to use for the build step.
+    docker_file: str
+
+    # Name of a target stage to build. Leave empty to build the whole file.
+    target_stage: str = ''
+
+    # Arguments to pass to the docker build command, they will only be injected
+    # if they appear within the docker file.
+    arguments: dict[str, str] = {}
+
+
+class DockerImages(BaseModel):
+    """Contains information about the docker images to build."""
+
+    # A map of the architectures to build. It maps say `amd64` to a Github
+    # runner that will build the image for that architecture.
+    #   amd64: Ubuntu 20.04
+    architectures: dict[str, str]
+
+    # Base path used to locate docker files. Defaults to `.` (root of project)
+    # but may be changed a specific directory.
+    base_path: str = '.'
+
+    # list of images to build
+    images: list[DockerImage]

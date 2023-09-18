@@ -19,10 +19,10 @@ class TCase(BaseModel):
             cmd=DockerBuild(tag=['tag1', 'tag2'], force_rm=True),
             expected="""\
                 docker build \\
-                --force-rm \\
-                --tag tag1 \\
-                --tag tag2 \\
-                .""",
+                  --force-rm \\
+                  --tag tag1 \\
+                  --tag tag2 \\
+                  .""",
         ),
     ],
     ids=lambda tcase: tcase.id,

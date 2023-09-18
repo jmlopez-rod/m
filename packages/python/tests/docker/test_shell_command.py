@@ -30,8 +30,8 @@ class DockerArgs(BaseModel):
             cmd=ShellCommand(prog='prog_name', positional=['arg1', 'arg2']),
             expected="""\
                 prog_name \\
-                arg1 \\
-                arg2""",
+                  arg1 \\
+                  arg2""",
         ),
         TCase(
             id='optional_args',
@@ -47,12 +47,12 @@ class DockerArgs(BaseModel):
             ),
             expected="""\
                 prog_name subcommand \\
-                --my-opt "my value" \\
-                --opt1 value1 \\
-                --opt2 value2 \\
-                --tag tag1 \\
-                --tag tag2 \\
-                arg1""",
+                  --my-opt "my value" \\
+                  --opt1 value1 \\
+                  --opt2 value2 \\
+                  --tag tag1 \\
+                  --tag tag2 \\
+                  arg1""",
         ),
         TCase(
             id='pydantic',
@@ -66,11 +66,11 @@ class DockerArgs(BaseModel):
             ),
             expected="""\
                 docker build \\
-                --build-arg ARG1=1 \\
-                --build-arg ARG2=2 \\
-                --force-rm \\
-                --tag t1 \\
-                --tag t2""",
+                  --build-arg ARG1=1 \\
+                  --build-arg ARG2=2 \\
+                  --force-rm \\
+                  --tag t1 \\
+                  --tag t2""",
         ),
     ],
     ids=lambda tcase: tcase.id,
