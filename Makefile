@@ -4,6 +4,9 @@ ci-checks:
 tests:
 	packages/python/tests/run.sh
 
+fmt:
+	deno fmt
+
 mypy:
 	mypy packages/python/m & mypy packages/python/tests
 

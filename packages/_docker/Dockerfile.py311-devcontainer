@@ -18,6 +18,11 @@ RUN ./node_pnpm.sh
 COPY packages/_docker/devcontainer/python.sh .
 RUN ./python.sh
 
+## Deno
+COPY packages/_docker/devcontainer/deno_deps.sh .
+RUN ./deno_deps.sh
+
+
 ## Copy Scripts
 COPY packages/_docker/helpers /opt/m_helpers
 COPY packages/_docker/home /root

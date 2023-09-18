@@ -1,0 +1,31 @@
+{
+  "lint": {
+    "rules": {
+      "tags": ["recommended"],
+      "include": ["ban-untagged,todo"],
+      "exclude": [""]
+    },
+    "include": [],
+    "exclude": [
+      ".mypy_cache",
+      "pnpm-lock.yaml",
+      ".pnpm-store",
+      ".pytest_cache",
+      "packages/python/tests/cli/commands/fixtures/bad_json.json",
+      "packages/python/tests/cli/commands/fixtures/error.yaml"
+    ]
+  },
+  "fmt": {
+    "singleQuote": true,
+    "proseWrap": "always",
+    "include": ["packages/"],
+    "exclude": [
+      ".mypy_cache",
+      "pnpm-lock.yaml",
+      ".pnpm-store",
+      ".pytest_cache",
+      "packages/python/tests/cli/commands/fixtures/bad_json.json",
+      "packages/python/tests/cli/commands/fixtures/error.yaml"
+    ]
+  }
+}

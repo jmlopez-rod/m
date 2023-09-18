@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Add `deno` to repo and added scripts to add `deno` to the devcontainer image
+
 ## [0.28.0] <a name="0.28.0" href="#0.28.0">-</a> September 14, 2023
 
 - Add `--major-only` option to `m git tag_release`. This option allows us to
