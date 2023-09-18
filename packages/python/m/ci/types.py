@@ -1,9 +1,9 @@
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel
 
 
-class Branches(str, Enum):  # noqa: WPS600
+class Branches(StrEnum):
     """Default branches to use for the supported workflows."""
 
     master = 'master'
@@ -12,7 +12,7 @@ class Branches(str, Enum):  # noqa: WPS600
     hotfix = 'hotfix'
 
 
-class Workflow(str, Enum):  # noqa: WPS600
+class Workflow(StrEnum):
     """Supported workflows."""
 
     git_flow = 'git_flow'

@@ -19,6 +19,9 @@ deployDocs:
 fix:
 	pnpm exec prettier -w .
 
+pylint:
+	m/scripts/checks/pylint.sh
+
 ## Manual docker maintenance
 
 buildPy311DevContainer:

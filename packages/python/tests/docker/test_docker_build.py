@@ -11,17 +11,21 @@ class TCase(BaseModel):
     expected: str
 
 
-@pytest.mark.parametrize('tcase', [
-    TCase(
-        id='no_args',
-        cmd=DockerBuild(tag=['tag1', 'tag2'], force_rm=True),
-        expected="""\
-            docker build \\
-              --force-rm \\
-              --tag tag1 \\
-              --tag tag2 \\
-              .""",
-    ),
-], ids=lambda tcase: tcase.id)
+@pytest.mark.parametrize(
+    'tcase',
+    [
+        TCase(
+            id='no_args',
+            cmd=DockerBuild(tag=['tag1', 'tag2'], force_rm=True),
+            expected="""\
+                docker build \\
+                --force-rm \\
+                --tag tag1 \\
+                --tag tag2 \\
+                .""",
+        ),
+    ],
+    ids=lambda tcase: tcase.id,
+)
 def test_docker_build(tcase: TCase) -> None:
     assert str(tcase.cmd) == dedent(tcase.expected)
