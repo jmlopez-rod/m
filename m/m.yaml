@@ -3,14 +3,17 @@ repo: m
 version: 0.28.0
 workflow: m_flow
 build_tag_with_version: true
-docker_images:
+docker_config:
   architectures:
     amd64: Ubuntu-20.04
   base_path: m/docker
+  docker_registry: 'ghcr.io/jmlopez-rod'
   images:
-    - name: Image 1
+    - step_name: Image 1
+      image_name: m-image1
       docker_file: Dockerfile.image1
       target_stage: first
-    - name: Image 2
+    - step_name: Image 2
+      image_name: m-image2
       docker_file: Dockerfile.image1
       target_stage: second

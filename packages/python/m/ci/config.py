@@ -1,10 +1,11 @@
 from pathlib import Path
 
+from m.docker.config import DockerConfig
 from packaging.version import Version
 from pydantic import BaseModel, ConfigDict
 
 from ..core import Good, Res, hone, issue, one_of, yaml_fp
-from .types import Branches, DockerImages, GitFlowConfig, MFlowConfig, Workflow
+from .types import Branches, GitFlowConfig, MFlowConfig, Workflow
 
 
 def _handle_release_pr(ver_gt_latest: bool) -> str:
@@ -44,7 +45,7 @@ class Config(BaseModel):
         hotfix_prefix=Branches.hotfix,
     )
     build_tag_with_version: bool = False
-    docker_images: DockerImages | None = None
+    docker_config: DockerConfig | None = None
 
     model_config = ConfigDict(use_enum_values=True)
 
