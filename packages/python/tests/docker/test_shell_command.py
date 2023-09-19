@@ -1,7 +1,7 @@
 from textwrap import dedent
 
 import pytest
-from m.docker.shell_command import ShellCommand
+from m.ci.docker.shell_command import ShellCommand
 from pydantic import BaseModel
 
 

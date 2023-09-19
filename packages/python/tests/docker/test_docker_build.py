@@ -1,7 +1,7 @@
 from textwrap import dedent
 
 import pytest
-from m.docker.docker_build import DockerBuild
+from m.ci.docker.docker_build import DockerBuild
 from pydantic import BaseModel
 
 

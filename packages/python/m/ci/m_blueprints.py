@@ -2,17 +2,24 @@ from pathlib import Path
 
 from m.core import Res, issue, one_of
 
+from .docker.env import MEnvDocker
 from .m_env import MEnv, get_m_env
 
 
 def _write_blueprints(m_env: MEnv) -> Res[None]:
     m_dir = m_env.config.m_dir
-    if not m_env.config.docker_config:
+    docker_config = m_env.config.docker_config
+    if not docker_config:
         return issue(
             'missing docker_config in m file',
             context={'m_dir': m_dir},
         )
-    return m_env.config.docker_config.write_blueprints(m_dir)
+    env_docker = MEnvDocker(
+        m_tag=m_env.release_env.build_tag,
+        base_path=docker_config.base_path,
+        registry=docker_config.docker_registry,
+    )
+    return docker_config.write_blueprints(m_dir, env_docker)
 
 
 def write_blueprints(m_dir: str) -> Res[None]:

@@ -11,9 +11,10 @@ docker_config:
   images:
     - step_name: Image 1
       image_name: m-image1
-      docker_file: Dockerfile.image1
       target_stage: first
+      docker_file: Dockerfile.image1
+      env_secrets: [GITHUB_TOKEN]
     - step_name: Image 2
       image_name: m-image2
-      docker_file: Dockerfile.image1
       target_stage: second
+      docker_file: Dockerfile.image1

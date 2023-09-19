@@ -81,12 +81,16 @@ class DockerBuild(BaseModel):
     # Security options
     security_opt: str | None = None
 
-    # Undocumented option, see https://pythonspeed.com/articles/docker-build-secrets
+    # Available with DOCKER_BUILDKIT=1
+    #   see https://pythonspeed.com/articles/docker-build-secrets
     # Use as `--secret id=ENVVAR` in the docker build command.
     # Then in the `RUN` statement in the docker file do `RUN --mount=type=secret,id=ENVVAR`.
     # Then you may access that value by doing `ENVVAR=$(cat /run/secrets/ENVVAR)`.
     # Best to use that in a script that that executes inside the docker file.
-    secret: str | None = None
+    secret: list[str] | None = None
+
+    # Available with DOCKER_BUILDKIT=1
+    progress: str | None = None
 
     # Size of /dev/shm
     shm_size: str | None = None

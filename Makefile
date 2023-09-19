@@ -36,3 +36,11 @@ publishPy311DevContainer: buildPy311DevContainer
 publishPy310DevContainer: buildPy310DevContainer
 	PY_VER=310 m/bash/publish.sh
 
+# START: M-DOCKER-IMAGES
+dev-m-image1:
+	m/.m/docker-images/local/m-image1__build.sh
+
+dev-m-image2: dev-m-image1
+	m/.m/docker-images/local/m-image2__build.sh
+
+# END: M-DOCKER-IMAGES
