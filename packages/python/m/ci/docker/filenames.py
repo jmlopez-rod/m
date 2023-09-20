@@ -29,7 +29,7 @@ class FileNames(BaseModel):
             local_dir=f'{m_dir}/.m/docker-images/local',
             ci_dir=f'{m_dir}/.m/docker-images/ci',
             makefile=f'{m_dir}/../Makefile',
-            gh_workflow=f'{m_dir}/../.github/workflows/m_docker_images.yaml',
+            gh_workflow=f'{m_dir}/../.github/workflows/m-docker-images.yaml',
         )
 
     def local_step(self: 'FileNames', image_name: str) -> str:

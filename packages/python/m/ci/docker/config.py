@@ -1,12 +1,14 @@
 from functools import partial
 from typing import Callable
 
-from m.core import Bad, Good, Res, issue, one_of
+from m.core import Bad, Good, Res, issue, one_of, yaml
 from m.core.rw import insert_to_file, write_file
+from m.pydantic import load_model
 from pydantic import BaseModel
 
 from .env import MEnvDocker
 from .filenames import FileNames
+from .gh_workflow import Workflow
 from .image import DockerImage
 
 
@@ -70,6 +72,28 @@ class DockerConfig(BaseModel):
             self.makefile_targets(files),
             '\n# END: M-DOCKER-IMAGES\n',
         )
+
+    def update_github_workflow(
+        self: 'DockerConfig',
+        files: FileNames,
+    ) -> Res[None]:
+        """Update the github workflow with the docker images targets.
+
+        Args:
+            files: Instance of FileNames to obtain the names of the scripts.
+
+        Returns:
+            None if successful, else an issue.
+        """
+        model_res = load_model(Workflow, files.gh_workflow)
+        if isinstance(model_res, Bad):
+            return issue(
+                'update_github_workflow_failure',
+                context={'issue': model_res.value.to_dict(show_traceback=False)},
+            )
+        obj = model_res.value.model_dump(by_alias=True)
+        print(yaml.dumps(obj, sort_keys=False))
+        return Good(None)
 
     def write_local_step(
         self: 'DockerConfig',
@@ -201,6 +225,7 @@ class DockerConfig(BaseModel):
         return one_of(lambda: [
             None
             for _ in self.update_makefile(files)
+            for _ in self.update_github_workflow(files)
             for _ in self.write_local_steps(files, m_env)
             for _ in self.write_ci_steps(files, m_env)
         ])
