@@ -39,6 +39,50 @@ class DockerImage(BaseModel):
         """
         return f'{m_env.registry}/{self.image_name}'
 
+    def format_build_args(
+        self: 'DockerImage',
+        m_env: MEnvDocker,
+        arch: str,
+        extras: dict[str, str] | None = None,
+    ) -> Res[list[str]]:
+        """Format the arguments to pass to the docker build command.
+
+        Docker will only inject build args if they appear in the docker file.
+
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
+            arch: The architecture to build for.
+            extras: Extra build arguments.
+
+        Returns:
+            A list with the build arguments.
+        """
+        docker_file = f'{m_env.base_path}/{self.docker_file}'
+        docker_file_res = read_file(docker_file)
+        if isinstance(docker_file_res, Bad):
+            return Bad(docker_file_res.value)
+        docker_file_contents = docker_file_res.value
+        all_args = {
+            'ARCH': arch,
+            'M_TAG': m_env.m_tag,
+            **(extras or {}),
+            **self.build_args,
+        }
+        return Good([
+            f'{key}={arg_value}'
+            for key, arg_value in all_args.items()
+            if f'ARG {key}' in docker_file_contents
+        ])
+
+    def format_env_secrets(self: 'DockerImage') -> list[str] | None:
+        """Format the environment secrets to pass to the docker build command.
+
+        Returns:
+            A list of valid `secret` arguments.
+        """
+        env_sec = self.env_secrets or []
+        return [f'id={env}' for env in env_sec] if env_sec else None
+
     def ci_build(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
         """Generate a shell script to build an image in the CI pipelines.
 
@@ -48,7 +92,34 @@ class DockerImage(BaseModel):
         Returns:
             A shell snippet with a docker build command.
         """
-        return Good('ci build')
+        build_args = self.format_build_args(m_env, '"$ARCH"', {
+            'BUILDKIT_INLINE_CACHE': '1',
+        })
+        if isinstance(build_args, Bad):
+            return Bad(build_args.value)
+
+        docker_file = f'{m_env.base_path}/{self.docker_file}'
+        img_name = self.img_name(m_env)
+        build_cmd = DockerBuild(
+            progress='plain',
+            cache_from='staged-image:cache',
+            secret=self.format_env_secrets(),
+            tag=[
+                'staged-image:latest',
+                f'{img_name}:{m_env.m_tag}',
+            ],
+            build_arg=build_args.value,
+            target=self.target_stage,
+            file=docker_file,
+        )
+        script = [
+            '#!/bin/bash',
+            'export DOCKER_BUILDKIT=1',
+            'set -euxo pipefail',
+            '',
+            str(build_cmd),
+        ]
+        return Good('\n'.join(script))
 
     def ci_cache(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
         """Generate a shell script to obtain an image to use as cache.
@@ -70,33 +141,20 @@ class DockerImage(BaseModel):
         Returns:
             A shell snippet with a docker build command.
         """
-        docker_file = f'{m_env.base_path}/{self.docker_file}'
-        docker_file_res = read_file(docker_file)
-        if isinstance(docker_file_res, Bad):
-            return Bad(docker_file_res.value)
-        docker_file_contents = docker_file_res.value
-        all_args = {
-            'ARCH': 'local',
-            'M_TAG': m_env.m_tag,
-            **self.build_args,
-        }
-        filtered_args = [
-            f'{key}={arg_value}'
-            for key, arg_value in all_args.items()
-            if f'ARG {key}' in docker_file_contents
-        ]
+        build_args = self.format_build_args(m_env, 'local')
+        if isinstance(build_args, Bad):
+            return Bad(build_args.value)
 
+        docker_file = f'{m_env.base_path}/{self.docker_file}'
         img_name = self.img_name(m_env)
-        env_sec = self.env_secrets or []
-        secrets = [f'id={env}' for env in env_sec] if env_sec else None
         build_cmd = DockerBuild(
             progress='plain',
-            secret=secrets,
+            secret=self.format_env_secrets(),
             tag=[
                 'staged-image:latest',
                 f'{img_name}:{m_env.m_tag}',
             ],
-            build_arg=filtered_args,
+            build_arg=build_args.value,
             target=self.target_stage,
             file=docker_file,
         )
