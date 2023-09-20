@@ -1,52 +1,14 @@
-from pathlib import Path
+from functools import partial
+from typing import Callable
 
 from m.core import Bad, Good, Res, issue, one_of
 from m.core.rw import insert_to_file, write_file
 from pydantic import BaseModel
 
 from .env import MEnvDocker
+from .filenames import FileNames
 from .image import DockerImage
 
-
-class FileNames(BaseModel):
-    """Name of files that need to be written."""
-
-    m_dir: str
-    local_dir: str
-    ci_dir: str
-    makefile: str
-    gh_workflow: str
-
-    @classmethod
-    def create_instance(cls: type['FileNames'], m_dir: str) -> 'FileNames':
-        """Create and instance of FileNames.
-
-        Args:
-            m_dir: The m directory.
-
-        Returns:
-            An instance of FileNames.
-        """
-        gh_dir = Path(f'{m_dir}/../.github/workflows')
-        gh_dir.mkdir(parents=True, exist_ok=True)
-        return FileNames(
-            m_dir=m_dir,
-            local_dir=f'{m_dir}/.m/docker-images/local',
-            ci_dir=f'{m_dir}/.m/docker-images/ci',
-            makefile=f'{m_dir}/../Makefile',
-            gh_workflow=f'{m_dir}/../.github/workflows/m_docker_images.yaml'
-        )
-
-    def local_build_step_file(self: 'FileNames', image_name: str) -> str:
-        """Generate the name of the file that generates the `image_name`.
-
-        Args:
-            image_name: The name of the image to generate.
-
-        Returns:
-            The name of the file.
-        """
-        return f'{self.local_dir}/{image_name}__build.sh'
 
 class DockerConfig(BaseModel):
     """Contains information about the docker images to build."""
@@ -66,50 +28,156 @@ class DockerConfig(BaseModel):
     # list of images to build
     images: list[DockerImage]
 
-    def _local_make(self: 'DockerConfig', files: FileNames) -> str:
-        lines: list[str] = []
+    def makefile_targets(self: 'DockerConfig', files: FileNames) -> str:
+        """Create the Makefile targets to trigger the local builds.
+
+        Args:
+            files: Instance of FileNames to obtain the names of the scripts.
+
+        Returns:
+            A string with the Makefile targets.
+        """
+        lines: list[str] = [
+            'm-blueprints:',
+            '\tm ci blueprints\n',
+        ]
         for index, img in enumerate(self.images):
             name = img.image_name
-            img_file = files.local_build_step_file(name)
-            dep = f' dev-{self.images[index-1].image_name}' if index > 0 else ''
+            img_file = files.local_step(name)
+            previous_img = (
+                self.images[index - 1].image_name
+                if index > 0
+                else None
+            )
+            # Should it call `m-blueprints` as dependency?
+            dep = f' dev-{previous_img}' if previous_img else ''
             lines.append(f'dev-{name}:{dep}')
             lines.append(f'\t{img_file}\n')
         return '\n'.join(lines)
 
-    # def _ci_build(self: 'DockerConfig', files: FileNames) -> str:
-    #     return f'ci - {files.ci_main}'
+    def update_makefile(self: 'DockerConfig', files: FileNames) -> Res[None]:
+        """Update the Makefile with the docker images targets.
 
-    def _write_local_build(
+        Args:
+            files: Instance of FileNames to obtain the names of the scripts.
+
+        Returns:
+            None if successful, else an issue.
+        """
+        return insert_to_file(
+            files.makefile,
+            '\n# START: M-DOCKER-IMAGES\n',
+            self.makefile_targets(files),
+            '\n# END: M-DOCKER-IMAGES\n',
+        )
+
+    def write_local_step(
         self: 'DockerConfig',
-        file_name: str,
+        files: FileNames,
         img: DockerImage,
         m_env: MEnvDocker,
     ) -> Res[None]:
+        """Write a local build step for an image.
+
+        Args:
+            files: The FileNames instance with the file names.
+            img: The DockerImage instance.
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            None if successful, else an issue.
+        """
+        file_name = files.local_step(img.image_name)
         return one_of(lambda: [
             None
             for script_content in img.local_build(m_env)
             for _ in write_file(file_name, script_content)
         ])
 
-    def _local_steps(
+    def write_local_steps(
         self: 'DockerConfig',
         files: FileNames,
         m_env: MEnvDocker,
     ) -> Res[None]:
-        issues: list[str] = []
+        """Write local entry point files.
+
+        Args:
+            files: The FileNames instance with the file names.
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            None if successful, else an issue.
+        """
+        issues: list[dict] = []
         for img in self.images:
-            local_script = files.local_build_step_file(img.image_name)
-            write_res = self._write_local_build(local_script, img, m_env)
+            write_res = self.write_local_step(files, img, m_env)
             if isinstance(write_res, Bad):
-                issues.append(str(write_res.value))
+                dict_issue = write_res.value.to_dict(show_traceback=False)
+                issues.append(dict(dict_issue))
         if issues:
             return issue(
-                'issues writing local files',
+                'write_local_steps_failure',
                 context={'issues': issues},
             )
         return Good(None)
 
-    def _ci_steps(self: 'DockerConfig', files: FileNames) -> Res[None]:
+    def write_ci_step(
+        self: 'DockerConfig',
+        files: FileNames,
+        img: DockerImage,
+        step_name: str,
+        callback: Callable[[], Res[str]],
+    ) -> Res[None]:
+        """Write a ci step for an image.
+
+        Args:
+            files: The FileNames instance with the file names.
+            img: The DockerImage instance.
+            step_name: The step name used in generating the image.
+            callback: The callback that generate the script content.
+
+        Returns:
+            None if successful, else an issue.
+        """
+        file_name = files.ci_step(img.image_name, step_name)
+        return one_of(lambda: [
+            None
+            for script_content in callback()
+            for _ in write_file(file_name, script_content)
+        ])
+
+    def write_ci_steps(
+        self: 'DockerConfig',
+        files: FileNames,
+        m_env: MEnvDocker,
+    ) -> Res[None]:
+        """Write ci entry point files.
+
+        Args:
+            files: The FileNames instance with the file names.
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            None if successful, else an issue.
+        """
+        issues: list[dict] = []
+        for img in self.images:
+            steps_res = [
+                self.write_ci_step(files, img, step_name, callback)
+                for step_name, callback in (
+                    ('build', partial(img.ci_build, m_env)),
+                    ('cache', partial(img.ci_cache, m_env)),
+                )
+            ]
+            for step_res in steps_res:
+                if isinstance(step_res, Bad):
+                    dict_issue = step_res.value.to_dict(show_traceback=False)
+                    issues.append(dict(dict_issue))
+        if issues:
+            return issue(
+                'write_ci_steps_failure',
+                context={'issues': issues},
+            )
         return Good(None)
 
     def write_blueprints(
@@ -124,18 +192,15 @@ class DockerConfig(BaseModel):
 
         Args:
             m_dir: The m directory.
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            None if successful, else an issue.
         """
         files = FileNames.create_instance(m_dir)
-        makefile = files.makefile
         return one_of(lambda: [
             None
-            for _ in insert_to_file(
-                makefile,
-                '\n# START: M-DOCKER-IMAGES\n',
-                self._local_make(files),
-                '\n# END: M-DOCKER-IMAGES\n',
-            )
-            # for _ in write_file(files.ci_main, self._ci_build(files))
-            for _ in self._local_steps(files, m_env)
-            for _ in self._ci_steps(files)
+            for _ in self.update_makefile(files)
+            for _ in self.write_local_steps(files, m_env)
+            for _ in self.write_ci_steps(files, m_env)
         ])

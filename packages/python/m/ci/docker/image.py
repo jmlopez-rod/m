@@ -31,14 +31,41 @@ class DockerImage(BaseModel):
     def img_name(self: 'DockerImage', m_env: MEnvDocker) -> str:
         """Generate name of the image.
 
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
+
         Returns:
             The full name of the image.
         """
         return f'{m_env.registry}/{self.image_name}'
 
+    def ci_build(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
+        """Generate a shell script to build an image in the CI pipelines.
+
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            A shell snippet with a docker build command.
+        """
+        return Good('ci build')
+
+    def ci_cache(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
+        """Generate a shell script to obtain an image to use as cache.
+
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            A shell snippet with commands to pull an image.
+        """
+        return Good('ci cache')
 
     def local_build(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
         """Generate a shell script to build an image.
+
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
 
         Returns:
             A shell snippet with a docker build command.
@@ -54,8 +81,8 @@ class DockerImage(BaseModel):
             **self.build_args,
         }
         filtered_args = [
-            f'{key}={value}'
-            for key, value in all_args.items()
+            f'{key}={arg_value}'
+            for key, arg_value in all_args.items()
             if f'ARG {key}' in docker_file_contents
         ]
 

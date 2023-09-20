@@ -37,6 +37,9 @@ publishPy310DevContainer: buildPy310DevContainer
 	PY_VER=310 m/bash/publish.sh
 
 # START: M-DOCKER-IMAGES
+m-blueprints:
+	m ci blueprints
+
 dev-m-image1:
 	m/.m/docker-images/local/m-image1__build.sh
 

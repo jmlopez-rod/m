@@ -68,7 +68,7 @@ def assert_file_exists(path: str) -> OneOf[Issue, Path]:
 def _insert_to_file(
     file_content: str,
     start: str,
-    content: str,
+    text: str,
     end: str,
 ) -> OneOf[Issue, str]:
     first_split = file_content.split(start)
@@ -77,14 +77,14 @@ def _insert_to_file(
     if len(first_split) > 1:
         second_split = first_split[-1].split(end)
         right_content = second_split[-1]
-    file_data = [left_content, start, content, end, right_content]
+    file_data = [left_content, start, text, end, right_content]
     return Good(''.join(file_data))
 
 
 def insert_to_file(
     filename: str,
     start: str,
-    content: str,
+    text: str,
     end: str,
 ) -> OneOf[Issue, None]:
     """Insert content to a file.
@@ -92,14 +92,15 @@ def insert_to_file(
     Args:
         filename: The file to insert to.
         start: The start delimiter where the insertion will take place.
-        content: The main content to insert.
+        text: The main content to insert.
         end: The end delimiter.
 
-    Returns None if successful, else an issue.
+    Returns:
+        None if successful, else an issue.
     """
     return one_of(lambda: [
         None
         for file_content in read_file(filename)
-        for new_content in _insert_to_file(file_content, start, content, end)
+        for new_content in _insert_to_file(file_content, start, text, end)
         for _ in write_file(filename, new_content)
     ])
