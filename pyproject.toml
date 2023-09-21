@@ -1,22 +1,31 @@
-[project]
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.5.1"]
+
+[tool]
+
+[tool.poetry]
 name = "m"
 version = "0.1.0"
 description = ""
 authors = ["Manuel Lopez <jmlopez.rod@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-dependencies = [
-  'typing_extensions',
-  'pydantic>=2.1.0',
-  'pyyaml',
-  'packaging',
-  'pygments>=2.14.0',
-  'argcomplete',
-]
-package_dir={'': 'packages/python/m'}
-scripts=[
-    'packages/bash/bin/m',
-]
+
+[tool.poetry.dependencies]
+typing_extensions = "*"
+pydantic = ">=2.1.0"
+pyyaml = "*"
+packaging = "*"
+pygments = ">=2.14.0"
+argcomplete = "*"
+
+[[tool.poetry.packages]]
+from = "packages/python"
+include = "m"
+
+[tool.poetry.scripts]
+m = "m.__main__:main"
 
 [tool.poetry.build-dependencies]
 python = "^3.10"
@@ -36,8 +45,3 @@ types-Pygments = "^2.15.0.0"
 mypy = "^1.2.0"
 argcomplete = "^3.0.8"
 ruff = "^0.0.285"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
