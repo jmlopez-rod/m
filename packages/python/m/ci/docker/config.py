@@ -94,6 +94,7 @@ class DockerConfig(BaseModel):
             )
         workflow = model_res.value
         workflow.update_setup_job()
+        workflow.update_manifest_job()
         workflow.update_build_job(self.architectures, self.images, files)
         obj = workflow.model_dump(by_alias=True, exclude_none=True)
         yaml_text = yaml.dumps(obj, sort_keys=False, default_flow_style=False)

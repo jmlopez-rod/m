@@ -224,3 +224,38 @@ class Workflow(BaseModel):
         job.outputs['manifests'] = '${{ steps.manifests.outputs.manifests }}'
         job.steps = steps
         self.jobs['setup'] = job
+
+    def update_manifest_job(self: 'Workflow') -> None:
+        """Update the manifest job."""
+        self.jobs = self.jobs or {}
+        steps = [
+            Step(
+                name='checkout',
+                uses='actions/checkout@v4',
+            ),
+            Step(
+                name='restore-m-blueprints',
+                uses='actions/download-artifact@v3',
+                action_options={
+                    'name': 'm-blueprints',
+                },
+            ),
+            Step(
+                name='create-manifest',
+                run='./m/.m/docker-images/ci/manifests/${{ matrix.manifest }}.sh'
+            )
+        ]
+        job = self.jobs.get('manifest') or Job(
+            runs_on='Ubuntu-22.04',
+            steps=steps,
+        )
+        job.runs_on = 'Ubuntu-22.04'
+        job.steps = steps
+        job.needs = ['setup', 'docker-build']
+        job.strategy = Strategy(
+            fail_fast=True,
+            matrix={
+                'manifest': '${{ fromJSON(needs.setup.outputs.manifest) }}'
+            },
+        )
+        self.jobs['manifest'] = job
