@@ -26,7 +26,9 @@ class Step(BaseModel):
         populate_by_name=True,
     )
 
-    name: str
+    name: str | None = None
+
+    id: str | None = None
 
     uses: str | None = None
 
@@ -86,6 +88,8 @@ class Job(BaseModel):
     strategy: Strategy | None = None
 
     env: dict[str, str] | None = None
+
+    outputs: dict[str, str] | None = None
 
     steps: list[Step]
 
@@ -183,6 +187,7 @@ class Workflow(BaseModel):
     def update_setup_job(self: 'Workflow') -> None:
         """Update the setup job."""
         self.jobs = self.jobs or {}
+        yq_cmd = 'yq -o=json -I=0 m/.m/docker-images/ci/manifests.json'
         steps = [
             Step(
                 name='checkout',
@@ -195,6 +200,11 @@ class Workflow(BaseModel):
             Step(
                 name='blueprints',
                 run='m ci blueprints',
+            ),
+            Step(
+                name='output-manifests',
+                id='manifests',
+                run=f'{{\n  echo "manifests=$({yq_cmd})"\n}} >> $GITHUB_OUTPUT',
             ),
             Step(
                 name='archive',
@@ -210,5 +220,7 @@ class Workflow(BaseModel):
             steps=steps,
         )
         job.runs_on = 'Ubuntu-22.04'
+        job.outputs = job.outputs or {}
+        job.outputs['manifests'] = '${{ steps.manifests.outputs.manifests }}'
         job.steps = steps
         self.jobs['setup'] = job

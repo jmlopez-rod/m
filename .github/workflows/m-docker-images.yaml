@@ -40,6 +40,8 @@ jobs:
       run: m/.m/docker-images/ci/m-image2__push.sh
   setup:
     runs-on: Ubuntu-22.04
+    outputs:
+      manifests: ${{ steps.manifests.outputs.manifests }}
     steps:
     - name: checkout
       uses: actions/checkout@v4
@@ -47,6 +49,12 @@ jobs:
       run: pip install jmlopez-m
     - name: blueprints
       run: m ci blueprints
+    - name: output-manifests
+      id: manifests
+      run: |-
+        {
+          echo "manifests=$(yq -o=json -I=0 m/.m/docker-images/ci/manifests.json)"
+        } >> $GITHUB_OUTPUT
     - name: archive
       uses: actions/upload-artifact@v3
       with:
