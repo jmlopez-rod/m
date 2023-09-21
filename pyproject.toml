@@ -1,12 +1,24 @@
-[tool.poetry]
+[project]
 name = "m"
 version = "0.1.0"
 description = ""
 authors = ["Manuel Lopez <jmlopez.rod@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+dependencies = [
+  'typing_extensions',
+  'pydantic>=2.1.0',
+  'pyyaml',
+  'packaging',
+  'pygments>=2.14.0',
+  'argcomplete',
+]
+package_dir={'': 'packages/python/m'}
+scripts=[
+    'packages/bash/bin/m',
+]
 
-[tool.poetry.dependencies]
+[tool.poetry.build-dependencies]
 python = "^3.10"
 wemake-python-styleguide = "^0.17.0"
 PyYAML = "^6.0"
