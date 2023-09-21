@@ -12,3 +12,9 @@ class MEnvDocker(BaseModel):
 
     # docker registry
     registry: str
+
+    # pull request number, 0 if not a PR.
+    pr_number: int
+
+    # The pr number associated with the commit, 0 if there is none.
+    associated_pr_number: int

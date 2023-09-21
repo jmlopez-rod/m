@@ -18,7 +18,7 @@ class DockerConfig(BaseModel):
     # A map of the architectures to build. It maps say `amd64` to a Github
     # runner that will build the image for that architecture.
     #   amd64: Ubuntu 20.04
-    architectures: dict[str, str]
+    architectures: dict[str, str | list[str]]
 
     # Base path used to locate docker files. Defaults to `.` (root of project)
     # but may be changed a specific directory.
@@ -76,7 +76,7 @@ class DockerConfig(BaseModel):
     def update_github_workflow(
         self: 'DockerConfig',
         files: FileNames,
-    ) -> Res[None]:
+    ) -> Res[int]:
         """Update the github workflow with the docker images targets.
 
         Args:
@@ -91,9 +91,12 @@ class DockerConfig(BaseModel):
                 'update_github_workflow_failure',
                 context={'issue': model_res.value.to_dict(show_traceback=False)},
             )
-        obj = model_res.value.model_dump(by_alias=True)
-        print(yaml.dumps(obj, sort_keys=False))
-        return Good(None)
+        workflow = model_res.value
+        workflow.update_setup_job()
+        workflow.update_build_job(self.architectures, self.images, files)
+        obj = workflow.model_dump(by_alias=True, exclude_none=True)
+        yaml_text = yaml.dumps(obj, sort_keys=False, default_flow_style=False)
+        return write_file(files.gh_workflow, yaml_text)
 
     def write_local_step(
         self: 'DockerConfig',
@@ -189,8 +192,9 @@ class DockerConfig(BaseModel):
             steps_res = [
                 self.write_ci_step(files, img, step_name, callback)
                 for step_name, callback in (
-                    ('build', partial(img.ci_build, m_env)),
                     ('cache', partial(img.ci_cache, m_env)),
+                    ('build', partial(img.ci_build, m_env)),
+                    ('push', partial(img.ci_push, m_env)),
                 )
             ]
             for step_res in steps_res:
@@ -200,6 +204,36 @@ class DockerConfig(BaseModel):
         if issues:
             return issue(
                 'write_ci_steps_failure',
+                context={'issues': issues},
+            )
+        return Good(None)
+
+    def write_ci_manifests(
+        self: 'DockerConfig',
+        files: FileNames,
+        m_env: MEnvDocker,
+    ) -> Res[None]:
+        """Write ci entry point files.
+
+        Args:
+            files: The FileNames instance with the file names.
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            None if successful, else an issue.
+        """
+        issues: list[dict] = []
+        for img in self.images:
+            manifests = img.ci_manifest(m_env, self.architectures)
+            for manifest_key, script in manifests.items():
+                file_name = files.ci_manifest(manifest_key)
+                write_res = write_file(file_name, script)
+                if isinstance(write_res, Bad):
+                    dict_issue = write_res.value.to_dict(show_traceback=False)
+                    issues.append(dict(dict_issue))
+        if issues:
+            return issue(
+                'write_ci_manifest_failure',
                 context={'issues': issues},
             )
         return Good(None)
@@ -228,4 +262,5 @@ class DockerConfig(BaseModel):
             for _ in self.update_github_workflow(files)
             for _ in self.write_local_steps(files, m_env)
             for _ in self.write_ci_steps(files, m_env)
+            for _ in self.write_ci_manifests(files, m_env)
         ])

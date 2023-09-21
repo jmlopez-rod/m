@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from .docker_build import DockerBuild
 from .env import MEnvDocker
+from .tags import docker_tags
 
 
 class DockerImage(BaseModel):
@@ -28,16 +29,18 @@ class DockerImage(BaseModel):
     # name of envvars to be treated as secrets.
     env_secrets: list[str] | None = None
 
-    def img_name(self: 'DockerImage', m_env: MEnvDocker) -> str:
+    def img_name(self: 'DockerImage', m_env: MEnvDocker, arch: str = '') -> str:
         """Generate name of the image.
 
         Args:
             m_env: The MEnvDocker instance with the environment variables.
+            arch: The architecture to build for.
 
         Returns:
             The full name of the image.
         """
-        return f'{m_env.registry}/{self.image_name}'
+        with_arch = f'{arch}-' if arch else ''
+        return f'{m_env.registry}/{with_arch}{self.image_name}'
 
     def format_build_args(
         self: 'DockerImage',
@@ -130,7 +133,96 @@ class DockerImage(BaseModel):
         Returns:
             A shell snippet with commands to pull an image.
         """
-        return Good('ci cache')
+        pr_num = m_env.pr_number or m_env.associated_pr_number
+        pulls = ['pullCache "$1" master', 'echo "NO CACHE FOUND"']
+        if pr_num:
+            pulls.insert(0, f'pullCache "$1" "pr{pr_num}"')
+        find_cache_implementation = ' || '.join(pulls)
+        img_name = self.img_name(m_env)
+        script = [
+            '#!/bin/bash',
+            'pullCache() {',
+            '  if docker pull -q "$1:$2" 2> /dev/null; then',
+            '    docker tag "$1:$2" "staged-image:cache"',
+            '  else',
+            '    return 1',
+            '  fi',
+            '}',
+            'findCache() {',
+            f'  {find_cache_implementation}',
+            '}',
+            'set -euxo pipefail',
+            f'findCache {img_name}',
+            '',
+        ]
+        return Good('\n'.join(script))
+
+    def ci_push(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
+        """Generate a shell script to obtain an image to use as cache.
+
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            A shell snippet with commands to pull an image.
+        """
+        img_name_arch = self.img_name(m_env, '"$ARCH"')
+        script = [
+            '#!/bin/bash',
+            'set -euxo pipefail',
+            f'docker tag staged-image:latest {img_name_arch}:{m_env.m_tag}',
+            f'docker push {img_name_arch}:{m_env.m_tag}',
+            '',
+        ]
+        return Good('\n'.join(script))
+
+    def ci_manifest(
+        self: 'DockerImage',
+        m_env: MEnvDocker,
+        architectures: dict[str, str | list[str]],
+    ) -> dict[str, str]:
+        """Generate a shell script to create and push a manifest.
+
+        For instance, say we have the following images already pushed to the
+        registry:
+
+            - registry/amd64-some-image:mtag
+            - registry/arm64-some-image:mtag
+
+        The goal is to create a manifest so that we may access the image
+
+            - registry/some-image:tag
+
+        These manifests will point to the same image.
+
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
+            architectures: The architectures to use.
+
+        Returns:
+            A shell snippet with commands to create and push a manifest.
+        """
+        img_name = self.img_name(m_env)
+        all_tags = [m_env.m_tag, *docker_tags(m_env.m_tag)]
+        existing_images = [
+            ':'.join((self.img_name(m_env, arch), m_env.m_tag))
+            for arch in architectures
+        ]
+        manifests: dict[str, str] = {}
+        for tag in all_tags:
+            final_img = f'{img_name}:{tag}'
+            bundle = ' \\\n  '.join(existing_images)
+            script = [
+                '#!/bin/bash',
+                'set -euxo pipefail',
+                f'docker manifest create {final_img} \\',
+                f'  {bundle}',
+                f'docker manifest push {final_img}',
+                '',
+            ]
+            manifests[f'{self.image_name}__{tag}'] = '\n'.join(script)
+        return manifests
+
 
     def local_build(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
         """Generate a shell script to build an image.

@@ -9,6 +9,7 @@ class FileNames(BaseModel):
     m_dir: str
     local_dir: str
     ci_dir: str
+    manifests_dir: str
     makefile: str
     gh_workflow: str
 
@@ -28,6 +29,7 @@ class FileNames(BaseModel):
             m_dir=m_dir,
             local_dir=f'{m_dir}/.m/docker-images/local',
             ci_dir=f'{m_dir}/.m/docker-images/ci',
+            manifests_dir=f'{m_dir}/.m/docker-images/ci/manifests',
             makefile=f'{m_dir}/../Makefile',
             gh_workflow=f'{m_dir}/../.github/workflows/m-docker-images.yaml',
         )
@@ -57,3 +59,17 @@ class FileNames(BaseModel):
             The name of the file.
         """
         return f'{self.ci_dir}/{image_name}__{step}.sh'
+
+    def ci_manifest(self: 'FileNames', manifest_key: str) -> str:
+        """Generate the name of a manifest script.
+
+        There will be several manifest to build so we'll place them all in
+        a directory.
+
+        Args:
+            manifest_key: The name of a manifest file.
+
+        Returns:
+            The name of the file.
+        """
+        return f'{self.manifests_dir}/{manifest_key}.sh'
