@@ -1,3 +1,4 @@
+import json
 from functools import partial
 from typing import Callable
 
@@ -223,14 +224,21 @@ class DockerConfig(BaseModel):
             None if successful, else an issue.
         """
         issues: list[dict] = []
+        all_manifests: list[str] = []
         for img in self.images:
             manifests = img.ci_manifest(m_env, self.architectures)
+            all_manifests.extend(manifests.keys())
             for manifest_key, script in manifests.items():
                 file_name = files.ci_manifest(manifest_key)
                 write_res = write_file(file_name, script)
                 if isinstance(write_res, Bad):
                     dict_issue = write_res.value.to_dict(show_traceback=False)
                     issues.append(dict(dict_issue))
+        file_name = f'{files.ci_dir}/manifests.json'
+        write_res = write_file(file_name, json.dumps(all_manifests))
+        if isinstance(write_res, Bad):
+            dict_issue = write_res.value.to_dict(show_traceback=False)
+            issues.append(dict(dict_issue))
         if issues:
             return issue(
                 'write_ci_manifest_failure',
