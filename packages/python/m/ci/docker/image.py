@@ -20,7 +20,7 @@ class DockerImage(BaseModel):
     docker_file: str
 
     # Name of a target stage to build. Leave empty to build the whole file.
-    target_stage: str = ''
+    target_stage: str | None = None
 
     # Arguments to pass to the docker build command, they will only be injected
     # if they appear within the docker file.
