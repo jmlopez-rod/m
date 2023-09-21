@@ -95,11 +95,10 @@ class DockerImage(BaseModel):
         Returns:
             A shell snippet with a docker build command.
         """
-        build_args = self.format_build_args(m_env, '"$ARCH"', {
-            'BUILDKIT_INLINE_CACHE': '1',
-        })
+        build_args = self.format_build_args(m_env, '"$ARCH"')
         if isinstance(build_args, Bad):
             return Bad(build_args.value)
+        build_args.value.append('BUILDKIT_INLINE_CACHE=1')
 
         docker_file = f'{m_env.base_path}/{self.docker_file}'
         img_name = self.img_name(m_env)

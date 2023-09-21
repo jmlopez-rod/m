@@ -259,7 +259,7 @@ class Workflow(BaseModel):
         job.strategy = Strategy(
             fail_fast=True,
             matrix={
-                'manifest': '${{ fromJSON(needs.setup.outputs.manifest) }}'
+                'manifest': '${{ fromJSON(needs.setup.outputs.manifests) }}'
             },
         )
         self.jobs['manifest'] = job
