@@ -195,7 +195,7 @@ class Workflow(BaseModel):
             ),
             Step(
                 name='install-m',
-                run='pip install jmlopez-m',
+                run='pip install git+https://github.com/jmlopez-rod/m.git@topic/docker',
             ),
             Step(
                 name='blueprints',
