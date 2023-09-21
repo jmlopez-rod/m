@@ -40,7 +40,11 @@ class Step(BaseModel):
 class Strategy(BaseModel):
     """Representation of a Github job strategy."""
 
-    model_config = ConfigDict(alias_generator=to_kebab, extra='allow')
+    model_config = ConfigDict(
+        alias_generator=to_kebab,
+        extra='allow',
+        populate_by_name=True,
+    )
 
     # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
     # will use with `include` to specify an array of values.

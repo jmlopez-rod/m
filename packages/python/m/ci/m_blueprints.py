@@ -1,12 +1,18 @@
 from pathlib import Path
 
-from m.core import Res, issue, one_of
+from m.core import Bad, Res, issue, one_of
 
 from .docker.env import MEnvDocker
+from .docker.filenames import FileNames
 from .m_env import MEnv, get_m_env
 
 
-def _write_blueprints(m_env: MEnv) -> Res[None]:
+def _write_blueprints(
+    m_env: MEnv,
+    *,
+    update_makefile: bool,
+    update_workflow: bool,
+) -> Res[None]:
     m_dir = m_env.config.m_dir
     docker_config = m_env.config.docker_config
     if not docker_config:
@@ -27,10 +33,24 @@ def _write_blueprints(m_env: MEnv) -> Res[None]:
         pr_number=git.get_pr_number(),
         associated_pr_number=associated_pr_num,
     )
+    files = FileNames.create_instance(m_dir)
+    if update_makefile:
+        update_res = docker_config.update_makefile(files)
+        if isinstance(update_res, Bad):
+            return Bad(update_res.value)
+    if update_workflow:
+        update_res = docker_config.update_github_workflow(files)
+        if isinstance(update_res, Bad):
+            return Bad(update_res.value)
     return docker_config.write_blueprints(m_dir, env_docker)
 
 
-def write_blueprints(m_dir: str) -> Res[None]:
+def write_blueprints(
+    m_dir: str,
+    *,
+    update_makefile: bool = False,
+    update_workflow: bool = False,
+) -> Res[None]:
     """Write a file with the M environment variables.
 
     Args:
@@ -46,5 +66,9 @@ def write_blueprints(m_dir: str) -> Res[None]:
     return one_of(lambda: [
         None
         for m_env in get_m_env(m_dir)
-        for _ in _write_blueprints(m_env)
+        for _ in _write_blueprints(
+            m_env,
+            update_makefile=update_makefile,
+            update_workflow=update_workflow,
+        )
     ])

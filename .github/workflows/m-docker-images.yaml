@@ -15,7 +15,7 @@ jobs:
         include:
           - arch: amd64
             os: Ubuntu-20.04
-      fail_fast: false
+      fail-fast: false
     env:
       MINE: MINE
       ARCH: ${{ matrix.arch }}
@@ -68,7 +68,7 @@ jobs:
     strategy:
       matrix:
         manifest: ${{ fromJSON(needs.setup.outputs.manifest) }}
-      fail_fast: true
+      fail-fast: true
     steps:
       - name: checkout
         uses: actions/checkout@v4

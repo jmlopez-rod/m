@@ -86,7 +86,7 @@ def insert_to_file(
     start: str,
     text: str,
     end: str,
-) -> OneOf[Issue, None]:
+) -> OneOf[Issue, int]:
     """Insert content to a file.
 
     Args:
@@ -99,7 +99,7 @@ def insert_to_file(
         None if successful, else an issue.
     """
     return one_of(lambda: [
-        None
+        0
         for file_content in read_file(filename)
         for new_content in _insert_to_file(file_content, start, text, end)
         for _ in write_file(filename, new_content)

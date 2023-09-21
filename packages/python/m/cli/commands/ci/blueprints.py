@@ -13,6 +13,14 @@ class Arguments(BaseModel):
         help='m project directory',
         positional=True,
     )
+    update_makefile: bool = Arg(
+        default=False,
+        help='update Makefile',
+    )
+    update_workflow: bool = Arg(
+        default=False,
+        help='update github workflow',
+    )
 
 
 @command(
@@ -23,6 +31,10 @@ def run(arg: Arguments) -> int:
     from m.ci.m_blueprints import write_blueprints
 
     return run_main(
-        lambda: write_blueprints(arg.m_dir),
+        lambda: write_blueprints(
+            arg.m_dir,
+            update_makefile=arg.update_makefile,
+            update_workflow=arg.update_workflow,
+        ),
         result_handler=lambda _: None,
     )

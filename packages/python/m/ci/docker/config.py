@@ -58,7 +58,7 @@ class DockerConfig(BaseModel):
             lines.append(f'\t{img_file}\n')
         return '\n'.join(lines)
 
-    def update_makefile(self: 'DockerConfig', files: FileNames) -> Res[None]:
+    def update_makefile(self: 'DockerConfig', files: FileNames) -> Res[int]:
         """Update the Makefile with the docker images targets.
 
         Args:
@@ -267,8 +267,6 @@ class DockerConfig(BaseModel):
         files = FileNames.create_instance(m_dir)
         return one_of(lambda: [
             None
-            for _ in self.update_makefile(files)
-            for _ in self.update_github_workflow(files)
             for _ in self.write_local_steps(files, m_env)
             for _ in self.write_ci_steps(files, m_env)
             for _ in self.write_ci_manifests(files, m_env)
