@@ -2,36 +2,30 @@ from pathlib import Path
 
 from m.core import Bad, Res, issue, one_of
 
+from .config import Config, read_config
 from .docker.env import MEnvDocker
 from .docker.filenames import FileNames
-from .m_env import MEnv, get_m_env
 
 
 def _write_blueprints(
-    m_env: MEnv,
+    config: Config,
     *,
     update_makefile: bool,
     update_workflow: bool,
 ) -> Res[None]:
-    m_dir = m_env.config.m_dir
-    docker_config = m_env.config.docker_config
+    m_dir = config.m_dir
+    docker_config = config.docker_config
     if not docker_config:
         return issue(
             'missing docker_config in m file',
             context={'m_dir': m_dir},
         )
 
-    git = m_env.git_env
-    associated_pr = (
-        git.pull_request or (git.commit and git.commit.associated_pull_request)
-    )
-    associated_pr_num = associated_pr.pr_number if associated_pr else 0
     env_docker = MEnvDocker(
-        m_tag=m_env.release_env.build_tag,
+        m_tag='"$M_TAG"',
+        cache_from_pr='"$CACHE_FROM_PR"',
         base_path=docker_config.base_path,
         registry=docker_config.docker_registry,
-        pr_number=git.get_pr_number(),
-        associated_pr_number=associated_pr_num,
     )
     files = FileNames.create_instance(m_dir)
     if update_makefile:
@@ -59,15 +53,15 @@ def write_blueprints(
     Returns:
         An issue or the m environment instance.
     """
-    local_dir = Path(f'{m_dir}/.m/docker-images/local')
-    if not local_dir.exists():
-        local_dir.mkdir(parents=True)
-        Path(f'{m_dir}/.m/docker-images/ci/manifests').mkdir(parents=True)
+    blueprints_dir = Path(f'{m_dir}/.m/blueprints')
+    if not blueprints_dir.exists():
+        Path(f'{m_dir}/.m/blueprints/local').mkdir(parents=True)
+        Path(f'{m_dir}/.m/blueprints/ci/manifests').mkdir(parents=True)
     return one_of(lambda: [
         None
-        for m_env in get_m_env(m_dir)
+        for config in read_config(m_dir)
         for _ in _write_blueprints(
-            m_env,
+            config,
             update_makefile=update_makefile,
             update_workflow=update_workflow,
         )

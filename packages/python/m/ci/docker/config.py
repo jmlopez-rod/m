@@ -1,6 +1,6 @@
 import json
 from functools import partial
-from typing import Callable
+from typing import Any, Callable
 
 from m.core import Bad, Good, Res, issue, one_of, yaml
 from m.core.rw import insert_to_file, write_file
@@ -16,6 +16,9 @@ from .image import DockerImage
 class DockerConfig(BaseModel):
     """Contains information about the docker images to build."""
 
+    # default runner to use when creating blueprints and manifests
+    default_runner: str = 'ubuntu-22.04'
+
     # A map of the architectures to build. It maps say `amd64` to a Github
     # runner that will build the image for that architecture.
     #   amd64: Ubuntu 20.04
@@ -25,8 +28,16 @@ class DockerConfig(BaseModel):
     # but may be changed a specific directory.
     base_path: str = '.'
 
-    # Name of the docker registry to push the images to.
+    # Name of the docker registry to push the images to. For Github container
+    # registry make sure to also include the github owner. For instance:
+    # ghcr.io/owner
     docker_registry: str
+
+    # When executing docker build commands we may need to obtain external tokens
+    # via other github actions. These can be injected here. We can see those
+    # steps in the github workflow file before the actual docker shell scripts
+    # are run.
+    extra_build_steps: dict[str, Any] | None = None
 
     # list of images to build
     images: list[DockerImage]
@@ -86,19 +97,15 @@ class DockerConfig(BaseModel):
         Returns:
             None if successful, else an issue.
         """
-        model_res = load_model(Workflow, files.gh_workflow)
-        if isinstance(model_res, Bad):
-            return issue(
-                'update_github_workflow_failure',
-                context={'issue': model_res.value.to_dict(show_traceback=False)},
-            )
-        workflow = model_res.value
-        workflow.update_setup_job()
-        workflow.update_manifest_job()
-        workflow.update_build_job(self.architectures, self.images, files)
-        obj = workflow.model_dump(by_alias=True, exclude_none=True)
-        yaml_text = yaml.dumps(obj, sort_keys=False, default_flow_style=False)
-        return write_file(files.gh_workflow, yaml_text)
+        workflow = Workflow(
+            m_dir=files.m_dir,
+            ci_dir=files.ci_dir,
+            global_env={},
+            default_runner=self.default_runner,
+            architectures=self.architectures,
+        )
+        # workflow.update_build_job(self.architectures, self.images, files)
+        return write_file(files.gh_workflow, str(workflow))
 
     def write_local_step(
         self: 'DockerConfig',

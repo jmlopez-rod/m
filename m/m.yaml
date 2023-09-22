@@ -6,6 +6,7 @@ build_tag_with_version: true
 docker_config:
   architectures:
     amd64: Ubuntu-20.04
+    arm64: Ubuntu-20.03
   base_path: m/docker
   docker_registry: 'ghcr.io/jmlopez-rod'
   images:

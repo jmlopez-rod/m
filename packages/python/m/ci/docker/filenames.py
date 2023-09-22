@@ -27,11 +27,11 @@ class FileNames(BaseModel):
         gh_dir.mkdir(parents=True, exist_ok=True)
         return FileNames(
             m_dir=m_dir,
-            local_dir=f'{m_dir}/.m/docker-images/local',
-            ci_dir=f'{m_dir}/.m/docker-images/ci',
-            manifests_dir=f'{m_dir}/.m/docker-images/ci/manifests',
+            local_dir=f'{m_dir}/.m/blueprints/local',
+            ci_dir=f'{m_dir}/.m/blueprints/ci',
+            manifests_dir=f'{m_dir}/.m/blueprints/ci/manifests',
             makefile=f'{m_dir}/../Makefile',
-            gh_workflow=f'{m_dir}/../.github/workflows/m-docker-images.yaml',
+            gh_workflow=f'{m_dir}/../.github/workflows/m.yaml',
         )
 
     def local_step(self: 'FileNames', image_name: str) -> str:

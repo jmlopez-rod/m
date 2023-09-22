@@ -135,7 +135,7 @@ class DockerImage(BaseModel):
         Returns:
             A shell snippet with commands to pull an image.
         """
-        pr_num = m_env.pr_number or m_env.associated_pr_number
+        pr_num = m_env.cache_from_pr or ''
         pulls = ['pullCache "$1" master', 'echo "NO CACHE FOUND"']
         if pr_num:
             pulls.insert(0, f'pullCache "$1" "pr{pr_num}"')
@@ -205,9 +205,10 @@ class DockerImage(BaseModel):
             A shell snippet with commands to create and push a manifest.
         """
         img_name = self.img_name(m_env)
-        all_tags = [m_env.m_tag, *docker_tags(m_env.m_tag)]
+        m_tag = '0.0.0' # needs to read from env variable
+        all_tags = [m_env.m_tag, *docker_tags(m_tag)]
         existing_images = [
-            ':'.join((self.img_name(m_env, arch), m_env.m_tag))
+            ':'.join((self.img_name(m_env, arch), m_tag))
             for arch in architectures
         ]
         manifests: dict[str, str] = {}
