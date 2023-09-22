@@ -22,6 +22,7 @@ class Step(BaseModel):
     """Representation of a Github job step."""
 
     model_config = ConfigDict(
+        alias_generator=to_kebab,
         extra='allow',
         populate_by_name=True,
     )
@@ -246,8 +247,8 @@ class Workflow(BaseModel):
             ),
             Step(
                 name='create-manifest',
-                run='./m/.m/docker-images/ci/manifests/${{ matrix.manifest }}.sh'
-            )
+                run='./m/.m/docker-images/ci/manifests/${{ matrix.manifest }}.sh',
+            ),
         ]
         job = self.jobs.get('manifest') or Job(
             runs_on='Ubuntu-22.04',
@@ -259,7 +260,7 @@ class Workflow(BaseModel):
         job.strategy = Strategy(
             fail_fast=True,
             matrix={
-                'manifest': '${{ fromJSON(needs.setup.outputs.manifests) }}'
+                'manifest': '${{ fromJSON(needs.setup.outputs.manifests) }}',
             },
         )
         self.jobs['manifest'] = job

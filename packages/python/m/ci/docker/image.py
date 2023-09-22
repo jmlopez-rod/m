@@ -6,6 +6,9 @@ from .docker_build import DockerBuild
 from .env import MEnvDocker
 from .tags import docker_tags
 
+BASH_SHEBANG = '#!/bin/bash'
+SET_STRICT_BASH = 'set -euxo pipefail'
+
 
 class DockerImage(BaseModel):
     """Information describing how to a docker image."""
@@ -115,9 +118,9 @@ class DockerImage(BaseModel):
             file=docker_file,
         )
         script = [
-            '#!/bin/bash',
+            BASH_SHEBANG,
             'export DOCKER_BUILDKIT=1',
-            'set -euxo pipefail',
+            SET_STRICT_BASH,
             '',
             str(build_cmd),
         ]
@@ -139,7 +142,7 @@ class DockerImage(BaseModel):
         find_cache_implementation = ' || '.join(pulls)
         img_name = self.img_name(m_env)
         script = [
-            '#!/bin/bash',
+            BASH_SHEBANG,
             'pullCache() {',
             '  if docker pull -q "$1:$2" 2> /dev/null; then',
             '    docker tag "$1:$2" "staged-image:cache"',
@@ -150,7 +153,7 @@ class DockerImage(BaseModel):
             'findCache() {',
             f'  {find_cache_implementation}',
             '}',
-            'set -euxo pipefail',
+            SET_STRICT_BASH,
             f'findCache {img_name}',
             '',
         ]
@@ -167,8 +170,8 @@ class DockerImage(BaseModel):
         """
         img_name_arch = self.img_name(m_env, '"$ARCH"')
         script = [
-            '#!/bin/bash',
-            'set -euxo pipefail',
+            BASH_SHEBANG,
+            SET_STRICT_BASH,
             f'docker tag staged-image:latest {img_name_arch}:{m_env.m_tag}',
             f'docker push {img_name_arch}:{m_env.m_tag}',
             '',
@@ -212,8 +215,8 @@ class DockerImage(BaseModel):
             final_img = f'{img_name}:{tag}'
             bundle = ' \\\n  '.join(existing_images)
             script = [
-                '#!/bin/bash',
-                'set -euxo pipefail',
+                BASH_SHEBANG,
+                SET_STRICT_BASH,
                 f'docker manifest create {final_img} \\',
                 f'  {bundle}',
                 f'docker manifest push {final_img}',
@@ -250,9 +253,9 @@ class DockerImage(BaseModel):
             file=docker_file,
         )
         script = [
-            '#!/bin/bash',
+            BASH_SHEBANG,
             'export DOCKER_BUILDKIT=1',
-            'set -euxo pipefail',
+            SET_STRICT_BASH,
             '',
             str(build_cmd),
         ]

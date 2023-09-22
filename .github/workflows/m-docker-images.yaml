@@ -67,7 +67,7 @@ jobs:
       - docker-build
     strategy:
       matrix:
-        manifest: ${{ fromJSON(needs.setup.outputs.manifest) }}
+        manifest: ${{ fromJSON(needs.setup.outputs.manifests) }}
       fail-fast: true
     steps:
       - name: checkout

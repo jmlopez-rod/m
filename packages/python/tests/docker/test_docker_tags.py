@@ -31,7 +31,7 @@ class TCase(BaseModel):
             ('0.0.1-branch.b12345', ['branch']),
         ]
     ],
-    ids=lambda tcase: tcase.m_tag
+    ids=lambda tcase: tcase.m_tag,
 )
 def test_docker_tags(tcase: TCase) -> None:
     assert docker_tags(tcase.m_tag) == tcase.expected
