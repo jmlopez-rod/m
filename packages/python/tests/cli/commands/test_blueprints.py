@@ -9,6 +9,7 @@ from tests.util import read_fixture
 FIXTURE_PATH = '_blueprints/fixtures'
 M_DIR = 'packages/python/tests/_blueprints/m_dir'
 
+
 @pytest.mark.parametrize('tcase', [
     TCase(
         cmd=f'm blueprints --update-workflow --update-makefile {M_DIR}',
@@ -31,15 +32,15 @@ def test_m_blueprints(tcase: TCase, mocker: MockerFixture) -> None:
     _assert_call(
         calls[2],
         (
-            '.m/blueprints/local/m-image1__build.sh',
-            'local/m-image1__build.sh',
+            '.m/blueprints/local/m-image1.build.sh',
+            'local/m-image1.build.sh',
         ),
     )
     _assert_call(
         calls[3],
         (
-            '.m/blueprints/local/m-image2__build.sh',
-            'local/m-image2__build.sh',
+            '.m/blueprints/local/m-image2.build.sh',
+            'local/m-image2.build.sh',
         ),
     )
     _assert_call(

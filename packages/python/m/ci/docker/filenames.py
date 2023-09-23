@@ -34,13 +34,24 @@ class FileNames(BaseModel):
             gh_workflow=f'{m_dir}/../.github/workflows/m.yaml',
         )
 
-    def local_step(self: 'FileNames', image_name: str) -> str:
+    def local_file(self: 'FileNames', filename: str) -> str:
         """Generate the name of a local script.
 
         Args:
-            image_name: The name of the image used during the step.
+            filename: The name of the file.
 
         Returns:
-            The name of the file.
+            The full name of the file.
         """
-        return f'{self.local_dir}/{image_name}__build.sh'
+        return f'{self.local_dir}/{filename}'
+
+    def ci_file(self: 'FileNames', filename: str) -> str:
+        """Generate the name of a local script.
+
+        Args:
+            filename: The name of the file.
+
+        Returns:
+            The full name of the file.
+        """
+        return f'{self.ci_dir}/{filename}'

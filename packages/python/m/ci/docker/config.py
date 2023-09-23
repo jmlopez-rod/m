@@ -60,7 +60,7 @@ class DockerConfig(BaseModel):
         ]
         for index, img in enumerate(self.images):
             name = img.image_name
-            img_file = files.local_step(name)
+            img_file = files.local_file(f'{name}.build.sh')
             previous_img = (
                 self.images[index - 1].image_name
                 if index > 0
@@ -259,7 +259,7 @@ def _write_local_step(
     img: DockerImage,
     m_env: MEnvDocker,
 ) -> Res[None]:
-    file_name = files.local_step(img.image_name)
+    file_name = files.local_file(f'{img.image_name}.build.sh')
     return one_of(lambda: [
         None
         for script_content in img.local_build(m_env)

@@ -6,7 +6,7 @@
     "WPS361": 3,
     "WPS231": 2,
     "WPS421": 2,
-    "WPS226": 2
+    "WPS226": 4
   },
   "allowedPylintRules": {
     "too-many-locals": 2,
