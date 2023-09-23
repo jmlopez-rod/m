@@ -129,9 +129,7 @@ class DockerConfig(BaseModel):
         issues: list[dict] = []
         for img in self.images:
             write_res = _write_local_step(files, img, m_env)
-            if isinstance(write_res, Bad):
-                dict_issue = write_res.value.to_dict(show_traceback=False)
-                issues.append(dict(dict_issue))
+            _append_issue(write_res, issues)
         if issues:
             return issue(
                 'write_local_steps_failure',
@@ -162,15 +160,11 @@ class DockerConfig(BaseModel):
             rw.write_file(f'{files.ci_dir}/_push-image.sh', push_script),
         ]
         for script_res in script_results:
-            if isinstance(script_res, Bad):
-                dict_issue = script_res.value.to_dict(show_traceback=False)
-                issues.append(dict(dict_issue))
+            _append_issue(script_res, issues)
         for img in self.images:
             file_name = f'{files.ci_dir}/{img.image_name}.build.sh'
             write_res = _write_build_script(file_name, img, m_env)
-            if isinstance(write_res, Bad):
-                dict_issue = write_res.value.to_dict(show_traceback=False)
-                issues.append(dict(dict_issue))
+            _append_issue(write_res, issues)
         if issues:
             return issue(
                 'write_ci_steps_failure',
@@ -206,9 +200,7 @@ class DockerConfig(BaseModel):
         ]
         issues: list[dict] = []
         for file_res in files_res:
-            if isinstance(file_res, Bad):
-                dict_issue = file_res.value.to_dict(show_traceback=False)
-                issues.append(dict(dict_issue))
+            _append_issue(file_res, issues)
         if issues:
             return issue(
                 'write_ci_manifest_info_failure',
@@ -265,3 +257,10 @@ def _write_local_step(
         for script_content in img.local_build(m_env)
         for _ in rw.write_file(file_name, script_content)
     ])
+
+
+def _append_issue(res: Res[Any], issues: list[dict]):
+    # helper function to append issue data to a list
+    if isinstance(res, Bad):
+        dict_issue = res.value.to_dict(show_traceback=False)
+        issues.append(dict(dict_issue))
