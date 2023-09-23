@@ -205,6 +205,36 @@ class Workflow(BaseModel):
             lines.extend(image_steps)
         return _indent('\n'.join(lines), 3)
 
+    def create_manifest_str(self: 'Workflow') -> str:
+        """Generate the script to create the manifest.
+
+        Returns:
+            The manifest create script.
+        """
+        cmd = 'docker manifest create'
+        registry = self.docker_registry
+        image = '${{ matrix.image-name }}'
+        tag = '${{ matrix.image-tag }}'
+        m_tag = '${{ inputs.m-tag }}'
+        lines = [f'{cmd} {registry}/{image}:{tag}']
+        for arch in self.architectures:
+            lines.append(f'  {registry}/{arch}-{image}:{m_tag}')
+        full_cmd = ' \\\n'.join(lines)
+        return _indent(f'|-\n{full_cmd}', 5)
+
+    def push_manifest_str(self: 'Workflow') -> str:
+        """Generate the script to run to push the manifest.
+
+        Returns:
+            The command to push.
+        """
+        cmd = 'docker manifest push'
+        registry = self.docker_registry
+        image = '${{ matrix.image-name }}'
+        tag = '${{ matrix.image-tag }}'
+        full_cmd = f'|-\n{cmd} {registry}/{image}:{tag}'
+        return _indent(full_cmd, 5)
+
     def __str__(self: 'Workflow') -> str:
         """Stringify the workflow file."""
         template_vars = TemplateVars(
@@ -215,7 +245,7 @@ class Workflow(BaseModel):
             build_architectures=self.build_architectures(),
             docker_login=self.docker_login_str(),
             build_steps=self.build_steps_str(),
-            create_manifest='NOT_SET',
-            push_manifest='NOT_SET',
+            create_manifest=self.create_manifest_str(),
+            push_manifest=self.push_manifest_str(),
         )
         return TEMPLATE.format(**template_vars.model_dump())

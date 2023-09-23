@@ -16,7 +16,7 @@ on:
 
 permissions: write-all
 
-env: 
+env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   M_TAG: ${{ inputs.m-tag }}
   CACHE_FROM_PR: ${{ inputs.cache-from-pr }}
@@ -51,7 +51,7 @@ jobs:
     strategy:
       fast-fail: false
       matrix:
-        include: 
+        include:
           - arch: amd64
             os: Ubuntu-20.04
           - arch: arm64
@@ -110,6 +110,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: create
-        run: NOT_SET
+        run: |-
+          docker manifest create ghcr.io/jmlopez-rod/${{ matrix.image-name }}:${{ matrix.image-tag }} \
+            ghcr.io/jmlopez-rod/amd64-${{ matrix.image-name }}:${{ inputs.m-tag }} \
+            ghcr.io/jmlopez-rod/arm64-${{ matrix.image-name }}:${{ inputs.m-tag }}
       - name: push
-        run: NOT_SET
+        run: |-
+          docker manifest push ghcr.io/jmlopez-rod/${{ matrix.image-name }}:${{ matrix.image-tag }}
