@@ -19,7 +19,7 @@ class Arguments(BaseModel):
         help='unique version to use for all the images',
     )
     cache_from_pr: str = Arg(
-        default=env('CACHE_FROM_PR'),
+        default=env('M_CACHE_FROM_PR'),
         help='pull request number to attempt to use as cache',
     )
     update_makefile: bool = Arg(

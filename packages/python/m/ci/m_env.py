@@ -62,6 +62,7 @@ def _m_env_vars(m_env: MEnv) -> Res[list[str]]:
         git.pull_request or (git.commit and git.commit.associated_pull_request)
     )
     associated_pr_num = associated_pr.pr_number if associated_pr else ''
+    cache_from_pr = git.get_pr_number() or associated_pr_num
     env = {
         'M_DIR': config.m_dir,
         'M_OWNER': config.owner,
@@ -78,6 +79,7 @@ def _m_env_vars(m_env: MEnv) -> Res[list[str]]:
         'M_PR_NUMBER': git.get_pr_number(),
         'M_TAG': release.build_tag,
         'M_PY_TAG': release.python_tag,
+        'M_CACHE_FROM_PR': cache_from_pr,
         'M_IS_RELEASE': release.is_release,
         'M_IS_RELEASE_PR': release.is_release_pr,
         'M_IS_HOTFIX_PR': release.is_hotfix_pr,

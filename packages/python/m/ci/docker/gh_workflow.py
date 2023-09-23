@@ -160,7 +160,7 @@ class Workflow(BaseModel):
         all_vars = {
             'GITHUB_TOKEN': '${{ secrets.GITHUB_TOKEN }}',
             'M_TAG': '${{ inputs.m-tag }}',
-            'CACHE_FROM_PR': '${{ inputs.cache-from-pr }}',
+            'M_CACHE_FROM_PR': '${{ inputs.cache-from-pr }}',
             **(self.global_env or {}),
         }
         vars_str = '\n'.join([
