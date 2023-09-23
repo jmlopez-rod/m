@@ -43,8 +43,8 @@ jobs:
         run: |-
           m blueprints
           {{
-            echo 'image-names=$(cat {ci_dir}/image-names.json)'
-            echo 'image-tags=$(cat {ci_dir}/image-tags.json)'
+            echo 'image-names=$(cat {ci_dir}/_image-names.json)'
+            echo 'image-tags=$(cat {ci_dir}/_image-tags.json)'
           }} >> $GITHUB_OUTPUT
       - name: archive
         uses: actions/upload-artifact@v3
@@ -88,6 +88,7 @@ jobs:
       - name: push
         run: {push_manifest}
 """
+
 
 class TemplateVars(BaseModel):
     """Template variables."""
@@ -236,7 +237,11 @@ class Workflow(BaseModel):
         return _indent(full_cmd, 5)
 
     def __str__(self: 'Workflow') -> str:
-        """Stringify the workflow file."""
+        """Stringify the workflow file.
+
+        Returns:
+            The github workflow.
+        """
         template_vars = TemplateVars(
             m_dir=self.m_dir,
             default_runner=self.default_runner,

@@ -16,7 +16,7 @@ on:
 
 permissions: write-all
 
-env:
+env: 
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   M_TAG: ${{ inputs.m-tag }}
   CACHE_FROM_PR: ${{ inputs.cache-from-pr }}
@@ -37,8 +37,8 @@ jobs:
         run: |-
           m blueprints
           {
-            echo 'image-names=$(cat m/.m/blueprints/ci/image-names.json)'
-            echo 'image-tags=$(cat m/.m/blueprints/ci/image-tags.json)'
+            echo 'image-names=$(cat m/.m/blueprints/ci/_image-names.json)'
+            echo 'image-tags=$(cat m/.m/blueprints/ci/_image-tags.json)'
           } >> $GITHUB_OUTPUT
       - name: archive
         uses: actions/upload-artifact@v3
@@ -51,7 +51,7 @@ jobs:
     strategy:
       fast-fail: false
       matrix:
-        include:
+        include: 
           - arch: amd64
             os: Ubuntu-20.04
           - arch: arm64

@@ -53,6 +53,10 @@ def write_blueprints(
 
     Args:
         m_dir: The directory with the m configuration.
+        m_tag: The unique identifier for the build.
+        cache_from_pr: The pr number to attempt to pull cache from.
+        update_makefile: If true, updates the `Makefile`.
+        update_workflow: If true, updates the github workflow.
 
     Returns:
         An issue or the m environment instance.
@@ -60,7 +64,7 @@ def write_blueprints(
     blueprints_dir = Path(f'{m_dir}/.m/blueprints')
     if not blueprints_dir.exists():
         Path(f'{m_dir}/.m/blueprints/local').mkdir(parents=True)
-        Path(f'{m_dir}/.m/blueprints/ci/manifests').mkdir(parents=True)
+        Path(f'{m_dir}/.m/blueprints/ci').mkdir(parents=True)
     return one_of(lambda: [
         None
         for config in read_config(m_dir)

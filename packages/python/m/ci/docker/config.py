@@ -1,6 +1,5 @@
 import json
-from functools import partial
-from typing import Any, Callable
+from typing import Any
 
 from m.core import Bad, Good, Res, issue, one_of
 from m.core.rw import insert_to_file, write_file
@@ -11,6 +10,7 @@ from .filenames import FileNames
 from .gh_workflow import Workflow
 from .image import DockerImage
 from .shell_scripts import create_cache_script, create_push_script
+from .tags import docker_tags
 
 
 class DockerConfig(BaseModel):
@@ -107,31 +107,7 @@ class DockerConfig(BaseModel):
             extra_build_steps=self.extra_build_steps,
             docker_registry=self.docker_registry,
         )
-        # workflow.update_build_job(self.architectures, self.images, files)
         return write_file(files.gh_workflow, str(workflow))
-
-    def write_local_step(
-        self: 'DockerConfig',
-        files: FileNames,
-        img: DockerImage,
-        m_env: MEnvDocker,
-    ) -> Res[None]:
-        """Write a local build step for an image.
-
-        Args:
-            files: The FileNames instance with the file names.
-            img: The DockerImage instance.
-            m_env: The MEnvDocker instance with the environment variables.
-
-        Returns:
-            None if successful, else an issue.
-        """
-        file_name = files.local_step(img.image_name)
-        return one_of(lambda: [
-            None
-            for script_content in img.local_build(m_env)
-            for _ in write_file(file_name, script_content)
-        ])
 
     def write_local_steps(
         self: 'DockerConfig',
@@ -149,7 +125,7 @@ class DockerConfig(BaseModel):
         """
         issues: list[dict] = []
         for img in self.images:
-            write_res = self.write_local_step(files, img, m_env)
+            write_res = _write_local_step(files, img, m_env)
             if isinstance(write_res, Bad):
                 dict_issue = write_res.value.to_dict(show_traceback=False)
                 issues.append(dict(dict_issue))
@@ -159,18 +135,6 @@ class DockerConfig(BaseModel):
                 context={'issues': issues},
             )
         return Good(None)
-
-    def _write_build_script(
-        self: 'DockerConfig',
-        file_name: str,
-        img: DockerImage,
-        m_env: MEnvDocker,
-    ) -> Res[None]:
-        return one_of(lambda: [
-            None
-            for script_content in img.ci_build(m_env)
-            for _ in write_file(file_name, script_content)
-        ])
 
     def write_ci_steps(
         self: 'DockerConfig',
@@ -200,7 +164,7 @@ class DockerConfig(BaseModel):
                 issues.append(dict(dict_issue))
         for img in self.images:
             file_name = f'{files.ci_dir}/{img.image_name}.build.sh'
-            write_res = self._write_build_script(file_name, img, m_env)
+            write_res = _write_build_script(file_name, img, m_env)
             if isinstance(write_res, Bad):
                 dict_issue = write_res.value.to_dict(show_traceback=False)
                 issues.append(dict(dict_issue))
@@ -211,7 +175,7 @@ class DockerConfig(BaseModel):
             )
         return Good(None)
 
-    def write_ci_manifests(
+    def write_ci_manifest_info(
         self: 'DockerConfig',
         files: FileNames,
         m_env: MEnvDocker,
@@ -225,25 +189,20 @@ class DockerConfig(BaseModel):
         Returns:
             None if successful, else an issue.
         """
+        names = [img.image_name for img in self.images]
+        tags = [m_env.m_tag, *docker_tags(m_env.m_tag)]
+        files_res = [
+            write_file(f'{files.ci_dir}/_image-names.json', json.dumps(names)),
+            write_file(f'{files.ci_dir}/_image-tags.json', json.dumps(tags)),
+        ]
         issues: list[dict] = []
-        all_manifests: list[str] = []
-        for img in self.images:
-            manifests = img.ci_manifest(m_env, self.architectures)
-            all_manifests.extend(manifests.keys())
-            for manifest_key, script in manifests.items():
-                file_name = files.ci_manifest(manifest_key)
-                write_res = write_file(file_name, script)
-                if isinstance(write_res, Bad):
-                    dict_issue = write_res.value.to_dict(show_traceback=False)
-                    issues.append(dict(dict_issue))
-        file_name = f'{files.ci_dir}/manifests.json'
-        write_res = write_file(file_name, json.dumps(all_manifests))
-        if isinstance(write_res, Bad):
-            dict_issue = write_res.value.to_dict(show_traceback=False)
-            issues.append(dict(dict_issue))
+        for file_res in files_res:
+            if isinstance(file_res, Bad):
+                dict_issue = file_res.value.to_dict(show_traceback=False)
+                issues.append(dict(dict_issue))
         if issues:
             return issue(
-                'write_ci_manifest_failure',
+                'write_ci_manifest_info_failure',
                 context={'issues': issues},
             )
         return Good(None)
@@ -270,5 +229,30 @@ class DockerConfig(BaseModel):
             None
             for _ in self.write_local_steps(files, m_env)
             for _ in self.write_ci_steps(files, m_env)
-            for _ in self.write_ci_manifests(files, m_env)
+            for _ in self.write_ci_manifest_info(files, m_env)
         ])
+
+
+def _write_build_script(
+    file_name: str,
+    img: DockerImage,
+    m_env: MEnvDocker,
+) -> Res[None]:
+    return one_of(lambda: [
+        None
+        for script_content in img.ci_build(m_env)
+        for _ in write_file(file_name, script_content)
+    ])
+
+
+def _write_local_step(
+    files: FileNames,
+    img: DockerImage,
+    m_env: MEnvDocker,
+) -> Res[None]:
+    file_name = files.local_step(img.image_name)
+    return one_of(lambda: [
+        None
+        for script_content in img.local_build(m_env)
+        for _ in write_file(file_name, script_content)
+    ])

@@ -23,6 +23,7 @@ docker tag staged-image:latest "{docker_registry}/$ARCH-$imageName:$M_TAG"
 docker push "{docker_registry}/$ARCH-$imageName:$M_TAG"
 """
 
+
 def create_cache_script(pr_num: str, docker_registry: str) -> str:
     """Create a script to retrieve cache for an image.
 

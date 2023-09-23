@@ -15,4 +15,3 @@ class MEnvDocker(BaseModel):
 
     # docker registry
     registry: str
-
