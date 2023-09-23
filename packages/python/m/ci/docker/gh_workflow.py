@@ -43,8 +43,8 @@ jobs:
         run: |-
           m blueprints
           {{
-            echo 'image-names=$(cat {ci_dir}/_image-names.json)'
-            echo 'image-tags=$(cat {ci_dir}/_image-tags.json)'
+            echo "image-names=$(< {ci_dir}/_image-names.json)"
+            echo "image-tags=$(< {ci_dir}/_image-tags.json)"
           }} >> $GITHUB_OUTPUT
       - name: archive
         uses: actions/upload-artifact@v3
