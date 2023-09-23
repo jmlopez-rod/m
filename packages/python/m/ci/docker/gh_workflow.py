@@ -55,9 +55,9 @@ jobs:
   build:
     needs: blueprints
     strategy:
-      fast-fail: false
+      fail-fast: false
       matrix:
-        include: {build_architectures}
+        include:{build_architectures}
     runs-on: ${{{{ matrix.os }}}}
     env:
       ARCH: ${{{{ matrix.arch }}}}

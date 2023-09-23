@@ -49,9 +49,9 @@ jobs:
   build:
     needs: blueprints
     strategy:
-      fast-fail: false
+      fail-fast: false
       matrix:
-        include: 
+        include:
           - arch: amd64
             os: Ubuntu-20.04
           - arch: arm64
