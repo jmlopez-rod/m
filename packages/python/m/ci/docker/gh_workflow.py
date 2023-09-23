@@ -25,7 +25,7 @@ on:
 
 permissions: write-all
 
-env: {global_env}
+env:{global_env}
 
 jobs:
   blueprints:
