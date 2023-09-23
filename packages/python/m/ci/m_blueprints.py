@@ -10,6 +10,8 @@ from .docker.filenames import FileNames
 def _write_blueprints(
     config: Config,
     *,
+    m_tag: str,
+    cache_from_pr: str,
     update_makefile: bool,
     update_workflow: bool,
 ) -> Res[None]:
@@ -22,8 +24,8 @@ def _write_blueprints(
         )
 
     env_docker = MEnvDocker(
-        m_tag='"$M_TAG"',
-        cache_from_pr='"$CACHE_FROM_PR"',
+        m_tag=m_tag,
+        cache_from_pr=cache_from_pr,
         base_path=docker_config.base_path,
         registry=docker_config.docker_registry,
     )
@@ -42,6 +44,8 @@ def _write_blueprints(
 def write_blueprints(
     m_dir: str,
     *,
+    m_tag: str,
+    cache_from_pr: str,
     update_makefile: bool = False,
     update_workflow: bool = False,
 ) -> Res[None]:
@@ -62,6 +66,8 @@ def write_blueprints(
         for config in read_config(m_dir)
         for _ in _write_blueprints(
             config,
+            m_tag=m_tag,
+            cache_from_pr=cache_from_pr,
             update_makefile=update_makefile,
             update_workflow=update_workflow,
         )

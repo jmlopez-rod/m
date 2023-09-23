@@ -1,4 +1,5 @@
 from m.cli import Arg, BaseModel, command, run_main
+from m.core.io import env
 
 
 class Arguments(BaseModel):
@@ -12,6 +13,14 @@ class Arguments(BaseModel):
         default='m',
         help='m project directory',
         positional=True,
+    )
+    m_tag: str = Arg(
+        default=env('M_TAG'),
+        help='unique version to use for all the images',
+    )
+    cache_from_pr: str = Arg(
+        default=env('CACHE_FROM_PR'),
+        help='pull request number to attempt to use as cache',
     )
     update_makefile: bool = Arg(
         default=False,
@@ -33,6 +42,8 @@ def run(arg: Arguments) -> int:
     return run_main(
         lambda: write_blueprints(
             arg.m_dir,
+            m_tag=arg.m_tag,
+            cache_from_pr=arg.cache_from_pr,
             update_makefile=arg.update_makefile,
             update_workflow=arg.update_workflow,
         ),

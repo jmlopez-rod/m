@@ -9,6 +9,14 @@ docker_config:
     arm64: Ubuntu-20.03
   base_path: m/docker
   docker_registry: 'ghcr.io/jmlopez-rod'
+  extra_build_steps:
+    - name: say hi
+      run: echo 'hi'
+    - name: do stuff
+      uses: action/boo@v1
+      with:
+        param1: val
+        param2: val2
   images:
     - step_name: Image 1
       image_name: m-image1

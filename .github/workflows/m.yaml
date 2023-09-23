@@ -75,7 +75,25 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - NOT_SET
+      - name: say hi
+        run: echo 'hi'
+      - name: do stuff
+        uses: action/boo@v1
+        with:
+          param1: val
+          param2: val2
+      - name: m-image1 - cache
+        run: m/.m/blueprints/ci/_find-cache.sh m-image1
+      - name: m-image1 - build
+        run: m/.m/blueprints/ci/m-image1.build.sh
+      - name: m-image1 - push
+        run: m/.m/blueprints/ci/_push-image.sh m-image1
+      - name: m-image2 - cache
+        run: m/.m/blueprints/ci/_find-cache.sh m-image2
+      - name: m-image2 - build
+        run: m/.m/blueprints/ci/m-image2.build.sh
+      - name: m-image2 - push
+        run: m/.m/blueprints/ci/_push-image.sh m-image2
 
   manifest:
     runs-on: ubuntu-22.04

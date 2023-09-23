@@ -126,58 +126,6 @@ class DockerImage(BaseModel):
         ]
         return Good('\n'.join(script))
 
-    def ci_cache(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
-        """Generate a shell script to obtain an image to use as cache.
-
-        Args:
-            m_env: The MEnvDocker instance with the environment variables.
-
-        Returns:
-            A shell snippet with commands to pull an image.
-        """
-        pr_num = m_env.cache_from_pr or ''
-        pulls = ['pullCache "$1" master', 'echo "NO CACHE FOUND"']
-        if pr_num:
-            pulls.insert(0, f'pullCache "$1" "pr{pr_num}"')
-        find_cache_implementation = ' || '.join(pulls)
-        img_name = self.img_name(m_env)
-        script = [
-            BASH_SHEBANG,
-            'pullCache() {',
-            '  if docker pull -q "$1:$2" 2> /dev/null; then',
-            '    docker tag "$1:$2" "staged-image:cache"',
-            '  else',
-            '    return 1',
-            '  fi',
-            '}',
-            'findCache() {',
-            f'  {find_cache_implementation}',
-            '}',
-            SET_STRICT_BASH,
-            f'findCache {img_name}',
-            '',
-        ]
-        return Good('\n'.join(script))
-
-    def ci_push(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
-        """Generate a shell script to obtain an image to use as cache.
-
-        Args:
-            m_env: The MEnvDocker instance with the environment variables.
-
-        Returns:
-            A shell snippet with commands to pull an image.
-        """
-        img_name_arch = self.img_name(m_env, '"$ARCH"')
-        script = [
-            BASH_SHEBANG,
-            SET_STRICT_BASH,
-            f'docker tag staged-image:latest {img_name_arch}:{m_env.m_tag}',
-            f'docker push {img_name_arch}:{m_env.m_tag}',
-            '',
-        ]
-        return Good('\n'.join(script))
-
     def ci_manifest(
         self: 'DockerImage',
         m_env: MEnvDocker,

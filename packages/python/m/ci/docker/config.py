@@ -2,15 +2,15 @@ import json
 from functools import partial
 from typing import Any, Callable
 
-from m.core import Bad, Good, Res, issue, one_of, yaml
+from m.core import Bad, Good, Res, issue, one_of
 from m.core.rw import insert_to_file, write_file
-from m.pydantic import load_model
 from pydantic import BaseModel
 
 from .env import MEnvDocker
 from .filenames import FileNames
 from .gh_workflow import Workflow
 from .image import DockerImage
+from .shell_scripts import create_cache_script, create_push_script
 
 
 class DockerConfig(BaseModel):
@@ -37,7 +37,7 @@ class DockerConfig(BaseModel):
     # via other github actions. These can be injected here. We can see those
     # steps in the github workflow file before the actual docker shell scripts
     # are run.
-    extra_build_steps: dict[str, Any] | None = None
+    extra_build_steps: list[dict[str, Any]] | None = None
 
     # list of images to build
     images: list[DockerImage]
@@ -103,6 +103,9 @@ class DockerConfig(BaseModel):
             global_env={},
             default_runner=self.default_runner,
             architectures=self.architectures,
+            images=self.images,
+            extra_build_steps=self.extra_build_steps,
+            docker_registry=self.docker_registry,
         )
         # workflow.update_build_job(self.architectures, self.images, files)
         return write_file(files.gh_workflow, str(workflow))
@@ -157,28 +160,15 @@ class DockerConfig(BaseModel):
             )
         return Good(None)
 
-    def write_ci_step(
+    def _write_build_script(
         self: 'DockerConfig',
-        files: FileNames,
+        file_name: str,
         img: DockerImage,
-        step_name: str,
-        callback: Callable[[], Res[str]],
+        m_env: MEnvDocker,
     ) -> Res[None]:
-        """Write a ci step for an image.
-
-        Args:
-            files: The FileNames instance with the file names.
-            img: The DockerImage instance.
-            step_name: The step name used in generating the image.
-            callback: The callback that generate the script content.
-
-        Returns:
-            None if successful, else an issue.
-        """
-        file_name = files.ci_step(img.image_name, step_name)
         return one_of(lambda: [
             None
-            for script_content in callback()
+            for script_content in img.ci_build(m_env)
             for _ in write_file(file_name, script_content)
         ])
 
@@ -197,19 +187,23 @@ class DockerConfig(BaseModel):
             None if successful, else an issue.
         """
         issues: list[dict] = []
+        registry = self.docker_registry
+        cache_script = create_cache_script(m_env.cache_from_pr, registry)
+        push_script = create_push_script(registry)
+        script_results = [
+            write_file(f'{files.ci_dir}/_find-cache.sh', cache_script),
+            write_file(f'{files.ci_dir}/_push-image.sh', push_script),
+        ]
+        for script_res in script_results:
+            if isinstance(script_res, Bad):
+                dict_issue = script_res.value.to_dict(show_traceback=False)
+                issues.append(dict(dict_issue))
         for img in self.images:
-            steps_res = [
-                self.write_ci_step(files, img, step_name, callback)
-                for step_name, callback in (
-                    ('cache', partial(img.ci_cache, m_env)),
-                    ('build', partial(img.ci_build, m_env)),
-                    ('push', partial(img.ci_push, m_env)),
-                )
-            ]
-            for step_res in steps_res:
-                if isinstance(step_res, Bad):
-                    dict_issue = step_res.value.to_dict(show_traceback=False)
-                    issues.append(dict(dict_issue))
+            file_name = f'{files.ci_dir}/{img.image_name}.build.sh'
+            write_res = self._write_build_script(file_name, img, m_env)
+            if isinstance(write_res, Bad):
+                dict_issue = write_res.value.to_dict(show_traceback=False)
+                issues.append(dict(dict_issue))
         if issues:
             return issue(
                 'write_ci_steps_failure',
