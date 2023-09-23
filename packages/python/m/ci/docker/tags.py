@@ -1,11 +1,16 @@
 import re
 
 
-def docker_tags(m_tag: str) -> list[str]:
+def docker_tags(m_tag: str, *, skip_floating: bool = False) -> list[str]:
     """Convert an m_tag to docker tags.
+
+    Floating tags include `latest` and any `vX` or `vX.Y` tags.
+    The `skip_floating` argument is intended for use when building packages
+    that have already been published in the past.
 
     Args:
         m_tag: A tag/version provided by m.
+        skip_floating: If true, do not include floating tags.
 
     Returns:
         A tag that can be used by docker during the publishing step.
@@ -24,8 +29,9 @@ def docker_tags(m_tag: str) -> list[str]:
             tags.append(tag)
     else:
         x, y, _ = m_tag.split('.')
-        tags.append('latest')
-        tags.append(f'v{x}')
-        tags.append(f'v{x}.{y}')
+        if not skip_floating:
+            tags.append('latest')
+            tags.append(f'v{x}')
+            tags.append(f'v{x}.{y}')
 
     return tags

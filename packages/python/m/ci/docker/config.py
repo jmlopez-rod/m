@@ -2,8 +2,7 @@ import json
 import os
 from typing import Any
 
-from m.core import Bad, Good, Res, issue, one_of
-from m.core.rw import insert_to_file, write_file
+from m.core import Bad, Good, Res, issue, one_of, rw
 from m.log import Logger
 from pydantic import BaseModel
 
@@ -82,7 +81,7 @@ class DockerConfig(BaseModel):
         Returns:
             None if successful, else an issue.
         """
-        return insert_to_file(
+        return rw.insert_to_file(
             files.makefile,
             '\n# START: M-DOCKER-IMAGES\n',
             self.makefile_targets(files),
@@ -111,7 +110,7 @@ class DockerConfig(BaseModel):
             extra_build_steps=self.extra_build_steps,
             docker_registry=self.docker_registry,
         )
-        return write_file(files.gh_workflow, str(workflow))
+        return rw.write_file(files.gh_workflow, str(workflow))
 
     def write_local_steps(
         self: 'DockerConfig',
@@ -159,8 +158,8 @@ class DockerConfig(BaseModel):
         cache_script = create_cache_script(m_env.cache_from_pr, registry)
         push_script = create_push_script(registry)
         script_results = [
-            write_file(f'{files.ci_dir}/_find-cache.sh', cache_script),
-            write_file(f'{files.ci_dir}/_push-image.sh', push_script),
+            rw.write_file(f'{files.ci_dir}/_find-cache.sh', cache_script),
+            rw.write_file(f'{files.ci_dir}/_push-image.sh', push_script),
         ]
         for script_res in script_results:
             if isinstance(script_res, Bad):
@@ -202,8 +201,8 @@ class DockerConfig(BaseModel):
         names_json = json.dumps(names, separators=(',', ':'))
         tags_json = json.dumps(tags, separators=(',', ':'))
         files_res = [
-            write_file(f'{files.ci_dir}/_image-names.json', names_json),
-            write_file(f'{files.ci_dir}/_image-tags.json', tags_json),
+            rw.write_file(f'{files.ci_dir}/_image-names.json', names_json),
+            rw.write_file(f'{files.ci_dir}/_image-tags.json', tags_json),
         ]
         issues: list[dict] = []
         for file_res in files_res:
@@ -251,7 +250,7 @@ def _write_build_script(
     return one_of(lambda: [
         None
         for script_content in img.ci_build(m_env)
-        for _ in write_file(file_name, script_content)
+        for _ in rw.write_file(file_name, script_content)
     ])
 
 
@@ -264,5 +263,5 @@ def _write_local_step(
     return one_of(lambda: [
         None
         for script_content in img.local_build(m_env)
-        for _ in write_file(file_name, script_content)
+        for _ in rw.write_file(file_name, script_content)
     ])

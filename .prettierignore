@@ -6,3 +6,6 @@ pnpm-lock.yaml
 # special files meant to test failures
 packages/python/tests/cli/commands/fixtures/bad_json.json
 packages/python/tests/cli/commands/fixtures/error.yaml
+
+# this is a file that should be prettier ignored
+packages/python/tests/_blueprints/fixtures/gh_m.yaml

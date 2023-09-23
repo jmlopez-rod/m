@@ -109,6 +109,7 @@ class DockerImage(BaseModel):
             SET_STRICT_BASH,
             '',
             str(build_cmd),
+            '',
         ]
         return Good('\n'.join(script))
 
@@ -144,5 +145,6 @@ class DockerImage(BaseModel):
             SET_STRICT_BASH,
             '',
             str(build_cmd),
+            '',
         ]
         return Good('\n'.join(script))

@@ -220,7 +220,8 @@ class Workflow(BaseModel):
         lines = [f'{cmd} {registry}/{image}:{tag}']
         for arch in self.architectures:
             lines.append(f'  {registry}/{arch}-{image}:{m_tag}')
-        full_cmd = ' \\\n'.join(lines)
+        # wants it be a raw string but i need a new line after `\`
+        full_cmd = ' \\\n'.join(lines)   # noqa: WPS342
         return _indent(f'|-\n{full_cmd}', 5)
 
     def push_manifest_str(self: 'Workflow') -> str:
