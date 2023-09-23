@@ -1,8 +1,10 @@
 import json
+import os
 from typing import Any
 
 from m.core import Bad, Good, Res, issue, one_of
 from m.core.rw import insert_to_file, write_file
+from m.log import Logger
 from pydantic import BaseModel
 
 from .env import MEnvDocker
@@ -11,6 +13,8 @@ from .gh_workflow import Workflow
 from .image import DockerImage
 from .shell_scripts import create_cache_script, create_push_script
 from .tags import docker_tags
+
+logger = Logger('m.ci.docker.config')
 
 
 class DockerConfig(BaseModel):
@@ -189,11 +193,17 @@ class DockerConfig(BaseModel):
         Returns:
             None if successful, else an issue.
         """
+        m_tag = m_env.m_tag
+        if not m_tag and os.environ.get('CI') != 'true':
+            logger.warning('M_TAG not found in non-CI environment. Using 1.1.1')
+            m_tag = '1.1.1'
         names = [img.image_name for img in self.images]
-        tags = [m_env.m_tag, *docker_tags(m_env.m_tag)]
+        tags = [m_tag, *docker_tags(m_tag)]
+        names_json = json.dumps(names, separators=(',', ':'))
+        tags_json = json.dumps(tags, separators=(',', ':'))
         files_res = [
-            write_file(f'{files.ci_dir}/_image-names.json', json.dumps(names)),
-            write_file(f'{files.ci_dir}/_image-tags.json', json.dumps(tags)),
+            write_file(f'{files.ci_dir}/_image-names.json', names_json),
+            write_file(f'{files.ci_dir}/_image-tags.json', tags_json),
         ]
         issues: list[dict] = []
         for file_res in files_res:
