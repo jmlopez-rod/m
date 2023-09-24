@@ -4,12 +4,12 @@ set -euxo pipefail
 
 docker build \
   --build-arg ARCH="$ARCH" \
-  --build-arg M_TAG= \
   --build-arg BUILDKIT_INLINE_CACHE=1 \
+  --build-arg M_TAG= \
   --cache-from staged-image:cache \
   --file packages/python/tests/blueprints/multi-arch/m/docker/Dockerfile.image1 \
   --progress plain \
-  --tag staged-image:latest \
   --tag ghcr.io/repo-owner/m-image2: \
+  --tag staged-image:latest \
   --target second \
   .

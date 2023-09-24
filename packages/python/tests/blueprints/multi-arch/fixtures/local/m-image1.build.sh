@@ -8,7 +8,7 @@ docker build \
   --file packages/python/tests/blueprints/multi-arch/m/docker/Dockerfile.image1 \
   --progress plain \
   --secret id=GITHUB_TOKEN \
-  --tag staged-image:latest \
   --tag ghcr.io/repo-owner/m-image1: \
+  --tag staged-image:latest \
   --target first \
   .

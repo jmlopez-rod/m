@@ -1,3 +1,11 @@
+import os
+
+from m.log import Logger
+
+from .tags import docker_tags
+
+logger = Logger('m.ci.docker.shell_scripts')
+
 FIND_CACHE_SCRIPT = """\
 #!/bin/bash
 imageName=$1
@@ -21,6 +29,14 @@ imageName=$1
 set -euxo pipefail
 docker tag staged-image:latest "{docker_registry}/$ARCH-$imageName:$M_TAG"
 docker push "{docker_registry}/$ARCH-$imageName:$M_TAG"
+"""
+
+PUSH_SCRIPT_TAGS = """\
+#!/bin/bash
+imageName=$1
+set -euxo pipefail
+{tag_images}
+docker image push --all-tags "{docker_registry}/$imageName"
 """
 
 
@@ -55,3 +71,29 @@ def create_push_script(docker_registry: str) -> str:
         A script to push an image.
     """
     return PUSH_SCRIPT.format(docker_registry=docker_registry)
+
+
+def create_push_script_tags(docker_registry: str, m_tag: str) -> str:
+    """Create a script to push an image.
+
+    This is meant to be used when building for a single architecture.
+
+    Args:
+        docker_registry: The docker registry where the images will be pushed.
+        m_tag: The unique tag for the image.
+
+    Returns:
+        A script to push an image.
+    """
+    if not m_tag and os.environ.get('CI') != 'true':
+        logger.warning('M_TAG not found in non-CI environment. Using 1.1.1')
+        m_tag = '1.1.1'
+    tags = [m_tag, *docker_tags(m_tag)]
+    tagged_images = '\n'.join([
+        f'docker tag staged-image:latest "{docker_registry}/$imageName:{tag}"'
+        for tag in tags
+    ])
+    return PUSH_SCRIPT_TAGS.format(
+        docker_registry=docker_registry,
+        tag_images=tagged_images,
+    )

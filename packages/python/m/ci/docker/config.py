@@ -8,9 +8,14 @@ from pydantic import BaseModel
 
 from .env import MEnvDocker
 from .filenames import FileNames
-from .gh_workflow import Workflow
+from .gh_workflow_multi import Workflow as MultiWorkflow
+from .gh_workflow_single import Workflow as SingleWorkflow
 from .image import DockerImage
-from .shell_scripts import create_cache_script, create_push_script
+from .shell_scripts import (
+    create_cache_script,
+    create_push_script,
+    create_push_script_tags,
+)
 from .tags import docker_tags
 
 logger = Logger('m.ci.docker.config')
@@ -25,7 +30,7 @@ class DockerConfig(BaseModel):
     # A map of the architectures to build. It maps say `amd64` to a Github
     # runner that will build the image for that architecture.
     #   amd64: Ubuntu 20.04
-    architectures: dict[str, str | list[str]]
+    architectures: dict[str, str | list[str]] | None
 
     # Base path used to locate docker files. Defaults to `.` (root of project)
     # but may be changed a specific directory.
@@ -100,16 +105,27 @@ class DockerConfig(BaseModel):
         Returns:
             None if successful, else an issue.
         """
-        workflow = Workflow(
+        global_env: dict[str, str] = {}
+        multi_workflow = MultiWorkflow(
             m_dir=files.m_dir,
             ci_dir=files.ci_dir,
-            global_env={},
+            global_env=global_env,
             default_runner=self.default_runner,
-            architectures=self.architectures,
+            architectures=self.architectures or {},
             images=self.images,
             extra_build_steps=self.extra_build_steps,
             docker_registry=self.docker_registry,
         )
+        single_workflow = SingleWorkflow(
+            m_dir=files.m_dir,
+            ci_dir=files.ci_dir,
+            global_env=global_env,
+            default_runner=self.default_runner,
+            images=self.images,
+            extra_build_steps=self.extra_build_steps,
+            docker_registry=self.docker_registry,
+        )
+        workflow = multi_workflow if self.architectures else single_workflow
         return rw.write_file(files.gh_workflow, str(workflow))
 
     def write_local_steps(
@@ -154,7 +170,11 @@ class DockerConfig(BaseModel):
         issues: list[dict] = []
         registry = self.docker_registry
         cache_script = create_cache_script(m_env.cache_from_pr, registry)
-        push_script = create_push_script(registry)
+        push_script = (
+            create_push_script(registry)
+            if self.architectures
+            else create_push_script_tags(registry, m_env.m_tag)
+        )
         script_results = [
             rw.write_file(f'{files.ci_dir}/_find-cache.sh', cache_script),
             rw.write_file(f'{files.ci_dir}/_push-image.sh', push_script),
@@ -186,6 +206,8 @@ class DockerConfig(BaseModel):
         Returns:
             None if successful, else an issue.
         """
+        if not self.architectures:
+            return Good(None)
         m_tag = m_env.m_tag
         if not m_tag and os.environ.get('CI') != 'true':
             logger.warning('M_TAG not found in non-CI environment. Using 1.1.1')

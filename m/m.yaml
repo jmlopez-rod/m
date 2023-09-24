@@ -4,9 +4,7 @@ version: 0.28.0
 workflow: m_flow
 build_tag_with_version: true
 docker_config:
-  architectures:
-    amd64: Ubuntu-20.04
-    arm64: Ubuntu-20.03
+  architectures: null
   base_path: m/docker
   docker_registry: 'ghcr.io/jmlopez-rod'
   extra_build_steps:

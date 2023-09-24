@@ -28,7 +28,7 @@ def _to_list(options: dict[str, str | list[str] | bool]) -> list[str]:
             options_list.append(opt_name)
         else:
             options_list.append(f'{opt_name} {opt_val}')
-    return options_list
+    return sorted(options_list)
 
 
 class ShellCommand(BaseModel):

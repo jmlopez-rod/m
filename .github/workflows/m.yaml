@@ -24,9 +24,6 @@ env:
 jobs:
   blueprints:
     runs-on: ubuntu-22.04
-    outputs:
-      image-names: ${{ steps.m-blueprints.outputs.image-names }}
-      image-tags: ${{ steps.m-blueprints.outputs.image-tags }}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -36,34 +33,8 @@ jobs:
         id: m-blueprints
         run: |-
           m blueprints
-          {
-            echo "image-names=$(< m/.m/blueprints/ci/_image-names.json)"
-            echo "image-tags=$(< m/.m/blueprints/ci/_image-tags.json)"
-          } >> $GITHUB_OUTPUT
       - name: archive
         uses: actions/upload-artifact@v3
-        with:
-          name: m-blueprints
-          path: m/.m/blueprints/ci
-
-  build:
-    needs: blueprints
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-            os: Ubuntu-20.04
-          - arch: arm64
-            os: Ubuntu-20.03
-    runs-on: ${{ matrix.os }}
-    env:
-      ARCH: ${{ matrix.arch }}
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: restore-m-blueprints
-        uses: actions/download-artifact@v3
         with:
           name: m-blueprints
           path: m/.m/blueprints/ci
@@ -94,26 +65,3 @@ jobs:
         run: m/.m/blueprints/ci/m-image2.build.sh
       - name: m-image2 - push
         run: m/.m/blueprints/ci/_push-image.sh m-image2
-
-  manifest:
-    runs-on: ubuntu-22.04
-    needs: [blueprints, build]
-    strategy:
-      matrix:
-        image-name: ${{ fromJSON(needs.blueprints.outputs.image-names) }}
-        image-tag: ${{ fromJSON(needs.blueprints.outputs.image-tags) }}
-    steps:
-      - name: docker-login
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: create
-        run: |-
-          docker manifest create ghcr.io/jmlopez-rod/${{ matrix.image-name }}:${{ matrix.image-tag }} \
-            ghcr.io/jmlopez-rod/amd64-${{ matrix.image-name }}:${{ inputs.m-tag }} \
-            ghcr.io/jmlopez-rod/arm64-${{ matrix.image-name }}:${{ inputs.m-tag }}
-      - name: push
-        run: |-
-          docker manifest push ghcr.io/jmlopez-rod/${{ matrix.image-name }}:${{ matrix.image-tag }}

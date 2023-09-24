@@ -15,3 +15,6 @@ class MEnvDocker(BaseModel):
 
     # docker registry
     registry: str
+
+    # Flag to indicate if multi-arch is enabled.
+    multi_arch: bool

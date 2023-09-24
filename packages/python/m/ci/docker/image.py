@@ -55,11 +55,13 @@ class DockerImage(BaseModel):
             return Bad(docker_file_res.value)
         docker_file_contents = docker_file_res.value
         all_args = {
-            'ARCH': arch,
             'M_TAG': m_env.m_tag,
             **(extras or {}),
             **self.build_args,
         }
+        # Only add the arch if multi-arch is enabled.
+        if m_env.multi_arch:
+            all_args['ARCH'] = arch
         return Good([
             f'{key}={arg_value}'
             for key, arg_value in all_args.items()
