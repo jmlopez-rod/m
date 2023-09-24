@@ -13,6 +13,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
+python = ">=3.10,<4.0"
 typing_extensions = "*"
 pydantic = ">=2.1.0"
 pyyaml = "*"
@@ -27,8 +28,7 @@ include = "m"
 [tool.poetry.scripts]
 m = "m.__main__:main"
 
-[tool.poetry.build-dependencies]
-python = "^3.10"
+[tool.poetry.group.build.dependencies]
 wemake-python-styleguide = "^0.17.0"
 PyYAML = "^6.0"
 types-PyYAML = "^6.0.12.9"
