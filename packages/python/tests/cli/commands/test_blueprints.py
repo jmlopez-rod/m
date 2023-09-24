@@ -73,6 +73,46 @@ class TCase(BaseTCase):
             ),
         ],
     ),
+    TCase(
+        options='--update-workflow --update-makefile',
+        expected='',
+        fixture_path='blueprints/single-arch/fixtures',
+        m_dir='packages/python/tests/blueprints/single-arch/m',
+        write_calls=[
+            WriteArgs(
+                path='../Makefile',
+                fname='Makefile',
+            ),
+            WriteArgs(
+                path='../.github/workflows/m.yaml',
+                fname='gh-m.yaml',
+            ),
+            WriteArgs(
+                path='.m/blueprints/local/m-image1.build.sh',
+                fname='local/m-image1.build.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/local/m-image2.build.sh',
+                fname='local/m-image2.build.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/_find-cache.sh',
+                fname='ci/_find-cache.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/_push-image.sh',
+                fname='ci/_push-image.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/m-image1.build.sh',
+                fname='ci/m-image1.build.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/m-image2.build.sh',
+                fname='ci/m-image2.build.sh',
+            ),
+        ],
+    ),
 ])
 def test_m_blueprints(tcase: TCase, mocker: MockerFixture) -> None:
     """Verify blueprints write all the necessary files."""

@@ -44,14 +44,3 @@ class FileNames(BaseModel):
             The full name of the file.
         """
         return f'{self.local_dir}/{filename}'
-
-    def ci_file(self: 'FileNames', filename: str) -> str:
-        """Generate the name of a local script.
-
-        Args:
-            filename: The name of the file.
-
-        Returns:
-            The full name of the file.
-        """
-        return f'{self.ci_dir}/{filename}'
