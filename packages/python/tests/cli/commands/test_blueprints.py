@@ -18,7 +18,6 @@ class TCase(BaseTCase):
     """Test case for `m blueprints`."""
 
     cmd: str = 'm blueprints'
-    options: str
     fixture_path: str
     m_dir: str
     write_calls: list[WriteArgs]
@@ -26,7 +25,6 @@ class TCase(BaseTCase):
 
 @pytest.mark.parametrize('tcase', [
     TCase(
-        options='--update-workflow --update-makefile',
         expected='',
         fixture_path='blueprints/multi-arch/fixtures',
         m_dir='packages/python/tests/blueprints/multi-arch/m',
@@ -77,7 +75,6 @@ class TCase(BaseTCase):
         ],
     ),
     TCase(
-        options='--update-workflow --update-makefile',
         expected='',
         fixture_path='blueprints/single-arch/fixtures',
         m_dir='packages/python/tests/blueprints/single-arch/m',
@@ -128,7 +125,7 @@ def test_m_blueprints(tcase: TCase, mocker: MockerFixture) -> None:
     file_write_mock = mocker.patch('m.core.rw.write_file')
     file_write_mock.return_value = Good(0)
 
-    cmd = f'{tcase.cmd} {tcase.options} {tcase.m_dir}'
+    cmd = f'{tcase.cmd} {tcase.m_dir}'
     std_out, std_err = run_cli(cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
 

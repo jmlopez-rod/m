@@ -35,7 +35,7 @@ jobs:
       - name: m-blueprints
         id: m-blueprints
         run: |-
-          m blueprints
+          m blueprints --skip-makefile --skip-workflow packages/python/tests/blueprints/multi-arch/m
           {
             echo "image-names=$(< packages/python/tests/blueprints/multi-arch/m/.m/blueprints/ci/_image-names.json)"
             echo "image-tags=$(< packages/python/tests/blueprints/multi-arch/m/.m/blueprints/ci/_image-tags.json)"

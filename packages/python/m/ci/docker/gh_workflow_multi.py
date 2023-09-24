@@ -36,7 +36,7 @@ jobs:
       - name: m-blueprints
         id: m-blueprints
         run: |-
-          m blueprints
+          m blueprints --skip-makefile --skip-workflow {m_dir}
           {{
             echo "image-names=$(< {ci_dir}/_image-names.json)"
             echo "image-tags=$(< {ci_dir}/_image-tags.json)"

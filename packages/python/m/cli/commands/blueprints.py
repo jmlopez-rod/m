@@ -3,7 +3,7 @@ from m.core.io import env
 
 
 class Arguments(BaseModel):
-    """Create the [m_dir]/.m/docker-images directory.
+    """Create the [m_dir]/.m/blueprints directory.
 
     This will add shell scripts to build the specified docker images as
     stated in the `[m_dir]/m.yaml` file.
@@ -22,13 +22,13 @@ class Arguments(BaseModel):
         default=env('M_CACHE_FROM_PR'),
         help='pull request number to attempt to use as cache',
     )
-    update_makefile: bool = Arg(
+    skip_makefile: bool = Arg(
         default=False,
-        help='update Makefile',
+        help='do not update Makefile',
     )
-    update_workflow: bool = Arg(
+    skip_workflow: bool = Arg(
         default=False,
-        help='update github workflow',
+        help='do not update github workflow',
     )
 
 
@@ -44,8 +44,8 @@ def run(arg: Arguments) -> int:
             arg.m_dir,
             m_tag=arg.m_tag,
             cache_from_pr=arg.cache_from_pr,
-            update_makefile=arg.update_makefile,
-            update_workflow=arg.update_workflow,
+            update_makefile=not arg.skip_makefile,
+            update_workflow=not arg.skip_workflow,
         ),
         result_handler=lambda _: None,
     )

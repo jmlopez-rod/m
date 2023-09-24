@@ -38,7 +38,7 @@ jobs:
       - name: m-blueprints
         id: m-blueprints
         run: |-
-          m blueprints
+          m blueprints --skip-makefile --skip-workflow {m_dir}
       - name: archive
         uses: actions/upload-artifact@v3
         with:
