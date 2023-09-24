@@ -34,7 +34,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: install-m
-        run: pip install git+https://github.com/jmlopez-rod/m.git@topic/docker
+        run: pip install jmlopez-m
       - name: m-blueprints
         id: m-blueprints
         run: |-
