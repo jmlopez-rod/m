@@ -11,4 +11,4 @@ findCache() {
   pullCache "$1" master || echo "NO CACHE FOUND"
 }
 set -euxo pipefail
-findCache "ghcr.io/jmlopez-rod/$imageName"
+findCache "ghcr.io/repo-owner/$imageName"

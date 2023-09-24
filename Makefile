@@ -41,9 +41,9 @@ m-blueprints:
 	m ci blueprints
 
 dev-m-image1:
-	m/.m/docker-images/local/m-image1__build.sh
+	m/.m/blueprints/local/m-image1.build.sh
 
 dev-m-image2: dev-m-image1
-	m/.m/docker-images/local/m-image2__build.sh
+	m/.m/blueprints/local/m-image2.build.sh
 
 # END: M-DOCKER-IMAGES

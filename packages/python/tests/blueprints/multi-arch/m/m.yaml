@@ -7,8 +7,8 @@ docker_config:
   architectures:
     amd64: ubuntu-amd
     arm64: ubuntu-arm
-  base_path: packages/python/tests/_blueprints/m_dir/docker
-  docker_registry: 'ghcr.io/jmlopez-rod'
+  base_path: packages/python/tests/blueprints/multi-arch/m/docker
+  docker_registry: 'ghcr.io/repo-owner'
   extra_build_steps:
     - name: step
       run: cmd
