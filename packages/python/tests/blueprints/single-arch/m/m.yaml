@@ -4,6 +4,9 @@ version: 0.100.0
 workflow: m_flow
 build_tag_with_version: true
 docker_config:
+  global_env:
+    SOME_SECRET: ${{ secrets.SOME_SECRET }}
+    SOME_VAR: some_value
   architectures: null
   base_path: packages/python/tests/blueprints/single-arch/m/docker
   docker_registry: 'ghcr.io/repo-owner'
@@ -21,6 +24,8 @@ docker_config:
       target_stage: first
       docker_file: Dockerfile.image1
       env_secrets: [GITHUB_TOKEN]
+      build_args:
+        ARCH: amd64
     - step_name: Image 2
       image_name: m-image2
       target_stage: second

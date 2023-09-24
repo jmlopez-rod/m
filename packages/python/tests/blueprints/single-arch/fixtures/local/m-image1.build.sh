@@ -3,6 +3,7 @@ export DOCKER_BUILDKIT=1
 set -euxo pipefail
 
 docker build \
+  --build-arg ARCH=amd64 \
   --build-arg M_TAG= \
   --file packages/python/tests/blueprints/single-arch/m/docker/Dockerfile.image1 \
   --progress plain \

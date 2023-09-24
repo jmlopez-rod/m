@@ -7,5 +7,6 @@ pnpm-lock.yaml
 packages/python/tests/cli/commands/fixtures/bad_json.json
 packages/python/tests/cli/commands/fixtures/error.yaml
 
-# this is a file that should be prettier ignored
-packages/python/tests/_blueprints/fixtures/gh_m.yaml
+# generated files - do not bother formatting them.
+packages/python/tests/blueprints/multi-arch/fixtures/gh-m.yaml
+packages/python/tests/blueprints/single-arch/fixtures/gh-m.yaml

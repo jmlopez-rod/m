@@ -20,6 +20,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   M_TAG: ${{ inputs.m-tag }}
   M_CACHE_FROM_PR: ${{ inputs.cache-from-pr }}
+  SOME_SECRET: ${{ secrets.SOME_SECRET }}
+  SOME_VAR: some_value
 
 jobs:
   blueprints:

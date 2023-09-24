@@ -3,25 +3,3 @@ repo: m
 version: 0.28.0
 workflow: m_flow
 build_tag_with_version: true
-docker_config:
-  architectures: null
-  base_path: m/docker
-  docker_registry: 'ghcr.io/jmlopez-rod'
-  extra_build_steps:
-    - name: say hi
-      run: echo 'hi'
-    - name: do stuff
-      uses: action/boo@v1
-      with:
-        param1: val
-        param2: val2
-  images:
-    - step_name: Image 1
-      image_name: m-image1
-      target_stage: first
-      docker_file: Dockerfile.image1
-      env_secrets: [GITHUB_TOKEN]
-    - step_name: Image 2
-      image_name: m-image2
-      target_stage: second
-      docker_file: Dockerfile.image1

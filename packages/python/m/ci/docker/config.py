@@ -24,6 +24,9 @@ logger = Logger('m.ci.docker.config')
 class DockerConfig(BaseModel):
     """Contains information about the docker images to build."""
 
+    # additional environment variables to inject globally.
+    global_env: dict[str, str] | None = None
+
     # default runner to use when creating blueprints and manifests
     default_runner: str = 'ubuntu-22.04'
 
@@ -105,7 +108,7 @@ class DockerConfig(BaseModel):
         Returns:
             None if successful, else an issue.
         """
-        global_env: dict[str, str] = {}
+        global_env: dict[str, str] = self.global_env or {}
         multi_workflow = MultiWorkflow(
             m_dir=files.m_dir,
             ci_dir=files.ci_dir,

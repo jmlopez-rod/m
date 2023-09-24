@@ -3,6 +3,7 @@ export DOCKER_BUILDKIT=1
 set -euxo pipefail
 
 docker build \
+  --build-arg ARCH=amd64 \
   --build-arg BUILDKIT_INLINE_CACHE=1 \
   --build-arg M_TAG= \
   --cache-from staged-image:cache \

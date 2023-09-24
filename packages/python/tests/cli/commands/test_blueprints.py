@@ -30,6 +30,9 @@ class TCase(BaseTCase):
         expected='',
         fixture_path='blueprints/multi-arch/fixtures',
         m_dir='packages/python/tests/blueprints/multi-arch/m',
+        errors=[
+            'M_TAG not found in non-CI environment. Using 1.1.1',
+        ],
         write_calls=[
             WriteArgs(
                 path='../Makefile',
@@ -78,6 +81,9 @@ class TCase(BaseTCase):
         expected='',
         fixture_path='blueprints/single-arch/fixtures',
         m_dir='packages/python/tests/blueprints/single-arch/m',
+        errors=[
+            'M_TAG not found in non-CI environment. Using 1.1.1',
+        ],
         write_calls=[
             WriteArgs(
                 path='../Makefile',
