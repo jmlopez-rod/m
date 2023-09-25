@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.29.0] <a name="0.29.0" href="#0.29.0">-</a> September 25, 2023
+
 - add `m blueprints`. This command combined with the `docker_config` field in
   the `m` file will create a set of shell scripts that can be used to create,
   tag, and push docker images. See `tests/blueprints` for examples on `m/m.yaml`
@@ -450,7 +452,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.28.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.29.0...HEAD
+[0.29.0]: https://github.com/jmlopez-rod/m/compare/0.28.0...0.29.0
 [0.28.0]: https://github.com/jmlopez-rod/m/compare/0.27.3...0.28.0
 [0.27.3]: https://github.com/jmlopez-rod/m/compare/0.27.2...0.27.3
 [0.27.2]: https://github.com/jmlopez-rod/m/compare/0.27.1...0.27.2
