@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- add `m blueprints`. This command combined with the `docker_config` field in
+  the `m` file will create a set of shell scripts that can be used to create,
+  tag, and push docker images. See `tests/blueprints` for examples on `m/m.yaml`
+  files and the scripts it creates in their respective `fixtures` directories.
+
 ## [0.28.0] <a name="0.28.0" href="#0.28.0">-</a> September 14, 2023
 
 - Add `--major-only` option to `m git tag_release`. This option allows us to
