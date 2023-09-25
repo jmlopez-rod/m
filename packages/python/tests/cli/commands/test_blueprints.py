@@ -122,6 +122,9 @@ def test_m_blueprints(tcase: TCase, mocker: MockerFixture) -> None:
     mocker.patch.dict(os.environ, {}, clear=True)
     mocker.patch('time.time').return_value = 123456789
     mocker.patch('pathlib.Path.mkdir')
+    # Mock platform.machine() to return 'local' so that ci test won't fail
+    # if we ever run it in another architecture.
+    mocker.patch('platform.machine').return_value = 'local'
     file_write_mock = mocker.patch('m.core.rw.write_file')
     file_write_mock.return_value = Good(0)
 
