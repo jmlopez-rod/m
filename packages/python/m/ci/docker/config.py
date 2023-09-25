@@ -62,9 +62,19 @@ class DockerConfig(BaseModel):
         Returns:
             A string with the Makefile targets.
         """
+        m_dir = files.m_dir
         lines: list[str] = [
-            'm-blueprints:',
-            '\tm ci blueprints\n',
+            'define m_env',
+            f'\t$(eval include {m_dir}/.m/m_env.sh)',
+            f'\t$(eval $(cut -d= -f1 {m_dir}/.m/m_env.sh))',
+            'endef',
+            '',
+            'm-env:',
+            f'\tmkdir -p {m_dir}/.m && m ci env --bashrc > {m_dir}/.m/m_env.sh',
+            '',
+            'm-blueprints: m-env',
+            '\t$(call m_env)',
+            f'\tm ci blueprints --skip-makefile --skip-workflow {m_dir}\n',
         ]
         for index, img in enumerate(self.images):
             name = img.image_name
@@ -74,9 +84,9 @@ class DockerConfig(BaseModel):
                 if index > 0
                 else None
             )
-            # Should it call `m-blueprints` as dependency?
-            dep = f' dev-{previous_img}' if previous_img else ''
+            dep = f' dev-{previous_img}' if previous_img else ' m-blueprints'
             lines.append(f'dev-{name}:{dep}')
+            lines.append('\t$(call m_env)')
             lines.append(f'\t{img_file}\n')
         return '\n'.join(lines)
 
