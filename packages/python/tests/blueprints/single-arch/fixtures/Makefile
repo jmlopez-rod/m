@@ -12,7 +12,8 @@ m-env:
 
 m-blueprints: m-env
 	$(call m_env)
-	m ci blueprints --skip-makefile --skip-workflow packages/python/tests/blueprints/single-arch/m
+	m blueprints --skip-makefile --skip-workflow packages/python/tests/blueprints/single-arch/m
+	chmod +x packages/python/tests/blueprints/single-arch/m/.m/blueprints/local/*.sh
 
 dev-m-image1: m-blueprints
 	$(call m_env)

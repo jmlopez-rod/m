@@ -74,7 +74,8 @@ class DockerConfig(BaseModel):
             '',
             'm-blueprints: m-env',
             '\t$(call m_env)',
-            f'\tm ci blueprints --skip-makefile --skip-workflow {m_dir}\n',
+            f'\tm blueprints --skip-makefile --skip-workflow {m_dir}',
+            f'\tchmod +x {m_dir}/.m/blueprints/local/*.sh\n',
         ]
         for index, img in enumerate(self.images):
             name = img.image_name
