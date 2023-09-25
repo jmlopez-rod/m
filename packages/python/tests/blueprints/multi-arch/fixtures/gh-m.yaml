@@ -99,6 +99,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [blueprints, build]
     strategy:
+      max-parallel: 16
       matrix:
         image-name: ${{ fromJSON(needs.blueprints.outputs.image-names) }}
         image-tag: ${{ fromJSON(needs.blueprints.outputs.image-tags) }}
