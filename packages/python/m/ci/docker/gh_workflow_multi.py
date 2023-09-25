@@ -72,7 +72,7 @@ jobs:
   manifest:
     runs-on: {default_runner}
     needs: [blueprints, build]
-    strategy:
+    strategy:{manifest_strategy_options}
       matrix:
         image-name: ${{{{ fromJSON(needs.blueprints.outputs.image-names) }}}}
         image-tag: ${{{{ fromJSON(needs.blueprints.outputs.image-tags) }}}}
@@ -94,6 +94,8 @@ class TemplateVars(DefaultTemplateVars):
 
     push_manifest: str
 
+    manifest_strategy_options: str
+
 
 def _indent(text: str, num: int) -> str:
     spaces = '  ' * num
@@ -104,6 +106,8 @@ class Workflow(DefaultWorkflow):
     """Helper class to write the `m` workflow."""
 
     architectures: dict[str, str | list[str]]
+
+    max_parallel_manifests: int | None
 
     def build_architectures(self: 'Workflow') -> str:
         """Generate a github action str with the build architectures.
@@ -148,6 +152,17 @@ class Workflow(DefaultWorkflow):
         full_cmd = f'|-\n{cmd} {registry}/{image}:{tag}'
         return _indent(full_cmd, 5)
 
+    def manifest_strategy_options_str(self: 'Workflow') -> str:
+        """Generate the strategy options for the manifest job.
+
+        Returns:
+            The strategy options.
+        """
+        options = ''
+        if self.max_parallel_manifests:
+            options = f'\n      max-parallel: {self.max_parallel_manifests}'
+        return options
+
     def __str__(self: 'Workflow') -> str:
         """Stringify the workflow file.
 
@@ -164,5 +179,6 @@ class Workflow(DefaultWorkflow):
             build_steps=self.build_steps_str(),
             create_manifest=self.create_manifest_str(),
             push_manifest=self.push_manifest_str(),
+            manifest_strategy_options=self.manifest_strategy_options_str(),
         )
         return TEMPLATE.format(**template_vars.model_dump())

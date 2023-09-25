@@ -9,6 +9,14 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.29.2] <a name="0.29.2" href="#0.29.2">-</a> September 25, 2023
+
+- Manifests jobs for multi-architecture builds may fail if there are too many of
+  them running at once. To avoid this we can specify `max_parallel_manifests` in
+  the docker configuration so that it will add it to the github workflow. see
+  more info at
+  https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#defining-the-maximum-number-of-concurrent-jobs
+
 ## [0.29.1] <a name="0.29.1" href="#0.29.1">-</a> September 25, 2023
 
 - compute proper architecture when running locally. We may need to add other
@@ -457,7 +465,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.29.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.29.2...HEAD
+[0.29.2]: https://github.com/jmlopez-rod/m/compare/0.29.1...0.29.2
 [0.29.1]: https://github.com/jmlopez-rod/m/compare/0.29.0...0.29.1
 [0.29.0]: https://github.com/jmlopez-rod/m/compare/0.28.0...0.29.0
 [0.28.0]: https://github.com/jmlopez-rod/m/compare/0.27.3...0.28.0

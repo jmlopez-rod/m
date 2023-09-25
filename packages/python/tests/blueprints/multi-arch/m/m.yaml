@@ -9,6 +9,7 @@ docker_config:
     arm64: ubuntu-arm
   base_path: packages/python/tests/blueprints/multi-arch/m/docker
   docker_registry: 'ghcr.io/repo-owner'
+  max_parallel_manifests: 16
   extra_build_steps:
     - name: step
       run: cmd

@@ -50,6 +50,10 @@ class DockerConfig(BaseModel):
     # are run.
     extra_build_steps: list[dict[str, Any]] | None = None
 
+    # Maximum number of parallel manifests to build.
+    # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#defining-the-maximum-number-of-concurrent-jobs
+    max_parallel_manifests: int | None = None
+
     # list of images to build
     images: list[DockerImage]
 
@@ -129,6 +133,7 @@ class DockerConfig(BaseModel):
             images=self.images,
             extra_build_steps=self.extra_build_steps,
             docker_registry=self.docker_registry,
+            max_parallel_manifests=self.max_parallel_manifests,
         )
         single_workflow = SingleWorkflow(
             m_dir=files.m_dir,
