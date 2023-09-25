@@ -56,13 +56,25 @@ yaml.add_representer(tuple, _tuple_presenter, Dumper=yaml.SafeDumper)
 yaml.add_representer(str, _str_presenter, Dumper=yaml.SafeDumper)
 
 
-def dumps(py_data: Any) -> str:
+def dumps(
+    py_data: Any,
+    *,
+    sort_keys: bool = True,
+    default_flow_style: bool | None = False,
+) -> str:
     """Dump data as yaml using the safe_dump method.
 
     Args:
         py_data: Any object that may be serialized.
+        sort_keys: Whether to sort the keys.
+        default_flow_style: Whether to use the default flow style.
 
     Returns:
         A yaml serialized string.
     """
-    return yaml.dump(py_data, Dumper=_SafeDumper)
+    return yaml.dump(
+        py_data,
+        Dumper=_SafeDumper,
+        sort_keys=sort_keys,
+        default_flow_style=default_flow_style,
+    )

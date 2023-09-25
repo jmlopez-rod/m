@@ -4,6 +4,7 @@ __pycache__
 m/.m
 .coverage
 .pnpm-store
+tmp*
 
 # Dependencies
 node_modules

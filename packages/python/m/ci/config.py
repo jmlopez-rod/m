@@ -4,6 +4,7 @@ from packaging.version import Version
 from pydantic import BaseModel, ConfigDict
 
 from ..core import Good, Res, hone, issue, one_of, yaml_fp
+from .docker.config import DockerConfig
 from .types import Branches, GitFlowConfig, MFlowConfig, Workflow
 
 
@@ -44,6 +45,7 @@ class Config(BaseModel):
         hotfix_prefix=Branches.hotfix,
     )
     build_tag_with_version: bool = False
+    docker_config: DockerConfig | None = None
 
     model_config = ConfigDict(use_enum_values=True)
 

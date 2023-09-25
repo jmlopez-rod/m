@@ -2,6 +2,8 @@ from enum import Enum
 
 from pydantic import BaseModel
 
+# Note: cannot use StrEnum because of py310
+
 
 class Branches(str, Enum):  # noqa: WPS600
     """Default branches to use for the supported workflows."""

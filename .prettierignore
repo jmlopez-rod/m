@@ -6,3 +6,9 @@ pnpm-lock.yaml
 # special files meant to test failures
 packages/python/tests/cli/commands/fixtures/bad_json.json
 packages/python/tests/cli/commands/fixtures/error.yaml
+
+# generated files - do not edit them by hand.
+packages/python/tests/blueprints/multi-arch/fixtures/gh-m.yaml
+packages/python/tests/blueprints/single-arch/fixtures/gh-m.yaml
+packages/python/tests/blueprints/multi-arch/fixtures/ci/_image-names.json
+packages/python/tests/blueprints/multi-arch/fixtures/ci/_image-tags.json

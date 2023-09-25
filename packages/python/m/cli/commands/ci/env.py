@@ -25,9 +25,9 @@ class Arguments(BaseModel):
         help='use yaml format',
     )
     m_dir: str = Arg(
+        default='m',
         help='m project directory',
         positional=True,
-        required=True,
     )
     bashrc: bool = Arg(
         default=False,

@@ -6,6 +6,12 @@
 pip install jmlopez-m
 ```
 
+To install from a branch run
+
+```
+pip install git+https://github.com/jmlopez-rod/m.git@[branch-name]
+```
+
 The cli supports `argcomplete`. To set it up follow the following depending on
 your shell
 
