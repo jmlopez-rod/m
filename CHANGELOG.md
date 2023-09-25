@@ -11,10 +11,11 @@ The format of this changelog is based on
 
 ## [0.29.2] <a name="0.29.2" href="#0.29.2">-</a> September 25, 2023
 
-- Manifests jobs for multiarchitecture builds may fail if there are too many of
+- Manifests jobs for multi-architecture builds may fail if there are too many of
   them running at once. To avoid this we can specify `max_parallel_manifests` in
-  the docker configuration so that it will add it to the github workflow.
-  see more info at https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#defining-the-maximum-number-of-concurrent-jobs
+  the docker configuration so that it will add it to the github workflow. see
+  more info at
+  https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#defining-the-maximum-number-of-concurrent-jobs
 
 ## [0.29.1] <a name="0.29.1" href="#0.29.1">-</a> September 25, 2023
 
