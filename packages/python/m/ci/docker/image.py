@@ -1,3 +1,5 @@
+import platform
+
 from m.core import Bad, Good, Res
 from m.core.rw import read_file
 from pydantic import BaseModel
@@ -7,6 +9,25 @@ from .env import MEnvDocker
 
 BASH_SHEBANG = '#!/bin/bash'
 SET_STRICT_BASH = 'set -euxo pipefail'
+AMD64 = 'amd64'
+ARM64 = 'arm64'
+
+
+def get_arch() -> str:
+    """Get the architecture of the current machine.
+
+    Returns:
+        The architecture of the current machine.
+    """
+    mapping = {
+        # amd
+        'i386': AMD64,
+        'x86_64': AMD64,
+        # arm
+        'aarch64': ARM64,
+    }
+    arch = platform.machine()
+    return mapping.get(arch, arch)
 
 
 class DockerImage(BaseModel):
@@ -124,7 +145,8 @@ class DockerImage(BaseModel):
         Returns:
             A shell snippet with a docker build command.
         """
-        build_args = self.format_build_args(m_env, 'local')
+        arch = get_arch()
+        build_args = self.format_build_args(m_env, arch)
         if isinstance(build_args, Bad):
             return Bad(build_args.value)
 
