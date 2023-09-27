@@ -1,23 +1,31 @@
 import argparse
 from functools import partial
+from inspect import cleandoc
 from typing import Callable
 from warnings import warn
 
 from pydantic import BaseModel
+from pydantic.fields import FieldInfo
 
 from .misc import params_count
 from .parsers import boolean, positional, proxy, remainder, standard
-from .types import AnyMap, CommandInputs, FuncArgs
+from .types import CommandInputs, FuncArgs
 
 
-def _parse_field(name: str, field: AnyMap) -> FuncArgs:
-    if positional.should_handle(field):
+def _parse_field(name: str, field: FieldInfo) -> FuncArgs:
+    extras = field.json_schema_extra
+    if not isinstance(extras, dict):  # pragma: no cover
+        # We can go out of our way to not make it a dict but then that's on the
+        # developer. Won't handle the case that json_schema_extra is a function.
+        not_supported = 'json_schema_extra only supported as a dict'
+        raise NotImplementedError(not_supported)
+    if positional.should_handle(extras):
         return positional.handle_field(name, field)
-    if boolean.should_handle(field):
+    if field.annotation is bool:
         return boolean.handle_field(name, field)
-    if proxy.should_handle(field):
-        return proxy.handle_field(field)
-    if remainder.should_handle(field):
+    if proxy.should_handle(extras):
+        return proxy.handle_field(extras)
+    if remainder.should_handle(extras):
         return remainder.handle_field(name, field)
     return standard.handle_field(name, field)
 
@@ -32,10 +40,9 @@ def add_model(
         parser: The ArgumentParser instance.
         model: The pydantic model declaring the cli options.
     """
-    schema = model.model_json_schema()
-    parser.description = schema['description']
+    parser.description = cleandoc(model.__doc__ or '')
     parser.formatter_class = argparse.RawTextHelpFormatter
-    for name, field in schema['properties'].items():
+    for name, field in model.model_fields.items():
         arg_inputs = _parse_field(name, field)
         parser.add_argument(*arg_inputs.args, **arg_inputs.kwargs)
 

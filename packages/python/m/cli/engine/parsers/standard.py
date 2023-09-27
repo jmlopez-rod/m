@@ -1,10 +1,12 @@
 from typing import cast
 
+from pydantic.fields import FieldInfo
+
 from ..misc import argument_description, argument_name
 from ..types import MISSING, AnyMap, FuncArgs
 
 
-def handle_field(name: str, field: AnyMap) -> FuncArgs:
+def handle_field(name: str, field: FieldInfo) -> FuncArgs:
     """Handle a standard field as an argument.
 
     Args:
@@ -14,14 +16,15 @@ def handle_field(name: str, field: AnyMap) -> FuncArgs:
     Returns:
         Function arguments for the parser `add_argument` method.
     """
-    default = field.get('default', MISSING)
-    validator = field.get('validator', None)
-    required = field.get('required', False)
-    aliases = cast(list[str], field.get('aliases', None))
+    extras = cast(dict, field.json_schema_extra or {})
+    default = field.default
+    validator = extras.get('validator', None)
+    required = extras.get('required', False)
+    aliases = cast(list[str], extras.get('aliases', None))
 
     arg_default = default if default is MISSING else repr(default)
     args: AnyMap = {
-        'help': argument_description(field['description'], arg_default),
+        'help': argument_description(field.description or '', arg_default),
         'required': required,
         'type': str,
     }
