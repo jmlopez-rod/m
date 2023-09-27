@@ -1,9 +1,10 @@
 import argparse as ap
 from dataclasses import dataclass
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable
 
 import typing_extensions
 from pydantic import BaseModel
+from pydantic_core import PydanticUndefined
 
 
 @dataclass
@@ -87,5 +88,5 @@ class CliCommands:
     meta: MetaModule | None
 
 
-MISSING = TypeVar('MISSING')
+MISSING = PydanticUndefined
 AnyMap = dict[str, Any]
