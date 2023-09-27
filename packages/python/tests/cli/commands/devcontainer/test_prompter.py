@@ -27,7 +27,7 @@ class TCase(CliTestCase):
 @pytest.mark.parametrize('tcase', [
     pytest.param(
         TCase(
-            expected=r'\w$ ',
+            expected=r'\[\]\w\[\]$ ',
             branch=issue('not in a git repo'),
         ),
         id='no_git',
@@ -35,7 +35,7 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             # wants me to write `\w` but then what do I do with \x1b?
-            expected='\x1b[38;5;172m\\w\x1b[0m$ \x1b[0m',  # noqa: WPS342
+            expected='\\[\x1b[38;5;172m\\]\\w\\[\x1b[0m\\]$ ',  # noqa: WPS342
             branch=issue('not in a git repo'),
             no_color='false',
         ),
@@ -44,8 +44,8 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             expected=' '.join([
-                '\x1b[38;5;82m➜ devcontainer:repo',
-                '[\x1b[38;5;82m✔ master] ^$ ',
+                '\\[\x1b[38;5;82m\\]➜ \\[\\]devcontainer\\[\\]:\\[\\]repo',
+                '\\[\\][\\[\x1b[38;5;82m\\]✔ master\\[\\]] \\[\\]^\\[\\]$ ',
             ]),
             cwd='/home/user/repo',
             branch=Good('master'),
@@ -57,9 +57,9 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             expected=' '.join([
-                '\x1b[38;5;142m➜ devcontainer:repo',
-                '[\x1b[38;5;142m◀ topic/feature]',
-                '^/some/dir/in/repo$ ',
+                '\\[\x1b[38;5;142m\\]➜ \\[\\]devcontainer\\[\\]:\\[\\]repo',
+                '\\[\\][\\[\x1b[38;5;142m\\]◀ topic/feature\\[\\]]',
+                r'\[\]^/some/dir/in/repo\[\]$ ',
             ]),
             cwd='/home/user/repo/some/dir/in/repo',
             branch=Good('topic/feature'),
@@ -71,13 +71,13 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             expected=' '.join([
-                '\x1b[38;5;142m➜ my-container@1.2.3:repo',
-                '[\x1b[38;5;142m◀ topic/feature]',
-                '^/some/dir/in/repo$ ',
+                '\\[\x1b[38;5;142m\\]➜ \\[\\]container@1.2\\[\\]:\\[\\]repo',
+                '\\[\\][\\[\x1b[38;5;142m\\]◀ topic/feature\\[\\]]',
+                r'\[\]^/some/dir/in/repo\[\]$ ',
             ]),
             environ={
-                'DK_CONTAINER_NAME': 'my-container',
-                'DK_CONTAINER_VERSION': '1.2.3',
+                'DK_CONTAINER_NAME': 'container',
+                'DK_CONTAINER_VERSION': '1.2',
             },
             cwd='/home/user/repo/some/dir/in/repo',
             branch=Good('topic/feature'),
@@ -89,9 +89,10 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             expected=' '.join([
-                '\x1b[38;5;142m➜ my-container@rc123.abc:repo',
-                '[\x1b[38;5;142m◀ topic/feature]',
-                '^/some/dir/in/repo$ ',
+                '\\[\x1b[38;5;142m\\]➜',
+                r'\[\]my-container@rc123.abc\[\]:\[\]repo',
+                '\\[\\][\\[\x1b[38;5;142m\\]◀ topic/feature\\[\\]]',
+                r'\[\]^/some/dir/in/repo\[\]$ ',
             ]),
             environ={
                 'DK_CONTAINER_NAME': 'my-container',
@@ -107,9 +108,10 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             expected=' '.join([
-                '\x1b[38;5;142m➜ my-container@[DEV]:repo',
-                '[\x1b[38;5;142m◀ topic/feature]',
-                '^/some/dir/in/repo$ ',
+                '\\[\x1b[38;5;142m\\]➜',
+                r'\[\]my-container@[DEV]\[\]:\[\]repo',
+                '\\[\\][\\[\x1b[38;5;142m\\]◀ topic/feature\\[\\]]',
+                r'\[\]^/some/dir/in/repo\[\]$ ',
             ]),
             environ={
                 'DK_CONTAINER_NAME': 'my-container',
@@ -125,9 +127,10 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             expected=' '.join([
-                '\x1b[38;5;82m➜ my-container@[DEV]:repo',
-                '[\x1b[38;5;82m✔ abcdef]',
-                '^/some/dir/in/repo$ ',
+                '\\[\x1b[38;5;82m\\]➜',
+                r'\[\]my-container@[DEV]\[\]:\[\]repo',
+                '\\[\\][\\[\x1b[38;5;82m\\]✔ abcdef\\[\\]]',
+                r'\[\]^/some/dir/in/repo\[\]$ ',
             ]),
             environ={
                 'DK_CONTAINER_NAME': 'my-container',
@@ -144,9 +147,10 @@ class TCase(CliTestCase):
     pytest.param(
         TCase(
             expected=' '.join([
-                '\x1b[38;5;82m➜ my-container@[DEV]:repo',
-                '[\x1b[38;5;82m✔ HEAD]',
-                '^/some/dir/in/repo$ ',
+                '\\[\x1b[38;5;82m\\]➜',
+                r'\[\]my-container@[DEV]\[\]:\[\]repo',
+                '\\[\\][\\[\x1b[38;5;82m\\]✔ HEAD\\[\\]]',
+                r'\[\]^/some/dir/in/repo\[\]$ ',
             ]),
             environ={
                 'DK_CONTAINER_NAME': 'my-container',
