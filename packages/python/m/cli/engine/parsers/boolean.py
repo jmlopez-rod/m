@@ -1,22 +1,12 @@
 from typing import cast
 
+from pydantic.fields import FieldInfo
+
 from ..misc import argument_description, argument_name
 from ..types import MISSING, AnyMap, FuncArgs
 
 
-def should_handle(field: AnyMap) -> bool:
-    """Handle a boolean argument.
-
-    Args:
-        field: A dictionary with information for a cli argument.
-
-    Returns:
-        True if it should handle the field as a boolean
-    """
-    return str(field.get('type', '')) == 'boolean'
-
-
-def handle_field(name: str, field: AnyMap) -> FuncArgs:
+def handle_field(name: str, field: FieldInfo) -> FuncArgs:
     """Treat the field as a boolean field.
 
     Args:
@@ -26,11 +16,12 @@ def handle_field(name: str, field: AnyMap) -> FuncArgs:
     Returns:
         Function arguments for the parser `add_argument` method.
     """
-    default = field.get('default', MISSING)
-    aliases = cast(list[str], field.get('aliases', None))
+    default = field.default
+    extras = cast(dict, field.json_schema_extra or {})
+    aliases = cast(list[str], extras.get('aliases', None))
     args: AnyMap = {
-        'help': argument_description(field['description'], MISSING),
-        'required': field.get('required', False),
+        'help': argument_description(field.description or '', MISSING),
+        'required': extras.get('required', False),
     }
 
     if default:

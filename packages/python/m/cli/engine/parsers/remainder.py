@@ -1,22 +1,24 @@
 import argparse
 
+from pydantic.fields import FieldInfo
+
 from ..misc import argument_description
 from ..types import MISSING, AnyMap, FuncArgs
 
 
-def should_handle(field: AnyMap) -> bool:
+def should_handle(extras: AnyMap) -> bool:
     """Handle the __remainder_args field.
 
     Args:
-        field: A dictionary with information for a cli argument.
+        extras: A dictionary with information for a cli argument.
 
     Returns:
         True if it should provide the remainder arguments.
     """
-    return field.get('__remainder_args') is True
+    return extras.get('__remainder_args') is True
 
 
-def handle_field(name: str, field: AnyMap) -> FuncArgs:
+def handle_field(name: str, field: FieldInfo) -> FuncArgs:
     """Set the remainder arguments.
 
     Args:
@@ -27,7 +29,7 @@ def handle_field(name: str, field: AnyMap) -> FuncArgs:
         Function arguments for the parser `add_argument` method.
     """
     args: AnyMap = {
-        'help': argument_description(field['description'], MISSING),
+        'help': argument_description(field.description or '', MISSING),
         'nargs': argparse.REMAINDER,
     }
     return FuncArgs(args=[name], kwargs=args)
