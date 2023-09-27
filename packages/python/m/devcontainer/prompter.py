@@ -1,4 +1,5 @@
 import os
+from functools import partial
 from pathlib import Path
 from types import MappingProxyType
 
@@ -9,6 +10,8 @@ from m import git
 
 UNKNOWN = 'unknown'
 UNKNOWN_COLOR = '\033[38;5;20m'
+
+COL = partial(color, auto_end=False)
 
 # https://www.compart.com/en/unicode/
 # https://gitmoji.dev/
@@ -48,8 +51,8 @@ def _branch_display(current_branch: str) -> str:
 def _branch_sec(branch: str, status: str) -> str:
     s_color = STATUS_COLORS.get(status, UNKNOWN_COLOR)
     s_sym = STATUS_SYMBOLS.get(status, '???')
-    branch_info = color(s_color, f'{s_sym} {branch}')
-    return color('{gray}[', branch_info, '{gray}]')
+    branch_info = ''.join([r'\[', s_color, r'\]', f'{s_sym} {branch}'])
+    return COL(r'\[{gray}\][', branch_info, r'\[{gray}\]]')
 
 
 def _repo_info() -> tuple[str, str]:
@@ -76,13 +79,13 @@ def _git_prompter(current_branch: str) -> str:
     status_res = git.get_status(check_stash=True)
     status, _ = status_res.get_or_else((UNKNOWN, UNKNOWN))
     status_color = STATUS_COLORS.get(status, UNKNOWN_COLOR)
-    arrow = f'{status_color}\u279C'
-    container_sec = color('{green}', _container_info(), '{white}:')
+    arrow = ''.join([r'\[', status_color, r'\]', '\u279C'])
+    container_sec = COL(r'\[{green}\]', _container_info(), r'\[{white}\]:')
     branch_sec = _branch_sec(branch, status)
     repo, rel_path = _repo_info()
-    repo_sec = color('{blue}', repo)
-    relpath_sec = color('{gray}', rel_path)
-    end = color('{white}$')
+    repo_sec = COL(r'\[{blue}\]', repo)
+    relpath_sec = COL(r'\[{gray}\]', rel_path)
+    end = COL(r'\[{white}\]$')
     return f'{arrow} {container_sec}{repo_sec} {branch_sec} {relpath_sec}{end} '
 
 
@@ -94,5 +97,5 @@ def prompter() -> str:
     """
     branch_res = git.get_branch()
     if isinstance(branch_res, Bad):
-        return color(r'{orange}\w{end}$ ')
+        return COL(r'\[{orange}\]\w\[{end}\]$ ')
     return _git_prompter(branch_res.value)

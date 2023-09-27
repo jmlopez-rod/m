@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.29.4] <a name="0.29.4" href="#0.29.4">-</a> September 27, 2023
+
+- Wraps colors around `\[` and `\]` for colors in `$PS1`. See
+  https://unix.stackexchange.com/a/157884
+
 ## [0.29.3] <a name="0.29.3" href="#0.29.3">-</a> September 26, 2023
 
 - Pydantic 2.4.1 no longer passes `json_schema_extra` in `Field` as is. Instead
@@ -473,7 +478,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.29.3...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.29.4...HEAD
+[0.29.4]: https://github.com/jmlopez-rod/m/compare/0.29.3...0.29.4
 [0.29.3]: https://github.com/jmlopez-rod/m/compare/0.29.2...0.29.3
 [0.29.2]: https://github.com/jmlopez-rod/m/compare/0.29.1...0.29.2
 [0.29.1]: https://github.com/jmlopez-rod/m/compare/0.29.0...0.29.1
