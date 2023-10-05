@@ -15,7 +15,7 @@ actions = [
         steps=[
             setup_step('setup', SetupInputs(
                 setup_in_1='inputs.arg_1',
-                setup_in_2='inputs.arg_2',
+                setup_in_2="pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}",
             )),
             gha_one_step('external', ExternalActionInputs(
                 external_in='setup.setup_out_1',
@@ -31,5 +31,26 @@ actions = [
         description='No args description.',
         inputs=None,
         steps=[no_args_step('no_args')],
+    ),
+]
+
+actions_bad_inputs = [
+    Action(
+        file_path='multiple/action.yaml',
+        name='Made Up Action',
+        description='Main description.',
+        inputs=GithubInputs,
+        steps=[
+            setup_step('setup', SetupInputs(
+                setup_in_1='inputs.arg-1',
+                setup_in_2='inputs.arg_2',
+            )),
+            gha_one_step('external', ExternalActionInputs(
+                external_in='setup.not-real',
+            )),
+            main_step('main', MainInputs(
+                main_in="pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}",
+            )),
+        ],
     ),
 ]

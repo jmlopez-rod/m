@@ -9,6 +9,7 @@ class SetupInputs(KebabModel):
 
     setup_in_1: str = InArg(help='setup in 1')
     setup_in_2: str = InArg(help='setup in 2')
+    setup_in_3: str = InArg(help='setup in 3', default='setup_in_3')
 
 
 class SetupOutputs(KebabModel):
@@ -19,14 +20,6 @@ class SetupOutputs(KebabModel):
 
 
 def setup(args: SetupInputs) -> Res[SetupOutputs]:
-    """Setup description.
-
-    Args:
-        args: The inputs for the action.
-
-    Returns:
-        A `Good` containing the outputs for the action.
-    """
     sys.stdout.write(str(args))
     return Good(SetupOutputs(
         setup_out_1='setup_out_1',
@@ -34,18 +27,9 @@ def setup(args: SetupInputs) -> Res[SetupOutputs]:
     ))
 
 
-def setup_step(id: str, args: SetupInputs) -> RunStep[SetupInputs, SetupOutputs]:
-    """The main step for the action.
-
-    Args:
-        id: The id of the step.
-        args: The inputs to the step.
-
-    Returns:
-        The step to run.
-    """
+def setup_step(step_id: str, args: SetupInputs) -> RunStep[SetupInputs, SetupOutputs]:
     return RunStep[SetupInputs, SetupOutputs](
-        id=id,
+        id=step_id,
         run=setup,
         args=args,
     )

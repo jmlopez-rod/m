@@ -13,14 +13,8 @@ InputOutputs = tuple[type[KebabModel], type[KebabModel]]
 class InputIssue(BaseModel):
     """An issue with an input."""
 
-    # The name of an invalid input
-    invalid_input: str | None = None
-
     # Set if the value is invalid, may be set of the form "input_name: value"
-    invalid_input_value: str | None = None
-
-    # Set if the input is missing
-    missing_input: str | None = None
+    invalid_input_value: str
 
 
 class MetadataOutput(BaseModel):
@@ -151,17 +145,9 @@ def verify_inputs(
     Returns:
         A list of issues.
     """
-    input_names = list(input_model.model_fields)
-    issues: list[InputIssue] = [
-        InputIssue(invalid_input=arg_name)
-        for arg_name in args
-        if arg_name not in input_names
-    ]
-
-    for prop_name, prop_info in input_model.model_fields.items():
+    issues: list[InputIssue] = []
+    for prop_name in input_model.model_fields:
         input_name = prop_name
-        if prop_info.is_required() and input_name not in args:
-            issues.append(InputIssue(missing_input=input_name))
         arg_value = args.get(input_name)
         not_available = arg_value not in available_outputs
         if arg_value and not_available and is_input_key(arg_value):

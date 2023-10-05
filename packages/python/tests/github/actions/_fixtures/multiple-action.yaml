@@ -35,7 +35,8 @@ runs:
       shell: bash
       env:
         INPUT_SETUP_IN_1: ${{ inputs.arg-1 }}
-        INPUT_SETUP_IN_2: ${{ inputs.arg-2 }}
+        INPUT_SETUP_IN_2: pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        INPUT_SETUP_IN_3: setup_in_3
       run: PYTHONPATH="$GITHUB_ACTION_PATH/packages/python/tests/github/actions" python -m multiple.setup
     - id: external
       uses: jmlopez-rod/gha-one-step@v0.1.0

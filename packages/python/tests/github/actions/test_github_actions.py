@@ -2,13 +2,15 @@ import os
 from pathlib import Path
 
 import pytest
-from m.core import Good
+from m.core import Good, issue
 from pytest_mock import MockerFixture
 from tests.cli.conftest import assert_streams, run_cli
 from tests.util import read_fixture
 
 from .conftest import TCase, WriteArgs
+from .multiple.actions import actions_bad_inputs
 
+FIXTURE_PATH = 'github/actions/_fixtures'
 BASE_DIR = 'packages/python/tests/github/actions'
 
 FILE_ISSUES = [
@@ -44,7 +46,7 @@ FILE_ISSUES = [
         py_file=f'{BASE_DIR}/wrong_actions/single.py',
         errors=[
             '"message": "invalid_actions"',
-            '"ensure all actions are of type \\"m.github.actions.Action\\""',
+            r'"ensure all actions are of type \"m.github.actions.Action\""',
         ],
         exit_code=1,
     ),
@@ -53,7 +55,7 @@ FILE_ISSUES = [
         py_file=f'{BASE_DIR}/wrong_actions/multiple.py',
         errors=[
             '"message": "invalid_actions"',
-            '"ensure all actions are of type \\"m.github.actions.Action\\""',
+            r'"ensure all actions are of type \"m.github.actions.Action\""',
         ],
         exit_code=1,
     ),
@@ -86,11 +88,60 @@ WRITING_FILES = [
     ),
 ]
 
+BAD_INPUTS = [
+    TCase(
+        exit_code=1,
+        name='bad_inputs',
+        py_file=f'{BASE_DIR}/multiple/actions.py',
+        mock_actions=actions_bad_inputs,
+        errors=[
+            '"message": "process_actions_failure"',
+            '"setup": [',
+            '"invalid_input_value": "setup_in_1=inputs.arg-1"',
+            '"external": [',
+            '"invalid_input_value": "external_in=setup.not-real"',
+        ],
+    ),
+]
+
+CHECKS = [
+    TCase(
+        exit_code=1,
+        name='checks',
+        checks=True,
+        py_file=f'{BASE_DIR}/multiple/actions.py',
+        read_calls=[
+            Good('triggers-error-because-file-contents-are-not-the-same'),
+            Good(read_fixture('multiple-action-empty.yaml', FIXTURE_PATH)),
+        ],
+        errors=[
+            '"message": "action_file_out_of_date"',
+            '"file_path": "multiple/action.yaml"',
+        ],
+    ),
+    TCase(
+        exit_code=1,
+        name='checks-file_error',
+        checks=True,
+        py_file=f'{BASE_DIR}/multiple/actions.py',
+        read_calls=[
+            issue('unable-to-read-file'),
+            Good(read_fixture('multiple-action-empty.yaml', FIXTURE_PATH)),
+        ],
+        errors=[
+            '"message": "unable-to-read-file"',
+        ],
+    ),
+]
+
+
 @pytest.mark.parametrize(
     'tcase',
     [
         *FILE_ISSUES,
         *WRITING_FILES,
+        *BAD_INPUTS,
+        *CHECKS,
     ],
     ids=lambda tcase: tcase.name,
 )
@@ -113,16 +164,24 @@ def test_m_gh_actions(tcase: TCase, mocker: MockerFixture) -> None:
     file_write_mock = mocker.patch('m.core.rw.write_file')
     file_write_mock.return_value = Good(0)
 
+    if tcase.read_calls:
+        mocker.patch('m.core.rw.read_file').side_effect = tcase.read_calls
+
+    if tcase.mock_actions:
+        mocker.patch('m.github.actions.builder.import_attr').return_value = (
+            Good(tcase.mock_actions)
+        )
+
     cmd = f'{tcase.cmd} {tcase.py_file}'
     if tcase.checks:
-        cmd += ' --check'
+        cmd = f'{cmd} --check'
     std_out, std_err = run_cli(cmd, tcase.exit_code, mocker)
     assert_streams(std_out, std_err, tcase)
 
     calls = file_write_mock.call_args_list
     assert len(calls) == len(tcase.write_calls)
-    fixture_path = 'github/actions/_fixtures'
+
     for index, ex_call in enumerate(tcase.write_calls):
         call = calls[index]
         assert Path(call.args[0]).resolve() == Path(ex_call.path).resolve()
-        assert call.args[1] == read_fixture(ex_call.fname, fixture_path)
+        assert call.args[1] == read_fixture(ex_call.fname, FIXTURE_PATH)

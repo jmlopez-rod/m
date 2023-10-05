@@ -17,17 +17,9 @@ def no_args(args: KebabModel) -> Res[KebabModel]:
     return Good(KebabModel())
 
 
-def no_args_step(id: str) -> RunStep[KebabModel, KebabModel]:
-    """The main step for the action.
-
-    Args:
-        id: The id of the step.
-
-    Returns:
-        The step to run.
-    """
+def no_args_step(step_id: str) -> RunStep[KebabModel, KebabModel]:
     return RunStep[KebabModel, KebabModel](
-        id=id,
+        id=step_id,
         run=no_args,
         args=None,
     )

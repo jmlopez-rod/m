@@ -6,7 +6,6 @@
     "WPS214": 1,
     "S106": 1,
     "P103": 1,
-    "DAR102": 1,
     "D300": 1,
     "D204": 1,
     "D107": 1,
@@ -22,11 +21,9 @@
     "DAR401": 3,
     "DAR201": 2,
     "WPS335": 7,
-    "DAR101": 8,
+    "DAR101": 7,
     "C408": 11,
     "WPS121": 17,
-    "D101": 22,
-    "WPS407": 27,
     "WPS110": 31,
     "WPS425": 34
   },
@@ -37,7 +34,6 @@
     "broad-exception-raised": 3,
     "line-too-long": 2,
     "duplicate-code": 6,
-    "use-dict-literal": 11,
-    "missing-function-docstring": 19
+    "use-dict-literal": 11
   }
 }

@@ -8,9 +8,6 @@ actions = Action(
     file_path='actions.yaml',
     inputs=GithubInputs,
     steps=[
-        main_step(
-            id='square',
-            args=GithubInputs(num='inputs.num'),
-        ),
-    ]
+        main_step('square', args=GithubInputs(num='inputs.num')),
+    ],
 )

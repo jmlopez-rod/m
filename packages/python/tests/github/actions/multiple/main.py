@@ -18,7 +18,6 @@ class MainOutputs(KebabModel):
 
 
 def main(inputs: MainInputs) -> Res[MainOutputs]:
-    """Main description."""  # noqa: DAR201 - github actions format
     sys.stdout.write(str(inputs))
     return Good(MainOutputs(
         main_1='main_out_1',
@@ -26,9 +25,9 @@ def main(inputs: MainInputs) -> Res[MainOutputs]:
     ))
 
 
-def main_step(id: str, args: MainInputs) -> RunStep[MainInputs, MainOutputs]:
+def main_step(step_id: str, args: MainInputs) -> RunStep[MainInputs, MainOutputs]:
     return RunStep[MainInputs, MainOutputs](
-        id=id,
+        id=step_id,
         run=main,
         args=args,
     )

@@ -15,20 +15,11 @@ class ExternalActionOutputs(KebabModel):
 
 
 def gha_one_step(
-    id: str,
+    step_id: str,
     args: ExternalActionInputs,
 ) -> UsesStep[ExternalActionInputs, ExternalActionOutputs]:
-    """Create the gha-one-step step.
-
-    Args:
-        id: The id of the step.
-        args: The inputs for the step.
-
-    Returns:
-        The step to run.
-    """
     return UsesStep[ExternalActionInputs, ExternalActionOutputs](
-        id=id,
+        id=step_id,
         uses='jmlopez-rod/gha-one-step@v0.1.0',
         inputs=ExternalActionInputs,
         outputs=ExternalActionOutputs,
