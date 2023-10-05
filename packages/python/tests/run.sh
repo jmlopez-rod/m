@@ -12,7 +12,7 @@ if [ "$SINGLE" = 'false' ]; then
 else
   # To run specific tests:
   source="packages/python/m/github/actions"
-  filter="test_m_gh_actions_api"
+  filter="test_testing"
   coverage run --source "$source" -m pytest -p no:logging packages/python -vv -k "$filter"
   coverage report -m
 fi

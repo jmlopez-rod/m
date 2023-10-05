@@ -8,7 +8,9 @@ The following external modules are expected to be available:
 """
 import os
 import runpy
+import socket
 import sys
+from functools import partial
 from io import StringIO
 from typing import Any
 
@@ -16,6 +18,15 @@ import pytest
 from m.core import Good
 from pydantic import BaseModel
 from pytest_mock import MockerFixture
+
+
+class BlockNetwork(socket.socket):
+    """Implements a socket that blocks all network calls."""
+
+    # pylint: disable-next=super-init-not-called
+    def __init__(self, *args, **kwargs):
+        """Raises an error if called."""
+        raise RuntimeError('Network call blocked')
 
 
 class ActionStepTestCase(BaseModel):
@@ -117,3 +128,70 @@ def run_action_step(
         print(std_err.getvalue(), file=sys.stderr)  # noqa: WPS421
     assert prog.value.code == exit_code   # noqa: S101 - to be used in testing
     return std_out.getvalue(), std_err.getvalue(), file_writes
+
+
+def needs_mocking(func_name: str, *args, **kwargs):
+    """"Raise an exception asking developer to mock a function.
+
+    Args:
+        func_name: name of the function
+        args: ...
+        kwargs: ...
+    """
+    raise RuntimeError(f'DEV ERROR: Need to mock {func_name}({args},{kwargs})')
+
+
+def mock(func_name: str) -> Any:
+    """Create a function that raises an error if its not mocked.
+
+    Args:
+        func_name: full module path to the function to mock.
+
+    Returns:
+        A function that raises an error if its not mocked.
+    """
+    return partial(needs_mocking, func_name)
+
+
+def block_network_access() -> None:
+    """Blocks network access for all tests.
+
+    This is useful to ensure that tests do not make any network calls.
+    """
+    # making sure that no calls to the internet are done
+    socket.socket = BlockNetwork  # type: ignore
+
+
+def block_m_side_effects() -> dict[str, Any]:
+    """Blocks functions that have side effects.
+
+    Returns:
+        A dictionary with the original functions.
+    """
+    import shutil
+    import subprocess
+    from pathlib import Path
+
+    from m.core import rw as mio
+
+    originals = {
+        'write_file': mio.write_file,
+        'Path_mkdir': Path.mkdir,
+        'shutil_move': shutil.move,
+    }
+
+    mio.write_file = mock('m.core.rw.write_file')
+    subprocess.check_output = mock('m.core.subprocess.eval_cmd')
+    subprocess.call = mock('m.core.subprocess.exec_pnpm')
+    shutil.move = mock('shutil.move')
+
+    if not os.environ.get('CI'):
+        # We want to make sure that we do not create directories during tests.
+        # To do we we will mock the Path.mkdir function. There is a problem:
+        # pytest needs this function to create directories for its own purposes.
+        # For this reason we will only mock the function after we create the
+        # m/.m/pytest-ran file.
+        if Path('m/.m/pytest-ran').exists():
+            Path.mkdir = mock('pathlib.Path.mkdir')  # type: ignore
+
+    return originals
