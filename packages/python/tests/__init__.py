@@ -2,11 +2,17 @@ import os
 import shutil
 import socket
 import subprocess
+import warnings
 from functools import partial
 from pathlib import Path
 
 from m.core import Issue
 from m.core import rw as mio
+
+# We get warnings because square_number module is being imported twice. One time
+# directly and the other by runpy via the `-m` option. Choosing to ignore during
+# tests.
+warnings.filterwarnings('ignore', category=RuntimeWarning, module='square_number')
 
 original_write_file = mio.write_file
 original_mkdir = Path.mkdir

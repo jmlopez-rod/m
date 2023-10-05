@@ -15,6 +15,7 @@ class SquareNumberOutputs(KebabModel):
 
 
 def square_number(inputs: GithubInputs) -> Res[SquareNumberOutputs]:
+    print('square-number action running')
     num = int(inputs.num)
     return Good(SquareNumberOutputs(num_squared=str(num * num)))
 

@@ -37,11 +37,11 @@ def load_step_inputs(model: type[InputModel]) -> Res[InputModel]:
     for key, env_val in os.environ.items():
         if key.startswith('INPUT_'):
             _, input_name = key.split('INPUT_')
-            model_data[input_name] = env_val
+            model_data[input_name.lower()] = env_val
     try:
         return Good(TypeAdapter(model).validate_python(model_data))
     except Exception as ex:
-        return issue('load_step_inputs', cause=ex)
+        return issue('load_step_inputs_failure', cause=ex)
 
 
 def dump_step_outputs(outputs: OutputModel) -> Res[int]:
@@ -65,10 +65,13 @@ def dump_step_outputs(outputs: OutputModel) -> Res[int]:
 
 def _result_handler(outputs: OutputModel) -> None:
     try:
-        dump_step_outputs(outputs)
+        res = dump_step_outputs(outputs)
     except Exception as ex:
         default_issue_handler(Issue('dump_step_outputs', cause=ex))
         sys.exit(5)
+    if isinstance(res, Bad):
+        default_issue_handler(res.value)
+        sys.exit(6)
 
 
 def run_action(main: Callable[[InputModel], Res[OutputModel]]) -> None:
