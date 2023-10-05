@@ -28,18 +28,19 @@ def read_file(filename: str | None) -> OneOf[Issue, str]:
         )
 
 
-def write_file(filename: str, text: str) -> OneOf[Issue, int]:
+def write_file(filename: str, text: str, mode: str = 'w') -> OneOf[Issue, int]:
     """FP version of open to write to a file.
 
     Args:
         filename: The file path where contents will be written.
         text: The contents of the file.
+        mode: The mode to open the file in. Defaults to 'w'.
 
     Returns:
         A `Good` containing 0 if the file was written.
     """
     try:
-        with Path.open(Path(filename), 'w', encoding='UTF-8') as fp:
+        with Path.open(Path(filename), mode, encoding='UTF-8') as fp:
             fp.write(text)
     except Exception as ex:
         return issue(

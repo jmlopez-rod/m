@@ -23,6 +23,18 @@ def to_camel(snake_case: str) -> str:
     return ''.join([s[0].lower(), s[1:]])
 
 
+def to_kebab(snake_case: str) -> str:
+    """Transform a string in snake_case to kebab case.
+
+    Args:
+        snake_case: string in snake case.
+
+    Returns:
+        string in kebab case.
+    """
+    return snake_case.replace('_', '-', -1)
+
+
 class CamelModel(BaseModel):
     """Allows models to be defined with camel case properties.
 
@@ -32,6 +44,15 @@ class CamelModel(BaseModel):
 
     model_config = ConfigDict(
         alias_generator=to_camel,
+        populate_by_name=True,
+    )
+
+
+class KebabModel(BaseModel):
+    """Allows models to be defined with kebab case properties."""
+
+    model_config = ConfigDict(
+        alias_generator=to_kebab,
         populate_by_name=True,
     )
 
