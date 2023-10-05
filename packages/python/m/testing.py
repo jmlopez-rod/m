@@ -25,7 +25,15 @@ class BlockNetwork(socket.socket):
 
     # pylint: disable-next=super-init-not-called
     def __init__(self, *args, **kwargs):
-        """Raises an error if called."""
+        """Raise an error if called.
+
+        Args:
+            args: ...
+            kwargs: ...
+
+        Raises:
+            RuntimeError: Always.
+        """
         raise RuntimeError('Network call blocked')
 
 
@@ -118,25 +126,29 @@ def run_action_step(
 
     # next block should not be covered by coverage, we have this as a utility
     # to help us write tests.
-    if prog.value.code != exit_code:  # pragma: no cover
+    prog_code = prog.value.code
+    if prog_code != exit_code:  # pragma: no cover
         # display the captured stderr to debug
-        print(
-            f'EXIT CODE MISMATCH: expected {exit_code}, got {prog.value.code}',
+        print(  # noqa: WPS421
+            f'EXIT CODE MISMATCH: expected {exit_code}, got {prog_code}',
             file=sys.stderr,
         )
         print(std_out.getvalue(), file=sys.stdout)  # noqa: WPS421
         print(std_err.getvalue(), file=sys.stderr)  # noqa: WPS421
-    assert prog.value.code == exit_code   # noqa: S101 - to be used in testing
+    assert prog_code == exit_code   # noqa: S101 - to be used in testing
     return std_out.getvalue(), std_err.getvalue(), file_writes
 
 
 def needs_mocking(func_name: str, *args, **kwargs):
-    """"Raise an exception asking developer to mock a function.
+    """Raise an exception asking developer to mock a function.
 
     Args:
         func_name: name of the function
         args: ...
         kwargs: ...
+
+    Raises:
+        RuntimeError: Always.
     """
     raise RuntimeError(f'DEV ERROR: Need to mock {func_name}({args},{kwargs})')
 
@@ -169,7 +181,7 @@ def block_m_side_effects() -> dict[str, Any]:
         A dictionary with the original functions.
     """
     import shutil
-    import subprocess
+    import subprocess  # noqa: S404 - importing to disable it during testing
     from pathlib import Path
 
     from m.core import rw as mio

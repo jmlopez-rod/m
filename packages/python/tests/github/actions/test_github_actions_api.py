@@ -52,7 +52,7 @@ def mock_file_write(*args, **kwargs):
                 '"message": "unknown exception"',
             ],
             expected_stdout='square-number action running\n',
-            file_write_side_effect=mock_file_write
+            file_write_side_effect=mock_file_write,
         ),
     ],
     ids=lambda tcase: tcase.name,

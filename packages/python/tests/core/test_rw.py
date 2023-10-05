@@ -9,6 +9,7 @@ from tests.util import read_fixture_mock
 
 original_write_file = originals['write_file']
 
+
 def test_rw_read(mocker: MockerFixture) -> None:
     mocker.patch(
         'pathlib.Path.open',
