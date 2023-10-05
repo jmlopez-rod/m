@@ -7,7 +7,7 @@ from pytest_mock import MockerFixture
 from tests.cli.conftest import assert_streams, run_cli
 from tests.util import read_fixture
 
-from .conftest import TCase
+from .conftest import TCase, WriteArgs
 
 BASE_DIR = 'packages/python/tests/github/actions'
 
@@ -59,14 +59,42 @@ FILE_ISSUES = [
     ),
 ]
 
+WRITING_FILES = [
+    TCase(
+        name='square_num',
+        py_file=f'{BASE_DIR}/square_number/actions.py',
+        write_calls=[
+            WriteArgs(
+                path='actions.yaml',
+                fname='square_number.yaml',
+            ),
+        ],
+    ),
+    TCase(
+        name='multiple',
+        py_file=f'{BASE_DIR}/multiple/actions.py',
+        write_calls=[
+            WriteArgs(
+                path='multiple/action.yaml',
+                fname='multiple-action.yaml',
+            ),
+            WriteArgs(
+                path='multiple/action-empty.yaml',
+                fname='multiple-action-empty.yaml',
+            ),
+        ],
+    ),
+]
+
 @pytest.mark.parametrize(
     'tcase',
     [
         *FILE_ISSUES,
+        *WRITING_FILES,
     ],
     ids=lambda tcase: tcase.name,
 )
-def test_m_gh_actions_errors(tcase: TCase, mocker: MockerFixture) -> None:
+def test_m_gh_actions(tcase: TCase, mocker: MockerFixture) -> None:
     """Test `m github actions` errors.
 
     Args:
@@ -93,7 +121,7 @@ def test_m_gh_actions_errors(tcase: TCase, mocker: MockerFixture) -> None:
 
     calls = file_write_mock.call_args_list
     assert len(calls) == len(tcase.write_calls)
-    fixture_path = 'packages/python/tests/github/actions/_fixtures'
+    fixture_path = 'github/actions/_fixtures'
     for index, ex_call in enumerate(tcase.write_calls):
         call = calls[index]
         assert Path(call.args[0]).resolve() == Path(ex_call.path).resolve()

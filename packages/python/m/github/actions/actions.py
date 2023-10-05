@@ -73,7 +73,7 @@ class RunStep(BaseModel, Generic[InputModel, OutputModel]):
             env=env,
             py_path=py_path,
             mod=self.run.__module__,
-        )
+        ).rstrip()
 
 
 class UsesStep(BaseModel, Generic[InputModel, OutputModel]):
@@ -134,7 +134,7 @@ class UsesStep(BaseModel, Generic[InputModel, OutputModel]):
             id=self.id,
             uses=self.uses,
             env=env,
-        )
+        ).rstrip()
 
 
 class Action(BaseModel):
