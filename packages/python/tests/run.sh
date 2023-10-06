@@ -4,7 +4,12 @@ set -euo pipefail
 export DEBUG_HTTP_INCLUDE_BODY=1
 
 SINGLE=true
-# SINGLE=false
+SINGLE=false
+
+# Make sure we run all test in the pipelines
+if [ "${CI:-false}" = 'true' ]; then
+  SINGLE=false
+fi
 
 if [ "$SINGLE" = 'false' ]; then
   coverage run --source packages/python/m -m pytest -p no:logging
