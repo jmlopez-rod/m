@@ -1,4 +1,9 @@
-# Python development
+---
+sidebar_position: 0
+sidebar_label: Motivation
+---
+
+# Motivation
 
 Github actions does not support python as well as it does typescript projects.
 The following are thoughts on how to leverage the python type system to help us
@@ -57,7 +62,8 @@ if __name__ == '__main__':
 ```
 
 One thing to mention here is that the `PYTHONPATH` is set before calling the
-main function so that we may be able to use several files in the `src`.
+main function so that we may be able to use several files in the `src`
+directory.
 
 ## Downsides
 
@@ -69,7 +75,8 @@ example above there was 4 mistakes made. Some mistakes were as simple as not
 using the proper name of the python module in the `action.yaml` file.
 
 Once we start adding more functionality it gets harder to keep track of the
-variables, inputs, outputs and script names.
+variables, inputs, outputs and script names and the usual way to test is to
+modify the script and use it in a workflow. This is not ideal.
 
 ## Prototype
 
@@ -126,8 +133,8 @@ actions = Action(
 
 Every class and function can be inspected to obtain documentation sources and
 file locations to help us create the yaml file. Overall, with a pattern like
-this the only mistake `mypy` would not be able to help us with is declaring the
-input references from the `inputs` or other steps but this is a small mistake
+this the only mistake `mypy` would not be able to help us catch is declaring the
+input references from the `inputs` or other steps. But this is a small mistake
 which will be caught when generating the metadata `action.yaml` file.
 
 [gha-metadata]:
