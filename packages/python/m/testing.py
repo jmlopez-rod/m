@@ -177,6 +177,11 @@ def block_network_access() -> None:
 def block_m_side_effects() -> dict[str, Any]:
     """Blocks functions that have side effects.
 
+    the `Path.mkdir` function should only be blocked while developing tests.
+    It is a reminder that we haven't mocked the function yet. If we want to
+    get this reminder then add `touch m/.m/pytest-ran` after the tests run
+    locally.
+
     Returns:
         A dictionary with the original functions.
     """
@@ -199,7 +204,7 @@ def block_m_side_effects() -> dict[str, Any]:
 
     if not os.environ.get('CI'):
         # We want to make sure that we do not create directories during tests.
-        # To do we we will mock the Path.mkdir function. There is a problem:
+        # To do so we will mock the Path.mkdir function. There is a problem:
         # pytest needs this function to create directories for its own purposes.
         # For this reason we will only mock the function after we create the
         # m/.m/pytest-ran file.

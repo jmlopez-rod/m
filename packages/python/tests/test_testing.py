@@ -1,4 +1,4 @@
-from pathlib import Path
+import shutil
 from urllib import request as req
 
 import pytest
@@ -24,9 +24,9 @@ def test_no_internet_fp() -> None:
 
 def test_needs_mocking() -> None:
     err = None
-    path = Path('do-not-create-please')
     with pytest.raises(RuntimeError) as err_block:
         err = err_block
-        path.mkdir()
-    msg = 'pathlib.Path.mkdir((),{})'  # noqa: P103 - not a format string
+        shutil.move('README.md', 'README.md.bak')
+    # the following is not a format string
+    msg = "shutil.move(('README.md', 'README.md.bak'),{})"  # noqa: P103
     assert err and str(err.value) == f'DEV ERROR: Need to mock {msg}'
