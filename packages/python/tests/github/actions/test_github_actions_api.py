@@ -1,7 +1,7 @@
 import pytest
 from m.core import issue
 from m.testing import ActionStepTestCase as TCase
-from m.testing import run_action_step
+from m.testing import run_action_test_case
 from pytest_mock import MockerFixture
 
 BASE_DIR = 'packages/python/tests/github/actions'
@@ -58,18 +58,4 @@ def mock_file_write(*args, **kwargs):
     ids=lambda tcase: tcase.name,
 )
 def test_m_gh_actions_api(tcase: TCase, mocker: MockerFixture) -> None:
-    stdout, stderr, file_writes = run_action_step(
-        mocker,
-        py_file=tcase.py_file,
-        exit_code=tcase.exit_code,
-        env_vars=tcase.inputs,
-        file_write_side_effect=tcase.file_write_side_effect,
-    )
-    assert stdout == tcase.expected_stdout
-    if tcase.errors:
-        for error in tcase.errors:
-            assert error in stderr
-
-    if tcase.exit_code == 0:
-        assert 'FAKE_GITHUB_OUTPUT.txt' in file_writes
-        assert file_writes['FAKE_GITHUB_OUTPUT.txt'] == '\n'.join(tcase.outputs)
+    run_action_test_case(mocker, tcase)
