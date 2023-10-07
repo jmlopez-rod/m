@@ -1,125 +1,140 @@
 ---
-sidebar_position: 30
+sidebar_position: 40
 sidebar_label: API
 ---
 
-# Testing
+# API
 
-`m` provides several utilities to help us test our actions. We can start with
-this example
+## `KebabModel`
 
-```python
-import pytest
-from m.github.actions import Action
-from m.testing import ActionStepTestCase as TCase
-from m.testing import run_action_test_case
-from pytest_mock import MockerFixture
-
-from pkg.actions import actions
-
-
-@pytest.mark.parametrize(
-    'tcase',
-    [
-        TCase(
-            name='test_id',
-            py_file=f'src/pkg/main.py',
-            inputs={
-              'INPUT_ARG_A': 'val_a',
-              'INPUT_ARG_B': 'val_b',
-            },
-            expected_stdout='Anything we print to stdout',
-            outputs=['some-output=some_value'],
-        ),
-    ],
-    ids=lambda tcase: tcase.name,
-)
-def test_m_gh_actions_api(tcase: TCase, mocker: MockerFixture) -> None:
-    run_action_test_case(mocker, tcase)
-
-
-def test_actions_instance() -> None:
-    assert isinstance(actions, Action)
-    assert actions.name == 'Action Name'
-```
-
-:::important
-
-This is not required but it is recommended to have this in the `__init__.py` for
-the root of the tests.
+Inputs and outputs need to be written using a `KebabModel` as a base class. This
+is so that their definitions may be written using kebab casing in the final
+`action.yaml`.
 
 ```python
-from m.testing import block_m_side_effects, block_network_access
+from m.github.actions import KebabModel, InArg
 
-block_m_side_effects()
-block_network_access()
+class MyInput(KebabModel):
+    my_input: str = InArg(help='description')
 ```
 
-This will make sure that our tests do not make any calls to the internet and
-prevents out code from writing files. Instead it will force us to create mocks.
+## `InArg`
 
-:::
+Should be used to declare the input arguments of an action. This is a function
+that returns `Any` to bypass `mypy`'s type checking. Similar to `Field` from
+`pydantic` but it is tailored to help us write the inputs for an action and its
+steps.
 
-## Testing API
+### Args
 
-### `block_network_access`
+- `help`: A description of the input argument.
+- `default`: The default value of the input argument.
 
-This function overrides the definition of `socket` so that we do not accidently
-try to run tests that make network calls. If our tests do not depend on other
-local services it is a good idea to call this before any of our tests runs.
+By default all input arguments are required. If you want to make an input not
+required then provide a default value.
 
-Otherwise we may want to modify this function to allow certain hosts to be
-called. (PRs welcomed).
+## `OutArg`
 
-### `block_m_side_effects`
+Should be used to declare the output arguments of an action.
 
-This function overrides the definition of `m` so that we do not accidently try
-write a lot of files or create/move directories.
+### Args
 
-The function will return a dictionary with references to the original functions
-that were overriden in case these are needed.
+- `help`: A description of the output argument.
+- `export`: Whether or not to export the output to the action.
 
-### `ActionStepTestCase`
+Every step has to the potential to expose its outputs to the action. If the
+action has mutiple steps simply make sure that the output `export`s it.
 
-This class is used to define a test case for an action. It is helpful to
-parametrize different use cases for an action.
+## `run_action`
 
-- `name`: The name of the test case. This is used to identify the test case in
-  the test report.
-- `py_file`. The full path to the file that Github Actions will run.
-- `inputs`: A dictionary of the inputs that the action will receive.
-- `exit_code`: The expected exit code of the action. `0` means all is good.
-- `expected_stdout`: The expected output of the action. This is what we print to
-  stdout. The output should match. If this is a long output it may be worth
-  reading from fixture and assigning the value instead.
-- `errors`: A list of strings that should be present in `stderr`. This is
-  helpful to make sure our actions are reporting useful error messages to help
-  us debug.
-- `outputs`: A list of strings that should be present in `$GITHUB_OUTPUT` file.
-  Each entry in the array should be of the form `output-name=output_value`.
-- `file_write_side_effect`: This can be provided if we need to modify the
-  behaviour of `m.core.rw.write_file`. This is useful if we want to test cases
-  in which a file failed to write.
+This is the main function that should be used to run an action. It takes in a
+function that takes in a `KebabModel` and returns a `Res[KebabModel]`.
 
-### `run_action_test_case`
+The only place where this function is needed is in the the if block
 
-This is a commodity wrapper to help us run the action tests case. If we need
-more control over the assertions we can then copy and modify the implementation.
+```python
+if __name__ == '__main__':
+    run_action(my_action)
+```
 
-- `mocker`: A reference to the pytest `MockerFixture`.
-- `tcase`: The test case to run.
+`mypy` will make sure that the you are providing the correct type of function to
+`run_action`. Keep in mind, the function is generic and we should be writing
+models for the inputs and outputs for all of our functions.
 
-### `run_action_step`
+## `RunStep`
 
-Runs an action step. This is useful since it will run the module and assert that
-the exit code is the one we expect. It returns a tuple with the stdout, stderr
-and a dictionary or the files writen by `m.core.rw.write_file`.
+This is a model used to define a step in an action.
 
-- `mocker`: A reference to the pytest `MockerFixture`.
-- `py_file`: The full path to the file that Github Actions will run.
-- `exit_code`: The expected exit code of the action. `0` means all is good.
-- `env_vars`: A dictionary of the environment variables that the action will
-  receive.
-- `file_write_side_effect`: This can be provided if we need to modify the
-  behaviour of `m.core.rw.write_file`. This is useful if we want to test cases
-  in which a file failed to write.
+### Args
+
+- `id`: the step id
+- `run`: The function passed to `run_action`.
+- `args`: The arguments to pass to the function.
+
+The id is important because this is how we will be able to refer to the outputs
+generated by the step. Say our action called other external actions such as a
+the cache action. Then if we wanted to pass one of the outputs to the cache
+action we would have to get a handle on the step.
+
+```python
+args=SomeInput(some_arg='my_run_step_id.some_output')
+```
+
+The args should use the leverage the help of their own input models. All they
+require is that we provide the handle to other outputs from other steps or some
+other values we wish to pass.
+
+Feel free to experiment with different values to see what `action.yaml`
+generates.
+
+## `UsesStep`
+
+This is a model similar to `RunStep` but since we do not have access to the code
+that gets executed all we can do is provide the `uses` field and our models to
+describe what the action expects.
+
+### Args
+
+- `id`: the step id
+- `uses`: A string referencing an action.
+- `inputs`: A reference to a `KebabModel` type.
+- `outputs`: A reference to a `KebabModel` type.
+- `args`: The arguments to pass to the function.
+
+For instance, say we wanted to use the `actions/cache@v3` action. To avoid
+having issues in the future we should create the input and output models
+manually by looking at the documentation
+https://github.com/actions/cache#inputs.
+
+```python
+class CacheInputs(KebabModel):
+    key: str = InArg(help='An explicit key for a cache entry')
+    path: str = InArt(help='A list of files, directories, and wildcard patterns to cache and restore')
+```
+
+Similarly for the outputs we can define a model. This in the long run should
+help us maintain the composite action better. It is recommended to check the
+inputs and outputs as we update action versions to ensure compatability.
+
+## `Action`
+
+The main object to help us define the `actions.yaml` file. Each repository can
+declare several actions. For this reason we can declare the `actions` object as
+a single `Action` or a list of them.
+
+### Args
+
+- `file_path`: The full path to the `action.yaml` file.
+- `name`: The name of the action.
+- `description`: Short decription for the action.
+- `inputs`: A model describing the inputs for the action. If the action does not
+  need inputs then provide `None`. It is important to be explicit in this step
+  so that we not wonder why we cannot use `inputs.[argname]` when we declare a
+  step.
+- `steps`: This is a list of `RunStep` or `UsesStep` instances.
+
+We could technically do everything in one single step but when we use external
+actions then we are forced to split our actions. Note that we have no way of
+having the `if` fields in each step. This is because we are encourage to handle
+that logic in each of the steps we declare. We have full control of the ouput to
+`stdout` and `stderr` here.
