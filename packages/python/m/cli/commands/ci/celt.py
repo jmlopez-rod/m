@@ -9,15 +9,17 @@ from m.core import Bad, one_of
 class Arguments(BaseModel):
     """Process a compiler or linter output to determine if the cli should stop.
 
-    examples::
+    ## Examples
 
-        ~$ m ci celt -t eslint -c @config.json < <(eslint [dir] -f json)
+    ```shell
+    ~$ m ci celt -t eslint -c @config.json < <(eslint [dir] -f json)
 
-        ~$ eslint [...options] > tmp.json
-        ~$ m ci celt -t eslint @tmp.json -c '{"allowedEslintRules":{"semi":1}}'
+    ~$ eslint [...options] > tmp.json
+    ~$ m ci celt -t eslint @tmp.json -c '{"allowedEslintRules":{"semi":1}}'
+    ```
 
     Depending on the tool that is chosen the configuration should have an
-    entry of the form "allowed[ToolName]Rules" or "ignored[ToolName]Rules".
+    entry of the form `"allowed[ToolName]Rules"` or `"ignored[ToolName]Rules"`.
     Only the first letter of the tool should be capitalized to conform to
     the camel case style.
 
@@ -30,32 +32,76 @@ class Arguments(BaseModel):
     One option is to use eslintrc.json or create a brand new file called
     `allowed_errors.json`.
 
-    Each tool will have different outputs. See below information for each
-    tool.
+    ## Tools
 
-    - eslint: expects json output::
+    Each tool may provide have different outputs
 
-        eslint -f json [dir]
+    ### eslint
 
-    - pycodestyle: expects default output::
+    Should be called with the `-f json` option.
 
-        pycodestyle --format=default [dir]
+    ```bash
+    m ci celt -t eslint -c @config.json < <(eslint -f json [dir])
+    ```
 
-    - flake8: expects default output::
+    ### pycodestyle
 
-        flake8 [dir]
+    Should be called with the `--format=default` option.
 
-    - pylint: expects json output::
+    ```bash
+    m ci celt -t pycodestyle -c @config.json < <(pycodestyle --format=default [dir])
+    ```
 
-        pylint -f json --rcfile=[file] [dir]
+    ### flake8
 
-    - typescript: expects output::
+    Expects default output.
 
-        tsc --pretty false
+    ```bash
+    m ci celt -t flake8 -c @config.json < <(flake8 [dir])
+    ```
 
-    - ruff: expects json output::
+    ### pylint
 
-        ruff check --format json [dir]
+    Should be called with the `-f json` option.
+
+    ```bash
+    m ci celt -t pylint -c @config.json < <(pylint -f json --rcfile=[file] [dir])
+    ```
+
+    ### typescript
+
+    Should be called with the `--pretty false` option.
+
+    ```bash
+    m ci celt -t typescript -c @config.json < <(tsc --pretty false)
+    ```
+
+    ### ruff
+
+    Should be called with the `--format json` option.
+
+    ```bash
+    m ci celt -t ruff -c @config.json < <(ruff check --format json [dir])
+    ```
+
+    ## Positional arguments
+
+    ### payload
+
+    The output of a compiler or linter. Defaults to `@-` to read from stdin. A file
+    may be specified by prefixing a filename with `@`.
+
+    ## Options
+
+    Attributes:
+        -t,--tool (str): name of a supported compiler/linter
+        -c,--config (Any): Configuration data: `@filename` (file) or string. Defaults to `{}`.
+        -m,--max-lines (int): Maximum number of error lines to print, use -1 for all. Defaults to `5`.
+        -r,--file-regex (str): Regex expression to filter files.
+        -i,--ignore-error-allowance (bool): Set every error allowance to 0.
+        -s,--stats-only (bool): Display a json output with current total violations.
+        -f,--full-message (bool): Display the full error message.
+        --traceback (bool): Display the exception traceback if available.
     """
 
     payload: str = Arg(

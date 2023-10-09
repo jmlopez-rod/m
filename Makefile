@@ -11,7 +11,7 @@ localBuild:
 	m/scripts/build.sh
 
 devDocs:
-	cd packages/website && pnpm start
+	cd packages/web && mkdocs serve
 
 deployDocs:
 	cd packages/website && USE_SSH=true npm run deploy

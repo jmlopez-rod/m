@@ -7,6 +7,9 @@ class Arguments(BaseModel):
     This snippet can be used in a `.bashrc` file to setup the environment.
     It will also provide aliases that call other `m` commands to help
     facilitate the development in a devcontainer workflow.
+
+    Attributes:
+        section: section to print out. Choices: `env`, `devex`, `venv`.
     """
 
     section: str | None = ArgProxy(

@@ -1,0 +1,81 @@
+site_name: m
+repo_name: jmlopez-rod/m
+repo_url: https://github.com/jmlopez-rod/m
+theme:
+  name: material
+  logo: assets/m_logo.svg
+  favicon: assets/m_logo.svg
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.copy.copy
+  language: en
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      primary: brown
+      accent: deep orange
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      primary: brown
+      accent: deep orange
+
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [packages/python]
+          options:
+            members_order: source
+
+markdown_extensions:
+  - toc:
+      permalink: true
+      title: Page contents
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/jmlopez-rod/m
+
+copyright: |
+  &copy; 2023 <a href="https://github.com/jmlopez-rod" target="_blank" rel="noopener">Manuel Lopez</a>
+
+nav:
+  - Get Started:
+      - Welcome to m: index.md
+      - Installation: install.md
+  - CLI Commands:
+      - ci:
+          - celt: cli/ci/celt.md
+      - devcontainer:
+          - bashrc: cli/devcontainer/bashrc.md

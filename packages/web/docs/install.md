@@ -1,9 +1,3 @@
----
-sidebar_position: 1
-sidebar_label: Installation
-slug: /installation
----
-
 # Packaged versions
 
 You can download it from the [Python Package Index][pypi]. For installation of
@@ -13,7 +7,7 @@ packages from PyPI, try [pip], it works on all major platforms.
 pip install jmlopez-m
 ```
 
-## Compatability
+## Compatibility
 
 Requires `python >= 3.10`.
 
