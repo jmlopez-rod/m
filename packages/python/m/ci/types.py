@@ -21,7 +21,7 @@ class Workflow(str, Enum):  # noqa: WPS600
     m_flow = 'm_flow'
     free_flow = 'free_flow'
 
-    def __str__(self):
+    def __str__(self: 'Workflow') -> str:
         """Return the string representation of the workflow.
 
         Returns:

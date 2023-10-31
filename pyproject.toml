@@ -45,6 +45,7 @@ types-Pygments = "^2.15.0.0"
 mypy = "^1.2.0"
 argcomplete = "^3.0.8"
 ruff = "^0.0.285"
+mkdocstrings-crystal = "^0.3.6"
 
 
 [tool.poetry.group.docs.dependencies]

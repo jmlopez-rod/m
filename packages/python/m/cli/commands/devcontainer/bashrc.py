@@ -1,4 +1,5 @@
-from m.cli import ArgProxy, BaseModel, command
+from m.cli import ArgProxy, command
+from pydantic import BaseModel
 
 
 class Arguments(BaseModel):
@@ -8,8 +9,6 @@ class Arguments(BaseModel):
     It will also provide aliases that call other `m` commands to help
     facilitate the development in a devcontainer workflow.
 
-    Attributes:
-        section: section to print out. Choices: `env`, `devex`, `venv`.
     """
 
     section: str | None = ArgProxy(

@@ -83,30 +83,16 @@ class Arguments(BaseModel):
     ```bash
     m ci celt -t ruff -c @config.json < <(ruff check --format json [dir])
     ```
-
-    ## Positional arguments
-
-    ### payload
-
-    The output of a compiler or linter. Defaults to `@-` to read from stdin. A file
-    may be specified by prefixing a filename with `@`.
-
-    ## Options
-
-    Attributes:
-        -t,--tool (str): name of a supported compiler/linter
-        -c,--config (Any): Configuration data: `@filename` (file) or string. Defaults to `{}`.
-        -m,--max-lines (int): Maximum number of error lines to print, use -1 for all. Defaults to `5`.
-        -r,--file-regex (str): Regex expression to filter files.
-        -i,--ignore-error-allowance (bool): Set every error allowance to 0.
-        -s,--stats-only (bool): Display a json output with current total violations.
-        -f,--full-message (bool): Display the full error message.
-        --traceback (bool): Display the exception traceback if available.
     """
 
     payload: str = Arg(
         default='@-',
-        help='data: @- (stdin), @filename (file), string',
+        help="""\
+            Output of a compiler or linter. A file may be specified by prefixing
+            a filename with `@`. To read from stdin use `@-`.
+
+            Summary: `@-` (stdin), `@filename` (file), `string`.
+        """,
         validator=validate_payload,
         positional=True,
     )

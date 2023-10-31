@@ -75,7 +75,7 @@ def Arg(  # noqa: N802, WPS211
     }
     return FieldInfo.from_field(
         default,
-        description=help,
+        description=cleandoc(help),
         json_schema_extra={k: v for k, v in extras.items() if v is not None},
     )
 

@@ -1018,6 +1018,21 @@ docs = ["mdx-gh-links (>=0.2)", "mkdocs (>=1.5)", "mkdocs-gen-files", "mkdocs-li
 testing = ["coverage", "pyyaml"]
 
 [[package]]
+name = "markdown-callouts"
+version = "0.3.0"
+description = "Markdown extension: a classier syntax for admonitions"
+category = "dev"
+optional = false
+python-versions = ">=3.6,<4.0"
+files = [
+    {file = "markdown-callouts-0.3.0.tar.gz", hash = "sha256:21e99d72a879663343e232158413e12eeaa9fb78b90e669f41cdbf0962a364fb"},
+    {file = "markdown_callouts-0.3.0-py3-none-any.whl", hash = "sha256:6d58e8bd244366d2a5ca549b1971f4caac3036469c243856eb886364f71c013b"},
+]
+
+[package.dependencies]
+Markdown = ">=3.3.3,<4.0.0"
+
+[[package]]
 name = "markdown-it-py"
 version = "3.0.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
@@ -1261,6 +1276,25 @@ pymdown-extensions = ">=6.3"
 crystal = ["mkdocstrings-crystal (>=0.3.4)"]
 python = ["mkdocstrings-python (>=0.5.2)"]
 python-legacy = ["mkdocstrings-python-legacy (>=0.2.1)"]
+
+[[package]]
+name = "mkdocstrings-crystal"
+version = "0.3.6"
+description = "Crystal language doc generator for mkdocstrings"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mkdocstrings_crystal-0.3.6-py3-none-any.whl", hash = "sha256:824bb305fda7de4760101f078ee586b536a89294b2e9a07f453fee61d3e4a665"},
+    {file = "mkdocstrings_crystal-0.3.6.tar.gz", hash = "sha256:37d3f6194ad65d996756cd23e548ffdbef8e18f7515ed9a2502b16d695597f04"},
+]
+
+[package.dependencies]
+jinja2 = ">=2.11.2"
+markdown-callouts = ">=0.1.0"
+markupsafe = ">=1.1.1"
+mkdocs-autorefs = ">=0.3.1"
+mkdocstrings = ">=0.19.0"
 
 [[package]]
 name = "mkdocstrings-python"
@@ -2491,4 +2525,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "681a591966a01760d453ac22e4142f222a39af4bdb8c6b720e1bb68927491927"
+content-hash = "1677f57435c1dfbbc18e285d8fa21dfddc2e5934aad79287d875fd9ede2d429b"

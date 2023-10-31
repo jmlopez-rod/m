@@ -35,12 +35,16 @@ theme:
 
 plugins:
   - mkdocstrings:
-      default_handler: python
+      default_handler: m_cli
       handlers:
-        python:
+        m_cli:
           paths: [packages/python]
-          options:
-            members_order: source
+          import:
+            - https://docs.pydantic.dev/latest/objects.inv
+        # python:
+        #   paths: [packages/python]
+        #   options:
+        # members_order: source
 
 markdown_extensions:
   - toc:
@@ -79,3 +83,4 @@ nav:
           - celt: cli/ci/celt.md
       - devcontainer:
           - bashrc: cli/devcontainer/bashrc.md
+          - types: cli/devcontainer/types.md

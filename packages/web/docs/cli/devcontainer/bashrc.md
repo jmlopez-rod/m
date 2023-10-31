@@ -3,6 +3,15 @@
 <!-- prettier-ignore -->
 ::: m.cli.commands.devcontainer.bashrc.Arguments
     options:
-      show_bases: false
-      show_root_heading: true
-      show_root_full_path: false
+      handler: m_cli
+      is_command: true
+
+<!-- prettier-ignore -->
+<!-- ::: m.ci.release_env.ReleaseEnv
+    options:
+      handler: m_cli
+
+<!-- prettier-ignore -->
+<!-- ::: m.ci.types.MFlowConfig
+    options:
+      handler: m_cli -->
