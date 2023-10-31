@@ -6,6 +6,7 @@ from typing import Any, Mapping, cast
 
 from griffe.dataclasses import Class as GriffeClass
 from griffe.dataclasses import Docstring
+from griffe.dataclasses import Module as GriffeModule
 from markupsafe import Markup
 from mkdocstrings.handlers.base import CollectorItem
 from mkdocstrings_handlers.python.handler import PythonHandler
@@ -176,21 +177,7 @@ class MCLIHandler(PythonHandler):
     def get_templates_dir(self, handler: str | None = None) -> Path:
         return super().get_templates_dir('python')
 
-    def collect(self, identifier: str, config: Mapping[str, Any]) -> CollectorItem:  # noqa: D102
-        """Extend the default `collect` method to add attributes to the docstring.
-
-        This only happens if we are not dealing with a command.
-
-        Args:
-            identifier: The identifier of the object to collect.
-            config: The configuration passed to the handler.
-
-        Returns:
-            The collected object.
-        """
-        obj = PythonHandler.collect(self, identifier, config)
-        if not isinstance(obj, GriffeClass):
-            return obj
+    def _process_class(self, obj: GriffeClass, identifier: str, config: Mapping[str, Any]) -> CollectorItem:  # noqa: D102
         obj_id = id(obj)
         arg_model = cast(BaseModel, import_attr(identifier))
         if not obj_id in self.models:
@@ -210,6 +197,27 @@ class MCLIHandler(PythonHandler):
                     parser=obj.docstring.parser,
                     parser_options=obj.docstring.parser_options,
                 )
+        return obj
+
+    def collect(self, identifier: str, config: Mapping[str, Any]) -> CollectorItem:  # noqa: D102
+        """Extend the default `collect` method to add attributes to the docstring.
+
+        This only happens if we are not dealing with a command.
+
+        Args:
+            identifier: The identifier of the object to collect.
+            config: The configuration passed to the handler.
+
+        Returns:
+            The collected object.
+        """
+        obj = PythonHandler.collect(self, identifier, config)
+        if isinstance(obj, GriffeModule):
+            for member_name, member in obj.members.items():
+                if isinstance(member, GriffeClass):
+                    self._process_class(member, f'{identifier}.{member_name}', config)
+        if isinstance(obj, GriffeClass):
+            return self._process_class(obj, identifier, config)
         return obj
 
     def _process_cli_section(
@@ -258,8 +266,8 @@ class MCLIHandler(PythonHandler):
 
 
     def render(self, data: CollectorItem, config: Mapping[str, Any]) -> str:  # noqa: D102 (ignore missing docstring)
-        base_str = PythonHandler.render(self, data, config)
         model = self.models.get(id(data))
+        base_str = PythonHandler.render(self, data, config)
         if not config.get('is_command', False) or not model:
             return base_str
 

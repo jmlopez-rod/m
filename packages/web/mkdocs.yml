@@ -34,6 +34,7 @@ theme:
       accent: deep orange
 
 plugins:
+  - search
   - mkdocstrings:
       default_handler: m_cli
       handlers:
@@ -45,6 +46,12 @@ plugins:
         #   paths: [packages/python]
         #   options:
         # members_order: source
+  - gen-files:
+      scripts:
+        - docs/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - section-index
 
 markdown_extensions:
   - toc:
@@ -82,5 +89,5 @@ nav:
       - ci:
           - celt: cli/ci/celt.md
       - devcontainer:
-          - bashrc: cli/devcontainer/bashrc.md
           - types: cli/devcontainer/types.md
+  - Code Reference: reference/ #
