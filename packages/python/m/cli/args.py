@@ -35,7 +35,7 @@ def RemainderArgs(  # noqa: N802
 def Arg(  # noqa: N802, WPS211
     default: Any = PydanticUndefined,
     *,
-    help: str | None = _Unset,  # noqa: WPS125
+    help: str,  # noqa: WPS125
     positional: bool | None = None,
     required: bool | None = None,
     aliases: list[str] | None = None,

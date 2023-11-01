@@ -35,23 +35,20 @@ theme:
 
 plugins:
   - search
+  - gen-files:
+      scripts:
+        - docs/gen_ref_pages.py
+        - docs/gen_cli_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - section-index
   - mkdocstrings:
       default_handler: m_cli
       handlers:
         m_cli:
           paths: [packages/python]
-          import:
-            - https://docs.pydantic.dev/latest/objects.inv
-        # python:
-        #   paths: [packages/python]
-        #   options:
-        # members_order: source
-  - gen-files:
-      scripts:
-        - docs/gen_ref_pages.py
-  - literate-nav:
-      nav_file: SUMMARY.md
-  - section-index
+          # import:
+          #   - https://docs.pydantic.dev/latest/objects.inv
 
 markdown_extensions:
   - toc:
@@ -70,7 +67,7 @@ markdown_extensions:
   - pymdownx.mark
   - attr_list
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
 extra:
@@ -85,9 +82,5 @@ nav:
   - Get Started:
       - Welcome to m: index.md
       - Installation: install.md
-  - CLI Commands:
-      - ci:
-          - celt: cli/ci/celt.md
-      - devcontainer:
-          - types: cli/devcontainer/types.md
-  - Code Reference: reference/ #
+  - CLI Commands: cli/
+  - Code Reference: reference/

@@ -25,7 +25,7 @@ for path in sorted(Path(src).rglob("*.py")):  #
         continue
 
     identifier = ".".join(parts)
-    if identifier.startswith('m.cli'):
+    if identifier.startswith('m.cli.commands'):
         continue
 
     nav[parts] = doc_path.as_posix()

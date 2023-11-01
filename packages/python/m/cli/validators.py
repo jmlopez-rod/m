@@ -1,3 +1,4 @@
+import os
 import sys
 from argparse import ArgumentTypeError
 from pathlib import Path
@@ -95,4 +96,36 @@ def validate_non_empty_str(arg_value: str) -> str:
     """
     if not arg_value:
         raise ArgumentTypeError('empty value not allowed')
+    return arg_value
+
+
+def env_var(arg_value: str) -> str:
+    """Attempts to read the value from the environment.
+
+    Args:
+        arg_value: The input provided by argparse.
+
+    Returns:
+        The environment variable value if it exists. Otherwise, the input.
+    """
+    return os.environ.get(arg_value, arg_value)
+
+
+def env_var_or_empty(arg_value: str) -> str:
+    """Attempts to read the value from the environment.
+
+    Unlike the `env_var` validator, this will only allow the `arg_value` to
+    pass through if is not in the form of an environment variable. That is, if
+    the value is all uppercase letters and underscores it will attempt to
+    read from the environment and return an empty string if not defined.
+
+    Args:
+        arg_value: The input provided by argparse.
+
+    Returns:
+        The environment variable value if it exists. Otherwise, empty string.
+    """
+    env_form = arg_value.upper().replace('-', '_', -1)
+    if arg_value == env_form:
+        return os.environ.get(arg_value, '')
     return arg_value

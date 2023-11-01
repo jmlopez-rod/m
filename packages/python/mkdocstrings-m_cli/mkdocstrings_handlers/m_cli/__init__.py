@@ -90,8 +90,11 @@ def _parse_info_standard(name: str, field: FieldInfo) -> ArgParseInfo:
     default = field.default
     required = extras.get('required', False)
     aliases = cast(list[str], extras.get('aliases', None))
-
-
+    validator = extras.get('validator')
+    default = None if default is MISSING else repr(default)
+    if 'env_var' in repr(validator):
+        # special case - do not repr
+        default = f'env.{field.default}'
 
     names = [argument_name(name)]
     if aliases:
@@ -101,7 +104,7 @@ def _parse_info_standard(name: str, field: FieldInfo) -> ArgParseInfo:
         description=field.description or '...',
         option_names=names,
         choices=None,
-        default_value=None if default is MISSING else repr(default),
+        default_value=default,
         required=required,
     )
 
@@ -124,11 +127,15 @@ def _parse_field(name: str, field: FieldInfo) -> ArgParseInfo:
         return _parse_info_bool(name, field)
     if extras.get('proxy', None) is not None:
         proxy = cast(FuncArgs, extras['proxy'])
+        default = proxy.kwargs.get('default', None)
+        validator = proxy.kwargs.get('type')
+        if 'env_var' in repr(validator):
+            default = f'env.{default}'
         return ArgParseInfo(
             description=proxy.kwargs.get('help', '...'),
             option_names=proxy.args,
             choices=proxy.kwargs.get('choices', None),
-            default_value=proxy.kwargs.get('default', None),
+            default_value=default,
         )
     if extras.get('__remainder_args') is True:
         return ArgParseInfo(

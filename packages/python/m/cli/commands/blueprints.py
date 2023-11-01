@@ -1,9 +1,8 @@
-from m.cli import Arg, BaseModel, command, run_main
-from m.core.io import env
+from m.cli import Arg, BaseModel, command, env_var_or_empty, run_main
 
 
 class Arguments(BaseModel):
-    """Create the [m_dir]/.m/blueprints directory.
+    """Create the `[m_dir]/.m/blueprints` directory.
 
     This will add shell scripts to build the specified docker images as
     stated in the `[m_dir]/m.yaml` file.
@@ -15,11 +14,13 @@ class Arguments(BaseModel):
         positional=True,
     )
     m_tag: str = Arg(
-        default=env('M_TAG'),
+        default='M_TAG',
+        validator=env_var_or_empty,
         help='unique version to use for all the images',
     )
     cache_from_pr: str = Arg(
-        default=env('M_CACHE_FROM_PR'),
+        default='M_CACHE_FROM_PR',
+        validator=env_var_or_empty,
         help='pull request number to attempt to use as cache',
     )
     skip_makefile: bool = Arg(
