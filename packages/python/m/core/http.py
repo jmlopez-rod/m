@@ -22,7 +22,7 @@ class HttpMethod(str, Enum):  # noqa: WPS600
     post = 'POST'
     put = 'PUT'
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return the value of the enum.
 
         Returns:

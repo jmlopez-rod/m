@@ -2,12 +2,13 @@ import os
 import sys
 from argparse import ArgumentTypeError
 from pathlib import Path
+from typing import Any
 
 from ..core.json import parse_json, read_json
 from ..core.yaml_fp import read_yson
 
 
-def validate_json_payload(file_path: str):
+def validate_json_payload(file_path: str) -> Any:
     """Return a dictionary from the contents of file_path.
 
     This is a string that tell us to read from a file, stdin or just
@@ -100,7 +101,7 @@ def validate_non_empty_str(arg_value: str) -> str:
 
 
 def env_var(arg_value: str) -> str:
-    """Attempts to read the value from the environment.
+    """Read a value from the environment.
 
     Args:
         arg_value: The input provided by argparse.
@@ -112,12 +113,13 @@ def env_var(arg_value: str) -> str:
 
 
 def env_var_or_empty(arg_value: str) -> str:
-    """Attempts to read the value from the environment.
+    """Read a value from the environment.
 
-    Unlike the `env_var` validator, this will only allow the `arg_value` to
-    pass through if is not in the form of an environment variable. That is, if
-    the value is all uppercase letters and underscores it will attempt to
-    read from the environment and return an empty string if not defined.
+    Unlike the [env_var][m.cli.validators.env_var] validator, this will only
+    allow the `arg_value` to pass through if is not in the form of an
+    environment variable. That is, if the value is all uppercase letters and
+    underscores it will attempt to read from the environment and return an empty
+    string if not defined.
 
     Args:
         arg_value: The input provided by argparse.

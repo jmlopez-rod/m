@@ -47,8 +47,8 @@ plugins:
       handlers:
         m_cli:
           paths: [packages/python]
-          # import:
-          #   - https://docs.pydantic.dev/latest/objects.inv
+          import:
+            - https://docs.pydantic.dev/latest/objects.inv
 
 markdown_extensions:
   - toc:

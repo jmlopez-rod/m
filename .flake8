@@ -21,6 +21,8 @@ ignore =
   WPS224,  # Found a comprehension with too many `for` statements
   RST203,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
   RST301,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
+  RST214,  # not-compatible with markdown
+  RST215,  # not-compatible with markdown
 per-file-ignores =
   # There are multiple `assert`s in tests, we allow them:
   packages/python/tests/*.py:S101,FS003
