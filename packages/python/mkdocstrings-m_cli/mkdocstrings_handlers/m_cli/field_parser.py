@@ -106,6 +106,21 @@ def _parse_info_standard(name: str, field: FieldInfo) -> ArgParseInfo:
     )
 
 
+def _parse_info_proxy(field: FieldInfo) -> ArgParseInfo:
+    extras = cast(dict, field.json_schema_extra or {})
+    proxy = cast(FuncArgs, extras['proxy'])
+    default = proxy.kwargs.get('default', None)
+    validator = proxy.kwargs.get('type')
+    if 'env_var' in repr(validator):
+        default = f'env.{default}'
+    return ArgParseInfo(
+        description=proxy.kwargs.get('help', NO_HELP),
+        option_names=proxy.args,
+        choices=proxy.kwargs.get('choices', None),
+        default_value=default,
+    )
+
+
 def parse_field(name: str, field: FieldInfo) -> ArgParseInfo:
     """Process a pydantic field.
 
@@ -136,17 +151,7 @@ def parse_field(name: str, field: FieldInfo) -> ArgParseInfo:
     if field.annotation is bool:
         return _parse_info_bool(name, field)
     if extras.get('proxy', None) is not None:
-        proxy = cast(FuncArgs, extras['proxy'])
-        default = proxy.kwargs.get('default', None)
-        validator = proxy.kwargs.get('type')
-        if 'env_var' in repr(validator):
-            default = f'env.{default}'
-        return ArgParseInfo(
-            description=proxy.kwargs.get('help', NO_HELP),
-            option_names=proxy.args,
-            choices=proxy.kwargs.get('choices', None),
-            default_value=default,
-        )
+        return _parse_info_proxy(field)
     if extras.get('__remainder_args') is True:
         return ArgParseInfo(
             description=field.description or NO_HELP,
