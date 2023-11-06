@@ -92,6 +92,10 @@ jobs:
         run: |
           m ci celt -t flake8 -c @allowed_errors_tests.json < <(flake8 packages/python/tests --config .flake8-tests)
 
+      - name: lint docs
+        shell: bash
+        run: flake8 packages/web/docs
+
   mypy:
     needs: setup
     runs-on: ubuntu-22.04
@@ -117,6 +121,10 @@ jobs:
       - name: tests
         run: |
           mypy ./packages/python/tests
+
+      - name: docs
+        run: |
+          mypy ./packages/web/docs
 
   docs:
     needs: setup

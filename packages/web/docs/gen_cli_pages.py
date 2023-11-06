@@ -1,67 +1,115 @@
 """Generate the code cli pages."""
 import inspect
+from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 
 import mkdocs_gen_files
 
-nav = mkdocs_gen_files.Nav()
+
+@dataclass
+class ModuleInfo:
+    """Container to store module information."""
+
+    identifier: str
+    identifier_paths: tuple[str, ...]
+    doc_path: Path
+    full_doc_path: Path
 
 
-src = '../python'
-all_paths = sorted(Path(src).rglob("*.py"))
-new_sort = sorted(all_paths, key=lambda x: len(x.parts))
-for path in new_sort:  #
-    module_path = path.relative_to(src).with_suffix("")  #
-    doc_path = path.relative_to(src).with_suffix(".md")  #
+def cli_command_file_content(
+    identifier: str,
+    name: str,
+    show_base: bool,
+) -> str:
+    """Generate the content of a cli command file.
 
+    Args:
+        identifier: the module identifier
+        name: the name of the command
+        show_base: whether to show the base classes
+
+    Returns:
+        The content of the module file.
+    """
+    file_content = f"""\
+        # m {name}
+        ::: {identifier}.Arguments
+            options:
+              handler: m_cli
+              is_command: true
+              show_bases: {show_base}
+              show_root_toc_entry: false
+              show_root_full_path: false
+    """
+    return inspect.cleandoc(file_content)
+
+
+def cli_module_info(src: str, path: Path, root: str) -> ModuleInfo:
+    """Create the identifier for a module.
+
+    Args:
+        src: the source directory
+        path: the module path
+        root: the root package - the base path in the url.
+
+    Returns:
+        The module identifier or an empty string.
+    """
+    module_path = path.relative_to(src).with_suffix('')
+    doc_path = path.relative_to(src).with_suffix('.md')
     md_path_parts = doc_path.parts
     md_path = '/'.join(md_path_parts[3:])
-    full_doc_path = Path("cli", md_path)  #
+    full_doc_path = Path(root, md_path)
     parts = list(module_path.parts)
 
-    if parts[0] != 'm':
-        continue
-
-
-    if parts[-1] == "__init__":  #
+    if parts[-1] == '__init__':
         parts = parts[:-1]
-        doc_path = doc_path.with_name("index.md")
-        full_doc_path = full_doc_path.with_name("index.md")
+        doc_path = doc_path.with_name('index.md')
+        full_doc_path = full_doc_path.with_name('index.md')
     elif parts[-1] == '__main__':
-        continue
+        parts = []
 
-    identifier = ".".join(parts)
-    if not identifier.startswith('m.cli.commands'):
-        continue
-
-    mod_handle = import_module(identifier)
-    if not hasattr(mod_handle, 'Arguments'):
-        continue
-
-    name = ' '.join(parts[3:])
-    nav[parts[3:]] = Path(md_path).as_posix()
-
-    # print('module:', repr(parts))
-    # if '.'.join(parts) not in 'm.ci.release_env.ReleaseEnv':
-    #     continue
-    ArgModel = mod_handle.Arguments
-    show_base = len(inspect.getmro(ArgModel)) > 3
-
-    with mkdocs_gen_files.open(full_doc_path, "w") as fd:
-        print(f'# m {name}', file=fd)
-        print(f"::: {identifier}.Arguments", file=fd)  #
-        print("    options:", file=fd)
-        print("      is_command: true", file=fd)
-        print(f"      show_bases: {show_base}", file=fd)
-        print("      show_root_toc_entry: false", file=fd)
-        print("      show_root_full_path: false", file=fd)
-        print("      handler: m_cli", file=fd)
-
-    # print(mkdocs_gen_files.open(full_doc_path, "r").read())
-
-    mkdocs_gen_files.set_edit_path(full_doc_path, Path("../") / path)  #
+    return ModuleInfo(
+        identifier='.'.join(parts),
+        identifier_paths=tuple(parts),
+        doc_path=Path(md_path),
+        full_doc_path=full_doc_path,
+    )
 
 
-with mkdocs_gen_files.open("cli/SUMMARY.md", "w") as nav_file:  #
-    nav_file.writelines(nav.build_literate_nav())
+def main():
+    root = 'cli'
+    src = '../python'
+    nav = mkdocs_gen_files.Nav()
+
+    all_paths = sorted(Path(src).rglob('*.py'))
+    new_sort = sorted(all_paths, key=lambda x: len(x.parts))
+    for path in new_sort:
+        mod_info = cli_module_info(src, path, root)
+        identifier = mod_info.identifier
+        is_cli = identifier.startswith('m.cli.commands')
+
+        if not is_cli:
+            continue
+
+        mod_handle = import_module(identifier)
+        if not hasattr(mod_handle, 'Arguments'):  # noqa: WPS421 - ask first
+            continue
+
+        name = ' '.join(mod_info.identifier_paths[3:])
+        nav[mod_info.identifier_paths[3:]] = mod_info.doc_path.as_posix()
+
+        arg_model = mod_handle.Arguments
+        show_base = len(inspect.getmro(arg_model)) > 3
+
+        with mkdocs_gen_files.open(mod_info.full_doc_path, 'w') as fd:
+            fd.write(cli_command_file_content(identifier, name, show_base))
+
+        mkdocs_gen_files.set_edit_path(mod_info.full_doc_path, Path('../') / path)
+
+    with mkdocs_gen_files.open(f'{root}/SUMMARY.md', 'w') as nav_file:
+        nav_file.writelines(nav.build_literate_nav())
+
+
+main()

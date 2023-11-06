@@ -1,6 +1,15 @@
 from __future__ import annotations
 
-from typing import Callable, Generic, Iterator, TypeGuard, TypeVar, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Iterator,
+    TypeGuard,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import typing_extensions
 
@@ -30,7 +39,7 @@ def lazy_arg(z_arg: LazyArg[A]) -> A:
 class StopBadIteration(Exception):  # noqa: N818 - This is for internal use
     """Store a `Bad` instance."""
 
-    def __init__(self, bad):
+    def __init__(self, bad: Any):
         """Initialize the Exception.
 
         Args:
@@ -133,7 +142,7 @@ class Good(Generic[B, G]):
         """
         yield self.value
 
-    def iter(self):
+    def iter(self) -> Iterator[G]:
         """Shortcut to transform to a list.
 
         Can be used as `list(x.iter())`. It will either contain a value or be

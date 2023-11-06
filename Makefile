@@ -5,7 +5,7 @@ tests:
 	packages/python/tests/run.sh
 
 mypy:
-	mypy packages/python/m & mypy packages/python/tests
+	mypy packages/python/m & mypy packages/python/tests & mypy packages/web/docs
 
 localBuild:
 	m/scripts/build.sh
@@ -14,7 +14,7 @@ devDocs:
 	cd packages/web && mkdocs serve
 
 deployDocs:
-	cd packages/website && USE_SSH=true npm run deploy
+	cd packages/web && mkdocs gh-deploy
 
 fix:
 	pnpm exec prettier -w .
