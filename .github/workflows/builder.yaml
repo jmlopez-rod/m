@@ -118,6 +118,30 @@ jobs:
         run: |
           mypy ./packages/python/tests
 
+  docs:
+    needs: setup
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache venv
+        uses: actions/cache@v3
+        with:
+          path: /opt/venv/m
+          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+
+       name: Install
+        run: poetry install --with docs
+
+      - name: build
+        run: cd packages/web && mkdocs build
+
   pylint:
     needs: setup
     runs-on: ubuntu-22.04
