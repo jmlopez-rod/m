@@ -136,7 +136,7 @@ jobs:
           path: /opt/venv/m
           key: venv-py311-${{ hashFiles('**/poetry.lock') }}
 
-       name: Install
+      - name: Install
         run: poetry install --with docs
 
       - name: build
