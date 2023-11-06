@@ -1,4 +1,4 @@
-"""Generate the code reference pages."""
+"""Generate the api pages."""
 
 from pathlib import Path
 
@@ -10,7 +10,7 @@ src = '../python'
 for path in sorted(Path(src).rglob("*.py")):  #
     module_path = path.relative_to(src).with_suffix("")  #
     doc_path = path.relative_to(src).with_suffix(".md")  #
-    full_doc_path = Path("reference", doc_path)  #
+    full_doc_path = Path("api", doc_path)  #
     parts = list(module_path.parts)
 
     if parts[0] != 'm':
@@ -44,5 +44,5 @@ for path in sorted(Path(src).rglob("*.py")):  #
     mkdocs_gen_files.set_edit_path(full_doc_path, Path("../") / path)  #
 
 
-with mkdocs_gen_files.open("reference/SUMMARY.md", "w") as nav_file:  #
+with mkdocs_gen_files.open("api/SUMMARY.md", "w") as nav_file:  #
     nav_file.writelines(nav.build_literate_nav())

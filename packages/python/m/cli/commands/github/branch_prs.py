@@ -8,6 +8,8 @@ class Arguments(BaseModel):
     example::
 
         $ m github branch_prs --owner jmlopez-rod --repo m release/0.18.0
+
+    ![preview](../../assets/branch_prs.svg)
     """
 
     pretty: bool = Arg(

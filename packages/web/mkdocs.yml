@@ -83,4 +83,4 @@ nav:
       - Welcome to m: index.md
       - Installation: install.md
   - CLI Commands: cli/
-  - Code Reference: reference/
+  - API Reference: api/

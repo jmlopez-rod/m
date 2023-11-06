@@ -54,4 +54,4 @@ mkdocstrings-python = "^1.7.2"
 mkdocs-gen-files = "^0.5.0"
 mkdocs-literate-nav = "^0.6.1"
 mkdocs-section-index = "^0.3.8"
-mkdocstrings-m-cli = {git = "https://github.com/jmlopez-rod/mkdocstrings-m_cli", rev = "setup"}
+mkdocstrings-m-cli = "1.0.0"
