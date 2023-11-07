@@ -51,3 +51,9 @@ to install the dependencies.
 
 There are several make targets to run. The most important one is
 `make ci-checks`. Run that since it is the closest to what the CI will run.
+
+Note that part of the documentation relies heavely on the docstrings provided to
+the functions, classes and modules in the library. Please run `make devDocs` to
+make sure that the documentation is up to date. The documentation site will be
+build and deployed to the `gh-pages` branch whenever a new commit is pushed to
+the `master` branch.
