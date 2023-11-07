@@ -28,4 +28,5 @@ jobs:
       - name: Deploy
         run: |-
           . ${{ env.VIRTUAL_ENV }}/bin/activate
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           cd packages/web && mkdocs gh-deploy
