@@ -29,4 +29,5 @@ jobs:
         run: |-
           . ${{ env.VIRTUAL_ENV }}/bin/activate
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch origin gh-pages
           cd packages/web && mkdocs gh-deploy --force
