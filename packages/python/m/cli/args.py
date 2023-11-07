@@ -35,7 +35,7 @@ def RemainderArgs(  # noqa: N802
 def Arg(  # noqa: N802, WPS211
     default: Any = PydanticUndefined,
     *,
-    help: str | None = _Unset,  # noqa: WPS125
+    help: str,  # noqa: WPS125
     positional: bool | None = None,
     required: bool | None = None,
     aliases: list[str] | None = None,
@@ -63,8 +63,9 @@ def Arg(  # noqa: N802, WPS211
         validator: Function to validate the argument.
 
     Returns:
-        A new [`FieldInfo`][pydantic.fields.FieldInfo], the return annotation is
-        `Any` so `Arg` can be used on type annotated fields without causing a typing error.
+        A new [`FieldInfo`][pydantic.fields.FieldInfo]. The return annotation is
+            `Any` so `Arg` can be used on type annotated fields without causing
+            a typing error.
     """
     extras = {
         'positional': positional,
@@ -75,12 +76,12 @@ def Arg(  # noqa: N802, WPS211
     }
     return FieldInfo.from_field(
         default,
-        description=help,
+        description=cleandoc(help),
         json_schema_extra={k: v for k, v in extras.items() if v is not None},
     )
 
 
-def ArgProxy(*args, **kwargs) -> Any:  # noqa: N802
+def ArgProxy(*args: Any, **kwargs: Any) -> Any:  # noqa: N802
     """Wrap function to provide all argparse inputs.
 
     This is a escape hatch and does not provide any typings.
@@ -91,8 +92,9 @@ def ArgProxy(*args, **kwargs) -> Any:  # noqa: N802
         kwargs: The keyword arguments to argparse add arguments.
 
     Returns:
-        A new [`FieldInfo`][pydantic.fields.FieldInfo], the return annotation is
-        `Any` so `Arg` can be used on type annotated fields without causing a typing error.
+        A new [`FieldInfo`][pydantic.fields.FieldInfo]. The return annotation is
+            `Any` so `Arg` can be used on type annotated fields without causing
+            a typing error.
     """
     return FieldInfo.from_field(
         json_schema_extra={

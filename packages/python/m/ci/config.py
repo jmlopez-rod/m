@@ -49,7 +49,7 @@ class Config(BaseModel):
 
     model_config = ConfigDict(use_enum_values=True)
 
-    def uses_git_flow(self):
+    def uses_git_flow(self) -> bool:
         """Check if configuration is using the git flow.
 
         Returns:
@@ -57,7 +57,7 @@ class Config(BaseModel):
         """
         return self.workflow == Workflow.git_flow
 
-    def uses_m_flow(self):
+    def uses_m_flow(self) -> bool:
         """Check if configuration is using the m flow.
 
         Returns:
@@ -65,7 +65,7 @@ class Config(BaseModel):
         """
         return self.workflow == Workflow.m_flow
 
-    def uses_free_flow(self):
+    def uses_free_flow(self) -> bool:
         """Check if configuration is using the free flow.
 
         Returns:

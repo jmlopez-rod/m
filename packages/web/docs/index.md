@@ -1,9 +1,3 @@
----
-sidebar_position: 0
-sidebar_label: Getting Started
-slug: /getting-started
----
-
 # Getting started
 
 The goal of `m` is to help maintain Github projects. This usually involves
@@ -22,17 +16,15 @@ All communication with repositories is done strictly with Github. `git` is used
 locally via `ssh` but any other user and pull request information is obtained
 via Github's APIs.
 
-:::caution
+!!! warning
 
-The git configuration should use `ssh` instead of `http`. This is done to avoid
-issues with the developers prefered git tool and/or user interface.
+    The git configuration should use `ssh` instead of `http`. This is done to avoid
+    issues with the developers prefered git tool and/or user interface.
 
-```
-[remote "origin"]
-	url = git@github.com:<owner>/<repo>.git
-```
-
-:::
+    ```
+    [remote "origin"]
+      url = git@github.com:<owner>/<repo>.git
+    ```
 
 ### Changelog
 

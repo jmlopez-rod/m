@@ -1,4 +1,0 @@
-position: 20 # float position is supported
-label: CLI commands
-collapsible: true # make the category collapsible
-collapsed: true

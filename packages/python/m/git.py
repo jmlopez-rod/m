@@ -213,7 +213,7 @@ def list_tags(pattern: str) -> Res[dict[str, str]]:
     )
 
 
-def remove_git_tag(tag) -> Res[str]:
+def remove_git_tag(tag: str) -> Res[str]:
     """Remove a git tag.
 
     It is important to remove the local tag before removing the remote tag.

@@ -42,7 +42,7 @@ def is_traceback_enabled() -> bool:
     return debug_stacktrace or debug_mode or ci_env
 
 
-def is_python_info_enabled():
+def is_python_info_enabled() -> bool:
     """Return True if the python file location should be displayed.
 
     By default this information is not displayed since the stacktrace already
@@ -190,7 +190,7 @@ def prompt_next_version(version: str, release_type: str) -> OneOf[Issue, str]:
 def prompt_choices(
     description: str,
     choices: Sequence[str],
-    as_list=True,
+    as_list: bool = True,
 ) -> str:
     """Prompt the user with a description until we get one of the choices.
 

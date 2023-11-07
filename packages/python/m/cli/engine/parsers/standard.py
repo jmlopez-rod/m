@@ -23,6 +23,9 @@ def handle_field(name: str, field: FieldInfo) -> FuncArgs:
     aliases = cast(list[str], extras.get('aliases', None))
 
     arg_default = default if default is MISSING else repr(default)
+    if 'env_var' in repr(validator):
+        # special case - do not repr
+        arg_default = f'env.{default}'
     args: AnyMap = {
         'help': argument_description(field.description or '', arg_default),
         'required': required,

@@ -1,0 +1,33 @@
+name: deploy-docs
+
+on:
+  push:
+    branches: [master]
+
+env:
+  VIRTUAL_ENV: /opt/venv/m
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install
+        run: |-
+          python3 -m venv ${{ env.VIRTUAL_ENV }}
+          poetry install --with docs
+
+      - name: Deploy
+        run: |-
+          . ${{ env.VIRTUAL_ENV }}/bin/activate
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch origin gh-pages
+          cd packages/web && mkdocs gh-deploy --force
