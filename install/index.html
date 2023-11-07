@@ -432,6 +432,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#argcomplete" class="md-nav__link">
+    argcomplete
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4488,6 +4495,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#argcomplete" class="md-nav__link">
+    argcomplete
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4511,8 +4525,29 @@
 packages from PyPI, try <a href="https://pip.pypa.io/en/stable/installation/">pip</a>, it works on all major platforms.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>jmlopez-m
 </code></pre></div>
+<p>To install from a branch run</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/jmlopez-rod/m.git@<span class="o">[</span>branch-name<span class="o">]</span>
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>poetry add git+https://github.com/jmlopez-rod/m.git@[branch-name]
+</code></pre></div>
 <h2 id="compatibility">Compatibility<a class="headerlink" href="#compatibility" title="Permanent link">&para;</a></h2>
 <p>Requires <code>python &gt;= 3.10</code>.</p>
+<h2 id="argcomplete"><code>argcomplete</code><a class="headerlink" href="#argcomplete" title="Permanent link">&para;</a></h2>
+<p>The <code>m</code> cli is made with <a href="https://pypi.org/project/argcomplete/">argcomplete</a>. To set it up follow the following
+depending on your shell</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># for fish shell</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>register-python-argcomplete<span class="w"> </span>--shell<span class="w"> </span>fish<span class="w"> </span>m<span class="w"> </span>&gt;<span class="w"> </span>/tmp/foo
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/foo<span class="w"> </span>/usr/share/fish/vendor_functions.d/m.fish
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># for bash shell</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>register-python-argcomplete<span class="w"> </span>--shell<span class="w"> </span>bash<span class="w"> </span>m<span class="w"> </span>&gt;<span class="w"> </span>/tmp/foo
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/foo<span class="w"> </span>/usr/share/bash-completion/completions/m
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># for zsh</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>register-python-argcomplete<span class="w"> </span>--shell<span class="w"> </span>zsh<span class="w"> </span>m<span class="w"> </span>&gt;<span class="w"> </span>/tmp/foo
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/foo<span class="w"> </span>/usr/share/zsh/site-functions/_m
+</code></pre></div>
 
 
 
