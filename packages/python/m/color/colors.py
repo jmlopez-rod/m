@@ -34,7 +34,7 @@ color_dict = {
 no_color_dict = {color_name: '' for color_name in color_dict}
 
 
-def color(*args: str, auto_end=True) -> str:
+def color(*args: str, auto_end: bool = True) -> str:
     r"""Color a message.
 
     Format the arguments by replacing the colors in the Colors class.

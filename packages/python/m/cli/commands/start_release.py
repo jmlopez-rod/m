@@ -1,5 +1,4 @@
-from m.cli import ArgProxy, BaseModel, command, run_main
-from m.core.io import env
+from m.cli import ArgProxy, BaseModel, command, env_var, run_main
 
 
 class Arguments(BaseModel):
@@ -14,8 +13,9 @@ class Arguments(BaseModel):
 
     github_token: str = ArgProxy(
         '--github-token',
-        default=env('GITHUB_TOKEN'),
-        help='Github PAT (default: env.GITHUB_TOKEN)',
+        default='GITHUB_TOKEN',
+        type=env_var,
+        help='Github personal access token with repo scope',
     )
 
 

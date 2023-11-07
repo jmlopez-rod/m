@@ -62,7 +62,7 @@ class CiFormatter(logging.Formatter):
         self.show_traceback = mio.is_traceback_enabled()
         self.debug_python = mio.is_python_info_enabled()
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         """Format a record as based on the CI environment.
 
         Args:

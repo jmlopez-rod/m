@@ -1,6 +1,6 @@
 import logging
 from functools import partial
-from typing import Callable, cast
+from typing import Any, Callable, cast
 
 from m.core import Good, Res
 from m.core.issue import Issue
@@ -13,7 +13,7 @@ PROMPT = 35
 class PromptLogger(logging.Logger):
     """Adding a prompt level to the logger."""
 
-    def __init__(self, name, level=logging.NOTSET):
+    def __init__(self, name: str, level: int = logging.NOTSET):
         """Override the Logger init function.
 
         Args:
@@ -23,7 +23,7 @@ class PromptLogger(logging.Logger):
         super().__init__(name, level)
         logging.addLevelName(PROMPT, 'PROMPT')
 
-    def prompt(self, msg, *args, **kwargs) -> None:
+    def prompt(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """Log 'msg % args' with severity 'PROMPT'.
 
         Args:

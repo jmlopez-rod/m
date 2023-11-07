@@ -22,7 +22,12 @@ from .handlers import (
     create_json_handler,
     create_yaml_handler,
 )
-from .validators import validate_json_payload, validate_payload
+from .validators import (
+    env_var,
+    env_var_or_empty,
+    validate_json_payload,
+    validate_payload,
+)
 
 # using as barrel file to export convenience functions
 # pydantic.BaseModel has been re-exported as a convenience to not
@@ -53,4 +58,6 @@ __all__ = (  # noqa: WPS410
     'MetaModule',
     'CommandModule',
     'CliCommands',
+    'env_var',
+    'env_var_or_empty',
 )

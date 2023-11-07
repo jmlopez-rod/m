@@ -1,6 +1,5 @@
-from m.cli import Arg, BaseModel, command, run_main
+from m.cli import Arg, BaseModel, command, env_var, run_main
 from m.cli.handlers import create_dict_handler
-from m.core.io import env
 
 
 class Arguments(BaseModel):
@@ -9,6 +8,8 @@ class Arguments(BaseModel):
     example::
 
         $ m github branch_prs --owner jmlopez-rod --repo m release/0.18.0
+
+    ![preview](../../assets/branch_prs.svg)
     """
 
     pretty: bool = Arg(
@@ -20,7 +21,8 @@ class Arguments(BaseModel):
         help='use yaml format',
     )
     owner: str = Arg(
-        default=env('GITHUB_REPOSITORY_OWNER'),
+        default='GITHUB_REPOSITORY_OWNER',
+        validator=env_var,
         help='repo owner',
     )
     repo: str = Arg(

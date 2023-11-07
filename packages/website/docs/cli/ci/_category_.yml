@@ -1,4 +1,0 @@
-position: 50 # float position is supported
-label: Continuos Integration
-collapsible: true # make the category collapsible
-collapsed: true
