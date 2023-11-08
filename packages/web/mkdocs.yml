@@ -39,6 +39,7 @@ plugins:
       scripts:
         - docs/gen_ref_pages.py
         - docs/gen_cli_pages.py
+        - docs/gen_changelog.py
   - literate-nav:
       nav_file: SUMMARY.md
   - section-index
@@ -88,6 +89,7 @@ nav:
   - Get Started:
       - Welcome to m: index.md
       - Installation: install.md
+      - Changelog: changelog.md
   - Github Actions:
       - Motivation: github-actions/intro.md
       - Tutorial: github-actions/tutorial.md

@@ -19,7 +19,7 @@ The format of this changelog is based on
 ## [0.29.4] <a name="0.29.4" href="#0.29.4">-</a> September 27, 2023
 
 - Wraps colors around `\[` and `\]` for colors in `$PS1`. See
-  https://unix.stackexchange.com/a/157884
+  <https://unix.stackexchange.com/a/157884>
 
 ## [0.29.3] <a name="0.29.3" href="#0.29.3">-</a> September 26, 2023
 
