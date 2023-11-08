@@ -93,7 +93,7 @@ def is_export(field: FieldInfo) -> bool:
         Whether the field is exported.
     """
     if isinstance(field.json_schema_extra, dict):
-        return field.json_schema_extra.get('export', False)
+        return bool(field.json_schema_extra.get('export', False))
     # internally we do not set json_schema_extra to something other than dict
     # If we are reaching the next step it is because of a custom field.
     return False  # pragma: no cover

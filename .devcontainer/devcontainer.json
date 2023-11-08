@@ -39,8 +39,6 @@
         "python.pythonPath": "/workspaces/m/packages/python",
         "python.languageServer": "Pylance",
         "python.linting.enabled": true,
-        "python.linting.pylintEnabled": true,
-        "python.linting.pylintArgs": ["--rc-file=.pylintrc"],
         "python.linting.flake8Enabled": true,
         "python.linting.flake8Args": ["--config=.flake8"],
         "python.linting.mypyEnabled": true,

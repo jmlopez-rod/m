@@ -48,6 +48,9 @@ plugins:
         m_cli:
           paths: [packages/python]
           import:
+            - https://docs.python.org/3/objects.inv
+            - https://docs.pytest.org/en/latest/objects.inv
+            - https://pytest-mock.readthedocs.io/en/stable/objects.inv # not working
             - https://docs.pydantic.dev/latest/objects.inv
 
 markdown_extensions:
@@ -70,6 +73,9 @@ markdown_extensions:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
+extra_css:
+  - css/mkdocstrings.css
+
 extra:
   social:
     - icon: fontawesome/brands/github-alt
@@ -82,5 +88,10 @@ nav:
   - Get Started:
       - Welcome to m: index.md
       - Installation: install.md
+  - Github Actions:
+      - Motivation: github-actions/intro.md
+      - Tutorial: github-actions/tutorial.md
+      - Testing: github-actions/testing.md
+      - API: github-actions/api.md
   - CLI Commands: cli/
   - API Reference: api/

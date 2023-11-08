@@ -1,8 +1,3 @@
----
-sidebar_position: 0
-sidebar_label: Motivation
----
-
 # Motivation
 
 Github actions does not support python as well as it does typescript projects.
@@ -15,7 +10,7 @@ file][gha-metadata].
 This file may be placed at the root of the repo. There may be other actions in
 the same repo but we'll cover them as we explore.
 
-The first thing to note is is that we are expected to create the yaml file
+The first thing to note is that we are expected to create the yaml file of
 inputs and outputs and define the composite steps in which we call our python
 scripts. Here is a quick example
 

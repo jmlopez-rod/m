@@ -49,7 +49,19 @@ class CamelModel(BaseModel):
 
 
 class KebabModel(BaseModel):
-    """Allows models to be defined with kebab case properties."""
+    """Allows models to be defined with kebab case properties.
+
+    Inputs and outputs need to be written using a `KebabModel` as a base class.
+    This is so that their definitions may be written using kebab casing in the
+    final `action.yaml`.
+
+    ```python
+    from m.github.actions import KebabModel, InArg
+
+    class MyInput(KebabModel):
+        my_input: str = InArg(help='description')
+    ```
+    """
 
     model_config = ConfigDict(
         alias_generator=to_kebab,

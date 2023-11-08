@@ -1,7 +1,8 @@
 import os
 import sys
+from collections.abc import Callable
 from inspect import signature
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
 
 from m.cli import run_main
 from m.cli.cli import default_issue_handler
@@ -77,7 +78,20 @@ def _result_handler(outputs: OutputModel) -> None:
 def run_action(main: Callable[[InputModel], Res[OutputModel]]) -> None:
     """Entry point for a GitHub Action.
 
-    This function is meant to be run in an `if __name__ == '__main__':` block.
+    This is the main function that should be used to run an action. It takes in
+    a function that takes in a [m.pydantic.KebabModel][] and returns a
+    `Res[KebabModel]`.
+
+    The only place where this function is needed is in the the if block
+
+    ```python
+    if __name__ == '__main__':
+        run_action(my_action)
+    ```
+
+    `mypy` will make sure that the you are providing the correct type of function
+    to `run_action`. Keep in mind, the function is generic and we should be writing
+    models for the inputs and outputs for all of our functions.
 
     Args:
         main: The main function of the GitHub Action.
@@ -102,8 +116,15 @@ def InArg(  # noqa: N802
 ) -> Any:
     """Force proper annotation of the input of a GitHub Action.
 
-    Note that by default all steps have access to the steps output, if we
-    want to make the output available to the action we need to `export` it.
+    Should be used to declare the input arguments of an action. It returns
+    [`Any`][typing.Any] to bypass `mypy`'s type checking. Similar to
+    [pydantic.fields.Field][] but it is tailored to help us write the inputs for
+    an action and its steps.
+
+    !!! note
+
+        By default all input arguments are required. If you want to make an
+        input not required then provide a default value.
 
     Args:
         help: Human-readable description.
@@ -111,7 +132,8 @@ def InArg(  # noqa: N802
 
     Returns:
         A new [`FieldInfo`][pydantic.fields.FieldInfo], the return annotation is
-        `Any` so `Arg` can be used on type annotated fields without causing a typing error.
+            `Any` so `InArg` can be used on type annotated fields without
+            causing typing errors.
     """
     args = {
         'description': help,
@@ -128,8 +150,9 @@ def OutArg(  # noqa: N802
 ) -> Any:
     """Force proper annotation of the output of a GitHub Action.
 
-    Note that by default all steps have access to the steps output, if we
-    want to make the output available to the action we need to `export` it.
+    !!! note
+        All steps have access to the steps output, if we want to make the output
+        available to the action we need to `export` it.
 
     Args:
         help: Human-readable description.
@@ -137,7 +160,8 @@ def OutArg(  # noqa: N802
 
     Returns:
         A new [`FieldInfo`][pydantic.fields.FieldInfo], the return annotation is
-        `Any` so `Arg` can be used on type annotated fields without causing a typing error.
+            `Any` so `Arg` can be used on type annotated fields without causing
+            a typing error.
     """
     return FieldInfo.from_field(
         description=help,

@@ -1,13 +1,8 @@
----
-sidebar_position: 10
-sidebar_label: Tutorial
----
-
 # Tutorial
 
 This document attempts to describe the process of creating a new project using
 the `m` cli to generate a new action. The end result can be seen in
-https://github.com/jmlopez-rod/gha-square-num-m.
+<https://github.com/jmlopez-rod/gha-square-num-m>.
 
 ## Create a new project
 
@@ -117,7 +112,8 @@ Now we can create the main step. This is the main entry point for the single
 action step.
 
 For every step we create we need to define inputs and output models. Since all
-the inputs will be coming from the github action we can use the `GithubInputs`.
+the inputs will be coming from the github action we can use the `GithubInputs`
+model.
 
 ```python
 from m.github.actions import KebabModel, OutArg
@@ -134,14 +130,12 @@ Each step will automatically export all of its outputs, but only some of those
 will be exported to the action itself. We may do so my setting `export=True` in
 in our output model.
 
-:::note
+!!! note
 
-One of the common issues when creating a new action is to forget to add the
-output from a step. There is usually some typo while writing
-`${{ steps.[step-id].outputs.[output-name]}}`. By declaring the outputs with a
-flag now we can forget about it.
-
-:::
+    One of the common issues when creating a new action is to forget to add the
+    output from a step. There is usually some typo while writing
+    `${{ steps.[step-id].outputs.[output-name]}}`. By declaring the outputs with a
+    flag now we can forget about it.
 
 Now that the inputs and outputs are defined we can create the main step.
 
@@ -192,9 +186,9 @@ def main_step(
 ```
 
 Note that with this we avoid having to import the `run` function and the outputs
-in the final `actions.py` file. This is a personal preference but it at this
-point we can do whatever we want as long as mypy and your linters allow it. The
-`RunStep` class can be imported from `m.github.actions`.
+in the final `actions.py` file. This is a personal preference but we can do
+whatever we want as long as mypy and your linters allow it. The `RunStep` class
+can be imported from `m.github.actions`.
 
 The final step is to run it.
 
@@ -267,7 +261,7 @@ easier.
 
 ### test_action.py
 
-We should at least one test file. One of our goals is to obtain 100% coverage.
+One of our goals is to obtain 100% coverage.
 
 ```python
 import pytest
@@ -303,30 +297,28 @@ def test_actions_instance() -> None:
 
 This file has two tests. One tests the `main.py` file and the other tests the
 `actions.py` file. The `test_m_gh_actions_api` is a parametrized test that can
-run the step with different paratmers. In this case we only run with `num` being
-`4`. Note that in this case we are getting closer to the script. We need to
-provide all inputs with the `INPUT_` prefix. Here we can see that we are also
-testing the stdout and the outputs. Try changing any of those values to make
-sure that the test fails. The final test is simple to make sure that the
-`actions.py` file actually declares the `actions` object. If we had declared a
-list we could assert that the object is a list and that it has a certain length.
+run the step with different parameters. In this case we only run with `num`
+being `4` We need to provide all inputs with the `INPUT_` prefix. Here we can
+see that we are also testing the stdout and the outputs. Try changing any of
+those values to make sure that the test fails. The final test is simple to make
+sure that the `actions.py` file actually declares the `actions` object. If we
+had declared a list we could assert that the object is a list and that it has a
+certain length.
 
-:::tip
+!!! tip
 
-If the step had errors under certain inputs we could also verify that those
-errors are reported. We can do so by adding `errors` to the test case.
+    If the step had errors under certain inputs we could also verify that those
+    errors are reported. We can do so by adding `errors` to the test case.
 
-```
-TCase(
-  ...,
-  errors=[
-    'some text in error',
-    'another text',
-  ],
-)
-```
-
-:::
+    ```
+    TCase(
+      ...,
+      errors=[
+        'some text in error',
+        'another text',
+      ],
+    )
+    ```
 
 In this way if we ever change the error messages then the tests will fail.
 
@@ -378,9 +370,9 @@ jobs:
 ```
 
 Note that we are using two different actions. One is the first action written in
-the "motivation" page and the other one is the one in this tutorial. The nice
-thing about this pattern is that the only failure when trying out the workflow
-was forgetting to have `m` installed. Other than that the action worked as
-expected.
+the [motivation](./intro.md) page and the other one is the one in this tutorial.
+The nice thing about this pattern is that the only failure when trying out the
+workflow was forgetting to have `m` installed. Other than that the action worked
+as expected.
 
 [actions/cache]: https://github.com/actions/cache

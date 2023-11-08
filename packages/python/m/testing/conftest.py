@@ -3,8 +3,8 @@ This module is provided to help with testing.
 
 The following external modules are expected to be available:
 
-- pytest
-- pytest_mock
+- [pytest][]
+- [pytest-mock](https://pytest-mock.readthedocs.io/en/latest/)
 """
 import os
 import runpy
@@ -34,17 +34,20 @@ def run_action_step(
     to the file `FAKE_GITHUB_OUTPUT.txt`. We can verify the contents of the file
     by looking at the 3rd output from the function. This is a dictionary mapping
     file names to contents. Please note that this testing function mocks
-    `m.core.rw.write_file` to obtain the file contents.
+    [m.core.rw.write_file][] to obtain the file contents.
 
     Args:
-        mocker: The mocker fixture.
-        py_file: The path to the python file to run.
-        exit_code: The expected exit code.
-        env_vars: The environment variables to set.
-        file_write_side_effect: Optional side effect to return from file_write.
+        mocker: A reference to the pytest `MockerFixture`.
+        py_file: The full path to the file that Github Actions will run.
+        exit_code: The expected exit code of the action. `0` means all is good.
+        env_vars: A dictionary of the environment variables that the action will
+            receive.
+        file_write_side_effect: This can be provided if we need to modify the
+            behavior of [m.core.rw.write_file][]. This is useful if we want to
+            test cases in which a file failed to write.
 
     Returns:
-        The standard out, standard error, and file writes.
+        The standard out, standard error, and files written by [m.core.rw.write_file][].
     """
     mocker.patch.dict(
         os.environ,
@@ -93,12 +96,11 @@ def run_action_test_case(
 ) -> None:
     """Execute an action step test case.
 
-    This is a helper function to run an action step test case. If there is a need
-    for other tests that are not captured by this we can copy this
-    function and modify it.
+    This is a commodity wrapper to help us run the action tests case. If we need
+    more control over the assertions we can then copy and modify the implementation.
 
     Args:
-        mocker: The mocker fixture.
+        mocker: A reference to the pytest `MockerFixture`.
         tcase: The test case.
     """
     stdout, stderr, file_writes = run_action_step(
