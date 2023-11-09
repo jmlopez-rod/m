@@ -12,3 +12,4 @@ packages/python/tests/blueprints/multi-arch/fixtures/gh-m.yaml
 packages/python/tests/blueprints/single-arch/fixtures/gh-m.yaml
 packages/python/tests/blueprints/multi-arch/fixtures/ci/_image-names.json
 packages/python/tests/blueprints/multi-arch/fixtures/ci/_image-tags.json
+packages/python/tests/github/actions/_fixtures/*.yaml

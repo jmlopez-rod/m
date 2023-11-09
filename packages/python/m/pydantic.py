@@ -23,6 +23,18 @@ def to_camel(snake_case: str) -> str:
     return ''.join([s[0].lower(), s[1:]])
 
 
+def to_kebab(snake_case: str) -> str:
+    """Transform a string in snake_case to kebab case.
+
+    Args:
+        snake_case: string in snake case.
+
+    Returns:
+        string in kebab case.
+    """
+    return snake_case.replace('_', '-', -1)
+
+
 class CamelModel(BaseModel):
     """Allows models to be defined with camel case properties.
 
@@ -32,6 +44,27 @@ class CamelModel(BaseModel):
 
     model_config = ConfigDict(
         alias_generator=to_camel,
+        populate_by_name=True,
+    )
+
+
+class KebabModel(BaseModel):
+    """Allows models to be defined with kebab case properties.
+
+    Inputs and outputs need to be written using a `KebabModel` as a base class.
+    This is so that their definitions may be written using kebab casing in the
+    final `action.yaml`.
+
+    ```python
+    from m.github.actions import KebabModel, InArg
+
+    class MyInput(KebabModel):
+        my_input: str = InArg(help='description')
+    ```
+    """
+
+    model_config = ConfigDict(
+        alias_generator=to_kebab,
         populate_by_name=True,
     )
 

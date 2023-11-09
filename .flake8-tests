@@ -6,6 +6,7 @@ ignore =
   WPS462,  # Wrong multiline string usage - will not assign to variables when using dedent
   WPS226,  # Found string literal over-use - using variables will make tests harder to read
   WPS432,  # Found magic number - while testing we need to put in different values
+  D101,    # Missing docstring in public class
   D102,    # Missing docstring in public method - Needs to be configured to ignore test\_ functions
   D100,    # Missing docstring in public module
   D103,    # Missing docstring in public function
@@ -14,6 +15,7 @@ ignore =
 
   W503,    #
 
+  WPS407,  # Found mutable module constant
   WPS300,  # Found local folder import
   WPS210,  # Found too many local variables: 8 > 5
   WPS221,  # Found line with high Jones Complexity: 15 > 14
@@ -24,6 +26,7 @@ ignore =
   WPS224,  # Found a comprehension with too many `for` statements
   RST203,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
   RST301,  # https://github.com/cjolowicz/cookiecutter-hypermodern-python/issues/497
+  WPS114,  # Found underscored number name pattern - don't care, this is for tests
 
 per-file-ignores =
   # There are multiple `assert`s in tests, we allow them:

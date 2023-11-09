@@ -6,14 +6,20 @@ export DEBUG_HTTP_INCLUDE_BODY=1
 SINGLE=true
 SINGLE=false
 
+# Make sure we run all test in the pipelines
+if [ "${CI:-false}" = 'true' ]; then
+  SINGLE=false
+fi
+
 if [ "$SINGLE" = 'false' ]; then
   coverage run --source packages/python/m -m pytest -p no:logging
   coverage report -m --fail-under 98
 else
-# To run specific tests:
-# python -m unittest discover -s packages/python -v -k tests.cli.commands.test_json.CliJsonTest
-# python -m pytest -vv -k test_m_npm
-  pytest -p no:logging packages/python -vv -k test_m_blueprints
+  # To run specific tests:
+  source="packages/python/m/github/actions"
+  filter="test_github_actions"
+  coverage run --source "$source" -m pytest -p no:logging packages/python -vv -k "$filter"
+  coverage report -m
 fi
 
 mkdir -p m/.m

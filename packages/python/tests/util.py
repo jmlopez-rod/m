@@ -35,7 +35,7 @@ def read_fixture_mock(
         name: The name of the fixture file.
         path: The directory of the fixture (defaults to ci/fixtures).
         mocker: The mocker instance.
-        _kwargs: Any other argument that may be passed to the open function.
+        kwargs: Any other argument that may be passed to the open function.
 
     Returns:
         A value to use as a mock for the `open` function.

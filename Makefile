@@ -5,7 +5,7 @@ tests:
 	packages/python/tests/run.sh
 
 mypy:
-	mypy packages/python/m & mypy packages/python/tests & mypy packages/web/docs
+	mypy packages/python/m & mypy packages/python/tests & mypy packages/web/docs && mypy packages/web/hooks
 
 localBuild:
 	m/scripts/build.sh

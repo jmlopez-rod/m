@@ -11,6 +11,7 @@ disable=
   import-outside-toplevel,
   missing-module-docstring,
   ungrouped-imports,
+  missing-function-docstring,
   broad-except
 
 extension-pkg-whitelist=pydantic

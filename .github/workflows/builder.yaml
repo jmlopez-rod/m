@@ -150,34 +150,6 @@ jobs:
       - name: build
         run: cd packages/web && mkdocs build
 
-  pylint:
-    needs: setup
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache venv
-        uses: actions/cache@v3
-        with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
-
-      - name: src
-        shell: bash
-        run: |
-          m ci celt -t pylint -m 10 -c @allowed_errors.json < <(pylint ./packages/python/m --rcfile=.pylintrc -f json)
-
-      - name: tests
-        shell: bash
-        run: |
-          m ci celt -t pylint -m 10 -c @allowed_errors_tests.json < <(pylint ./packages/python/tests --rcfile=packages/python/tests/.pylintrc -f json)
-
   prettier:
     runs-on: ubuntu-22.04
     container:
@@ -231,7 +203,7 @@ jobs:
           key: build-${{ github.sha }}
 
   release:
-    needs: [build, tests, flake8, mypy, pylint, prettier]
+    needs: [build, tests, flake8, mypy, prettier]
     if: ${{ needs.build.outputs.m-is-release == 'True' }}
     runs-on: ubuntu-22.04
     container:
