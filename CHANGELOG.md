@@ -16,6 +16,7 @@ The format of this changelog is based on
   when generating the documentation. This can be consider a breaking change in
   the CLI since it will no longer display the value of the environment.
 - Add github actions utilities to help us maintain Github actions.
+- Add `validate_file_exists` argparse validator.
 
 ## [0.29.4] <a name="0.29.4" href="#0.29.4">-</a> September 27, 2023
 

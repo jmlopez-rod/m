@@ -26,12 +26,14 @@ def _modify_header(line: str) -> str:
 
 
 def main():
-    changelog_content = open('../../CHANGELOG.md', 'r', encoding='utf-8').read()
+    with open('../../CHANGELOG.md', 'r', encoding='utf-8') as chlog:
+        changelog_content = chlog.read()
     new_changelog = [
         _modify_header(line)
         for line in changelog_content.splitlines()
     ]
     with mkdocs_gen_files.open(Path('changelog.md'), 'w') as fd:
         fd.write('\n'.join(new_changelog))
+
 
 main()

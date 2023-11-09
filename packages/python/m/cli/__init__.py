@@ -25,6 +25,7 @@ from .handlers import (
 from .validators import (
     env_var,
     env_var_or_empty,
+    validate_file_exists,
     validate_json_payload,
     validate_payload,
 )
@@ -45,6 +46,7 @@ __all__ = (  # noqa: WPS410
     'add_arg',
     'validate_json_payload',
     'validate_payload',
+    'validate_file_exists',
     'run_main',
     'exec_cli',
     'merge_cli_commands',

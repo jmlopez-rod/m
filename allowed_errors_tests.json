@@ -24,13 +24,5 @@
     "WPS121": 17,
     "WPS110": 31,
     "WPS425": 34
-  },
-  "allowedPylintRules": {
-    "unused-argument": 1,
-    "unnecessary-comprehension": 1,
-    "broad-exception-raised": 2,
-    "line-too-long": 2,
-    "duplicate-code": 6,
-    "use-dict-literal": 11
   }
 }

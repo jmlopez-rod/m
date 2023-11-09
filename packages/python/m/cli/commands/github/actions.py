@@ -1,4 +1,4 @@
-from m.cli import Arg, BaseModel, command, run_main
+from m.cli import Arg, BaseModel, command, run_main, validate_file_exists
 
 
 class Arguments(BaseModel):
@@ -8,28 +8,29 @@ class Arguments(BaseModel):
     of a python project. This is because when we run the action we will set
     the path to the directory containing the file.
 
-    By default it has been set to `src/actions.py` since this common case for
-    python projects.
+    By default it has been set to `src/actions.py` since this is a common case
+    for python projects.
 
     The `actions.py` can be name anything but it must contain a variable named
     `actions`. This variable must be an instance or list of
-    `m.github.actions.Action`.
+    [m.github.actions.Action][].
     """
 
     python_file: str = Arg(
         default='src/actions.py',
-        help='python script containing the `actions` variable',
+        help='Python script containing the `actions` variable.',
         positional=True,
+        validator=validate_file_exists,
     )
 
     check: bool = Arg(
         default=False,
-        help='check if generated files are up to date and skip writing them',
+        help='Check if generated files are up to date and skip writing them.',
     )
 
     show_traceback: bool = Arg(
         default=False,
-        help='Display traceback information in case of an error',
+        help='Display traceback information in case of an error.',
     )
 
 
@@ -42,7 +43,7 @@ def run(arg: Arguments) -> int:
 
     return run_main(
         lambda: build_actions(
-            arg.python_file,
+            actions_py_file=arg.python_file,
             check=arg.check,
             show_traceback=arg.show_traceback,
         ),

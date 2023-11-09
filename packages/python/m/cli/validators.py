@@ -131,3 +131,21 @@ def env_var_or_empty(arg_value: str) -> str:
     if arg_value == env_form:
         return os.environ.get(arg_value, '')
     return arg_value
+
+
+def validate_file_exists(path: str) -> str:
+    """Assert that a file exists.
+
+    Args:
+        path: The path to the file.
+
+    Raises:
+        ArgumentTypeError: If the file does not exist.
+
+    Returns:
+        The path if it exists.
+    """
+    path_inst = Path(path)
+    if path_inst.exists():
+        return path
+    raise ArgumentTypeError('file does not exist')

@@ -18,10 +18,9 @@ FILE_ISSUES = [
         name='bad_file',
         py_file='not_here.py',
         errors=[
-            '"message": "file does not exist"',
-            '"path": "not_here.py"',
+            'argument python_file: file does not exist',
         ],
-        exit_code=1,
+        exit_code=2,
     ),
     TCase(
         name='not_a_module',
