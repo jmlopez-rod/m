@@ -21,7 +21,8 @@ runs:
   steps:
     {steps}
 """
-EMPTY_DICT = ' {}'  # noqa: P103 - not a format string
+EMPTY_DICT = '{}'  # noqa: P103 - not a format string
+InputInfo = dict[str, str | bool]  # container for pydantic model properties
 
 
 class TemplateVars(BaseModel):
@@ -74,9 +75,9 @@ class ActionFile(BaseModel):
         Returns:
             A string to add to the Github action.
         """
-        all_inputs: dict[str, dict[str, str | bool]] = {}
+        all_inputs: dict[str, InputInfo] = {}
         for prop_name, prop_info in self.inputs.model_fields.items():
-            input_info: dict[str, str | bool] = {
+            input_info: InputInfo = {
                 'description': prop_info.description or '',
                 'required': prop_info.is_required(),
             }
@@ -85,7 +86,7 @@ class ActionFile(BaseModel):
                 input_info['default'] = default_val
             all_inputs[prop_info.alias or prop_name] = input_info
         if not all_inputs:
-            return EMPTY_DICT
+            return f' {EMPTY_DICT}'
         str_inputs = _indent(yaml.dumps(all_inputs), 1)
         return f'\n  {str_inputs}'
 
@@ -102,7 +103,7 @@ class ActionFile(BaseModel):
             A string to add to the Github action.
         """
         if not outputs:
-            return EMPTY_DICT
+            return f' {EMPTY_DICT}'
         raw_data = {
             output_name.replace('_', '-', -1): output_val.model_dump()
             for output_name, output_val in outputs.items()
