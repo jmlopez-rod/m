@@ -1,0 +1,6354 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../install/">
+      
+      
+        <link rel="next" href="../github-actions/intro/">
+      
+      
+      <link rel="icon" href="../assets/m_logo.svg">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+    
+    
+      
+        <title>Changelog - m</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4b4a2bd9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.356b1318.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../css/mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="brown" data-md-color-accent="deep-orange">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#changelog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="m" class="md-header__button md-logo" aria-label="m" data-md-component="logo">
+      
+  <img src="../assets/m_logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            m
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Changelog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="brown" data-md-color-accent="deep-orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="brown" data-md-color-accent="deep-orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jmlopez-rod/m" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jmlopez-rod/m
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href=".." class="md-tabs__link">
+          
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../github-actions/intro/" class="md-tabs__link">
+          
+  
+  Github Actions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../cli/blueprints/" class="md-tabs__link">
+          
+  
+  CLI Commands
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/m/" class="md-tabs__link">
+          
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="m" class="md-nav__button md-logo" aria-label="m" data-md-component="logo">
+      
+  <img src="../assets/m_logo.svg" alt="logo">
+
+    </a>
+    m
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jmlopez-rod/m" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jmlopez-rod/m
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Get Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Get Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Welcome to m
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#unreleased" class="md-nav__link">
+    Unreleased
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.4" class="md-nav__link">
+    0.29.4 -  September 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.3" class="md-nav__link">
+    0.29.3 -  September 26, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.2" class="md-nav__link">
+    0.29.2 -  September 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.1" class="md-nav__link">
+    0.29.1 -  September 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.0" class="md-nav__link">
+    0.29.0 -  September 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.28.0" class="md-nav__link">
+    0.28.0 -  September 14, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.3" class="md-nav__link">
+    0.27.3 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.2" class="md-nav__link">
+    0.27.2 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.1" class="md-nav__link">
+    0.27.1 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.0" class="md-nav__link">
+    0.27.0 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.26.0" class="md-nav__link">
+    0.26.0 -  September 09, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.25.2" class="md-nav__link">
+    0.25.2 -  September 06, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.25.1" class="md-nav__link">
+    0.25.1 -  September 05, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.25.0" class="md-nav__link">
+    0.25.0 -  September 05, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.24.0" class="md-nav__link">
+    0.24.0 -  September 03, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.23.0" class="md-nav__link">
+    0.23.0 -  August 21, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.22.1" class="md-nav__link">
+    0.22.1 -  July 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.22.0" class="md-nav__link">
+    0.22.0 -  July 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.21.0" class="md-nav__link">
+    0.21.0 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.20.2" class="md-nav__link">
+    0.20.2 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.20.1" class="md-nav__link">
+    0.20.1 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.20.0" class="md-nav__link">
+    0.20.0 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.3" class="md-nav__link">
+    0.19.3 -  April 14, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.2" class="md-nav__link">
+    0.19.2 -  April 10, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.1" class="md-nav__link">
+    0.19.1 -  March 29, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.0" class="md-nav__link">
+    0.19.0 -  March 21, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.18.1" class="md-nav__link">
+    0.18.1 -  March 15, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.18.0" class="md-nav__link">
+    0.18.0 -  March 15, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.17.0" class="md-nav__link">
+    0.17.0 -  March 14, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.16.1" class="md-nav__link">
+    0.16.1 -  March 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.16.0" class="md-nav__link">
+    0.16.0 -  March 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.15.2" class="md-nav__link">
+    0.15.2 -  March 04, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.15.1" class="md-nav__link">
+    0.15.1 -  February 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.15.0" class="md-nav__link">
+    0.15.0 -  February 24, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.14.0" class="md-nav__link">
+    0.14.0 -  February 20, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.13.0" class="md-nav__link">
+    0.13.0 -  February 18, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.12.2" class="md-nav__link">
+    0.12.2 -  February 09, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.12.1" class="md-nav__link">
+    0.12.1 -  February 02, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.12.0" class="md-nav__link">
+    0.12.0 -  February 01, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.11.2" class="md-nav__link">
+    0.11.2 -  October 13, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.11.1" class="md-nav__link">
+    0.11.1 -  September 30, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.11.0" class="md-nav__link">
+    0.11.0 -  September 30, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.10.1" class="md-nav__link">
+    0.10.1 -  September 12, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.10.0" class="md-nav__link">
+    0.10.0 -  August 01, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.9.0" class="md-nav__link">
+    0.9.0 -  June 21, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.8.0" class="md-nav__link">
+    0.8.0 -  March 15, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.7.1" class="md-nav__link">
+    0.7.1 -  March 07, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.7.0" class="md-nav__link">
+    0.7.0 -  March 06, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.6.0" class="md-nav__link">
+    0.6.0 -  September 14, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.5.0" class="md-nav__link">
+    0.5.0 -  September 11, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.4.0" class="md-nav__link">
+    0.4.0 -  September 02, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.3.1" class="md-nav__link">
+    0.3.1 -  September 02, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.3.0" class="md-nav__link">
+    0.3.0 -  September 01, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.2.0" class="md-nav__link">
+    0.2.0 -  August 25, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.1.0" class="md-nav__link">
+    0.1.0 -  August 21, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.0.3" class="md-nav__link">
+    0.0.3 -  August 14, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.0.2" class="md-nav__link">
+    0.0.2 -  July 28, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.0.1" class="md-nav__link">
+    0.0.1 -  July 05, 2021
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Github Actions
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Github Actions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-actions/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Motivation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-actions/tutorial/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-actions/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-actions/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    CLI Commands
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            CLI Commands
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/blueprints/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    blueprints
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/end_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    end_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    init
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/json/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    json
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/jsonq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jsonq
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/review_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    review_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/start_hotfix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    start_hotfix
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/start_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    start_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    ci
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            ci
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/ci/assert_branch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    assert_branch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/ci/bump_version/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    bump_version
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/ci/celt/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    celt
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/ci/env/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    env
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/ci/npm_tag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    npm_tag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/ci/release_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    release_setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    devcontainer
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            devcontainer
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/devcontainer/bashrc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    bashrc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/devcontainer/greet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    greet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/devcontainer/pnpm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pnpm
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/devcontainer/pnpm_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pnpm_setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/devcontainer/prompter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    prompter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/devcontainer/require_env_vars/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    require_env_vars
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_11" id="__nav_3_11_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    git
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_11">
+            <span class="md-nav__icon md-icon"></span>
+            git
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/git/branch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    branch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/git/current_sha/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    current_sha
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/git/first_sha/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    first_sha
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/git/status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    status
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/git/tag_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    tag_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_12" id="__nav_3_12_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    github
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_12">
+            <span class="md-nav__icon md-icon"></span>
+            github
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/actions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    actions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/branch_prs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    branch_prs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/build_sha/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    build_sha
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/ci/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ci
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/create_pr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    create_pr
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/latest_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    latest_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/merge_pr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    merge_pr
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/pr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pr
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/github/status/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    status
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    message
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            message
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/message/close/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    close
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/message/error/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    error
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/message/open/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    open
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/message/sibling_block/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    sibling_block
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/message/warn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    warn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_14" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_14" id="__nav_3_14_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    npm
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_14">
+            <span class="md-nav__icon md-icon"></span>
+            npm
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/npm/clean_tags/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    clean_tags
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    m
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1" id="__nav_4_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            m
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/ci/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    ci
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_1" id="__nav_4_1_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            ci
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/assert_branch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    assert_branch
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/ci/celt/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    celt
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_1_2" id="__nav_4_1_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            celt
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_2_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/ci/celt/core/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    core
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_1_2_1" id="__nav_4_1_1_2_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_4_1_1_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            core
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/core/io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    io
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/core/process/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    process
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/core/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/post_processor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    post_processor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_2_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/ci/celt/post_processors/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    post_processors
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_1_2_3" id="__nav_4_1_1_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_4_1_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            post_processors
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/post_processors/eslint/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    eslint
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/post_processors/pycodestyle/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pycodestyle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/post_processors/pylint/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pylint
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/post_processors/ruff/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ruff
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/celt/post_processors/typescript/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    typescript
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/ci/docker/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    docker
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_1_4" id="__nav_4_1_1_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            docker
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/docker_build/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    docker_build
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/env/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    env
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/filenames/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    filenames
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/gh_workflow_multi/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    gh_workflow_multi
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/gh_workflow_single/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    gh_workflow_single
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/shell_command/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    shell_command
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/shell_scripts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    shell_scripts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/tags/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    tags
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/end_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    end_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/git_env/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    git_env
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    init
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/m_blueprints/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    m_blueprints
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/m_env/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    m_env
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/release_env/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    release_env
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/release_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    release_setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/release_utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    release_utils
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/review_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    review_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/start_release/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    start_release
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/versioning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    versioning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/cli/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    cli
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2" id="__nav_4_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            cli
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/args/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    args
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cli
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/cli/engine/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    engine
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_3" id="__nav_4_1_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            engine
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/argparse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    argparse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/misc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    misc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_3_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/cli/engine/parsers/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    parsers
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_3_3" id="__nav_4_1_2_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_4_1_2_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            parsers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/parsers/boolean/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    boolean
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/parsers/positional/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    positional
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/parsers/proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    proxy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/parsers/remainder/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    remainder
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/parsers/standard/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    standard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/sys/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    sys
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/engine/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/handlers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    handlers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/cli/validators/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    validators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/color/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    color
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3" id="__nav_4_1_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            color
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/color/colors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    colors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/color/disable/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    disable
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/color/pygment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pygment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/core/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    core
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_4" id="__nav_4_1_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            core
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/fp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/http/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    http
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    io
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/issue/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    issue
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/json/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    json
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/maybe/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    maybe
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/one_of/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    one_of
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/rw/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rw
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/subprocess/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    subprocess
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/yaml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    yaml
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/core/yaml_fp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    yaml_fp
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_5" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/devcontainer/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    devcontainer
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_5" id="__nav_4_1_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            devcontainer
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/devcontainer/bashrc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    bashrc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/devcontainer/env/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    env
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/devcontainer/greet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    greet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/devcontainer/pnpm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pnpm
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/devcontainer/prompter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    prompter
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/git/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    git
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/github/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    github
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_7" id="__nav_4_1_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_7">
+            <span class="md-nav__icon md-icon"></span>
+            github
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_7_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/github/actions/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    actions
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_7_1" id="__nav_4_1_7_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_7_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            actions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/actions/action_file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    action_file
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/actions/actions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    actions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/actions/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    api
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/actions/builder/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    builder
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/actions/misc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    misc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/actions/system/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    api
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/ci/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ci
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/ci_dataclasses/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ci_dataclasses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/ci_graph_queries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ci_graph_queries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cli
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_7_7" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/github/graphql/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    graphql
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_7_7" id="__nav_4_1_7_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_7_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_7_7">
+            <span class="md-nav__icon md-icon"></span>
+            graphql
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/graphql/api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    api
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/graphql/enums/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    enums
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/graphql/generics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    generics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_7_7_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/github/graphql/queries/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    queries
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_7_7_4" id="__nav_4_1_7_7_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_4_1_7_7_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_7_7_4">
+            <span class="md-nav__icon md-icon"></span>
+            queries
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/graphql/queries/branch_prs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    branch_prs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/github/request/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    request
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_8" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/log/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    log
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_8" id="__nav_4_1_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_8">
+            <span class="md-nav__icon md-icon"></span>
+            log
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_8_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/log/ci_tools/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    ci_tools
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_8_1" id="__nav_4_1_8_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_8_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            ci_tools
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/ci_tools/ci_tools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ci_tools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_8_1_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/log/ci_tools/providers/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    providers
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_8_1_2" id="__nav_4_1_8_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="5" aria-labelledby="__nav_4_1_8_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_8_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            providers
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/ci_tools/providers/github/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    github
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/ci_tools/providers/local/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    local
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/ci_tools/providers/teamcity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    teamcity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/ci_tools/types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/config/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/formatters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    formatters
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/handlers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    handlers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/logger/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    logger
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/log/misc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    misc
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_9" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/npm/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    npm
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_9" id="__nav_4_1_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_9">
+            <span class="md-nav__icon md-icon"></span>
+            npm
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/npm/clean_tags/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    clean_tags
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/npm/cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cli
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/npm/tag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    tag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/pydantic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pydantic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_11" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/m/testing/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    testing
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_11" id="__nav_4_1_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            testing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/testing/conftest/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    conftest
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/testing/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/version/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    version
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Page contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Page contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#unreleased" class="md-nav__link">
+    Unreleased
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.4" class="md-nav__link">
+    0.29.4 -  September 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.3" class="md-nav__link">
+    0.29.3 -  September 26, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.2" class="md-nav__link">
+    0.29.2 -  September 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.1" class="md-nav__link">
+    0.29.1 -  September 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.29.0" class="md-nav__link">
+    0.29.0 -  September 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.28.0" class="md-nav__link">
+    0.28.0 -  September 14, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.3" class="md-nav__link">
+    0.27.3 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.2" class="md-nav__link">
+    0.27.2 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.1" class="md-nav__link">
+    0.27.1 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.27.0" class="md-nav__link">
+    0.27.0 -  September 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.26.0" class="md-nav__link">
+    0.26.0 -  September 09, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.25.2" class="md-nav__link">
+    0.25.2 -  September 06, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.25.1" class="md-nav__link">
+    0.25.1 -  September 05, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.25.0" class="md-nav__link">
+    0.25.0 -  September 05, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.24.0" class="md-nav__link">
+    0.24.0 -  September 03, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.23.0" class="md-nav__link">
+    0.23.0 -  August 21, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.22.1" class="md-nav__link">
+    0.22.1 -  July 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.22.0" class="md-nav__link">
+    0.22.0 -  July 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.21.0" class="md-nav__link">
+    0.21.0 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.20.2" class="md-nav__link">
+    0.20.2 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.20.1" class="md-nav__link">
+    0.20.1 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.20.0" class="md-nav__link">
+    0.20.0 -  April 27, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.3" class="md-nav__link">
+    0.19.3 -  April 14, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.2" class="md-nav__link">
+    0.19.2 -  April 10, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.1" class="md-nav__link">
+    0.19.1 -  March 29, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.19.0" class="md-nav__link">
+    0.19.0 -  March 21, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.18.1" class="md-nav__link">
+    0.18.1 -  March 15, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.18.0" class="md-nav__link">
+    0.18.0 -  March 15, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.17.0" class="md-nav__link">
+    0.17.0 -  March 14, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.16.1" class="md-nav__link">
+    0.16.1 -  March 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.16.0" class="md-nav__link">
+    0.16.0 -  March 13, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.15.2" class="md-nav__link">
+    0.15.2 -  March 04, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.15.1" class="md-nav__link">
+    0.15.1 -  February 25, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.15.0" class="md-nav__link">
+    0.15.0 -  February 24, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.14.0" class="md-nav__link">
+    0.14.0 -  February 20, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.13.0" class="md-nav__link">
+    0.13.0 -  February 18, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.12.2" class="md-nav__link">
+    0.12.2 -  February 09, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.12.1" class="md-nav__link">
+    0.12.1 -  February 02, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.12.0" class="md-nav__link">
+    0.12.0 -  February 01, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.11.2" class="md-nav__link">
+    0.11.2 -  October 13, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.11.1" class="md-nav__link">
+    0.11.1 -  September 30, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.11.0" class="md-nav__link">
+    0.11.0 -  September 30, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.10.1" class="md-nav__link">
+    0.10.1 -  September 12, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.10.0" class="md-nav__link">
+    0.10.0 -  August 01, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.9.0" class="md-nav__link">
+    0.9.0 -  June 21, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.8.0" class="md-nav__link">
+    0.8.0 -  March 15, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.7.1" class="md-nav__link">
+    0.7.1 -  March 07, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.7.0" class="md-nav__link">
+    0.7.0 -  March 06, 2022
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.6.0" class="md-nav__link">
+    0.6.0 -  September 14, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.5.0" class="md-nav__link">
+    0.5.0 -  September 11, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.4.0" class="md-nav__link">
+    0.4.0 -  September 02, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.3.1" class="md-nav__link">
+    0.3.1 -  September 02, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.3.0" class="md-nav__link">
+    0.3.0 -  September 01, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.2.0" class="md-nav__link">
+    0.2.0 -  August 25, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.1.0" class="md-nav__link">
+    0.1.0 -  August 21, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.0.3" class="md-nav__link">
+    0.0.3 -  August 14, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.0.2" class="md-nav__link">
+    0.0.2 -  July 28, 2021
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#0.0.1" class="md-nav__link">
+    0.0.1 -  July 05, 2021
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
+<p>The format of this changelog is based on
+<a href="http://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>. The project adheres to
+<a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning</a></p>
+<blockquote>
+<p>Major version zero (0.y.z) is for initial development. Anything may change at
+any time. The public API should not be considered stable.</p>
+</blockquote>
+<h2 id="unreleased"><a href="https://github.com/jmlopez-rod/m/compare/0.29.4...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Update text for autogenerated files</li>
+<li>Switch to <code>mkdocs</code>.</li>
+<li>Add <code>env_var_or_empty</code> and <code>env_var</code> argparse validators. These are necessary
+  so that we can avoid displaying the current value of the environment variable
+  when generating the documentation. This can be consider a breaking change in
+  the CLI since it will no longer display the value of the environment.</li>
+<li>Add github actions utilities to help us maintain Github actions.</li>
+<li>Add <code>validate_file_exists</code> argparse validator.</li>
+</ul>
+<h2 id="0.29.4"><a href="https://github.com/jmlopez-rod/m/compare/0.29.3...0.29.4">0.29.4</a> -  September 27, 2023<a class="headerlink" href="#0.29.4" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Wraps colors around <code>\[</code> and <code>\]</code> for colors in <code>$PS1</code>. See
+  <a href="https://unix.stackexchange.com/a/157884">https://unix.stackexchange.com/a/157884</a></li>
+</ul>
+<h2 id="0.29.3"><a href="https://github.com/jmlopez-rod/m/compare/0.29.2...0.29.3">0.29.3</a> -  September 26, 2023<a class="headerlink" href="#0.29.3" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Pydantic 2.4.1 no longer passes <code>json_schema_extra</code> in <code>Field</code> as is. Instead
+  it gets json serialized. The end result is that we cannot have functions in
+  it. The internal implementation in <code>m</code> has been changed so that we may
+  continue passing validators in that field. This should be better since we now
+  bypass a serialization step to find out the model schemas on the CLI.</li>
+</ul>
+<h2 id="0.29.2"><a href="https://github.com/jmlopez-rod/m/compare/0.29.1...0.29.2">0.29.2</a> -  September 25, 2023<a class="headerlink" href="#0.29.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Manifests jobs for multi-architecture builds may fail if there are too many of
+  them running at once. To avoid this we can specify <code>max_parallel_manifests</code> in
+  the docker configuration so that it will add it to the github workflow. see
+  more info at
+  https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#defining-the-maximum-number-of-concurrent-jobs</li>
+</ul>
+<h2 id="0.29.1"><a href="https://github.com/jmlopez-rod/m/compare/0.29.0...0.29.1">0.29.1</a> -  September 25, 2023<a class="headerlink" href="#0.29.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>compute proper architecture when running locally. We may need to add other
+  entries to the arch map.</li>
+</ul>
+<h2 id="0.29.0"><a href="https://github.com/jmlopez-rod/m/compare/0.28.0...0.29.0">0.29.0</a> -  September 25, 2023<a class="headerlink" href="#0.29.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>add <code>m blueprints</code>. This command combined with the <code>docker_config</code> field in
+  the <code>m</code> file will create a set of shell scripts that can be used to create,
+  tag, and push docker images. See <code>tests/blueprints</code> for examples on <code>m/m.yaml</code>
+  files and the scripts it creates in their respective <code>fixtures</code> directories.</li>
+</ul>
+<h2 id="0.28.0"><a href="https://github.com/jmlopez-rod/m/compare/0.27.3...0.28.0">0.28.0</a> -  September 14, 2023<a class="headerlink" href="#0.28.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>--major-only</code> option to <code>m git tag_release</code>. This option allows us to
+  only update the major version tag.</li>
+<li>This project is switching to only moving the <code>major</code> tag and drops the minor
+  version tag.</li>
+</ul>
+<h2 id="0.27.3"><a href="https://github.com/jmlopez-rod/m/compare/0.27.2...0.27.3">0.27.3</a> -  September 13, 2023<a class="headerlink" href="#0.27.3" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Typo on code. I hope this is the last hotfix for <code>m git tag_release</code>.</li>
+</ul>
+<h2 id="0.27.2"><a href="https://github.com/jmlopez-rod/m/compare/0.27.1...0.27.2">0.27.2</a> -  September 13, 2023<a class="headerlink" href="#0.27.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Fix <code>m git tag_release</code> when executing on github actions. Need to first fetch
+  the tag that needs to be deleted.</li>
+</ul>
+<h2 id="0.27.1"><a href="https://github.com/jmlopez-rod/m/compare/0.27.0...0.27.1">0.27.1</a> -  September 13, 2023<a class="headerlink" href="#0.27.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>No changes to library. This release is to verify that <code>m git tag_release</code>
+  works in github workflows. Please note that if you are running in a container
+  you will need to add</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git config --global --add safe.directory &quot;$GITHUB_WORKSPACE&quot;
+</code></pre></div>
+<p>before running <code>m git tag_release</code>.</p>
+<h2 id="0.27.0"><a href="https://github.com/jmlopez-rod/m/compare/0.26.0...0.27.0">0.27.0</a> -  September 13, 2023<a class="headerlink" href="#0.27.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>m git tag_release</code>. This command allows us to tag a release. It is meant
+  to be used after <code>m github release</code> to create git tags that keep track of the
+  major and minor versions of a project. It assumes that the version provided is
+  a valid semver of the form <code>x.y.z</code>.</li>
+</ul>
+<h2 id="0.26.0"><a href="https://github.com/jmlopez-rod/m/compare/0.25.2...0.26.0">0.26.0</a> -  September 09, 2023<a class="headerlink" href="#0.26.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>--section</code> to <code>m devcontainer bashrc</code> so that we may specify a bashrc
+  snippet that we want to print.</li>
+<li>Add <code>--bashrc</code> to <code>m ci env</code> to print a bashrc snippet.</li>
+</ul>
+<h2 id="0.25.2"><a href="https://github.com/jmlopez-rod/m/compare/0.25.1...0.25.2">0.25.2</a> -  September 06, 2023<a class="headerlink" href="#0.25.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>bashrc</code> code snippet avoids alias declaration in a CI environment.</li>
+</ul>
+<h2 id="0.25.1"><a href="https://github.com/jmlopez-rod/m/compare/0.25.0...0.25.1">0.25.1</a> -  September 05, 2023<a class="headerlink" href="#0.25.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Fix issues with <code>pnpm_setup</code> not creating a directory as well as virtual
+  environment for a project.</li>
+</ul>
+<h2 id="0.25.0"><a href="https://github.com/jmlopez-rod/m/compare/0.24.0...0.25.0">0.25.0</a> -  September 05, 2023<a class="headerlink" href="#0.25.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>devcontainer</code> command group to <code>m</code> cli. It includes</li>
+<li><code>bashrc</code>: used to print a snippet that should be source on a <code>.bashrc</code> file.</li>
+<li><code>greet</code>: displays a message with devcontainer information. To be used in the
+    <code>postStartCommand</code> section of a devcontainer file.</li>
+<li><code>pnpm_setup</code>: to be used in the <code>postStartCommand</code> to setup all the the
+    necessary symlinks for <code>pnpm</code> to be efficient in all docker containers
+    regardless of the host.</li>
+<li><code>pnpm</code>: a wrapper around <code>pnpm</code> to perform the <code>pnpm</code> command in a mounted
+    volume.</li>
+<li><code>prompter</code>: a command line prompt that can be used in bash to display the
+    current git status.</li>
+<li><code>require_env_vars</code>: meant to stop a bash script if the specified env vars
+    are not defined.</li>
+<li>Add <code>RemainderArgs</code> to <code>m.cli</code>. This is helpful to specify that we want to
+  obtain the rest of the arguments so that we may pass it to another process.</li>
+</ul>
+<h2 id="0.24.0"><a href="https://github.com/jmlopez-rod/m/compare/0.23.0...0.24.0">0.24.0</a> -  September 03, 2023<a class="headerlink" href="#0.24.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Any module can be used as a cli command. If the module is a package then we
+  can use the <code>__main__.py</code> file to define the cli commands.</li>
+<li>Deprecated <code>run_cli</code> usage. Instead use <code>exec_cli</code>. This was done so that we
+  can delegate the responsibility of coming up with cli commands to other
+  functions.</li>
+<li>If <code>run_cli</code> was using the <code>add_arg</code> parameter then define the <code>add_arguments</code>
+  function at the root of the command modules. See <code>m/cli/commands/__init__.py</code>
+  as an example.</li>
+<li>Add <code>import_cli_commands</code>. This function allows us to import cli commands from
+  a module and use them in the <code>exec_cli</code> function.</li>
+<li>Add <code>cli_commands</code>, <code>command_group</code> and <code>subcommands</code> to <code>m.cli</code>. These are
+  functions to help generate cli commands to be used in <code>exec_cli</code>.</li>
+<li>Add <code>merge_cli_commands</code> to <code>m.cli</code>. This function allows us to merge cli
+  commands from different modules to create a single cli command.</li>
+<li>Deprecate use of <code>name</code> parameter in <code>command</code> decorator. This is no longer
+  needed since we can use the module name as the command name or any other name
+  if manually defining the cli.</li>
+<li>Add <code>Meta</code> to help define information about a group of cli commands.</li>
+</ul>
+<h2 id="0.23.0"><a href="https://github.com/jmlopez-rod/m/compare/0.22.1...0.23.0">0.23.0</a> -  August 21, 2023<a class="headerlink" href="#0.23.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Migrated to <a href="https://docs.pydantic.dev/dev-v2/migration/">pydantic v2</a>.</li>
+<li>Add <code>ruff</code> support to <code>m ci celt</code> command.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>m<span class="w"> </span>ci<span class="w"> </span>celt<span class="w"> </span>-t<span class="w"> </span>ruff<span class="w"> </span>-c<span class="w"> </span>@config.json<span class="w"> </span>&lt;<span class="w"> </span>&lt;<span class="o">(</span>ruff<span class="w"> </span>check<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="o">[</span>dir<span class="o">])</span>
+</code></pre></div>
+<ul>
+<li>Added <code>m.cli.Arg</code> and <code>m.cli.ArgProxy</code>. These are replacements for pydantic's
+  <code>Field</code> since this function no longer supports the <code>extra</code> keyword arguments.</li>
+<li>Added <code>m.core.hone</code>. Helps avoid writing a lambda when trying to handle an
+  <code>Issue</code>. Instead of</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">res</span><span class="o">.</span><span class="n">flat_map_bad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">err</span><span class="p">:</span> <span class="n">issue</span><span class="p">(</span><span class="s1">&#39;new error message&#39;</span><span class="p">,</span> <span class="n">cause</span><span class="o">=</span><span class="n">err</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">))</span>
+</code></pre></div>
+<p>we can write</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">res</span><span class="o">.</span><span class="n">flat_map_bad</span><span class="p">(</span><span class="n">hone</span><span class="p">(</span><span class="s1">&#39;git stash failure&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">))</span>
+</code></pre></div>
+<ul>
+<li>Added <code>m.core.Res</code>. This is an alias for <code>OneOf[Issue, G]</code> so that we only
+  have to specify the type of the "Result" or "Response".</li>
+<li>Added <code>exception</code> method and other wrappers to the <code>Logger</code> class.</li>
+<li>Added <code>parse_model</code> and <code>load_model</code> to <code>m.pydantic</code>. These utilities allow us
+  to parse and load a data from files.</li>
+<li>Deprecated <code>add_arg</code>. Instead of</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>  <span class="n">prop</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>      <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>          <span class="s1">&#39;proxy&#39;</span><span class="p">:</span> <span class="n">add_arg</span><span class="p">(</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>              <span class="s1">&#39;--opt&#39;</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>              <span class="n">help</span><span class="o">=</span><span class="s1">&#39;help description&#39;</span><span class="p">,</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>          <span class="p">),</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>      <span class="p">},</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  <span class="p">)</span>
+</code></pre></div>
+<p>we can write</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>  <span class="n">prop</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ArgProxy</span><span class="p">(</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="s1">&#39;--opt&#39;</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;help description&#39;</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  <span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>OneOf</code> is no longer a base class for <code>Bad</code> and <code>Good</code>. Instead we use
+  <code>Union[Bad, Good]</code> to define a <code>OneOf</code>. Since python does not support type
+  narrowing in the negative case we have to rely on <code>isinstance</code> to check if an
+  object is <code>Good</code> or <code>Bad</code> and be able to access the <code>value</code> without having to
+  cast. See https://github.com/python/typing/discussions/1013.</li>
+<li>Deprecated <code>is_good</code> and <code>is_bad</code>. Instead use <code>isinstance</code> to check if an
+  object is <code>Good</code> or <code>Bad</code>. Doing so will prevent having to cast the object to
+  be able to extract the value when using <code>OneOf</code>.</li>
+</ul>
+<h2 id="0.22.1"><a href="https://github.com/jmlopez-rod/m/compare/0.22.0...0.22.1">0.22.1</a> -  July 27, 2023<a class="headerlink" href="#0.22.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>argcomplete</code> as a dependency.</li>
+</ul>
+<h2 id="0.22.0"><a href="https://github.com/jmlopez-rod/m/compare/0.21.0...0.22.0">0.22.0</a> -  July 27, 2023<a class="headerlink" href="#0.22.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Fix circular import bug. <code>python -c 'from m.core.io import env'</code> should not
+  fail.</li>
+<li>Completions for the <code>m</code> cli <a href="https://github.com/jmlopez-rod/m/pull/86">#86</a>.</li>
+</ul>
+<h2 id="0.21.0"><a href="https://github.com/jmlopez-rod/m/compare/0.20.2...0.21.0">0.21.0</a> -  April 27, 2023<a class="headerlink" href="#0.21.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The <code>build_tag_with_version</code> bumps the current version to the next minor
+  version and uses it when generating the m tag.</li>
+</ul>
+<h2 id="0.20.2"><a href="https://github.com/jmlopez-rod/m/compare/0.20.1...0.20.2">0.20.2</a> -  April 27, 2023<a class="headerlink" href="#0.20.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>no changes once again.</li>
+</ul>
+<h2 id="0.20.1"><a href="https://github.com/jmlopez-rod/m/compare/0.20.0...0.20.1">0.20.1</a> -  April 27, 2023<a class="headerlink" href="#0.20.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>no changes, making sure the release process works.</li>
+</ul>
+<h2 id="0.20.0"><a href="https://github.com/jmlopez-rod/m/compare/0.19.3...0.20.0">0.20.0</a> -  April 27, 2023<a class="headerlink" href="#0.20.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>update error message explaining <code>m.yaml</code> is missing.</li>
+<li>no longer publishing to npmjs or github</li>
+<li>improved devcontainer</li>
+<li>all files are formatted with prettier</li>
+</ul>
+<h2 id="0.19.3"><a href="https://github.com/jmlopez-rod/m/compare/0.19.2...0.19.3">0.19.3</a> -  April 14, 2023<a class="headerlink" href="#0.19.3" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>review_release</code> ignores previously closed prs.</li>
+</ul>
+<h2 id="0.19.2"><a href="https://github.com/jmlopez-rod/m/compare/0.19.1...0.19.2">0.19.2</a> -  April 10, 2023<a class="headerlink" href="#0.19.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Support python 3.11. <code>Foo.BAR</code> in Python 3.11 no longer returns the member
+  value "bar" when used in the format() function or f-strings the way that prior
+  Python versions used to. Instead, it returns the <code>Foo.BAR</code> member class.</li>
+<li>See https://blog.pecar.me/python-enum. For now the fix involves overriding the
+  magic method <code>__str__</code> but should consider using <code>StrEnum</code>.</li>
+</ul>
+<h2 id="0.19.1"><a href="https://github.com/jmlopez-rod/m/compare/0.19.0...0.19.1">0.19.1</a> -  March 29, 2023<a class="headerlink" href="#0.19.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Prevent failure when pull requests are done by accounts that may not have an
+  email.</li>
+</ul>
+<h2 id="0.19.0"><a href="https://github.com/jmlopez-rod/m/compare/0.18.1...0.19.0">0.19.0</a> -  March 21, 2023<a class="headerlink" href="#0.19.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>typescript</code> processor to <code>m ci celt</code>.</li>
+</ul>
+<h2 id="0.18.1"><a href="https://github.com/jmlopez-rod/m/compare/0.18.0...0.18.1">0.18.1</a> -  March 15, 2023<a class="headerlink" href="#0.18.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Fix pull request description for the git flow (bad comparison link).</li>
+<li>Yaml dumper handles string enums.</li>
+</ul>
+<h2 id="0.18.0"><a href="https://github.com/jmlopez-rod/m/compare/0.17.0...0.18.0">0.18.0</a> -  March 15, 2023<a class="headerlink" href="#0.18.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>m init</code> creates <code>m.yaml</code>.</li>
+<li>release tools handle <code>m.yaml</code> files as well as <code>m.json</code> files.</li>
+</ul>
+<h2 id="0.17.0"><a href="https://github.com/jmlopez-rod/m/compare/0.16.1...0.17.0">0.17.0</a> -  March 14, 2023<a class="headerlink" href="#0.17.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Deprecate <code>reviewRelease</code>. Instead use <code>m review_release</code>.</li>
+<li>Add <code>m review_release</code>. It creates the backport pull request first so that the
+  logs point to the build with actual contents (for git flow projects).</li>
+<li>Delegate <code>m</code> configuration validation to pydantic.</li>
+<li><code>m.cli.validate_json_payload</code> handles <code>yaml</code> files. Commands that use this
+  validator can now handle <code>.json</code>, <code>.yaml</code> and <code>.yml</code> extensions.</li>
+<li><code>m</code> configuration file is expected to have extension <code>.yaml</code>, <code>.yml</code> or
+  <code>.json</code>. Projects should continue using <code>.json</code> extension for now since
+  <code>reviewRelease</code> is is not aware of <code>m.yaml</code>.</li>
+<li>Removed bash test files - everything is covered via <code>pytest</code>.</li>
+</ul>
+<h2 id="0.16.1"><a href="https://github.com/jmlopez-rod/m/compare/0.16.0...0.16.1">0.16.1</a> -  March 13, 2023<a class="headerlink" href="#0.16.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>end_release</code> fails because default branch already exists.</li>
+</ul>
+<h2 id="0.16.0"><a href="https://github.com/jmlopez-rod/m/compare/0.15.2...0.16.0">0.16.0</a> -  March 13, 2023<a class="headerlink" href="#0.16.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Deprecate <code>endRelease</code>. Instead we can use <code>m end_release</code>.</li>
+<li>When ending a release it switches to the default branch.</li>
+<li>Previously a release could only be finished by the user who started it. This
+  can now be done by any user as long as they switch to the release/hotfix
+  branch and execute <code>m end_release</code>.</li>
+</ul>
+<h2 id="0.15.2"><a href="https://github.com/jmlopez-rod/m/compare/0.15.1...0.15.2">0.15.2</a> -  March 04, 2023<a class="headerlink" href="#0.15.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>m start_release</code> fails when a project has not done any releases. Command now
+  does an exception for the case when the latest release is <code>0.0.0</code> and avoids
+  checking for commits.</li>
+</ul>
+<h2 id="0.15.1"><a href="https://github.com/jmlopez-rod/m/compare/0.15.0...0.15.1">0.15.1</a> -  February 25, 2023<a class="headerlink" href="#0.15.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Require pygments &gt;= 2.14.0 and python &gt;= 3.10.</li>
+</ul>
+<h2 id="0.15.0"><a href="https://github.com/jmlopez-rod/m/compare/0.14.0...0.15.0">0.15.0</a> -  February 24, 2023<a class="headerlink" href="#0.15.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Deprecate <code>startRelease</code> and <code>startHotfix</code>. These two bash scripts have been
+  rewritten in python. Instead use can use <code>m start_release</code> and
+  <code>m start_hotfix</code>.</li>
+<li><code>m release_setup</code> has been switched to use a logger.</li>
+<li><code>yaml</code> output has been introduced as well as colors. Currently the only way to
+  disable colors is by using the env var <code>NO_COLOR=true</code>.</li>
+<li>All cli errors default to <code>yaml</code> format.</li>
+</ul>
+<h2 id="0.14.0"><a href="https://github.com/jmlopez-rod/m/compare/0.13.0...0.14.0">0.14.0</a> -  February 20, 2023<a class="headerlink" href="#0.14.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Update <code>m init</code> to provide information on what it does</li>
+<li>Logger formatter defaults to using colors. May be disabled with
+  <code>NO_COLOR=true</code> env var.</li>
+<li><code>m.log.colors</code> provides the <code>color</code> function to format any message with color.</li>
+</ul>
+<h2 id="0.13.0"><a href="https://github.com/jmlopez-rod/m/compare/0.12.2...0.13.0">0.13.0</a> -  February 18, 2023<a class="headerlink" href="#0.13.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Moved <code>ciTools</code> to the <code>m.log</code> module. From here on <code>print</code> statements will be
+  substituted by <code>logger.info</code>.</li>
+<li><code>run_main</code> renamed parameters, use <code>result_handler</code> and <code>issue_handler</code>.</li>
+<li>Introducing environment variables <code>DEBUG_M_[INSERT_SOMETHING_HERE]</code>. More on
+  that later in the docs. These are meant to make things a bit more verbose in a
+  local environment.</li>
+</ul>
+<h2 id="0.12.2"><a href="https://github.com/jmlopez-rod/m/compare/0.12.1...0.12.2">0.12.2</a> -  February 09, 2023<a class="headerlink" href="#0.12.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Fix <code>m ci npm_tag</code>: Versions with multiple digits not being properly matched.</li>
+</ul>
+<h2 id="0.12.1"><a href="https://github.com/jmlopez-rod/m/compare/0.12.0...0.12.1">0.12.1</a> -  February 02, 2023<a class="headerlink" href="#0.12.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>skip release to npmjs - previous job did not publish to pypi.</li>
+</ul>
+<h2 id="0.12.0"><a href="https://github.com/jmlopez-rod/m/compare/0.11.2...0.12.0">0.12.0</a> -  February 01, 2023<a class="headerlink" href="#0.12.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Using a devcontainer for local development and pipelines.</li>
+<li>100% python test coverage.</li>
+</ul>
+<p><em>Breaking Changes</em>:</p>
+<ul>
+<li>cli utilities no longer use <code>add_parser</code>, using <code>command</code> and pydantic model
+  instead.</li>
+<li><code>Issue.data</code> replaced by <code>Issue.context</code>.</li>
+</ul>
+<h2 id="0.11.2"><a href="https://github.com/jmlopez-rod/m/compare/0.11.1...0.11.2">0.11.2</a> -  October 13, 2022<a class="headerlink" href="#0.11.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Github graphql changed the order of releases. This hotfix is explicit about
+  the order in which we want them to obtain the latest release.</li>
+</ul>
+<h2 id="0.11.1"><a href="https://github.com/jmlopez-rod/m/compare/0.11.0...0.11.1">0.11.1</a> -  September 30, 2022<a class="headerlink" href="#0.11.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Revert version prefix. To specify prereleases in npm we need to do
+  <code>&gt;0.0.0-b &lt;0.0.1</code>. Using version <code>999.0.0-</code> would not target pre-releases so
+  using <code>0.0.0</code> is a shorter string.</li>
+</ul>
+<h2 id="0.11.0"><a href="https://github.com/jmlopez-rod/m/compare/0.10.1...0.11.0">0.11.0</a> -  September 30, 2022<a class="headerlink" href="#0.11.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Version prefix for non releases are now <code>999.0.0-</code>. This is done so that the
+  semver may work when installing pull request builds.</li>
+<li><code>fetch_response</code> has been added so that we may have access to the response
+  object as well. This is helpful when we need to inspect response headers.</li>
+</ul>
+<h2 id="0.10.1"><a href="https://github.com/jmlopez-rod/m/compare/0.10.0...0.10.1">0.10.1</a> -  September 12, 2022<a class="headerlink" href="#0.10.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add python 3.7 as a supported version.</li>
+</ul>
+<h2 id="0.10.0"><a href="https://github.com/jmlopez-rod/m/compare/0.9.0...0.10.0">0.10.0</a> -  August 01, 2022<a class="headerlink" href="#0.10.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>npm</code> cli command which allows the use of <code>clean_tag</code> subcommand.</li>
+<li>Remove deprecated function <code>call_main</code>, use <code>run_main</code>.</li>
+</ul>
+<h2 id="0.9.0"><a href="https://github.com/jmlopez-rod/m/compare/0.8.0...0.9.0">0.9.0</a> -  June 21, 2022<a class="headerlink" href="#0.9.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>build_tag_with_version</code> to <code>m</code> configuration: Allows build tags to use
+  the current version instead of <code>0.0.0</code>.</li>
+<li>Docusaurus have been introduced. There is no docs yet but the static site can
+  be accessed at https://jmlopez-rod.github.io/m/</li>
+</ul>
+<h2 id="0.8.0"><a href="https://github.com/jmlopez-rod/m/compare/0.7.1...0.8.0">0.8.0</a> -  March 15, 2022<a class="headerlink" href="#0.8.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Make <code>m</code>
+  <a href="https://mypy.readthedocs.io/en/stable/installed_packages.html#creating-pep-561-compatible-packages"><code>mypy</code> comptabible</a></li>
+<li>Linting and tests added.</li>
+</ul>
+<h2 id="0.7.1"><a href="https://github.com/jmlopez-rod/m/compare/0.7.0...0.7.1">0.7.1</a> -  March 07, 2022<a class="headerlink" href="#0.7.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Require <code>typing_extensions</code> on python installations.</li>
+</ul>
+<h2 id="0.7.0"><a href="https://github.com/jmlopez-rod/m/compare/0.6.0...0.7.0">0.7.0</a> -  March 06, 2022<a class="headerlink" href="#0.7.0" title="Permanent link">&para;</a></h2>
+<p><em>fixes</em>: <code>m ci celt</code> fails when project has no errors
+<a href="https://github.com/jmlopez-rod/m/commit/669bc5430a2fc8e343082165943e6f8b688eaaf0">669bc54</a></p>
+<p><em>changes</em>: Trying not to use <code>Popen</code> to make bash calls
+<a href="https://github.com/jmlopez-rod/m/commit/6babc6bee7bb6ec23e1301456f587e9bab2a688d">6babc6be</a></p>
+<p><em>features</em>: Publishing to <a href="https://www.npmjs.com/package/@jmlopez/m"><code>npmjs</code></a>
+and <a href="https://pypi.org/project/jmlopez-m/"><code>pypi</code></a>. Only releases are published
+to the public registries. In github we can access the package from prs and the
+latest on the <code>master</code> branch.</p>
+<h2 id="0.6.0"><a href="https://github.com/jmlopez-rod/m/compare/0.5.0...0.6.0">0.6.0</a> -  September 14, 2021<a class="headerlink" href="#0.6.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>m ci celt</code> has <code>-i</code> option to ignore error allowance. This is helpful when
+  working on single files or the whole project and we want to see all the errors
+  without having to edit the configuration.</li>
+<li><code>m ci celt</code> accepts <code>-1</code> as a valid value for the <code>-m</code> option. This will print
+  all the errors instead of partially showing them.</li>
+<li><code>-s</code> option in <code>celt</code> removes error allownances that are set to zero.</li>
+</ul>
+<h2 id="0.5.0"><a href="https://github.com/jmlopez-rod/m/compare/0.4.0...0.5.0">0.5.0</a> -  September 11, 2021<a class="headerlink" href="#0.5.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li><em>Breaking Change</em>: Renamed <code>m ci lint</code> to <code>m ci celt</code>.</li>
+<li><code>celt</code> cli command adds the following options:</li>
+<li><code>--full-message</code>: Display the whole error message (useful with pylint)</li>
+<li><code>--file-regex</code>: When provided it only displays errors of files matching it.</li>
+<li><code>--file-prefix</code>: A string of the form <code>[old]:[new]</code>. It modifies a file
+    prefix that matches <code>old</code> for <code>new</code>. Useful to display file paths when
+    running in docker.</li>
+<li><code>--stats-only</code>: Displays the current number of violations for each rule.</li>
+</ul>
+<h2 id="0.4.0"><a href="https://github.com/jmlopez-rod/m/compare/0.3.1...0.4.0">0.4.0</a> -  September 02, 2021<a class="headerlink" href="#0.4.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>m github latest_release</code> to check the latest version of a github repo.</li>
+<li>Fix issues with <code>startRelease.sh</code> and <code>startHotfix.sh</code> authenticating to
+  github by using the <code>latest_release</code> command.</li>
+</ul>
+<h2 id="0.3.1"><a href="https://github.com/jmlopez-rod/m/compare/0.3.0...0.3.1">0.3.1</a> -  September 02, 2021<a class="headerlink" href="#0.3.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Fix startRelease and startHotfix scripts. When starting a release, the script
+  cannot detect the latest version by fetching the tags when using the git-flow
+  because the latest tag is in the master branch not develop.</li>
+</ul>
+<h2 id="0.3.0"><a href="https://github.com/jmlopez-rod/m/compare/0.2.0...0.3.0">0.3.0</a> -  September 01, 2021<a class="headerlink" href="#0.3.0" title="Permanent link">&para;</a></h2>
+<p><strong>Breaking Changes</strong>:</p>
+<ul>
+<li>releaseFrom field is no longer used in the m configuration.</li>
+<li>To continue releasing versions we need to specify a "workflow":</li>
+<li>free_flow: No version, only tags.</li>
+<li>m_flow: Uses versions but only the master branch is needed.</li>
+<li>git_flow: Users versions and it uses master and develop branch.</li>
+<li>Removed <code>releaseSetup.sh</code>. Instead we should use:</li>
+<li><code>startRelease.sh</code> and <code>startHotfix.sh</code>.</li>
+</ul>
+<p><strong>Features</strong>:</p>
+<ul>
+<li>Add <code>reviewRelease.sh</code> to quickly commit the changes and open up a PR.</li>
+<li>Add <code>endRelease.sh</code> to merge the PR.</li>
+</ul>
+<h2 id="0.2.0"><a href="https://github.com/jmlopez-rod/m/compare/0.1.0...0.2.0">0.2.0</a> -  August 25, 2021<a class="headerlink" href="#0.2.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Add <code>-m, --max-lines</code> to <code>m ci lint</code> command. It allows us to specify the
+  maximum lines that the command should display per error. It defaults to 5.</li>
+<li>Fix releaseSetup.sh output. With the deprecation of <code>call_main</code> and a previous
+  change that was done to it, the releaseSetup and other commands display 0
+  after a successful run.</li>
+</ul>
+<h2 id="0.1.0"><a href="https://github.com/jmlopez-rod/m/compare/0.0.3...0.1.0">0.1.0</a> -  August 21, 2021<a class="headerlink" href="#0.1.0" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Order results from <code>m ci lint</code> based on the number of errors found.</li>
+<li>Add command line option to specify branch when creating a github release.</li>
+</ul>
+<h2 id="0.0.3"><a href="https://github.com/jmlopez-rod/m/compare/0.0.2...0.0.3">0.0.3</a> -  August 14, 2021<a class="headerlink" href="#0.0.3" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Issue objects can hide the traceback from displaying</li>
+<li>Add <code>format_seconds</code> function.</li>
+<li>Deprecate <code>call_main</code>: use <code>run_main</code></li>
+<li><code>run_main</code> allows us to handle the results and issues.</li>
+<li>
+<p><code>m ci lint</code> supports the output of</p>
+</li>
+<li>
+<p>eslint</p>
+</li>
+<li>pycodestyle</li>
+<li>pylint</li>
+</ul>
+<p>The tool allows us to make the linters continue with the ci process as long as
+  we do not introduce any more errors. See more details by checking the help
+  options <code>m ci lint -h</code>.</p>
+<h2 id="0.0.2"><a href="https://github.com/jmlopez-rod/m/compare/0.0.1...0.0.2">0.0.2</a> -  July 28, 2021<a class="headerlink" href="#0.0.2" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Adds github release command.</li>
+<li>releaseSetup.sh allows creation of release from any branch.</li>
+<li>Fixes issues with http module that may arise when a response is 500.</li>
+</ul>
+<h2 id="0.0.1"><a href="https://github.com/jmlopez-rod/m/compare/bf286e270e13c75dfed289a3921289092477c058...0.0.1">0.0.1</a> -  July 05, 2021<a class="headerlink" href="#0.0.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Provides basic utilities to create a CI/CD flow via the m cli.</li>
+<li>As a library, it facilities the creation of clis similar to m.</li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../install/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Installation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../github-actions/intro/" class="md-footer__link md-footer__link--next" aria-label="Next: Motivation">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Motivation
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2023 <a href="https://github.com/jmlopez-rod" target="_blank" rel="noopener">Manuel Lopez</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jmlopez-rod/m" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.copy.copy"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      
+    
+  </body>
+</html>
