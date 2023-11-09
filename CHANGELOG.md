@@ -15,6 +15,7 @@ The format of this changelog is based on
   so that we can avoid displaying the current value of the environment variable
   when generating the documentation. This can be consider a breaking change in
   the CLI since it will no longer display the value of the environment.
+- Add github actions utilities to help us maintain Github actions.
 
 ## [0.29.4] <a name="0.29.4" href="#0.29.4">-</a> September 27, 2023
 
