@@ -25,3 +25,19 @@ a.autorefs-external:hover::after {
   background-color: red;
   content: 'class';
 } */
+
+.mdx-badge__icon {
+  font-size: 0.85em;
+  padding: 0.25rem;
+  background: var(--md-accent-fg-color--transparent);
+  border-start-start-radius: 0.125rem;
+  border-end-start-radius: 0.125rem;
+}
+
+.mdx-badge__text {
+  font-size: 0.85em;
+  padding: 0.25rem 0.375rem;
+  border-start-end-radius: 0.125rem;
+  border-end-end-radius: 0.125rem;
+  box-shadow: 0 0 0 1px inset var(--md-accent-fg-color--transparent);
+}
