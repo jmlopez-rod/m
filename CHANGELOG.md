@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.31.0] <a name="0.31.0" href="#0.31.0">-</a> November 13, 2023
+
 - Add `run_if` field to [`RunStep`][m.github.actions.actions.RunStep] and
   [`UsesStep`][m.github.actions.actions.UsesStep]. This field allows us to
   specify a condition that must be met in order to execute the step.
@@ -493,7 +495,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.30.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.31.0...HEAD
+[0.31.0]: https://github.com/jmlopez-rod/m/compare/0.30.0...0.31.0
 [0.30.0]: https://github.com/jmlopez-rod/m/compare/0.29.4...0.30.0
 [0.29.4]: https://github.com/jmlopez-rod/m/compare/0.29.3...0.29.4
 [0.29.3]: https://github.com/jmlopez-rod/m/compare/0.29.2...0.29.3
