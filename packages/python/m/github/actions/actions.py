@@ -1,6 +1,5 @@
 import re
 from functools import partial
-from re import Match
 from textwrap import dedent
 from typing import Callable, Generic, TypeVar, cast
 
@@ -25,7 +24,8 @@ InputModel = TypeVar('InputModel', bound=KebabModel)
 OutputModel = TypeVar('OutputModel', bound=KebabModel)
 logger = Logger('m.github.actions')
 
-def _replace_values(available_values: dict[str, str], match: Match) -> str:
+
+def _replace_values(available_values: dict[str, str], match: re.Match) -> str:
     step_id, arg_name = match.groups()
     key = f'{step_id}.{arg_name}'
     if key not in available_values:
@@ -38,8 +38,10 @@ def _run_if(condition: str | None, available_values: dict[str, str]) -> str:
     if condition:
         replace = partial(_replace_values, available_values)
         with_replacements = re.sub(
-            r"\$([\w-]+).([\w-]+)",
-            replace, condition, flags = re.I | re.M
+            r'\$([\w-]+).([\w-]+)',
+            replace,
+            condition,
+            flags=re.I | re.M,
         )
         run_if = f'\n  if: {with_replacements}'
     return run_if
