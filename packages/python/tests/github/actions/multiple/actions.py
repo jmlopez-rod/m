@@ -17,9 +17,13 @@ actions = [
                 setup_in_1='inputs.arg_1',
                 setup_in_2="pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}",
             )),
-            gha_one_step('external', ExternalActionInputs(
-                external_in='setup.setup_out_1',
-            )),
+            gha_one_step(
+                'external',
+                ExternalActionInputs(
+                    external_in='setup.setup_out_1',
+                ),
+                run_if='$setup.setup_out_1 == true && $inputs.arg-1 == true',
+            ),
             main_step('main', MainInputs(
                 main_in='external.external_2',
             )),

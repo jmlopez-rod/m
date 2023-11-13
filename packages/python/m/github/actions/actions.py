@@ -1,7 +1,11 @@
+import re
+from functools import partial
+from re import Match
 from textwrap import dedent
 from typing import Callable, Generic, TypeVar, cast
 
 from m.core import Good, Res, issue
+from m.log import Logger
 from m.pydantic import KebabModel
 from pydantic import BaseModel
 from pydantic.fields import Field
@@ -19,6 +23,26 @@ from .misc import (
 
 InputModel = TypeVar('InputModel', bound=KebabModel)
 OutputModel = TypeVar('OutputModel', bound=KebabModel)
+logger = Logger('m.github.actions')
+
+def _replace_values(available_values: dict[str, str], match: Match) -> str:
+    step_id, arg_name = match.groups()
+    key = f'{step_id}.{arg_name}'
+    if key not in available_values:
+        logger.warning(f'Unknown step value: {key}')
+    return available_values.get(key, key)
+
+
+def _run_if(condition: str | None, available_values: dict[str, str]) -> str:
+    run_if = ''
+    if condition:
+        replace = partial(_replace_values, available_values)
+        with_replacements = re.sub(
+            r"\$([\w-]+).([\w-]+)",
+            replace, condition, flags = re.I | re.M
+        )
+        run_if = f'\n  if: {with_replacements}'
+    return run_if
 
 
 class RunStep(BaseModel, Generic[InputModel, OutputModel]):
@@ -41,6 +65,11 @@ class RunStep(BaseModel, Generic[InputModel, OutputModel]):
     """
 
     id: str = Field(description='The id of the step.')
+
+    run_if: str | None = Field(
+        default=None,
+        description='The condition to run the step.',
+    )
 
     run: Callable[[InputModel], Res[OutputModel]] = Field(
         description='The function passed to [`run_action`][m.github.actions.api.run_action].',
@@ -73,10 +102,11 @@ class RunStep(BaseModel, Generic[InputModel, OutputModel]):
             A string to add to the Github action.
         """
         template = """\
-            - id: {id}
+            - id: {id}{run_if}
               shell: bash{env}
               run: PYTHONPATH="$GITHUB_ACTION_PATH{py_path}" python -m {mod}
         """
+        run_if = _run_if(self.run_if, available_values)
         # mypy has trouble seeing that its bound to KebabModel
         self_args = cast(KebabModel, self.args)
         all_args = self_args.model_dump() if self_args else {}
@@ -92,6 +122,7 @@ class RunStep(BaseModel, Generic[InputModel, OutputModel]):
         return dedent(template).format(
             id=self.id,
             env=env,
+            run_if=run_if,
             py_path=py_path,
             mod=self.run.__module__,
         ).rstrip()
@@ -124,6 +155,11 @@ class UsesStep(BaseModel, Generic[InputModel, OutputModel]):
     """  # noqa: D301, D300 - Angry with slash but we need to escape them
 
     id: str = Field(description='The step id.')
+
+    run_if: str | None = Field(
+        default=None,
+        description='The condition to run the step.',
+    )
 
     uses: str = Field(description='A string referencing an action.')
 
@@ -162,9 +198,10 @@ class UsesStep(BaseModel, Generic[InputModel, OutputModel]):
             A string to add to the Github action.
         """
         template = """\
-            - id: {id}
+            - id: {id}{run_if}
               uses: {uses}{env}
         """
+        run_if = _run_if(self.run_if, available_values)
         # mypy has trouble seeing that its bound to KebabModel
         self_args = cast(KebabModel, self.args)
         all_args = self_args.model_dump() if self_args else {}
@@ -182,6 +219,7 @@ class UsesStep(BaseModel, Generic[InputModel, OutputModel]):
             env = f'\n  with:\n{arg_lines}'
         return dedent(template).format(
             id=self.id,
+            run_if=run_if,
             uses=self.uses,
             env=env,
         ).rstrip()
@@ -205,7 +243,7 @@ class Action(BaseModel):
 
     name: str = Field(description='The name of the action.')
 
-    description: str = Field(description='Short decription for the action.')
+    description: str = Field(description='Short description for the action.')
 
     inputs: type[KebabModel] | None = Field(description="""
         A model describing the inputs for the action. If the action does not
