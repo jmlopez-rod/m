@@ -129,6 +129,7 @@ CHECKS = [
         ],
         errors=[
             '"message": "unable-to-read-file"',
+            '[WARNING] [09:33:09 PM - Nov 29, 1973]: Unknown step value: inputs.arg-1',
         ],
     ),
 ]

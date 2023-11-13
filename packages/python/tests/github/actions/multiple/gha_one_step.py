@@ -17,9 +17,11 @@ class ExternalActionOutputs(KebabModel):
 def gha_one_step(
     step_id: str,
     args: ExternalActionInputs,
+    run_if: str | None = None,
 ) -> UsesStep[ExternalActionInputs, ExternalActionOutputs]:
     return UsesStep[ExternalActionInputs, ExternalActionOutputs](
         id=step_id,
+        run_if=run_if,
         uses='jmlopez-rod/gha-one-step@v0.1.0',
         inputs=ExternalActionInputs,
         outputs=ExternalActionOutputs,

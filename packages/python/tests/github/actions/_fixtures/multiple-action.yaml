@@ -39,6 +39,7 @@ runs:
         INPUT_SETUP_IN_3: setup_in_3
       run: PYTHONPATH="$GITHUB_ACTION_PATH/packages/python/tests/github/actions" python -m multiple.setup
     - id: external
+      if: steps.setup.outputs.setup-out-1 == true && inputs.arg-1 == true
       uses: jmlopez-rod/gha-one-step@v0.1.0
       with:
         external-in: ${{ steps.setup.outputs.setup-out-1 }}
