@@ -9,6 +9,12 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.31.1] <a name="0.31.1" href="#0.31.1">-</a> November 14, 2023
+
+- Compatibility with `pydantic` 2.5.
+- Devtools: Set mypy to 1.6.1 since newest version complains about some
+  annotations. To be worked out in the next version.
+
 ## [0.31.0] <a name="0.31.0" href="#0.31.0">-</a> November 13, 2023
 
 - Add `run_if` field to [`RunStep`][m.github.actions.actions.RunStep] and
@@ -495,7 +501,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.31.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.31.1...HEAD
+[0.31.1]: https://github.com/jmlopez-rod/m/compare/0.31.0...0.31.1
 [0.31.0]: https://github.com/jmlopez-rod/m/compare/0.30.0...0.31.0
 [0.30.0]: https://github.com/jmlopez-rod/m/compare/0.29.4...0.30.0
 [0.29.4]: https://github.com/jmlopez-rod/m/compare/0.29.3...0.29.4

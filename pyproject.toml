@@ -42,7 +42,7 @@ pytest-mock = "^3.10.0"
 pydantic = "^2.1.0"
 Pygments = "^2.15.1"
 types-Pygments = "^2.15.0.0"
-mypy = "^1.2.0"
+mypy = "1.6.1"
 argcomplete = "^3.0.8"
 ruff = "^0.0.285"
 

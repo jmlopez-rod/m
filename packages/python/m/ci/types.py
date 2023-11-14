@@ -13,6 +13,14 @@ class Branches(str, Enum):  # noqa: WPS600
     release = 'release'
     hotfix = 'hotfix'
 
+    def __str__(self: 'Branches') -> str:
+        """Return the string representation of the Branch.
+
+        Returns:
+            The string representation of the Branch.
+        """
+        return self.value
+
 
 class Workflow(str, Enum):  # noqa: WPS600
     """Supported workflows."""
