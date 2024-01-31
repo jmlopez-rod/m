@@ -60,7 +60,7 @@ class CiDataclassesTest(FpTestCase):
         associated_pr.pr_branch = 'some-feature'
         self.assertFalse(commit.is_release(release_prefix))
         # Release
-        associated_pr.pr_branch = 'release'
+        associated_pr.pr_branch = 'release/1.2.3'
         self.assertTrue(commit.is_release(release_prefix))
 
     def test_pr_is_release_pr(self) -> None:
@@ -69,7 +69,7 @@ class CiDataclassesTest(FpTestCase):
         self.assertFalse(pr.is_release_pr(None))
         # Not a release pr due to branches not matching
         release_prefix = 'release'
-        pr.pr_branch = 'some-feature'
+        pr.pr_branch = 'release'
         self.assertFalse(pr.is_release_pr(release_prefix))
         # Release PR
         pr.pr_branch = 'release/1.2.3'

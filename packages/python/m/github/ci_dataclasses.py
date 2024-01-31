@@ -60,7 +60,8 @@ class Commit(BaseModel):
         """
         if not release_prefix:
             return False
-        return self.get_pr_branch().startswith(release_prefix)
+        return re.search(release_prefix, self.get_pr_branch) is not None
+
 
 
 class PullRequest(BaseModel):
@@ -90,8 +91,7 @@ class PullRequest(BaseModel):
         """
         if not release_prefix:
             return False
-        release_regexp = "release/\d+\.\d+\.\d+"
-        return re.search(release_regexp, self.pr_branch) is not None
+        return re.search(release_prefix, self.pr_branch) is not None
 
 
 class Release(BaseModel):

@@ -10,7 +10,7 @@ class Branches(str, Enum):  # noqa: WPS600
 
     master = 'master'
     develop = 'develop'
-    release = 'release'
+    release = '"release/\d+\.\d+\.\d+"'
     hotfix = 'hotfix'
 
     def __str__(self: 'Branches') -> str:
