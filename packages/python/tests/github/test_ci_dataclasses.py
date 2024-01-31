@@ -72,5 +72,5 @@ class CiDataclassesTest(FpTestCase):
         pr.pr_branch = 'some-feature'
         self.assertFalse(pr.is_release_pr(release_prefix))
         # Release PR
-        pr.pr_branch = 'release'
+        pr.pr_branch = 'release/1.2.3'
         self.assertTrue(pr.is_release_pr(release_prefix))

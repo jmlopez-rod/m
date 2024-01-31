@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional
 
 from m.pydantic import CamelModel
@@ -89,7 +90,8 @@ class PullRequest(BaseModel):
         """
         if not release_prefix:
             return False
-        return self.pr_branch.startswith(release_prefix)
+        release_regexp = "release/\d+\.\d+\.\d+"
+        return re.search(release_regexp, self.pr_branch) is not None
 
 
 class Release(BaseModel):
