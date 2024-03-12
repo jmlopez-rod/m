@@ -33,7 +33,7 @@
               "body": "testing commits",
               "baseRefName": "master",
               "baseRefOid": "174646b40adabe5ecadc3036d7c977fd726d99d0",
-              "headRefName": "hotfix",
+              "headRefName": "hotfix/1.1.1",
               "headRefOid": "1efe314a67cf65d36ddad7881bf9359dc5588f8f",
               "merged": true
             }
