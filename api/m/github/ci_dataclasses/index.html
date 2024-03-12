@@ -5590,7 +5590,7 @@
 <a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">        &quot;&quot;&quot;</span>
 <a id="__codelineno-0-60" name="__codelineno-0-60"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a>            <span class="k">return</span> <span class="kc">False</span>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pr_branch</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">release_prefix</span><span class="p">)</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pr_branch</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -5777,7 +5777,7 @@
 <a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
 <a id="__codelineno-0-61" name="__codelineno-0-61"></a>        <span class="k">return</span> <span class="kc">False</span>
-<a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pr_branch</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">release_prefix</span><span class="p">)</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pr_branch</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -6209,7 +6209,7 @@
 <a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">        &quot;&quot;&quot;</span>
 <a id="__codelineno-0-90" name="__codelineno-0-90"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
 <a id="__codelineno-0-91" name="__codelineno-0-91"></a>            <span class="k">return</span> <span class="kc">False</span>
-<a id="__codelineno-0-92" name="__codelineno-0-92"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">release_prefix</span><span class="p">)</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -6319,7 +6319,7 @@
 <a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-90" name="__codelineno-0-90"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
 <a id="__codelineno-0-91" name="__codelineno-0-91"></a>        <span class="k">return</span> <span class="kc">False</span>
-<a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">release_prefix</span><span class="p">)</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
