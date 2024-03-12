@@ -22,7 +22,7 @@
         "oid": "1efe314a67cf65d36ddad7881bf9359dc5588f8f"
       },
       "pullRequest": {
-        "headRefName": "hotfix",
+        "headRefName": "hotfix/1.1.2",
         "headRefOid": "1efe314a67cf65d36ddad7881bf9359dc5588f8f",
         "baseRefName": "develop",
         "baseRefOid": "174646b40adabe5ecadc3036d7c977fd726d99d0",

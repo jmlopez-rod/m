@@ -59,7 +59,7 @@ class Commit(BaseModel):
         """
         if not release_prefix:
             return False
-        return self.get_pr_branch().startswith(release_prefix)
+        return self.get_pr_branch().startswith(f'{release_prefix}/')
 
 
 class PullRequest(BaseModel):
@@ -89,7 +89,7 @@ class PullRequest(BaseModel):
         """
         if not release_prefix:
             return False
-        return self.pr_branch.startswith(release_prefix)
+        return self.pr_branch.startswith(f'{release_prefix}/')
 
 
 class Release(BaseModel):
