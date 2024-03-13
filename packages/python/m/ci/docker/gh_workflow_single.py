@@ -31,7 +31,7 @@ env:{global_env}
 
 jobs:
   blueprints:
-    runs-on: {default_runner}
+    runs-on: {default_runner}{container}
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -61,6 +61,8 @@ class TemplateVars(BaseModel):
     ci_dir: str
 
     default_runner: str
+
+    container: str
 
     global_env: str
 
@@ -92,6 +94,8 @@ class Workflow(BaseModel):
     extra_build_steps: list[dict[str, Any]] | None
 
     extra_inputs: dict[str, GithubWorkflowInput] | None
+
+    container: dict[str, Any] | None
 
     images: list[DockerImage]
 
@@ -145,6 +149,19 @@ class Workflow(BaseModel):
         lines.append(f'\n      {inputs_str}')
         return '\n'.join(lines).rstrip()
 
+    def container_str(self: 'Workflow') -> str:
+        """Generate a string specifying a container to run on.
+
+        Returns:
+            A string to add to the Github workflow.
+        """
+        if not self.container:
+            return ''
+        lines: list[str] = ['\n    container:']
+        content_str = _indent(yaml.dumps(self.container), 3)
+        lines.append(f'      {content_str}')
+        return '\n'.join(lines).rstrip()
+
     def build_steps_str(self: 'Workflow') -> str:
         """Generate a github action str for the build steps.
 
@@ -184,5 +201,6 @@ class Workflow(BaseModel):
             docker_login=self.docker_login_str(),
             build_steps=self.build_steps_str(),
             extra_inputs=self.extra_inputs_str(),
+            container=self.container_str(),
         )
         return TEMPLATE.format(**template_vars.model_dump())

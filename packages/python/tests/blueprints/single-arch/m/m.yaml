@@ -23,6 +23,12 @@ docker_config:
       description: first description
     second_input:
       description: second description
+  container:
+    image: m-image
+    other-prop: some-value
+    volumes:
+      - a:b
+      - c:d
   images:
     - step_name: Image 1
       image_name: m-image1

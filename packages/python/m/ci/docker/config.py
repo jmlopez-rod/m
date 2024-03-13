@@ -147,6 +147,7 @@ class DockerConfig(BaseModel):
             docker_registry=self.docker_registry,
             extra_inputs=self.workflow_inputs,
             max_parallel_manifests=self.max_parallel_manifests,
+            container=self.container,
         )
         single_workflow = SingleWorkflow(
             m_dir=files.m_dir,
@@ -157,6 +158,7 @@ class DockerConfig(BaseModel):
             extra_build_steps=self.extra_build_steps,
             extra_inputs=self.workflow_inputs,
             docker_registry=self.docker_registry,
+            container=self.container,
         )
         workflow = multi_workflow if self.architectures else single_workflow
         return rw.write_file(files.gh_workflow, str(workflow))

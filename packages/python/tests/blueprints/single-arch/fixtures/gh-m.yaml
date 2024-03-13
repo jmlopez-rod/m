@@ -35,6 +35,12 @@ env:
 jobs:
   blueprints:
     runs-on: ubuntu-22.04
+    container:
+      image: m-image
+      other-prop: some-value
+      volumes:
+      - a:b
+      - c:d
     steps:
       - name: checkout
         uses: actions/checkout@v4
