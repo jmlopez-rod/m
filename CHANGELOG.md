@@ -12,6 +12,8 @@ The format of this changelog is based on
 - Allow branches to be prefixed with `release` and `hotfix`. We are still not
   checking for the pattern `release/x.y.z` but we should now be able to name a
   branch `release-*` or `hotfix-ticket#`.
+- The `m` configuration allows the declaration of other inputs for a Github
+  workflow. This can be added by declaring `workflow_inputs`.
 
 ## [0.31.1] <a name="0.31.1" href="#0.31.1">-</a> November 14, 2023
 

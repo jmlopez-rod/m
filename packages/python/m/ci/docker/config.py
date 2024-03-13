@@ -17,6 +17,7 @@ from .shell_scripts import (
     create_push_script_tags,
 )
 from .tags import docker_tags
+from .workflow_input import GithubWorkflowInput
 
 logger = Logger('m.ci.docker.config')
 
@@ -35,6 +36,14 @@ class DockerConfig(BaseModel):
     #   amd64: Ubuntu 20.04
     architectures: dict[str, str | list[str]] | None
 
+    # Freeform object to allow us to specify a container in which to run
+    # the docker commands.
+    # https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container
+    # Note that this requires the mounting the following volume
+    # - /var/run/docker.sock:/var/run/docker.sock
+    # This may be needed for self-hosted runners that may not have python or pip.
+    container: dict[str, Any] | None = None
+
     # Base path used to locate docker files. Defaults to `.` (root of project)
     # but may be changed a specific directory.
     base_path: str = '.'
@@ -49,6 +58,9 @@ class DockerConfig(BaseModel):
     # steps in the github workflow file before the actual docker shell scripts
     # are run.
     extra_build_steps: list[dict[str, Any]] | None = None
+
+    # Additional inputs to the github workflow file.
+    workflow_inputs: dict[str, GithubWorkflowInput] | None = None
 
     # Maximum number of parallel manifests to build.
     # https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#defining-the-maximum-number-of-concurrent-jobs
@@ -133,6 +145,7 @@ class DockerConfig(BaseModel):
             images=self.images,
             extra_build_steps=self.extra_build_steps,
             docker_registry=self.docker_registry,
+            extra_inputs=self.workflow_inputs,
             max_parallel_manifests=self.max_parallel_manifests,
         )
         single_workflow = SingleWorkflow(
@@ -142,6 +155,7 @@ class DockerConfig(BaseModel):
             default_runner=self.default_runner,
             images=self.images,
             extra_build_steps=self.extra_build_steps,
+            extra_inputs=self.workflow_inputs,
             docker_registry=self.docker_registry,
         )
         workflow = multi_workflow if self.architectures else single_workflow

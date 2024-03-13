@@ -4,7 +4,7 @@ set -euo pipefail
 export DEBUG_HTTP_INCLUDE_BODY=1
 
 SINGLE=true
-SINGLE=false
+# SINGLE=false
 
 # Make sure we run all test in the pipelines
 if [ "${CI:-false}" = 'true' ]; then
@@ -17,7 +17,7 @@ if [ "$SINGLE" = 'false' ]; then
 else
   # To run specific tests:
   source="packages/python/m/github/actions"
-  filter="test_github_actions"
+  filter="test_blueprints"
   coverage run --source "$source" -m pytest -p no:logging packages/python -vv -k "$filter"
   coverage report -m
 fi
