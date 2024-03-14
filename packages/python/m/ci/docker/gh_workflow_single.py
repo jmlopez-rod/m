@@ -142,8 +142,8 @@ class Workflow(BaseModel):
             return ''
         lines: list[str] = []
         extras = {
-            key: val.model_dump()
-            for key, val in self.extra_inputs.items()
+            key: input_inst.model_dump()
+            for key, input_inst in self.extra_inputs.items()
         }
         inputs_str = _indent(yaml.dumps(extras), 3)
         lines.append(f'\n      {inputs_str}')

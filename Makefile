@@ -19,8 +19,8 @@ deployDocs:
 fix:
 	pnpm exec prettier -w .
 
-pylint:
-	m/scripts/checks/pylint.sh
+flake8:
+	m/scripts/checks/flake8.sh
 
 ## Manual docker maintenance
 
