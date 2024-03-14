@@ -14,6 +14,14 @@ on:
         type: string
         description: The pull request number to attempt to use as cache.
         required: true
+      first_input:
+        description: first description
+        required: true
+        type: string
+      second_input:
+        description: second description
+        required: true
+        type: string
 
 permissions: write-all
 
@@ -27,6 +35,12 @@ env:
 jobs:
   blueprints:
     runs-on: ubuntu-22.04
+    container:
+      image: m-image
+      other-prop: some-value
+      volumes:
+      - a:b
+      - c:d
     steps:
       - name: checkout
         uses: actions/checkout@v4

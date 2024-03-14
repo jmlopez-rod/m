@@ -17,7 +17,7 @@ on:
       cache-from-pr:
         type: string
         description: The pull request number to attempt to use as cache.
-        required: true
+        required: true{extra_inputs}
 
 permissions: write-all
 
@@ -54,7 +54,7 @@ jobs:
       fail-fast: false
       matrix:
         include:{build_architectures}
-    runs-on: ${{{{ matrix.os }}}}
+    runs-on: ${{{{ matrix.os }}}}{container}
     env:
       ARCH: ${{{{ matrix.arch }}}}
     steps:
@@ -174,6 +174,7 @@ class Workflow(DefaultWorkflow):
             m_dir=self.m_dir,
             default_runner=self.default_runner,
             global_env=self.global_env_str(),
+            extra_inputs=self.extra_inputs_str(),
             ci_dir=self.ci_dir,
             build_architectures=self.build_architectures(),
             docker_login=self.docker_login_str(),
@@ -181,5 +182,6 @@ class Workflow(DefaultWorkflow):
             create_manifest=self.create_manifest_str(),
             push_manifest=self.push_manifest_str(),
             manifest_strategy_options=self.manifest_strategy_options_str(),
+            container=self.container_str(),
         )
         return TEMPLATE.format(**template_vars.model_dump())

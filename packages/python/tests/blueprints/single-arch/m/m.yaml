@@ -18,6 +18,17 @@ docker_config:
       with:
         param1: val1
         param2: val2
+  workflow_inputs:
+    first_input:
+      description: first description
+    second_input:
+      description: second description
+  container:
+    image: m-image
+    other-prop: some-value
+    volumes:
+      - a:b
+      - c:d
   images:
     - step_name: Image 1
       image_name: m-image1
