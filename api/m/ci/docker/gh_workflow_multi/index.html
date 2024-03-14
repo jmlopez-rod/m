@@ -2569,6 +2569,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow_input/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    workflow_input
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5148,6 +5168,16 @@
           </td>
         </tr>
         <tr>
+          <td><code>container</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>...</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td><code>global_env</code></td>
           <td>
           </td>
@@ -5169,6 +5199,16 @@
         </tr>
         <tr>
           <td><code>build_steps</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>...</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>extra_inputs</code></td>
           <td>
           </td>
           <td>
@@ -5360,6 +5400,26 @@
           </td>
         </tr>
         <tr>
+          <td><code>extra_inputs</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>...</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code>container</code></td>
+          <td>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>...</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td><code>images</code></td>
           <td>
           </td>
@@ -5475,7 +5535,9 @@
 <span class="normal"><a href="#__codelineno-0-182">182</a></span>
 <span class="normal"><a href="#__codelineno-0-183">183</a></span>
 <span class="normal"><a href="#__codelineno-0-184">184</a></span>
-<span class="normal"><a href="#__codelineno-0-185">185</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="k">class</span> <span class="nc">Workflow</span><span class="p">(</span><span class="n">DefaultWorkflow</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-185">185</a></span>
+<span class="normal"><a href="#__codelineno-0-186">186</a></span>
+<span class="normal"><a href="#__codelineno-0-187">187</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="k">class</span> <span class="nc">Workflow</span><span class="p">(</span><span class="n">DefaultWorkflow</span><span class="p">):</span>
 <a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to write the `m` workflow.&quot;&quot;&quot;</span>
 <a id="__codelineno-0-108" name="__codelineno-0-108"></a>
 <a id="__codelineno-0-109" name="__codelineno-0-109"></a>    <span class="n">architectures</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
@@ -5546,15 +5608,17 @@
 <a id="__codelineno-0-174" name="__codelineno-0-174"></a>            <span class="n">m_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dir</span><span class="p">,</span>
 <a id="__codelineno-0-175" name="__codelineno-0-175"></a>            <span class="n">default_runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_runner</span><span class="p">,</span>
 <a id="__codelineno-0-176" name="__codelineno-0-176"></a>            <span class="n">global_env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">global_env_str</span><span class="p">(),</span>
-<a id="__codelineno-0-177" name="__codelineno-0-177"></a>            <span class="n">ci_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ci_dir</span><span class="p">,</span>
-<a id="__codelineno-0-178" name="__codelineno-0-178"></a>            <span class="n">build_architectures</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_architectures</span><span class="p">(),</span>
-<a id="__codelineno-0-179" name="__codelineno-0-179"></a>            <span class="n">docker_login</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_login_str</span><span class="p">(),</span>
-<a id="__codelineno-0-180" name="__codelineno-0-180"></a>            <span class="n">build_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_steps_str</span><span class="p">(),</span>
-<a id="__codelineno-0-181" name="__codelineno-0-181"></a>            <span class="n">create_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">create_manifest_str</span><span class="p">(),</span>
-<a id="__codelineno-0-182" name="__codelineno-0-182"></a>            <span class="n">push_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">push_manifest_str</span><span class="p">(),</span>
-<a id="__codelineno-0-183" name="__codelineno-0-183"></a>            <span class="n">manifest_strategy_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest_strategy_options_str</span><span class="p">(),</span>
-<a id="__codelineno-0-184" name="__codelineno-0-184"></a>        <span class="p">)</span>
-<a id="__codelineno-0-185" name="__codelineno-0-185"></a>        <span class="k">return</span> <span class="n">TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">template_vars</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>            <span class="n">extra_inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_inputs_str</span><span class="p">(),</span>
+<a id="__codelineno-0-178" name="__codelineno-0-178"></a>            <span class="n">ci_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ci_dir</span><span class="p">,</span>
+<a id="__codelineno-0-179" name="__codelineno-0-179"></a>            <span class="n">build_architectures</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_architectures</span><span class="p">(),</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a>            <span class="n">docker_login</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_login_str</span><span class="p">(),</span>
+<a id="__codelineno-0-181" name="__codelineno-0-181"></a>            <span class="n">build_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_steps_str</span><span class="p">(),</span>
+<a id="__codelineno-0-182" name="__codelineno-0-182"></a>            <span class="n">create_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">create_manifest_str</span><span class="p">(),</span>
+<a id="__codelineno-0-183" name="__codelineno-0-183"></a>            <span class="n">push_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">push_manifest_str</span><span class="p">(),</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a>            <span class="n">manifest_strategy_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest_strategy_options_str</span><span class="p">(),</span>
+<a id="__codelineno-0-185" name="__codelineno-0-185"></a>            <span class="n">container</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">container_str</span><span class="p">(),</span>
+<a id="__codelineno-0-186" name="__codelineno-0-186"></a>        <span class="p">)</span>
+<a id="__codelineno-0-187" name="__codelineno-0-187"></a>        <span class="k">return</span> <span class="n">TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">template_vars</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -5630,7 +5694,9 @@
 <span class="normal"><a href="#__codelineno-0-182">182</a></span>
 <span class="normal"><a href="#__codelineno-0-183">183</a></span>
 <span class="normal"><a href="#__codelineno-0-184">184</a></span>
-<span class="normal"><a href="#__codelineno-0-185">185</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-167" name="__codelineno-0-167"></a><span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;Workflow&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal"><a href="#__codelineno-0-185">185</a></span>
+<span class="normal"><a href="#__codelineno-0-186">186</a></span>
+<span class="normal"><a href="#__codelineno-0-187">187</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-167" name="__codelineno-0-167"></a><span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;Workflow&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <a id="__codelineno-0-168" name="__codelineno-0-168"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Stringify the workflow file.</span>
 <a id="__codelineno-0-169" name="__codelineno-0-169"></a>
 <a id="__codelineno-0-170" name="__codelineno-0-170"></a><span class="sd">    Returns:</span>
@@ -5640,15 +5706,17 @@
 <a id="__codelineno-0-174" name="__codelineno-0-174"></a>        <span class="n">m_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">m_dir</span><span class="p">,</span>
 <a id="__codelineno-0-175" name="__codelineno-0-175"></a>        <span class="n">default_runner</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_runner</span><span class="p">,</span>
 <a id="__codelineno-0-176" name="__codelineno-0-176"></a>        <span class="n">global_env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">global_env_str</span><span class="p">(),</span>
-<a id="__codelineno-0-177" name="__codelineno-0-177"></a>        <span class="n">ci_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ci_dir</span><span class="p">,</span>
-<a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="n">build_architectures</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_architectures</span><span class="p">(),</span>
-<a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="n">docker_login</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_login_str</span><span class="p">(),</span>
-<a id="__codelineno-0-180" name="__codelineno-0-180"></a>        <span class="n">build_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_steps_str</span><span class="p">(),</span>
-<a id="__codelineno-0-181" name="__codelineno-0-181"></a>        <span class="n">create_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">create_manifest_str</span><span class="p">(),</span>
-<a id="__codelineno-0-182" name="__codelineno-0-182"></a>        <span class="n">push_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">push_manifest_str</span><span class="p">(),</span>
-<a id="__codelineno-0-183" name="__codelineno-0-183"></a>        <span class="n">manifest_strategy_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest_strategy_options_str</span><span class="p">(),</span>
-<a id="__codelineno-0-184" name="__codelineno-0-184"></a>    <span class="p">)</span>
-<a id="__codelineno-0-185" name="__codelineno-0-185"></a>    <span class="k">return</span> <span class="n">TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">template_vars</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>        <span class="n">extra_inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_inputs_str</span><span class="p">(),</span>
+<a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="n">ci_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ci_dir</span><span class="p">,</span>
+<a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="n">build_architectures</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_architectures</span><span class="p">(),</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a>        <span class="n">docker_login</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_login_str</span><span class="p">(),</span>
+<a id="__codelineno-0-181" name="__codelineno-0-181"></a>        <span class="n">build_steps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">build_steps_str</span><span class="p">(),</span>
+<a id="__codelineno-0-182" name="__codelineno-0-182"></a>        <span class="n">create_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">create_manifest_str</span><span class="p">(),</span>
+<a id="__codelineno-0-183" name="__codelineno-0-183"></a>        <span class="n">push_manifest</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">push_manifest_str</span><span class="p">(),</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a>        <span class="n">manifest_strategy_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest_strategy_options_str</span><span class="p">(),</span>
+<a id="__codelineno-0-185" name="__codelineno-0-185"></a>        <span class="n">container</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">container_str</span><span class="p">(),</span>
+<a id="__codelineno-0-186" name="__codelineno-0-186"></a>    <span class="p">)</span>
+<a id="__codelineno-0-187" name="__codelineno-0-187"></a>    <span class="k">return</span> <span class="n">TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">template_vars</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>

@@ -2939,6 +2939,26 @@
 
               
             
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/m/ci/docker/workflow_input/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    workflow_input
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5820,6 +5840,12 @@ any time. The public API should not be considered stable.</p>
 <li>Allow branches to be prefixed with <code>release</code> and <code>hotfix</code>. We are still not
   checking for the pattern <code>release/x.y.z</code> but we should now be able to name a
   branch <code>release-*</code> or <code>hotfix-ticket#</code>.</li>
+<li>The <code>m</code> configuration allows the declaration of other inputs for a Github
+  workflow. This can be added by declaring <code>workflow_inputs</code>.</li>
+<li>The <code>m</code> configuration allows the use of a container to use to build the image
+  for the workflow. This can be added by declaring <code>container</code>. This is needed
+  in cases where the runner may be missing other tools that are needed in the
+  extra steps.</li>
 </ul>
 <h2 id="0.31.1"><a href="https://github.com/jmlopez-rod/m/compare/0.31.0...0.31.1">0.31.1</a> -  November 14, 2023<a class="headerlink" href="#0.31.1" title="Permanent link">&para;</a></h2>
 <ul>
