@@ -42,7 +42,7 @@ jobs:
         run: |-
           m blueprints --skip-makefile --skip-workflow {m_dir}
       - name: archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: m-blueprints
           path: {ci_dir}
@@ -107,7 +107,7 @@ class Workflow(BaseModel):
         """
         login_obj = """\
             name: docker-login
-            uses: docker/login-action@v3
+            uses: docker/login-action@v4
             with:
               registry: ghcr.io
               username: ${{ github.actor }}

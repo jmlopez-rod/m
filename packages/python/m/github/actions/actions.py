@@ -137,7 +137,7 @@ class UsesStep(BaseModel, Generic[InputModel, OutputModel]):
     not have access to the code that gets executed all we can do is provide the
     `uses` field and our models to describe what the action expects.
 
-    For instance, say we wanted to use the `actions/cache@v3` action. To avoid
+    For instance, say we wanted to use the `actions/cache@v4` action. To avoid
     having issues in the future we should create the input and output models
     manually by looking at the documentation
     <https://github.com/actions/cache#inputs>.

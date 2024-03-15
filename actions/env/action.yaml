@@ -18,7 +18,7 @@ runs:
   steps:
     - name: restore cache
       id: cache
-      uses: actions/cache/restore@v3
+      uses: actions/cache/restore@v4
       with:
         path: m/.m
         key: m-env-cache-${{ github.run_id }}
@@ -36,7 +36,7 @@ runs:
       if:
         steps.cache.outputs.cache-hit != 'true' &&
         steps.ensure-m-dir.outputs.m-dir-exists != 'true'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: ensure m
       if: steps.cache.outputs.cache-hit != 'true' || inputs.ensure-m == 'true'
@@ -52,7 +52,7 @@ runs:
 
     - name: save cache
       if: steps.cache.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: m/.m
         key: m-env-cache-${{ github.run_id }}
