@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.32.0] <a name="0.32.0" href="#0.32.0">-</a> March 16, 2024
+
 - Allow branches to be prefixed with `release` and `hotfix`. We are still not
   checking for the pattern `release/x.y.z` but we should now be able to name a
   branch `release-*` or `hotfix-ticket#`.
@@ -18,6 +20,9 @@ The format of this changelog is based on
   for the workflow. This can be added by declaring `container`. This is needed
   in cases where the runner may be missing other tools that are needed in the
   extra steps.
+- `m end_release` performs `git pull` at the end of the process. This is to
+  ensure that the latest changes are in the default branch.
+- `m blueprints` uses latest github actions (v4).
 
 ## [0.31.1] <a name="0.31.1" href="#0.31.1">-</a> November 14, 2023
 
@@ -511,7 +516,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.31.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.32.0...HEAD
+[0.32.0]: https://github.com/jmlopez-rod/m/compare/0.31.1...0.32.0
 [0.31.1]: https://github.com/jmlopez-rod/m/compare/0.31.0...0.31.1
 [0.31.0]: https://github.com/jmlopez-rod/m/compare/0.30.0...0.31.0
 [0.30.0]: https://github.com/jmlopez-rod/m/compare/0.29.4...0.30.0
