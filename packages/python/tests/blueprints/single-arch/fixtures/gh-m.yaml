@@ -51,14 +51,14 @@ jobs:
         run: |-
           m blueprints --skip-makefile --skip-workflow packages/python/tests/blueprints/single-arch/m
       - name: archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: m-blueprints
           path: packages/python/tests/blueprints/single-arch/m/.m/blueprints/ci
       - name: chmod
         run: chmod +x packages/python/tests/blueprints/single-arch/m/.m/blueprints/ci/*.sh
       - name: docker-login
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

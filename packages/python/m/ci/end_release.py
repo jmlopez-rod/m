@@ -176,6 +176,12 @@ def _switch_branch(branch: str, checkout: str) -> Res[None]:
     }).map(lambda _: None)
 
 
+def _pull_branch(pull: str) -> Res[None]:
+    return logger.info('pulling the default branch', {
+        'git': f'{pull}\n',
+    }).map(lambda _: None)
+
+
 def end_release(gh_token: str) -> Res[None]:
     """End the release process.
 
@@ -201,4 +207,6 @@ def end_release(gh_token: str) -> Res[None]:
         for default_branch in Good[Issue, str](config.get_default_branch())
         for checkout in git.checkout_branch(default_branch, create=False)
         for _ in _switch_branch(default_branch, checkout)
+        for pull_output in git.pull()
+        for _ in _pull_branch(pull_output)
     ])

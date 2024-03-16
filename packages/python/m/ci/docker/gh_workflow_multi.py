@@ -43,7 +43,7 @@ jobs:
             echo "image-tags=$(< {ci_dir}/_image-tags.json)"
           }} >> $GITHUB_OUTPUT
       - name: archive
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: m-blueprints
           path: {ci_dir}
@@ -61,7 +61,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: restore-m-blueprints
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: m-blueprints
           path: {ci_dir}
