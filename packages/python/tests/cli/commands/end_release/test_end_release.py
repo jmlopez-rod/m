@@ -151,6 +151,10 @@ def test_m_end_release(mocker: MockerFixture, tcase: TCase):
     mocker.patch('m.git.checkout_branch').return_value = Good(
         'switched to default branch',
     )
+    # Making out some output for the pull command
+    mocker.patch('m.git.pull').return_value = Good(
+        'pulled default branch',
+    )
     # Tests are done using m.json
     mocker.patch('m.ci.config.get_m_filename').return_value = Good('m/m.json')
 

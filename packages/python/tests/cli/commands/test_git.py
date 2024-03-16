@@ -99,6 +99,12 @@ def test_m_git_cli(tcase: TCase, mocker: MockerFixture) -> None:
 
 @pytest.mark.parametrize('tcase', [
     TCase(
+        runner=git.pull,
+        cmd='...',
+        eval_cmd_side_effects=[Good('it got pulled')],
+        expected='it got pulled',
+    ),
+    TCase(
         runner=git.stash,
         cmd='...',
         eval_cmd_side_effects=[Good('it got stashed')],

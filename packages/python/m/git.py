@@ -33,6 +33,16 @@ def commit(msg: str) -> Res[str]:
     return res.flat_map_bad(hone('git commit failure'))
 
 
+def pull() -> Res[str]:
+    """Pull branch.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the response from the git command.
+    """
+    res = subprocess.eval_cmd('git pull')
+    return res.flat_map_bad(hone('git pull failure'))
+
+
 def push_branch(branch: str) -> Res[str]:
     """Push branch.
 

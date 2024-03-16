@@ -8,3 +8,7 @@
        {
          "git": "switched to default branch\n"
        }
+[INFO] [09:33:09 PM - Nov 29, 1973]: pulling the default branch
+       {
+         "git": "pulled default branch\n"
+       }
