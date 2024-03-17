@@ -9,6 +9,12 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.32.1] <a name="0.32.1" href="#0.32.1">-</a> March 17, 2024
+
+- Revert docker/login-action@v4. There is no such version.
+- When using `container` we expect the developer to specify the environment
+  variables, in particular make sure to specify `ARCH: ${{ matrix.arch }}`.
+
 ## [0.32.0] <a name="0.32.0" href="#0.32.0">-</a> March 16, 2024
 
 - Allow branches to be prefixed with `release` and `hotfix`. We are still not
@@ -516,7 +522,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.32.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.32.1...HEAD
+[0.32.1]: https://github.com/jmlopez-rod/m/compare/0.32.0...0.32.1
 [0.32.0]: https://github.com/jmlopez-rod/m/compare/0.31.1...0.32.0
 [0.31.1]: https://github.com/jmlopez-rod/m/compare/0.31.0...0.31.1
 [0.31.0]: https://github.com/jmlopez-rod/m/compare/0.30.0...0.31.0
