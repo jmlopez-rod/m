@@ -107,7 +107,7 @@ class Workflow(BaseModel):
         """
         login_obj = """\
             name: docker-login
-            uses: docker/login-action@v4
+            uses: docker/login-action@v3
             with:
               registry: ghcr.io
               username: ${{ github.actor }}
@@ -156,7 +156,11 @@ class Workflow(BaseModel):
             A string to add to the Github workflow.
         """
         if not self.container:
-            return ''
+            return '\n'.join([
+                '',
+                '    env:',
+                '      ARCH: ${{ matrix.arch }}',
+            ])
         lines: list[str] = ['\n    container:']
         content_str = _indent(yaml.dumps(self.container), 3)
         lines.append(f'      {content_str}')

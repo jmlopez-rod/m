@@ -58,7 +58,7 @@ jobs:
       - name: chmod
         run: chmod +x packages/python/tests/blueprints/single-arch/m/.m/blueprints/ci/*.sh
       - name: docker-login
-        uses: docker/login-action@v4
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

@@ -55,8 +55,6 @@ jobs:
       matrix:
         include:{build_architectures}
     runs-on: ${{{{ matrix.os }}}}{container}
-    env:
-      ARCH: ${{{{ matrix.arch }}}}
     steps:
       - name: checkout
         uses: actions/checkout@v4
