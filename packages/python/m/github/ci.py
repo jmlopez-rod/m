@@ -197,7 +197,6 @@ def _get_pull_request(
     pr_number: Optional[int],
 ) -> OneOf[Issue, Optional[PullRequest]]:
     pr = raw.get('pullRequest')
-    print('PR', pr)
     if not pr:
         return Good(None)
     author = pr.get('author', {})
@@ -245,7 +244,6 @@ def get_ci_run_info(
         file_count,
         include_release,
     )
-    print('RAW_RES:', raw_res)
     return one_of(
         lambda: [
             GithubCiRunInfo(commit=commit, pull_request=pr, release=release)

@@ -30,7 +30,6 @@ jobs:
 
       - name: Install
         run: |
-          env
           python3 -m venv /opt/venv/m
           poetry install
 

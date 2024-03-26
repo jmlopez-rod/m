@@ -39,12 +39,6 @@ def commit_query(include_pr: bool, include_author: bool) -> str:
           headRefName
           headRefOid
           merged
-          files(first: $fc) {
-            totalCount
-            nodes {
-              path
-            }
-          }
         }
       }
     """ if include_pr else ''
