@@ -14,6 +14,10 @@ The format of this changelog is based on
   https://docs.docker.com/reference/cli/docker/buildx/imagetools/create/
   Defaults to `false`. In the future it may be set to `true` by default or
   removed completely if the buildx command replaces the old way.
+- The `m ci env` command will fail if pull requests do not modify the
+  `CHANGELOG.md` file. This is to ensure that we are keeping track of the
+  changes that are being made to the project. If we need to bypass it we can set
+  `require_pr_changelog` to `false` in the `m` configuration.
 
 ## [0.32.1] <a name="0.32.1" href="#0.32.1">-</a> March 17, 2024
 
