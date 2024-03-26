@@ -33,6 +33,10 @@ class Config(BaseModel):
     repo: str
     version: str = '0.0.0'
     workflow: Workflow = Workflow.free_flow
+
+    # If true it will require an update to the changelog for every PR.
+    require_pr_changelog: bool = True
+
     git_flow: GitFlowConfig = GitFlowConfig(
         master_branch=Branches.master,
         develop_branch=Branches.develop,

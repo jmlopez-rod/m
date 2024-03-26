@@ -14,6 +14,7 @@
         "message": "using head commit\n\nhttps://github.com/actions/checkout#checkout-pull-request-head-commit-instead-of-merge-commit",
         "author": {
           "name": "Manuel Lopez",
+          "email": "",
           "user": {
             "login": "jmlopez-rod"
           }
@@ -30,19 +31,17 @@
         "url": "https://github.com/jmlopez-rod/gh-actions/pull/1",
         "author": {
           "login": "jmlopez-rod",
-          "avatarUrl": "https://avatars.githubusercontent.com/u/1810397?s=50&v=4"
+          "avatarUrl": "https://avatars.githubusercontent.com/u/1810397?s=50&v=4",
+          "email": ""
         },
         "files": {
-          "totalCount": 3,
+          "totalCount": 2,
           "nodes": [
             {
               "path": ".github/workflows/build.yml"
             },
             {
               "path": "new.txt"
-            },
-            {
-              "path": "CHANGELOG.md"
             }
           ]
         },

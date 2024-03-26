@@ -271,7 +271,7 @@ def get_git_env(config: Config, env_vars: EnvVars) -> Res[GitEnv]:
             sha=env_vars.git_sha,
         ),
         pr_number=pr_number,
-        file_count=0,
+        file_count=100,
         include_release=True,
     )
     if isinstance(git_env_box, Bad):
@@ -279,6 +279,13 @@ def get_git_env(config: Config, env_vars: EnvVars) -> Res[GitEnv]:
 
     res = git_env_box.value
     pr = res.pull_request
+
+    if pr and config.require_pr_changelog and not pr.changelog_updated():
+        # If this is a huge PR we'll bypass it, the file may not be present in
+        # the list of files.
+        if pr.file_count < 100:
+            return issue('missing CHANGELOG.md in PR', context={'pr': pr.model_dump()})
+
     git_env.sha = res.commit.sha
     git_env.target_branch = pr.target_branch if pr else branch
     git_env.commit = res.commit
