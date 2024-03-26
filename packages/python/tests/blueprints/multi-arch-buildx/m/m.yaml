@@ -1,0 +1,31 @@
+owner: repo_owner
+repo: repo_name
+version: 0.100.0
+workflow: m_flow
+build_tag_with_version: true
+docker_config:
+  use_buildx: true
+  architectures:
+    amd64: ubuntu-amd
+    arm64: ubuntu-arm
+  base_path: packages/python/tests/blueprints/multi-arch/m/docker
+  docker_registry: 'ghcr.io/repo-owner'
+  max_parallel_manifests: 16
+  extra_build_steps:
+    - name: step
+      run: cmd
+    - name: action
+      uses: action/foo@v1
+      with:
+        param1: val1
+        param2: val2
+  images:
+    - step_name: Image 1
+      image_name: m-image1
+      target_stage: first
+      docker_file: Dockerfile.image1
+      env_secrets: [GITHUB_TOKEN]
+    - step_name: Image 2
+      image_name: m-image2
+      target_stage: second
+      docker_file: Dockerfile.image1

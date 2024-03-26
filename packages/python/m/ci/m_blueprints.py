@@ -29,6 +29,7 @@ def _write_blueprints(
         base_path=docker_config.base_path,
         registry=docker_config.docker_registry,
         multi_arch=bool(docker_config.architectures),
+        architectures=list((docker_config.architectures or {}).keys()),
     )
     files = FileNames.create_instance(m_dir)
     if update_makefile:

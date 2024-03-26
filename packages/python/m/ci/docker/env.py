@@ -18,3 +18,6 @@ class MEnvDocker(BaseModel):
 
     # Flag to indicate if multi-arch is enabled.
     multi_arch: bool
+
+    # The list of all the architectures if multi-arch is enabled.
+    architectures: list[str]
