@@ -245,6 +245,7 @@ def get_ci_run_info(
         file_count,
         include_release,
     )
+    print('RAW_RES:', raw_res)
     return one_of(
         lambda: [
             GithubCiRunInfo(commit=commit, pull_request=pr, release=release)
