@@ -48,6 +48,27 @@ from .util import CONFIG, ENV_VARS, TCase, mock_commit_sha
         ),
     ),
     TCase(
+        desc='pr 1 - no changelog',
+        config={'version': '1.1.1'},
+        env_vars={'git_branch': 'refs/pull/1'},
+        gh_res='pr1-no-changelog.json',
+        err='missing CHANGELOG.md in PR',
+    ),
+    TCase(
+        desc='pr 1 - no changelog bypass',
+        config={'version': '1.1.1', 'require_pr_changelog': False},
+        env_vars={'git_branch': 'refs/pull/1'},
+        gh_res='pr1-no-changelog.json',
+        release_env=ReleaseEnv(
+            build_tag='0.0.0-pr1.b404',
+            python_tag='0.0.0b1.dev404',
+            is_release=False,
+            is_release_pr=False,
+            is_hotfix_pr=False,
+            workflow=Workflow.m_flow,
+        ),
+    ),
+    TCase(
         desc='pr 1 - dev versioning',
         config={'version': '1.1.1', 'build_tag_with_version': True},
         env_vars={'git_branch': 'refs/pull/1'},

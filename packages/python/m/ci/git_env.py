@@ -279,6 +279,10 @@ def get_git_env(config: Config, env_vars: EnvVars) -> Res[GitEnv]:
 
     res = git_env_box.value
     pr = res.pull_request
+
+    if pr and config.require_pr_changelog and not pr.changelog_updated():
+        return issue('missing CHANGELOG.md in PR', context={'pr': pr.model_dump()})
+
     git_env.sha = res.commit.sha
     git_env.target_branch = pr.target_branch if pr else branch
     git_env.commit = res.commit

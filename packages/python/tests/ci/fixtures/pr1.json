@@ -35,13 +35,16 @@
           "email": ""
         },
         "files": {
-          "totalCount": 2,
+          "totalCount": 3,
           "nodes": [
             {
               "path": ".github/workflows/build.yml"
             },
             {
               "path": "new.txt"
+            },
+            {
+              "path": "CHANGELOG.md"
             }
           ]
         },

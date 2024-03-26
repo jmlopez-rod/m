@@ -65,7 +65,6 @@ class Commit(BaseModel):
 class PullRequest(BaseModel):
     """Pull request information."""
 
-    # pylint: disable=too-many-instance-attributes
     author: Author
     pr_number: int
     pr_branch: str
@@ -77,6 +76,14 @@ class PullRequest(BaseModel):
     file_count: int
     files: List[str]
     is_draft: bool
+
+    def changelog_updated(self) -> bool:
+        """Determine if the changelog was updated in the pull request.
+
+        Returns:
+            True if the changelog was updated.
+        """
+        return 'CHANGELOG.md' in self.files
 
     def is_release_pr(self, release_prefix: str | None) -> bool:
         """Determine if the pull request is a release pull request.
