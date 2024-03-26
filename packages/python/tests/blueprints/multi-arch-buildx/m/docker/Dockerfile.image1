@@ -1,0 +1,13 @@
+ARG ARCH
+FROM alpine as first
+
+ARG M_TAG
+ARG ARCH
+ENV M_TAG=${M_TAG}
+ENV ARCH=${ARCH}
+
+RUN echo 'hi'
+
+FROM first as second
+
+RUN echo 'hi2'
