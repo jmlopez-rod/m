@@ -9,6 +9,12 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Add `use_buildx` flag to `m` configuration to try use a buildx command when
+  creating multi-arch manifests. See
+  https://docs.docker.com/reference/cli/docker/buildx/imagetools/create/
+  Defaults to `false`. In the future it may be set to `true` by default or
+  removed completely if the buildx command replaces the old way.
+
 ## [0.32.1] <a name="0.32.1" href="#0.32.1">-</a> March 17, 2024
 
 - Revert docker/login-action@v4. There is no such version.
