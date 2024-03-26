@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.33.0] <a name="0.33.0" href="#0.33.0">-</a> March 26, 2024
+
 - Add `use_buildx` flag to `m` configuration to try use a buildx command when
   creating multi-arch manifests. See
   https://docs.docker.com/reference/cli/docker/buildx/imagetools/create/
@@ -17,7 +19,8 @@ The format of this changelog is based on
 - The `m ci env` command will fail if pull requests do not modify the
   `CHANGELOG.md` file. This is to ensure that we are keeping track of the
   changes that are being made to the project. If we need to bypass it we can set
-  `require_pr_changelog` to `false` in the `m` configuration.
+  `require_pr_changelog` to `false` in the `m` configuration. NOTE: Pull
+  requests with more than 100 file changes will not be checked.
 
 ## [0.32.1] <a name="0.32.1" href="#0.32.1">-</a> March 17, 2024
 
@@ -532,7 +535,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.32.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.33.0...HEAD
+[0.33.0]: https://github.com/jmlopez-rod/m/compare/0.32.1...0.33.0
 [0.32.1]: https://github.com/jmlopez-rod/m/compare/0.32.0...0.32.1
 [0.32.0]: https://github.com/jmlopez-rod/m/compare/0.31.1...0.32.0
 [0.31.1]: https://github.com/jmlopez-rod/m/compare/0.31.0...0.31.1
