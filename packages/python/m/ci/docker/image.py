@@ -1,7 +1,9 @@
+import os
 import platform
 
 from m.core import Bad, Good, Res
 from m.core.rw import read_file
+from m.log import Logger
 from pydantic import BaseModel
 
 from .docker_build import DockerBuild
@@ -12,6 +14,9 @@ BASH_SHEBANG = '#!/bin/bash'
 SET_STRICT_BASH = 'set -euxo pipefail'
 AMD64 = 'amd64'
 ARM64 = 'arm64'
+
+
+logger = Logger('m.ci.docker.image')
 
 
 def get_arch() -> str:
@@ -147,6 +152,9 @@ class DockerImage(BaseModel):
             A shell snippet with a docker buildx command.
         """
         m_tag = m_env.m_tag
+        if not m_tag and os.environ.get('CI') != 'true':
+            logger.warning('M_TAG not found in non-CI environment. Using 1.1.1')
+            m_tag = '1.1.1'
         registry = m_env.registry
         tags = [m_tag, *docker_tags(m_tag)]
         img_name = f'{registry}/{self.image_name}'
@@ -154,7 +162,7 @@ class DockerImage(BaseModel):
             f'  -t {img_name}:{tag} \\'
             for tag in tags
         ]
-        all_archs = ' \\\n'.join([
+        all_archs_str = ' \\\n'.join([
             f'  {registry}/{arch}-{self.image_name}:{m_tag}'
             for arch in m_env.architectures
         ])
@@ -164,7 +172,7 @@ class DockerImage(BaseModel):
             '',
             'docker buildx imagetools create \\',
             *all_tags,
-            all_archs,
+            all_archs_str,
             '',
         ]
         return Good('\n'.join(script))

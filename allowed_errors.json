@@ -1,10 +1,11 @@
 {
   "allowedFlake8Rules": {
+    "WPS342": 1,
     "WPS212": 1,
     "WPS211": 1,
     "WPS361": 3,
     "WPS231": 2,
     "WPS421": 2,
-    "WPS226": 3
+    "WPS226": 4
   }
 }

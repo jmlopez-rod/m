@@ -225,9 +225,10 @@ class DockerConfig(BaseModel):
             file_name = f'{files.ci_dir}/{img.image_name}.build.sh'
             write_res = _write_build_script(file_name, img, m_env)
             _append_issue(write_res, issues)
-            file_name = f'{files.ci_dir}/{img.image_name}.manifest.sh'
-            write_res = _write_manifest_script(file_name, img, m_env)
-            _append_issue(write_res, issues)
+            if self.use_buildx:
+                file_name = f'{files.ci_dir}/{img.image_name}.manifest.sh'
+                write_res = _write_manifest_script(file_name, img, m_env)
+                _append_issue(write_res, issues)
         if issues:
             return issue(
                 'write_ci_steps_failure',
