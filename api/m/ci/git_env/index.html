@@ -6490,7 +6490,14 @@ hotfix pr.</p>
 <span class="normal"><a href="#__codelineno-0-284">284</a></span>
 <span class="normal"><a href="#__codelineno-0-285">285</a></span>
 <span class="normal"><a href="#__codelineno-0-286">286</a></span>
-<span class="normal"><a href="#__codelineno-0-287">287</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-247" name="__codelineno-0-247"></a><span class="k">def</span> <span class="nf">get_git_env</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">,</span> <span class="n">env_vars</span><span class="p">:</span> <span class="n">EnvVars</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="n">GitEnv</span><span class="p">]:</span>
+<span class="normal"><a href="#__codelineno-0-287">287</a></span>
+<span class="normal"><a href="#__codelineno-0-288">288</a></span>
+<span class="normal"><a href="#__codelineno-0-289">289</a></span>
+<span class="normal"><a href="#__codelineno-0-290">290</a></span>
+<span class="normal"><a href="#__codelineno-0-291">291</a></span>
+<span class="normal"><a href="#__codelineno-0-292">292</a></span>
+<span class="normal"><a href="#__codelineno-0-293">293</a></span>
+<span class="normal"><a href="#__codelineno-0-294">294</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-247" name="__codelineno-0-247"></a><span class="k">def</span> <span class="nf">get_git_env</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">,</span> <span class="n">env_vars</span><span class="p">:</span> <span class="n">EnvVars</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="n">GitEnv</span><span class="p">]:</span>
 <a id="__codelineno-0-248" name="__codelineno-0-248"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain the git environment by asking Github&#39;s API.</span>
 <a id="__codelineno-0-249" name="__codelineno-0-249"></a>
 <a id="__codelineno-0-250" name="__codelineno-0-250"></a><span class="sd">    Args:</span>
@@ -6517,7 +6524,7 @@ hotfix pr.</p>
 <a id="__codelineno-0-271" name="__codelineno-0-271"></a>            <span class="n">sha</span><span class="o">=</span><span class="n">env_vars</span><span class="o">.</span><span class="n">git_sha</span><span class="p">,</span>
 <a id="__codelineno-0-272" name="__codelineno-0-272"></a>        <span class="p">),</span>
 <a id="__codelineno-0-273" name="__codelineno-0-273"></a>        <span class="n">pr_number</span><span class="o">=</span><span class="n">pr_number</span><span class="p">,</span>
-<a id="__codelineno-0-274" name="__codelineno-0-274"></a>        <span class="n">file_count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>        <span class="n">file_count</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
 <a id="__codelineno-0-275" name="__codelineno-0-275"></a>        <span class="n">include_release</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-276" name="__codelineno-0-276"></a>    <span class="p">)</span>
 <a id="__codelineno-0-277" name="__codelineno-0-277"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">git_env_box</span><span class="p">,</span> <span class="n">Bad</span><span class="p">):</span>
@@ -6525,12 +6532,19 @@ hotfix pr.</p>
 <a id="__codelineno-0-279" name="__codelineno-0-279"></a>
 <a id="__codelineno-0-280" name="__codelineno-0-280"></a>    <span class="n">res</span> <span class="o">=</span> <span class="n">git_env_box</span><span class="o">.</span><span class="n">value</span>
 <a id="__codelineno-0-281" name="__codelineno-0-281"></a>    <span class="n">pr</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pull_request</span>
-<a id="__codelineno-0-282" name="__codelineno-0-282"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">sha</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">sha</span>
-<a id="__codelineno-0-283" name="__codelineno-0-283"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">target_branch</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">target_branch</span> <span class="k">if</span> <span class="n">pr</span> <span class="k">else</span> <span class="n">branch</span>
-<a id="__codelineno-0-284" name="__codelineno-0-284"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">commit</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">commit</span>
-<a id="__codelineno-0-285" name="__codelineno-0-285"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">pull_request</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pull_request</span>
-<a id="__codelineno-0-286" name="__codelineno-0-286"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">release</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">release</span>
-<a id="__codelineno-0-287" name="__codelineno-0-287"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="n">git_env</span><span class="p">)</span>
+<a id="__codelineno-0-282" name="__codelineno-0-282"></a>
+<a id="__codelineno-0-283" name="__codelineno-0-283"></a>    <span class="k">if</span> <span class="n">pr</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">require_pr_changelog</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pr</span><span class="o">.</span><span class="n">changelog_updated</span><span class="p">():</span>
+<a id="__codelineno-0-284" name="__codelineno-0-284"></a>        <span class="c1"># If this is a huge PR we&#39;ll bypass it, the file may not be present in</span>
+<a id="__codelineno-0-285" name="__codelineno-0-285"></a>        <span class="c1"># the list of files.</span>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a>        <span class="k">if</span> <span class="n">pr</span><span class="o">.</span><span class="n">file_count</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+<a id="__codelineno-0-287" name="__codelineno-0-287"></a>            <span class="k">return</span> <span class="n">issue</span><span class="p">(</span><span class="s1">&#39;missing CHANGELOG.md in PR&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;pr&#39;</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()})</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a>
+<a id="__codelineno-0-289" name="__codelineno-0-289"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">sha</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">commit</span><span class="o">.</span><span class="n">sha</span>
+<a id="__codelineno-0-290" name="__codelineno-0-290"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">target_branch</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">target_branch</span> <span class="k">if</span> <span class="n">pr</span> <span class="k">else</span> <span class="n">branch</span>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">commit</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">commit</span>
+<a id="__codelineno-0-292" name="__codelineno-0-292"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">pull_request</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pull_request</span>
+<a id="__codelineno-0-293" name="__codelineno-0-293"></a>    <span class="n">git_env</span><span class="o">.</span><span class="n">release</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">release</span>
+<a id="__codelineno-0-294" name="__codelineno-0-294"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="n">git_env</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>

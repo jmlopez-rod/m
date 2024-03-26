@@ -4111,6 +4111,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#m.github.ci_dataclasses.PullRequest.changelog_updated" class="md-nav__link">
+    changelog_updated()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#m.github.ci_dataclasses.PullRequest.is_release_pr" class="md-nav__link">
     is_release_pr()
   </a>
@@ -5102,6 +5109,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#m.github.ci_dataclasses.PullRequest.changelog_updated" class="md-nav__link">
+    changelog_updated()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#m.github.ci_dataclasses.PullRequest.is_release_pr" class="md-nav__link">
     is_release_pr()
   </a>
@@ -5881,17 +5895,17 @@
 
             <details class="quote">
               <summary>Source code in <code>m/github/ci_dataclasses.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-111">111</a></span>
-<span class="normal"><a href="#__codelineno-0-112">112</a></span>
-<span class="normal"><a href="#__codelineno-0-113">113</a></span>
-<span class="normal"><a href="#__codelineno-0-114">114</a></span>
-<span class="normal"><a href="#__codelineno-0-115">115</a></span>
-<span class="normal"><a href="#__codelineno-0-116">116</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-111" name="__codelineno-0-111"></a><span class="k">class</span> <span class="nc">CommitInfo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a id="__codelineno-0-112" name="__codelineno-0-112"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A commit can be tracked with the following properties.&quot;&quot;&quot;</span>
-<a id="__codelineno-0-113" name="__codelineno-0-113"></a>
-<a id="__codelineno-0-114" name="__codelineno-0-114"></a>    <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-115" name="__codelineno-0-115"></a>    <span class="n">repo</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-116" name="__codelineno-0-116"></a>    <span class="n">sha</span><span class="p">:</span> <span class="nb">str</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-118">118</a></span>
+<span class="normal"><a href="#__codelineno-0-119">119</a></span>
+<span class="normal"><a href="#__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#__codelineno-0-123">123</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-118" name="__codelineno-0-118"></a><span class="k">class</span> <span class="nc">CommitInfo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-0-119" name="__codelineno-0-119"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A commit can be tracked with the following properties.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-120" name="__codelineno-0-120"></a>
+<a id="__codelineno-0-121" name="__codelineno-0-121"></a>    <span class="n">owner</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a>    <span class="n">repo</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a>    <span class="n">sha</span><span class="p">:</span> <span class="nb">str</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -5984,17 +5998,17 @@
 
             <details class="quote">
               <summary>Source code in <code>m/github/ci_dataclasses.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-103">103</a></span>
-<span class="normal"><a href="#__codelineno-0-104">104</a></span>
-<span class="normal"><a href="#__codelineno-0-105">105</a></span>
-<span class="normal"><a href="#__codelineno-0-106">106</a></span>
-<span class="normal"><a href="#__codelineno-0-107">107</a></span>
-<span class="normal"><a href="#__codelineno-0-108">108</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="k">class</span> <span class="nc">GithubCiRunInfo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The main information we need for a ci run.&quot;&quot;&quot;</span>
-<a id="__codelineno-0-105" name="__codelineno-0-105"></a>
-<a id="__codelineno-0-106" name="__codelineno-0-106"></a>    <span class="n">commit</span><span class="p">:</span> <span class="n">Commit</span>
-<a id="__codelineno-0-107" name="__codelineno-0-107"></a>    <span class="n">pull_request</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PullRequest</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<a id="__codelineno-0-108" name="__codelineno-0-108"></a>    <span class="n">release</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Release</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#__codelineno-0-111">111</a></span>
+<span class="normal"><a href="#__codelineno-0-112">112</a></span>
+<span class="normal"><a href="#__codelineno-0-113">113</a></span>
+<span class="normal"><a href="#__codelineno-0-114">114</a></span>
+<span class="normal"><a href="#__codelineno-0-115">115</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-110" name="__codelineno-0-110"></a><span class="k">class</span> <span class="nc">GithubCiRunInfo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-0-111" name="__codelineno-0-111"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;The main information we need for a ci run.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-112" name="__codelineno-0-112"></a>
+<a id="__codelineno-0-113" name="__codelineno-0-113"></a>    <span class="n">commit</span><span class="p">:</span> <span class="n">Commit</span>
+<a id="__codelineno-0-114" name="__codelineno-0-114"></a>    <span class="n">pull_request</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PullRequest</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115"></a>    <span class="n">release</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Release</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -6202,34 +6216,48 @@
 <span class="normal"><a href="#__codelineno-0-89">89</a></span>
 <span class="normal"><a href="#__codelineno-0-90">90</a></span>
 <span class="normal"><a href="#__codelineno-0-91">91</a></span>
-<span class="normal"><a href="#__codelineno-0-92">92</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="k">class</span> <span class="nc">PullRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-92">92</a></span>
+<span class="normal"><a href="#__codelineno-0-93">93</a></span>
+<span class="normal"><a href="#__codelineno-0-94">94</a></span>
+<span class="normal"><a href="#__codelineno-0-95">95</a></span>
+<span class="normal"><a href="#__codelineno-0-96">96</a></span>
+<span class="normal"><a href="#__codelineno-0-97">97</a></span>
+<span class="normal"><a href="#__codelineno-0-98">98</a></span>
+<span class="normal"><a href="#__codelineno-0-99">99</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="k">class</span> <span class="nc">PullRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Pull request information.&quot;&quot;&quot;</span>
 <a id="__codelineno-0-67" name="__codelineno-0-67"></a>
-<a id="__codelineno-0-68" name="__codelineno-0-68"></a>    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
-<a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="n">author</span><span class="p">:</span> <span class="n">Author</span>
-<a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="n">pr_number</span><span class="p">:</span> <span class="nb">int</span>
-<a id="__codelineno-0-71" name="__codelineno-0-71"></a>    <span class="n">pr_branch</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-72" name="__codelineno-0-72"></a>    <span class="n">target_branch</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-73" name="__codelineno-0-73"></a>    <span class="n">target_sha</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-74" name="__codelineno-0-74"></a>    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-75" name="__codelineno-0-75"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="n">body</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-77" name="__codelineno-0-77"></a>    <span class="n">file_count</span><span class="p">:</span> <span class="nb">int</span>
-<a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-<a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="n">is_draft</span><span class="p">:</span> <span class="nb">bool</span>
-<a id="__codelineno-0-80" name="__codelineno-0-80"></a>
-<a id="__codelineno-0-81" name="__codelineno-0-81"></a>    <span class="k">def</span> <span class="nf">is_release_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">release_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if the pull request is a release pull request.</span>
-<a id="__codelineno-0-83" name="__codelineno-0-83"></a>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">            release_prefix: The prefix used to flag a release.</span>
-<a id="__codelineno-0-86" name="__codelineno-0-86"></a>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="sd">            True if we are dealing with a release branch.</span>
-<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-90" name="__codelineno-0-90"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
-<a id="__codelineno-0-91" name="__codelineno-0-91"></a>            <span class="k">return</span> <span class="kc">False</span>
-<a id="__codelineno-0-92" name="__codelineno-0-92"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a>    <span class="n">author</span><span class="p">:</span> <span class="n">Author</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>    <span class="n">pr_number</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="n">pr_branch</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a>    <span class="n">target_branch</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a>    <span class="n">target_sha</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a>    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a>    <span class="n">body</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="n">file_count</span><span class="p">:</span> <span class="nb">int</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>    <span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="n">is_draft</span><span class="p">:</span> <span class="nb">bool</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>    <span class="k">def</span> <span class="nf">changelog_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if the changelog was updated in the pull request.</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">            True if the changelog was updated.</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>        <span class="k">return</span> <span class="s1">&#39;CHANGELOG.md&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="k">def</span> <span class="nf">is_release_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">release_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if the pull request is a release pull request.</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="sd">            release_prefix: The prefix used to flag a release.</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">            True if we are dealing with a release branch.</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a>            <span class="k">return</span> <span class="kc">False</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -6244,6 +6272,67 @@
 
 
 
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="m.github.ci_dataclasses.PullRequest.changelog_updated" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">changelog_updated</span><span class="p">()</span></code>
+
+<a href="#m.github.ci_dataclasses.PullRequest.changelog_updated" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Determine if the changelog was updated in the pull request.</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>True if the changelog was updated.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>m/github/ci_dataclasses.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-80">80</a></span>
+<span class="normal"><a href="#__codelineno-0-81">81</a></span>
+<span class="normal"><a href="#__codelineno-0-82">82</a></span>
+<span class="normal"><a href="#__codelineno-0-83">83</a></span>
+<span class="normal"><a href="#__codelineno-0-84">84</a></span>
+<span class="normal"><a href="#__codelineno-0-85">85</a></span>
+<span class="normal"><a href="#__codelineno-0-86">86</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="k">def</span> <span class="nf">changelog_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if the changelog was updated in the pull request.</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">        True if the changelog was updated.</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>    <span class="k">return</span> <span class="s1">&#39;CHANGELOG.md&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
 
 
 <div class="doc doc-object doc-function">
@@ -6317,29 +6406,29 @@
 
           <details class="quote">
             <summary>Source code in <code>m/github/ci_dataclasses.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-81">81</a></span>
-<span class="normal"><a href="#__codelineno-0-82">82</a></span>
-<span class="normal"><a href="#__codelineno-0-83">83</a></span>
-<span class="normal"><a href="#__codelineno-0-84">84</a></span>
-<span class="normal"><a href="#__codelineno-0-85">85</a></span>
-<span class="normal"><a href="#__codelineno-0-86">86</a></span>
-<span class="normal"><a href="#__codelineno-0-87">87</a></span>
-<span class="normal"><a href="#__codelineno-0-88">88</a></span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-88">88</a></span>
 <span class="normal"><a href="#__codelineno-0-89">89</a></span>
 <span class="normal"><a href="#__codelineno-0-90">90</a></span>
 <span class="normal"><a href="#__codelineno-0-91">91</a></span>
-<span class="normal"><a href="#__codelineno-0-92">92</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="k">def</span> <span class="nf">is_release_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">release_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if the pull request is a release pull request.</span>
-<a id="__codelineno-0-83" name="__codelineno-0-83"></a>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">        release_prefix: The prefix used to flag a release.</span>
-<a id="__codelineno-0-86" name="__codelineno-0-86"></a>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="sd">        True if we are dealing with a release branch.</span>
-<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-90" name="__codelineno-0-90"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
-<a id="__codelineno-0-91" name="__codelineno-0-91"></a>        <span class="k">return</span> <span class="kc">False</span>
-<a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
+<span class="normal"><a href="#__codelineno-0-92">92</a></span>
+<span class="normal"><a href="#__codelineno-0-93">93</a></span>
+<span class="normal"><a href="#__codelineno-0-94">94</a></span>
+<span class="normal"><a href="#__codelineno-0-95">95</a></span>
+<span class="normal"><a href="#__codelineno-0-96">96</a></span>
+<span class="normal"><a href="#__codelineno-0-97">97</a></span>
+<span class="normal"><a href="#__codelineno-0-98">98</a></span>
+<span class="normal"><a href="#__codelineno-0-99">99</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="k">def</span> <span class="nf">is_release_pr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">release_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if the pull request is a release pull request.</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="sd">        release_prefix: The prefix used to flag a release.</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="sd">        True if we are dealing with a release branch.</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">release_prefix</span><span class="p">:</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a>        <span class="k">return</span> <span class="kc">False</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pr_branch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">release_prefix</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -6423,17 +6512,17 @@
 
             <details class="quote">
               <summary>Source code in <code>m/github/ci_dataclasses.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
-<span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
-<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
-<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
-<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
-<span class="normal"><a href="#__codelineno-0-100">100</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="k">class</span> <span class="nc">Release</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Github release &lt;==&gt; Git tag.&quot;&quot;&quot;</span>
-<a id="__codelineno-0-97" name="__codelineno-0-97"></a>
-<a id="__codelineno-0-98" name="__codelineno-0-98"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span>
-<a id="__codelineno-0-100" name="__codelineno-0-100"></a>    <span class="n">published_at</span><span class="p">:</span> <span class="nb">str</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-102" name="__codelineno-0-102"></a><span class="k">class</span> <span class="nc">Release</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Github release &lt;==&gt; Git tag.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-104" name="__codelineno-0-104"></a>
+<a id="__codelineno-0-105" name="__codelineno-0-105"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a>    <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-107" name="__codelineno-0-107"></a>    <span class="n">published_at</span><span class="p">:</span> <span class="nb">str</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
