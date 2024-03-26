@@ -197,9 +197,11 @@ def _get_pull_request(
     pr_number: Optional[int],
 ) -> OneOf[Issue, Optional[PullRequest]]:
     pr = raw.get('pullRequest')
+    print('PR', pr)
     if not pr:
         return Good(None)
     author = pr.get('author', {})
+    pr_files = pr.get('files', {})
     return Good(
         PullRequest(
             author=Author(**author),
@@ -210,8 +212,8 @@ def _get_pull_request(
             url=pr.get('url'),
             title=pr.get('title'),
             body=pr.get('body'),
-            file_count=pr.get('files', {}).get('totalCount', 0),
-            files=[x['path'] for x in pr.get('files', {}).get('nodes', [])],
+            file_count=pr_files.get('totalCount', 0),
+            files=[x['path'] for x in pr_files.get('nodes', [])],
             is_draft=pr.get('isDraft'),
         ),
     )
