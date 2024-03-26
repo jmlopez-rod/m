@@ -69,6 +69,10 @@ class DockerConfig(BaseModel):
     # list of images to build
     images: list[DockerImage]
 
+    # Opt in flag to use buildx imagetools to create multi-arch manifests.
+    # https://docs.docker.com/reference/cli/docker/buildx/imagetools/create/
+    use_buildx: bool = False
+
     def makefile_targets(self: 'DockerConfig', files: FileNames) -> str:
         """Create the Makefile targets to trigger the local builds.
 
@@ -148,6 +152,7 @@ class DockerConfig(BaseModel):
             extra_inputs=self.workflow_inputs,
             max_parallel_manifests=self.max_parallel_manifests,
             container=self.container,
+            use_buildx=self.use_buildx,
         )
         single_workflow = SingleWorkflow(
             m_dir=files.m_dir,
@@ -219,6 +224,9 @@ class DockerConfig(BaseModel):
         for img in self.images:
             file_name = f'{files.ci_dir}/{img.image_name}.build.sh'
             write_res = _write_build_script(file_name, img, m_env)
+            _append_issue(write_res, issues)
+            file_name = f'{files.ci_dir}/{img.image_name}.manifest.sh'
+            write_res = _write_manifest_script(file_name, img, m_env)
             _append_issue(write_res, issues)
         if issues:
             return issue(
@@ -299,6 +307,18 @@ def _write_build_script(
     return one_of(lambda: [
         None
         for script_content in img.ci_build(m_env)
+        for _ in rw.write_file(file_name, script_content)
+    ])
+
+
+def _write_manifest_script(
+    file_name: str,
+    img: DockerImage,
+    m_env: MEnvDocker,
+) -> Res[None]:
+    return one_of(lambda: [
+        None
+        for script_content in img.ci_manifest(m_env)
         for _ in rw.write_file(file_name, script_content)
     ])
 

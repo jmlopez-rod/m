@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from .docker_build import DockerBuild
 from .env import MEnvDocker
+from .tags import docker_tags
 
 BASH_SHEBANG = '#!/bin/bash'
 SET_STRICT_BASH = 'set -euxo pipefail'
@@ -132,6 +133,38 @@ class DockerImage(BaseModel):
             SET_STRICT_BASH,
             '',
             str(build_cmd),
+            '',
+        ]
+        return Good('\n'.join(script))
+
+    def ci_manifest(self: 'DockerImage', m_env: MEnvDocker) -> Res[str]:
+        """Generate a shell script to handle multi-arch manifests.
+
+        Args:
+            m_env: The MEnvDocker instance with the environment variables.
+
+        Returns:
+            A shell snippet with a docker buildx command.
+        """
+        m_tag = m_env.m_tag
+        registry = m_env.registry
+        tags = [m_tag, *docker_tags(m_tag)]
+        img_name = f'{registry}/{self.image_name}'
+        all_tags = [
+            f'  -t {img_name}:{tag} \\'
+            for tag in tags
+        ]
+        all_archs = ' \\\n'.join([
+            f'  {registry}/{arch}-{self.image_name}:{m_tag}'
+            for arch in m_env.architectures
+        ])
+        script = [
+            BASH_SHEBANG,
+            SET_STRICT_BASH,
+            '',
+            'docker buildx imagetools create \\',
+            *all_tags,
+            all_archs,
             '',
         ]
         return Good('\n'.join(script))
