@@ -69,9 +69,8 @@ class DockerConfig(BaseModel):
     # list of images to build
     images: list[DockerImage]
 
-    # Opt in flag to use buildx imagetools to create multi-arch manifests.
     # https://docs.docker.com/reference/cli/docker/buildx/imagetools/create/
-    use_buildx: bool = False
+    use_buildx: bool = True
 
     def makefile_targets(self: 'DockerConfig', files: FileNames) -> str:
         """Create the Makefile targets to trigger the local builds.
