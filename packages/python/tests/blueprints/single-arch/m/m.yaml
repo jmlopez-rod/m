@@ -8,6 +8,7 @@ docker_config:
     SOME_SECRET: ${{ secrets.SOME_SECRET }}
     SOME_VAR: some_value
   architectures: null
+  use_buildx: false
   base_path: packages/python/tests/blueprints/single-arch/m/docker
   docker_registry: 'ghcr.io/repo-owner'
   extra_build_steps:

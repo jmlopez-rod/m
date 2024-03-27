@@ -11,7 +11,8 @@ The format of this changelog is based on
 
 ## [0.33.1] <a name="0.33.1" href="#0.33.1">-</a> March 27, 2024
 
-- `use_buildx` is set to `true` by default.
+- `use_buildx` is set to `true` by default. This flag will go away in the future
+  and the buildx command will be used by default.
 
 ## [0.33.0] <a name="0.33.0" href="#0.33.0">-</a> March 26, 2024
 

@@ -4,7 +4,6 @@ version: 0.100.0
 workflow: m_flow
 build_tag_with_version: true
 docker_config:
-  use_buildx: true
   architectures:
     amd64: ubuntu-amd
     arm64: ubuntu-arm
