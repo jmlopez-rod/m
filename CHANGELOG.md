@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.33.1] <a name="0.33.1" href="#0.33.1">-</a> March 27, 2024
+
+- `use_buildx` is set to `true` by default. This flag will go away in the future
+  and the buildx command will be used by default.
+
 ## [0.33.0] <a name="0.33.0" href="#0.33.0">-</a> March 26, 2024
 
 - Add `use_buildx` flag to `m` configuration to try use a buildx command when
@@ -535,7 +540,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.33.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.33.1...HEAD
+[0.33.1]: https://github.com/jmlopez-rod/m/compare/0.33.0...0.33.1
 [0.33.0]: https://github.com/jmlopez-rod/m/compare/0.32.1...0.33.0
 [0.32.1]: https://github.com/jmlopez-rod/m/compare/0.32.0...0.32.1
 [0.32.0]: https://github.com/jmlopez-rod/m/compare/0.31.1...0.32.0

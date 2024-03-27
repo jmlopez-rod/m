@@ -10,6 +10,7 @@ docker_config:
   base_path: packages/python/tests/blueprints/multi-arch/m/docker
   docker_registry: 'ghcr.io/repo-owner'
   max_parallel_manifests: 16
+  use_buildx: false
   extra_build_steps:
     - name: step
       run: cmd
