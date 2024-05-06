@@ -2360,6 +2360,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#m.ci.docker.docker_build.DockerBuild.buildx_str" class="md-nav__link">
+    buildx_str()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4993,6 +5000,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#m.ci.docker.docker_build.DockerBuild.buildx_str" class="md-nav__link">
+    buildx_str()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5515,7 +5529,20 @@
 <span class="normal"><a href="#__codelineno-0-115">115</a></span>
 <span class="normal"><a href="#__codelineno-0-116">116</a></span>
 <span class="normal"><a href="#__codelineno-0-117">117</a></span>
-<span class="normal"><a href="#__codelineno-0-118">118</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">class</span> <span class="nc">DockerBuild</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-118">118</a></span>
+<span class="normal"><a href="#__codelineno-0-119">119</a></span>
+<span class="normal"><a href="#__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#__codelineno-0-123">123</a></span>
+<span class="normal"><a href="#__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#__codelineno-0-129">129</a></span>
+<span class="normal"><a href="#__codelineno-0-130">130</a></span>
+<span class="normal"><a href="#__codelineno-0-131">131</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">class</span> <span class="nc">DockerBuild</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Representation of a `docker build` command.</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8"></a>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="sd">    See https://docs.docker.com/engine/reference/commandline/build</span>
@@ -5628,6 +5655,19 @@
 <a id="__codelineno-0-116" name="__codelineno-0-116"></a>            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <a id="__codelineno-0-117" name="__codelineno-0-117"></a>        <span class="p">)</span>
 <a id="__codelineno-0-118" name="__codelineno-0-118"></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+<a id="__codelineno-0-119" name="__codelineno-0-119"></a>
+<a id="__codelineno-0-120" name="__codelineno-0-120"></a>    <span class="k">def</span> <span class="nf">buildx_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-0-121" name="__codelineno-0-121"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the docker build command to a string.</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a><span class="sd">            The docker build command.</span>
+<a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a>        <span class="n">cmd</span> <span class="o">=</span> <span class="n">ShellCommand</span><span class="p">(</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>            <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;docker buildx build --platform &quot;$PLATFORM&quot;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a>            <span class="n">positional</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a>            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130"></a>        <span class="p">)</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131"></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -5708,6 +5748,77 @@
 <a id="__codelineno-0-116" name="__codelineno-0-116"></a>        <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <a id="__codelineno-0-117" name="__codelineno-0-117"></a>    <span class="p">)</span>
 <a id="__codelineno-0-118" name="__codelineno-0-118"></a>    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="m.ci.docker.docker_build.DockerBuild.buildx_str" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">buildx_str</span><span class="p">()</span></code>
+
+<a href="#m.ci.docker.docker_build.DockerBuild.buildx_str" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Convert the docker build command to a string.</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The docker build command.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>m/ci/docker/docker_build.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#__codelineno-0-123">123</a></span>
+<span class="normal"><a href="#__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#__codelineno-0-129">129</a></span>
+<span class="normal"><a href="#__codelineno-0-130">130</a></span>
+<span class="normal"><a href="#__codelineno-0-131">131</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-120" name="__codelineno-0-120"></a><span class="k">def</span> <span class="nf">buildx_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a id="__codelineno-0-121" name="__codelineno-0-121"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the docker build command to a string.</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a><span class="sd">        The docker build command.</span>
+<a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a>    <span class="n">cmd</span> <span class="o">=</span> <span class="n">ShellCommand</span><span class="p">(</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;docker buildx build --platform &quot;$PLATFORM&quot;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a>        <span class="n">positional</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">],</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a>        <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130"></a>    <span class="p">)</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131"></a>    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
