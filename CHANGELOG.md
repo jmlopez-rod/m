@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.34.0] <a name="0.34.0" href="#0.34.0">-</a> May 06, 2024
+
 - We may provide `platforms` in the `m` configuration. This is helpful when we
   do not have access to different architectures. In this case the architecture
   flag is still needed but they can be build in the same runner. When platform
@@ -545,7 +547,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.33.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.34.0...HEAD
+[0.34.0]: https://github.com/jmlopez-rod/m/compare/0.33.1...0.34.0
 [0.33.1]: https://github.com/jmlopez-rod/m/compare/0.33.0...0.33.1
 [0.33.0]: https://github.com/jmlopez-rod/m/compare/0.32.1...0.33.0
 [0.32.1]: https://github.com/jmlopez-rod/m/compare/0.32.0...0.32.1
