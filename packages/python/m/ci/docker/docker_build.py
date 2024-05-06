@@ -116,3 +116,16 @@ class DockerBuild(BaseModel):
             options=self.model_dump(exclude_none=True),
         )
         return str(cmd)
+
+    def buildx_str(self) -> str:
+        """Convert the docker build command to a string.
+
+        Returns:
+            The docker build command.
+        """
+        cmd = ShellCommand(
+            prog='docker buildx build --platform "$PLATFORM"',
+            positional=['.'],
+            options=self.model_dump(exclude_none=True),
+        )
+        return str(cmd)

@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- We may provide `platforms` in the `m` configuration. This is helpful when we
+  do not have access to different architectures. In this case the architecture
+  flag is still needed but they can be build in the same runner. When platform
+  is provided we can specify `linux/arm64` in there.
+
 ## [0.33.1] <a name="0.33.1" href="#0.33.1">-</a> March 27, 2024
 
 - `use_buildx` is set to `true` by default. This flag will go away in the future

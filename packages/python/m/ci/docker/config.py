@@ -33,8 +33,14 @@ class DockerConfig(BaseModel):
 
     # A map of the architectures to build. It maps say `amd64` to a Github
     # runner that will build the image for that architecture.
-    #   amd64: Ubuntu 20.04
+    #    amd64: Ubuntu 20.04
     architectures: dict[str, str | list[str]] | None
+
+    # A map of the platforms to build. It maps say `amd64` to a valid buildx
+    # supported platform. Using this allows us to build multi-arch images using
+    # buildx in an environment that may not have the necessary architecture.
+    # For instance: 'amd64: linux/amd64'
+    platforms: dict[str, str] | None = None
 
     # Freeform object to allow us to specify a container in which to run
     # the docker commands.
@@ -145,6 +151,7 @@ class DockerConfig(BaseModel):
             global_env=global_env,
             default_runner=self.default_runner,
             architectures=self.architectures or {},
+            platforms=self.platforms,
             images=self.images,
             extra_build_steps=self.extra_build_steps,
             docker_registry=self.docker_registry,

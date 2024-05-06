@@ -26,6 +26,64 @@ class TCase(BaseTCase):
 @pytest.mark.parametrize('tcase', [
     TCase(
         expected='',
+        fixture_path='blueprints/multi-arch-buildx-platform/fixtures',
+        m_dir='packages/python/tests/blueprints/multi-arch-buildx-platform/m',
+        errors=[
+            'M_TAG not found in non-CI environment. Using 1.1.1',
+        ],
+        write_calls=[
+            WriteArgs(
+                path='../Makefile',
+                fname='Makefile',
+            ),
+            WriteArgs(
+                path='../.github/workflows/m.yaml',
+                fname='gh-m.yaml',
+            ),
+            WriteArgs(
+                path='.m/blueprints/local/m-image1.build.sh',
+                fname='local/m-image1.build.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/local/m-image2.build.sh',
+                fname='local/m-image2.build.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/_find-cache.sh',
+                fname='ci/_find-cache.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/_push-image.sh',
+                fname='ci/_push-image.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/m-image1.build.sh',
+                fname='ci/m-image1.build.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/m-image1.manifest.sh',
+                fname='ci/m-image1.manifest.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/m-image2.build.sh',
+                fname='ci/m-image2.build.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/m-image2.manifest.sh',
+                fname='ci/m-image2.manifest.sh',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/_image-names.json',
+                fname='ci/_image-names.json',
+            ),
+            WriteArgs(
+                path='.m/blueprints/ci/_image-tags.json',
+                fname='ci/_image-tags.json',
+            ),
+        ],
+    ),
+    TCase(
+        expected='',
         fixture_path='blueprints/multi-arch-buildx/fixtures',
         m_dir='packages/python/tests/blueprints/multi-arch-buildx/m',
         errors=[
