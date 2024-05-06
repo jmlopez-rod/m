@@ -1,3 +1,7 @@
+from textwrap import dedent
+
+from m.core import yaml
+
 from .gh_workflow_single import TemplateVars as DefaultTemplateVars
 from .gh_workflow_single import Workflow as DefaultWorkflow
 
@@ -146,7 +150,7 @@ jobs:
           name: m-blueprints
           path: {ci_dir}
       - name: chmod
-        run: chmod +x {ci_dir}/*.sh
+        run: chmod +x {ci_dir}/*.sh{buildx_setup}
       - {docker_login}
       {build_steps}
 
@@ -181,6 +185,8 @@ class TemplateVars(DefaultTemplateVars):
 
     manifest_strategy_options: str
 
+    buildx_setup: str
+
 
 def _indent(text: str, num: int) -> str:
     spaces = '  ' * num
@@ -196,6 +202,8 @@ class Workflow(DefaultWorkflow):
 
     use_buildx: bool = False
 
+    platforms: dict[str, str] | None
+
     def build_architectures(self: 'Workflow') -> str:
         """Generate a github action str with the build architectures.
 
@@ -203,10 +211,27 @@ class Workflow(DefaultWorkflow):
             A string to add to the Github workflow.
         """
         arch_strs = '\n'.join([
-            f'- arch: {arch}\n  os: {os}'
+            f'- arch: {arch}\n  os: {os}{platform}'
             for arch, os in self.architectures.items()
+            for platform in (self._add_platform(arch),)
         ])
         return _indent(f'\n{arch_strs}', 5)
+
+    def buildx_setup_str(self: 'Workflow') -> str:
+        """Generate a github action str to setup buildx.
+
+        Returns:
+            A string to add to the Github workflow.
+        """
+        if not self.platforms:
+            return ''
+        platforms = ','.join(self.platforms.values())
+        setup_obj = f"""
+            - name: buildx-setup
+              uses: docker/setup-buildx-action@v3
+              with:
+                platforms: {platforms}"""
+        return _indent(dedent(setup_obj), 3)
 
     def create_manifest_str(self: 'Workflow') -> str:
         """Generate the script to create the manifest.
@@ -250,6 +275,26 @@ class Workflow(DefaultWorkflow):
             options = f'\n      max-parallel: {self.max_parallel_manifests}'
         return options
 
+    def container_str(self: 'Workflow') -> str:
+        """Generate a string specifying a container to run on.
+
+        Returns:
+            A string to add to the Github workflow.
+        """
+        if not self.container:
+            lines = [
+                '',
+                '    env:',
+                '      ARCH: ${{ matrix.arch }}',
+            ]
+            if self.platforms:
+                lines.append('      PLATFORM: ${{ matrix.platform }}')
+            return '\n'.join(lines)
+        lines = ['\n    container:']
+        content_str = _indent(yaml.dumps(self.container), 3)
+        lines.append(f'      {content_str}')
+        return '\n'.join(lines).rstrip()
+
     def __str__(self: 'Workflow') -> str:
         """Stringify the workflow file.
 
@@ -264,6 +309,7 @@ class Workflow(DefaultWorkflow):
             ci_dir=self.ci_dir,
             build_architectures=self.build_architectures(),
             docker_login=self.docker_login_str(),
+            buildx_setup=self.buildx_setup_str(),
             build_steps=self.build_steps_str(),
             create_manifest=self.create_manifest_str(),
             push_manifest=self.push_manifest_str(),
@@ -272,3 +318,9 @@ class Workflow(DefaultWorkflow):
         )
         template = TEMPLATE_BUILDX if self.use_buildx else TEMPLATE
         return template.format(**template_vars.model_dump())
+
+    def _add_platform(self: 'Workflow', arch: str) -> str:
+        if not self.platforms:
+            return ''
+        platform = self.platforms[arch]
+        return f'\n  platform: {platform}'

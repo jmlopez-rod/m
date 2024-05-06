@@ -132,12 +132,17 @@ class DockerImage(BaseModel):
             target=self.target_stage,
             file=docker_file,
         )
+        build_cmd_str = (
+            build_cmd.buildx_str()
+            if m_env.use_buildx
+            else str(build_cmd)
+        )
         script = [
             BASH_SHEBANG,
             'export DOCKER_BUILDKIT=1',
             SET_STRICT_BASH,
             '',
-            str(build_cmd),
+            build_cmd_str,
             '',
         ]
         return Good('\n'.join(script))

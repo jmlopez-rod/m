@@ -16,8 +16,8 @@ if [ "$SINGLE" = 'false' ]; then
   coverage report -m --fail-under 98
 else
   # To run specific tests:
-  source="packages/python/m/github/actions"
-  filter="test_m_flow"
+  source="packages/python/m/ci/docker"
+  filter="test_m_blueprints"
   coverage run --source "$source" -m pytest -p no:logging packages/python -vv -k "$filter"
   coverage report -m
 fi

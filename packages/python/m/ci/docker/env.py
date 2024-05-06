@@ -21,3 +21,6 @@ class MEnvDocker(BaseModel):
 
     # The list of all the architectures if multi-arch is enabled.
     architectures: list[str]
+
+    # Flag to indicate if buildx should be used.
+    use_buildx: bool = False
