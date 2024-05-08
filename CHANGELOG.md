@@ -9,6 +9,13 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.34.1] <a name="0.34.1" href="#0.34.1">-</a> May 08, 2024
+
+- Provide another way to bypass the check for `CHANGELOG.md` when creating a
+  pull request. We can add `changelog_bypassers` in the `m` configuration to a
+  list of github usernames that are allowed to bypass the check. this is useful
+  for bots like `dependabot`.
+
 ## [0.34.0] <a name="0.34.0" href="#0.34.0">-</a> May 06, 2024
 
 - We may provide `platforms` in the `m` configuration. This is helpful when we
@@ -547,7 +554,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.34.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.34.1...HEAD
+[0.34.1]: https://github.com/jmlopez-rod/m/compare/0.34.0...0.34.1
 [0.34.0]: https://github.com/jmlopez-rod/m/compare/0.33.1...0.34.0
 [0.33.1]: https://github.com/jmlopez-rod/m/compare/0.33.0...0.33.1
 [0.33.0]: https://github.com/jmlopez-rod/m/compare/0.32.1...0.33.0
