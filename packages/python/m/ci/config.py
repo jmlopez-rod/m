@@ -38,7 +38,7 @@ class Config(BaseModel):
     require_pr_changelog: bool = True
 
     # List of github logins allowed to bypass the changelog requirement.
-    changelog_bypassers: list[str] = []
+    changelog_bypassers: list[str] = ['dependabot']
 
     git_flow: GitFlowConfig = GitFlowConfig(
         master_branch=Branches.master,
