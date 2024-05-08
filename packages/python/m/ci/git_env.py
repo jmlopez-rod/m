@@ -281,9 +281,11 @@ def get_git_env(config: Config, env_vars: EnvVars) -> Res[GitEnv]:
     pr = res.pull_request
 
     if pr and config.require_pr_changelog and not pr.changelog_updated():
+        can_bypass: bool = bool(config.changelog_bypassers) and pr.author.login in config.changelog_bypassers
+
         # If this is a huge PR we'll bypass it, the file may not be present in
         # the list of files.
-        if pr.file_count < 100:
+        if not can_bypass and pr.file_count < 100:
             return issue('missing CHANGELOG.md in PR', context={'pr': pr.model_dump()})
 
     git_env.sha = res.commit.sha

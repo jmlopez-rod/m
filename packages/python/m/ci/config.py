@@ -37,6 +37,9 @@ class Config(BaseModel):
     # If true it will require an update to the changelog for every PR.
     require_pr_changelog: bool = True
 
+    # List of github logins allowed to bypass the changelog requirement.
+    changelog_bypassers: list[str] = []
+
     git_flow: GitFlowConfig = GitFlowConfig(
         master_branch=Branches.master,
         develop_branch=Branches.develop,
