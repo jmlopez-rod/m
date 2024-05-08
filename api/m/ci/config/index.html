@@ -5455,7 +5455,7 @@
 <a id="__codelineno-0-38" name="__codelineno-0-38"></a>    <span class="n">require_pr_changelog</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <a id="__codelineno-0-39" name="__codelineno-0-39"></a>
 <a id="__codelineno-0-40" name="__codelineno-0-40"></a>    <span class="c1"># List of github logins allowed to bypass the changelog requirement.</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="n">changelog_bypassers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="n">changelog_bypassers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dependabot&#39;</span><span class="p">]</span>
 <a id="__codelineno-0-42" name="__codelineno-0-42"></a>
 <a id="__codelineno-0-43" name="__codelineno-0-43"></a>    <span class="n">git_flow</span><span class="p">:</span> <span class="n">GitFlowConfig</span> <span class="o">=</span> <span class="n">GitFlowConfig</span><span class="p">(</span>
 <a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="n">master_branch</span><span class="o">=</span><span class="n">Branches</span><span class="o">.</span><span class="n">master</span><span class="p">,</span>
