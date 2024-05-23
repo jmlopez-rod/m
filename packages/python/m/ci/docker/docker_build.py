@@ -124,7 +124,7 @@ class DockerBuild(BaseModel):
             The docker build command.
         """
         cmd = ShellCommand(
-            prog='docker buildx build --platform "$PLATFORM"',
+            prog='docker buildx build --platform "$PLATFORM" --load',
             positional=['.'],
             options=self.model_dump(exclude_none=True),
         )
