@@ -5663,7 +5663,7 @@
 <a id="__codelineno-0-124" name="__codelineno-0-124"></a><span class="sd">            The docker build command.</span>
 <a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="sd">        &quot;&quot;&quot;</span>
 <a id="__codelineno-0-126" name="__codelineno-0-126"></a>        <span class="n">cmd</span> <span class="o">=</span> <span class="n">ShellCommand</span><span class="p">(</span>
-<a id="__codelineno-0-127" name="__codelineno-0-127"></a>            <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;docker buildx build --platform &quot;$PLATFORM&quot;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>            <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;docker buildx build --platform &quot;$PLATFORM&quot; --load&#39;</span><span class="p">,</span>
 <a id="__codelineno-0-128" name="__codelineno-0-128"></a>            <span class="n">positional</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">],</span>
 <a id="__codelineno-0-129" name="__codelineno-0-129"></a>            <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <a id="__codelineno-0-130" name="__codelineno-0-130"></a>        <span class="p">)</span>
@@ -5814,7 +5814,7 @@
 <a id="__codelineno-0-124" name="__codelineno-0-124"></a><span class="sd">        The docker build command.</span>
 <a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="sd">    &quot;&quot;&quot;</span>
 <a id="__codelineno-0-126" name="__codelineno-0-126"></a>    <span class="n">cmd</span> <span class="o">=</span> <span class="n">ShellCommand</span><span class="p">(</span>
-<a id="__codelineno-0-127" name="__codelineno-0-127"></a>        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;docker buildx build --platform &quot;$PLATFORM&quot;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a>        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;docker buildx build --platform &quot;$PLATFORM&quot; --load&#39;</span><span class="p">,</span>
 <a id="__codelineno-0-128" name="__codelineno-0-128"></a>        <span class="n">positional</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">],</span>
 <a id="__codelineno-0-129" name="__codelineno-0-129"></a>        <span class="n">options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 <a id="__codelineno-0-130" name="__codelineno-0-130"></a>    <span class="p">)</span>
