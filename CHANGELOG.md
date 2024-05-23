@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.34.3] <a name="0.34.3" href="#0.34.3">-</a> May 23, 2024
+
+- Use `--load` with `docker buildx build`. See
+  https://github.com/docker/buildx/issues/59#issuecomment-1168619521
+
 ## [0.34.2] <a name="0.34.2" href="#0.34.2">-</a> May 08, 2024
 
 - Add `dependabot` as a default bypasser for the `CHANGELOG.md` check.
@@ -558,7 +563,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.34.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.34.3...HEAD
+[0.34.3]: https://github.com/jmlopez-rod/m/compare/0.34.2...0.34.3
 [0.34.2]: https://github.com/jmlopez-rod/m/compare/0.34.1...0.34.2
 [0.34.1]: https://github.com/jmlopez-rod/m/compare/0.34.0...0.34.1
 [0.34.0]: https://github.com/jmlopez-rod/m/compare/0.33.1...0.34.0

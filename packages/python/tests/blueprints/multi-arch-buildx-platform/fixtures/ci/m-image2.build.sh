@@ -2,7 +2,7 @@
 export DOCKER_BUILDKIT=1
 set -euxo pipefail
 
-docker buildx build --platform "$PLATFORM" \
+docker buildx build --platform "$PLATFORM" --load \
   --build-arg ARCH="$ARCH" \
   --build-arg BUILDKIT_INLINE_CACHE=1 \
   --build-arg M_TAG= \
