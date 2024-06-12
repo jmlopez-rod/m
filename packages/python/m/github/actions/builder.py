@@ -151,6 +151,7 @@ def process_action(
         return Bad(outputs_res.value)
 
     outputs, available_outputs = outputs_res.value
+    parent_dir = '../' * (len(action.file_path.split('/')) - 1)
     action_file = ActionFile(
         py_path=py_path,
         module_name=actions_module,
@@ -159,7 +160,7 @@ def process_action(
         inputs=action.inputs or KebabModel,
         action=action,
         outputs=outputs,
-        python_path=py_path,
+        python_path=f'{parent_dir}{py_path}',
         available_outputs=available_outputs,
     )
     yaml_contents = str(action_file)

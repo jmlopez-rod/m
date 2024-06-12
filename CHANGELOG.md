@@ -13,6 +13,9 @@ The format of this changelog is based on
 - Allow simple bash steps to be inserted into Github actions. This may be
   necessary if we need to run `pip` commands or any other setup steps before the
   main python action.
+- Fix: when using Github actions we need to specify the path relative to the
+  root of the project. In this case when we specify an action file we need to
+  find out the number of parent directories to be able to obtain the root.
 
 ## [0.34.3] <a name="0.34.3" href="#0.34.3">-</a> May 23, 2024
 
