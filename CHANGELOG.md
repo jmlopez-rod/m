@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Update `npm_tags` to semi-match output with `docker_tags`.
+
 ## [0.34.3] <a name="0.34.3" href="#0.34.3">-</a> May 23, 2024
 
 - Use `--load` with `docker buildx build`. See

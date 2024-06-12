@@ -17,6 +17,9 @@ def npm_tags(m_tag: str) -> list[str]:
         tag, _ = matches.groups()
         if tag.startswith('rc') or tag.startswith('hotfix'):
             tags.append('next')
+            index = 2 if tag.startswith('rc') else 6
+            pr_num = tag[index:]
+            tags.append(f'pr{pr_num}')
         else:
             tags.append(tag)
     else:
