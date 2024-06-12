@@ -10,6 +10,9 @@ The format of this changelog is based on
 ## [Unreleased]
 
 - Update `npm_tags` to semi-match output with `docker_tags`.
+- Allow simple bash steps to be inserted into Github actions. This may be
+  necessary if we need to run `pip` commands or any other setup steps before the
+  main python action.
 
 ## [0.34.3] <a name="0.34.3" href="#0.34.3">-</a> May 23, 2024
 

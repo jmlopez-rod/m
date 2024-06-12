@@ -47,6 +47,81 @@ def _run_if(condition: str | None, available_values: dict[str, str]) -> str:
     return run_if
 
 
+class BashStep(BaseModel, Generic[InputModel, OutputModel]):
+    """Step to add bash scripting into the action.
+
+    This step does not connect to any of the others one and its been added
+    to be able to run poetry commands or any other setup that we may need in
+    the action.
+    """
+
+    id: str = Field(description='The id of the step.')
+
+    run_if: str | None = Field(
+        default=None,
+        description='The condition to run the step.',
+    )
+
+    run: str = Field(
+        description='The bash script to execute.',
+    )
+
+    args: InputModel | None = Field(
+        default=None,
+        description='The arguments to pass to the run function.',
+    )
+
+    def get_inputs_outputs(self: 'BashStep') -> InputOutputs:
+        """Get the inputs and outputs for the step.
+
+        Returns:
+            A tuple of the inputs and outputs.
+        """
+        return KebabModel, KebabModel
+
+
+    def _sanitize_run(self: 'BashStep') -> str:
+        spaces = '  ' * 2
+        return dedent(self.run).replace('\n', f'\n{spaces}', -1)
+
+
+    def to_str(
+        self: 'BashStep',
+        _python_path: str,
+        available_values: dict[str, str],
+    ) -> str:
+        """Generate a string to use in the Github Action.
+
+        Args:
+            python_path: The path to the python module.
+            available_values: The values that are available to the step.
+
+        Returns:
+            A string to add to the Github action.
+        """
+        template = """\
+            - id: {id}{run_if}
+              shell: bash{env}
+              run: |-
+                {run}
+        """
+        run_if = _run_if(self.run_if, available_values)
+        mapped_args = map_args({}, available_values, input_env)
+        env = ''
+        if mapped_args:
+            arg_lines = '\n'.join([
+                f'    {key}: {env_val}'
+                for key, env_val in mapped_args.items()
+            ])
+            env = f'\n  env:\n{arg_lines}'
+        return dedent(template).format(
+            id=self.id,
+            env=env,
+            run_if=run_if,
+            run=self._sanitize_run(),
+        ).rstrip()
+
+
 class RunStep(BaseModel, Generic[InputModel, OutputModel]):
     """Model used to define a "run" step in a Github action.
 
@@ -254,7 +329,7 @@ class Action(BaseModel):
         step.
     """)
 
-    steps: list[RunStep | UsesStep] = Field(
+    steps: list[RunStep | UsesStep | BashStep] = Field(
         description='The steps for the action',
     )
 

@@ -1,4 +1,4 @@
-from m.github.actions import Action
+from m.github.actions import Action, BashStep
 
 from .gha_one_step import ExternalActionInputs, gha_one_step
 from .main import MainInputs, main_step
@@ -13,6 +13,13 @@ actions = [
         description='Main description.',
         inputs=GithubInputs,
         steps=[
+            BashStep(
+                id='bash-step',
+                run='''\
+                    echo 'hello'
+                    echo 'world'
+                '''
+            ),
             setup_step('setup', SetupInputs(
                 setup_in_1='inputs.arg_1',
                 setup_in_2="pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}",

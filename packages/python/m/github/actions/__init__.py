@@ -1,5 +1,5 @@
 # noqa: WPS412
-from .actions import Action, KebabModel, RunStep, UsesStep
+from .actions import Action, BashStep, KebabModel, RunStep, UsesStep
 from .api import InArg, OutArg, run_action
 
 __all__ = [  # noqa: WPS410
@@ -10,4 +10,5 @@ __all__ = [  # noqa: WPS410
     'Action',
     'RunStep',
     'UsesStep',
+    'BashStep',
 ]
