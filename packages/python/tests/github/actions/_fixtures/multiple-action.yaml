@@ -31,13 +31,18 @@ outputs:
 runs:
   using: composite
   steps:
+    - id: bash-step
+      shell: bash
+      run: |-
+        echo 'hello'
+        echo 'world'
     - id: setup
       shell: bash
       env:
         INPUT_SETUP_IN_1: ${{ inputs.arg-1 }}
         INPUT_SETUP_IN_2: pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         INPUT_SETUP_IN_3: setup_in_3
-      run: PYTHONPATH="$GITHUB_ACTION_PATH/packages/python/tests/github/actions" python -m multiple.setup
+      run: PYTHONPATH="$GITHUB_ACTION_PATH/../packages/python/tests/github/actions" python -m multiple.setup
     - id: external
       if: steps.setup.outputs.setup-out-1 == true && inputs.arg-1 == true
       uses: jmlopez-rod/gha-one-step@v0.1.0
@@ -47,4 +52,4 @@ runs:
       shell: bash
       env:
         INPUT_MAIN_IN: ${{ steps.external.outputs.external-2 }}
-      run: PYTHONPATH="$GITHUB_ACTION_PATH/packages/python/tests/github/actions" python -m multiple.main
+      run: PYTHONPATH="$GITHUB_ACTION_PATH/../packages/python/tests/github/actions" python -m multiple.main

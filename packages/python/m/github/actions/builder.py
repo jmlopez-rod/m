@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from typing import Any
 
 from m.core import Bad, Good, Res, issue, one_of, rw
@@ -54,19 +55,15 @@ def update_py_path(actions_py_file: str) -> Res[tuple[str, str]]:
         A `Good` containing a tuple of the python path and module name.
     """
     is_file = actions_py_file.endswith('.py')
-    parts = actions_py_file.split('/')
+    actions_py_path = Path(actions_py_file)
     # Need to add the parent directory to the path so that we can do relative
     # imports from the actions file.
-    py_path = (
-        '/'.join(parts[:-2])
-        if is_file
-        else '/'.join(parts[:-1])
-    )
-    sys.path.insert(0, py_path)
-    module_name = parts[-1].split('.')[0]
-    dir_name = parts[-2] if is_file else ''
+    py_path = actions_py_path.parent.parent if is_file else actions_py_path.parent
+    sys.path.insert(0, str(py_path))
+    module_name = actions_py_path.stem
+    dir_name = actions_py_path.parent.name if is_file else ''
     module = f'{dir_name}.{module_name}' if is_file else module_name
-    return Good((py_path, module))
+    return Good((str(py_path), module))
 
 
 def assert_actions(actions: Any) -> Res[list[Action]]:
@@ -151,6 +148,7 @@ def process_action(
         return Bad(outputs_res.value)
 
     outputs, available_outputs = outputs_res.value
+    parent_dir = '../' * (len(action.file_path.split('/')) - 1)
     action_file = ActionFile(
         py_path=py_path,
         module_name=actions_module,
@@ -159,7 +157,7 @@ def process_action(
         inputs=action.inputs or KebabModel,
         action=action,
         outputs=outputs,
-        python_path=py_path,
+        python_path=f'{parent_dir}{py_path}',
         available_outputs=available_outputs,
     )
     yaml_contents = str(action_file)

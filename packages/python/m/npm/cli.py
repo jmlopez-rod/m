@@ -35,3 +35,17 @@ def remove_dist_tag(pkg_name: str, tag: str) -> OneOf[Issue, str]:
         A `OneOf` containing an `Issue` or the output of the npm command.
     """
     return subprocess.eval_cmd(f'npm dist-tag rm {pkg_name} {tag} --json')
+
+
+def add_dist_tag(pkg_name: str, version: str, tag: str) -> OneOf[Issue, str]:
+    """Add an npm tag.
+
+    Args:
+        pkg_name: The name of the npm package.
+        version: The version to tag.
+        tag: The tag to add.
+
+    Returns:
+        A `OneOf` containing an `Issue` or the output of the npm command.
+    """
+    return subprocess.eval_cmd(f'npm dist-tag add {pkg_name}@{version} {tag}')

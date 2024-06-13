@@ -175,4 +175,12 @@ def start_release(gh_token: str, hotfix: bool = False) -> Res[None]:
         for branch_checkout in git.checkout_branch(f'{release_type}/{new_ver}')
         for _ in after_checkout(branch_checkout, stashed_changes)
         for _ in release_setup('m', config, new_ver)
+        for _ in logger.info('next steps', context={
+            'instructions': [
+                'verify that CHANGELOG.md contains a list of all changes',
+                'add any other necessary changes to files',
+                '**DO NOT** commit any changes, instead...',
+                'run `m review_release` to commit and create a pull request',
+            ],
+        })
     ])

@@ -24,6 +24,30 @@ class TCase(CliTestCase):
         expected='["- tag1","- tag2"]',
     ),
     TCase(
+        cmd='m npm add_tags scope/pkg 0.0.0-rc123.b123',
+        eval_cmd_side_effects=[
+            Good('+ next'),
+            Good('+ pr123'),
+        ],
+        expected='["+ next","+ pr123"]',
+    ),
+    TCase(
+        cmd='m npm add_tags scope/pkg 1.1.1',
+        eval_cmd_side_effects=[
+            Good('+ latest'),
+            Good('+ v1'),
+            Good('+ v1.1'),
+        ],
+        expected='["+ latest","+ v1","+ v1.1"]',
+    ),
+    TCase(
+        cmd='m npm add_tags scope/pkg 0.0.0-pr12.b123',
+        eval_cmd_side_effects=[
+            Good('+ pr12'),
+        ],
+        expected='["+ pr12"]',
+    ),
+    TCase(
         cmd='m npm clean_tags scope/pkg',
         eval_cmd_side_effects=[
             Good('{"tag1":"","tag2":"","tag3":"v3"}'),
@@ -38,7 +62,7 @@ class TCase(CliTestCase):
         exit_code=1,
     ),
 ])
-def test_m_npm_clean_tags(tcase: TCase, mocker: MockerFixture) -> None:
+def test_m_npm_dist_tags(tcase: TCase, mocker: MockerFixture) -> None:
     eval_cmd = mocker.patch('m.core.subprocess.eval_cmd')
     eval_cmd.side_effect = tcase.eval_cmd_side_effects
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)

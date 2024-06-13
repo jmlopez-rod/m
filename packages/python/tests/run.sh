@@ -17,7 +17,7 @@ if [ "$SINGLE" = 'false' ]; then
 else
   # To run specific tests:
   source="packages/python/m/ci/docker"
-  filter="test_m_blueprints"
+  filter="test_m_start_release"
   coverage run --source "$source" -m pytest -p no:logging packages/python -vv -k "$filter"
   coverage report -m
 fi

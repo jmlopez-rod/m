@@ -210,4 +210,11 @@ def review_release(token: str) -> Res[None]:
         for _ in git.push_branch(branch)
         for gh_ver in get_latest_release(token, config.owner, config.repo)
         for _ in create_prs(token, config, release_type, target_ver, gh_ver)
+        for _ in logger.info('next steps', context={
+            'instructions': [
+                'wait for reviewers to approve the pull requests',
+                'continue maintaining changes in the release/hotfix branch',
+                'run `m end_release` to merge the changes the prs are approved',
+            ],
+        })
     ])

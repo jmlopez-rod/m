@@ -7,3 +7,11 @@
          "(release to develop) 0.1.0": "https://pr1-url.com",
          "(release) 0.1.0": "https://pr2-url.com"
        }
+[INFO] [09:33:09 PM - Nov 29, 1973]: next steps
+       {
+         "instructions": [
+           "wait for reviewers to approve the pull requests",
+           "continue maintaining changes in the release/hotfix branch",
+           "run `m end_release` to merge the changes the prs are approved"
+         ]
+       }

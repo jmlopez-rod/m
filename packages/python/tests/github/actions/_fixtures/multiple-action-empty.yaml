@@ -12,4 +12,4 @@ runs:
   steps:
     - id: no_args
       shell: bash
-      run: PYTHONPATH="$GITHUB_ACTION_PATH/packages/python/tests/github/actions" python -m multiple.no_args
+      run: PYTHONPATH="$GITHUB_ACTION_PATH/../packages/python/tests/github/actions" python -m multiple.no_args
