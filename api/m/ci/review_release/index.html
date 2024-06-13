@@ -1682,6 +1682,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../../cli/npm/add_tags/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    add_tags
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../../cli/npm/clean_tags/" class="md-nav__link">
         
   
@@ -4749,6 +4769,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../../npm/add_tags/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    add_tags
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../npm/clean_tags/" class="md-nav__link">
         
   
@@ -5798,7 +5838,14 @@ This is a one time operation.</p>
 <span class="normal"><a href="#__codelineno-0-210">210</a></span>
 <span class="normal"><a href="#__codelineno-0-211">211</a></span>
 <span class="normal"><a href="#__codelineno-0-212">212</a></span>
-<span class="normal"><a href="#__codelineno-0-213">213</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="k">def</span> <span class="nf">review_release</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+<span class="normal"><a href="#__codelineno-0-213">213</a></span>
+<span class="normal"><a href="#__codelineno-0-214">214</a></span>
+<span class="normal"><a href="#__codelineno-0-215">215</a></span>
+<span class="normal"><a href="#__codelineno-0-216">216</a></span>
+<span class="normal"><a href="#__codelineno-0-217">217</a></span>
+<span class="normal"><a href="#__codelineno-0-218">218</a></span>
+<span class="normal"><a href="#__codelineno-0-219">219</a></span>
+<span class="normal"><a href="#__codelineno-0-220">220</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="k">def</span> <span class="nf">review_release</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
 <a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create release prs.</span>
 <a id="__codelineno-0-192" name="__codelineno-0-192"></a>
 <a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">    Args:</span>
@@ -5821,7 +5868,14 @@ This is a one time operation.</p>
 <a id="__codelineno-0-210" name="__codelineno-0-210"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">git</span><span class="o">.</span><span class="n">push_branch</span><span class="p">(</span><span class="n">branch</span><span class="p">)</span>
 <a id="__codelineno-0-211" name="__codelineno-0-211"></a>        <span class="k">for</span> <span class="n">gh_ver</span> <span class="ow">in</span> <span class="n">get_latest_release</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">owner</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">repo</span><span class="p">)</span>
 <a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">create_prs</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">release_type</span><span class="p">,</span> <span class="n">target_ver</span><span class="p">,</span> <span class="n">gh_ver</span><span class="p">)</span>
-<a id="__codelineno-0-213" name="__codelineno-0-213"></a>    <span class="p">])</span>
+<a id="__codelineno-0-213" name="__codelineno-0-213"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;next steps&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+<a id="__codelineno-0-214" name="__codelineno-0-214"></a>            <span class="s1">&#39;instructions&#39;</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-215" name="__codelineno-0-215"></a>                <span class="s1">&#39;wait for reviewers to approve the pull requests&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-216" name="__codelineno-0-216"></a>                <span class="s1">&#39;continue maintaining changes in the release/hotfix branch&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-217" name="__codelineno-0-217"></a>                <span class="s1">&#39;run `m end_release` to merge the changes the prs are approved&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-218" name="__codelineno-0-218"></a>            <span class="p">],</span>
+<a id="__codelineno-0-219" name="__codelineno-0-219"></a>        <span class="p">})</span>
+<a id="__codelineno-0-220" name="__codelineno-0-220"></a>    <span class="p">])</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
