@@ -79,12 +79,6 @@ class BashStep(BaseModel, Generic[InputModel, OutputModel]):
         """
         return KebabModel, KebabModel
 
-
-    def _sanitize_run(self: 'BashStep') -> str:
-        spaces = '  ' * 2
-        return dedent(self.run).replace('\n', f'\n{spaces}', -1)
-
-
     def to_str(
         self: 'BashStep',
         _python_path: str,
@@ -93,7 +87,7 @@ class BashStep(BaseModel, Generic[InputModel, OutputModel]):
         """Generate a string to use in the Github Action.
 
         Args:
-            python_path: The path to the python module.
+            _python_path: The path to the python module.
             available_values: The values that are available to the step.
 
         Returns:
@@ -120,6 +114,10 @@ class BashStep(BaseModel, Generic[InputModel, OutputModel]):
             run_if=run_if,
             run=self._sanitize_run(),
         ).rstrip()
+
+    def _sanitize_run(self: 'BashStep') -> str:
+        spaces = '  ' * 2
+        return dedent(self.run).replace('\n', f'\n{spaces}', -1)
 
 
 class RunStep(BaseModel, Generic[InputModel, OutputModel]):

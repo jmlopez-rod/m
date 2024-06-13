@@ -15,10 +15,10 @@ actions = [
         steps=[
             BashStep(
                 id='bash-step',
-                run='''\
+                run="""\
                     echo 'hello'
                     echo 'world'
-                '''
+                """,
             ),
             setup_step('setup', SetupInputs(
                 setup_in_1='inputs.arg_1',

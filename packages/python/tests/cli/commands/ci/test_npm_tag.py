@@ -7,7 +7,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
 
 @pytest.mark.parametrize('tcase', [
     TCase(cmd=f'm ci npm_tag {m_tag}', expected=expected)
-    for m_tag, expected in [
+    for m_tag, expected in (
         ('0.0.1', 'latest'),
         ('1.22.333', 'latest'),
         ('0.0.1-pr123.b123', 'pr123'),
@@ -23,7 +23,7 @@ from tests.cli.conftest import TCase, assert_streams, run_cli
         ('0.0.1-master.b123', 'master'),
         ('0.0.1-develop.b123', 'develop'),
         ('0.0.1-branch.b123', 'branch'),
-    ]
+    )
 ])
 def test_m_ci_npm_tag(tcase: TCase, mocker: MockerFixture) -> None:
     std_out, std_err = run_cli(tcase.cmd, tcase.exit_code, mocker)
@@ -33,6 +33,7 @@ def test_m_ci_npm_tag(tcase: TCase, mocker: MockerFixture) -> None:
 class NpmTagTestCase(BaseModel):
     version: str
     expected: list[str]
+
 
 @pytest.mark.parametrize('tcase', [
     NpmTagTestCase(version=m_tag, expected=expected)
