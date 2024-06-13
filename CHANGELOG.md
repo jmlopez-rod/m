@@ -20,6 +20,7 @@ The format of this changelog is based on
   in the npm registry. This is useful when we want to add tags to a package that
   has already been published. Note that this will add docker tags generated
   based on the published version.
+- Add next step instructions to `m start_release` and `m review_release`.
 
 ## [0.34.3] <a name="0.34.3" href="#0.34.3">-</a> May 23, 2024
 

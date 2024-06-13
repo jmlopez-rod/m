@@ -18,3 +18,12 @@
          "new_version": "0.1.0",
          "unreleased_changes": "https://github.com/gh_owner/gh_repo/compare/0.0.1...HEAD"
        }
+[INFO] [09:33:09 PM - Nov 29, 1973]: next steps
+       {
+         "instructions": [
+           "verify that CHANGELOG.md contains a list of all changes",
+           "add any other necessary changes to files",
+           "**DO NOT** commit any changes, instead...",
+           "run `m review_release` to commit and create a pull request"
+         ]
+       }
