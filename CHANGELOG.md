@@ -16,6 +16,10 @@ The format of this changelog is based on
 - Fix: when using Github actions we need to specify the path relative to the
   root of the project. In this case when we specify an action file we need to
   find out the number of parent directories to be able to obtain the root.
+- _feat_: Add `m npm add_tags`. This command allows us to add tags to a package
+  in the npm registry. This is useful when we want to add tags to a package that
+  has already been published. Note that this will add docker tags generated
+  based on the published version.
 
 ## [0.34.3] <a name="0.34.3" href="#0.34.3">-</a> May 23, 2024
 
