@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.35.0] <a name="0.35.0" href="#0.35.0">-</a> June 13, 2024
+
 - Update `npm_tags` to semi-match output with `docker_tags`.
 - Allow simple bash steps to be inserted into Github actions. This may be
   necessary if we need to run `pip` commands or any other setup steps before the
@@ -576,7 +578,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.34.3...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.35.0...HEAD
+[0.35.0]: https://github.com/jmlopez-rod/m/compare/0.34.3...0.35.0
 [0.34.3]: https://github.com/jmlopez-rod/m/compare/0.34.2...0.34.3
 [0.34.2]: https://github.com/jmlopez-rod/m/compare/0.34.1...0.34.2
 [0.34.1]: https://github.com/jmlopez-rod/m/compare/0.34.0...0.34.1
