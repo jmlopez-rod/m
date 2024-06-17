@@ -1,4 +1,4 @@
-from m.ci.docker.tags import docker_tags
+from m.ci.docker.tags import docker_tags, is_semver
 
 from ..core import Issue, issue
 from ..core.fp import Bad, Good, OneOf
@@ -15,7 +15,9 @@ def add_tags(pkg: str, version: str) -> OneOf[Issue, list[str]]:
     Returns:
         A `OneOf` containing a summary of added tags or an Issue.
     """
-    tags = docker_tags(version)
+    tags = docker_tags(version, skip_floating=True)
+    if is_semver(version):
+        tags.append('latest')
     issues: list[Issue] = []
     added: list[str] = []
     for tag in tags:
@@ -26,7 +28,7 @@ def add_tags(pkg: str, version: str) -> OneOf[Issue, list[str]]:
             added.append(cmd_result.value)
     if issues:
         return issue('dist-tag add issues', context={
-            'issues': issues,
+            'issues': [iss.to_dict() for iss in issues],
             'added': added,
         })
     return Good(added)

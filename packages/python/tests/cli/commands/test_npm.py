@@ -35,10 +35,8 @@ class TCase(CliTestCase):
         cmd='m npm add_tags scope/pkg 1.1.1',
         eval_cmd_side_effects=[
             Good('+ latest'),
-            Good('+ v1'),
-            Good('+ v1.1'),
         ],
-        expected='["+ latest","+ v1","+ v1.1"]',
+        expected='["+ latest"]',
     ),
     TCase(
         cmd='m npm add_tags scope/pkg 0.0.0-pr12.b123',

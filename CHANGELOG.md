@@ -9,6 +9,15 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.35.1] <a name="0.35.1" href="#0.35.1">-</a> June 17, 2024
+
+- `m npm add_tags` no longer attempts to tag `v#.#` since these are npm sem
+  versions.
+
+  > Tags that can be interpreted as valid semver ranges will be rejected. For
+  > example, v1.4 cannot be used as a tag, because it is interpreted by semver
+  > as >=1.4.0 <1.5.0. See https://github.com/npm/npm/issues/6082.
+
 ## [0.35.0] <a name="0.35.0" href="#0.35.0">-</a> June 13, 2024
 
 - Update `npm_tags` to semi-match output with `docker_tags`.
@@ -578,7 +587,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.35.0...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.35.1...HEAD
+[0.35.1]: https://github.com/jmlopez-rod/m/compare/0.35.0...0.35.1
 [0.35.0]: https://github.com/jmlopez-rod/m/compare/0.34.3...0.35.0
 [0.34.3]: https://github.com/jmlopez-rod/m/compare/0.34.2...0.34.3
 [0.34.2]: https://github.com/jmlopez-rod/m/compare/0.34.1...0.34.2
