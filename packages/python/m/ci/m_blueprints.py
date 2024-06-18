@@ -31,6 +31,7 @@ def _write_blueprints(
         multi_arch=bool(docker_config.architectures),
         architectures=list((docker_config.architectures or {}).keys()),
         use_buildx=docker_config.platforms is not None,
+        default_branch=config.get_default_branch(),
     )
     files = FileNames.create_instance(m_dir)
     if update_makefile:

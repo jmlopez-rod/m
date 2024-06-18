@@ -1,6 +1,19 @@
 import re
 
 
+def is_semver(m_tag: str) -> bool:
+    """Determine if a tag is a semver.
+
+    Args:
+        m_tag: A tag/version provided by m.
+
+    Returns:
+        True if the tag is a semver.
+    """
+    regex = r'\d+.\d+.\d+-(.*)\.(.*)'
+    return not bool(re.match(regex, m_tag))
+
+
 def docker_tags(m_tag: str, *, skip_floating: bool = False) -> list[str]:
     """Convert an m_tag to docker tags.
 

@@ -1,7 +1,7 @@
 from typing import Any
 
 import pytest
-from m.core import Bad, Good
+from m.core import Bad, Good, Issue
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
 from tests.cli.conftest import assert_streams, run_cli
@@ -24,7 +24,7 @@ class TCase(CliTestCase):
         expected='["- tag1","- tag2"]',
     ),
     TCase(
-        cmd='m npm add_tags scope/pkg 0.0.0-rc123.b123',
+        cmd='m npm add_tags --branch default_branch scope/pkg 0.0.0-rc123.b123',
         eval_cmd_side_effects=[
             Good('+ next'),
             Good('+ pr123'),
@@ -32,27 +32,37 @@ class TCase(CliTestCase):
         expected='["+ next","+ pr123"]',
     ),
     TCase(
-        cmd='m npm add_tags scope/pkg 1.1.1',
+        cmd='m npm add_tags --branch default_branch scope/pkg 1.1.1',
         eval_cmd_side_effects=[
             Good('+ latest'),
-            Good('+ v1'),
-            Good('+ v1.1'),
+            Good('+ default_branch'),
         ],
-        expected='["+ latest","+ v1","+ v1.1"]',
+        expected='["+ latest","+ default_branch"]',
     ),
     TCase(
-        cmd='m npm add_tags scope/pkg 0.0.0-pr12.b123',
+        cmd='m npm add_tags --branch default_branch scope/pkg 0.0.0-pr12.b123',
         eval_cmd_side_effects=[
             Good('+ pr12'),
         ],
         expected='["+ pr12"]',
     ),
     TCase(
+        cmd='m npm add_tags --branch default_branch scope/pkg 0.0.0-pr12.b123',
+        eval_cmd_side_effects=[
+            Bad(Issue('SOME ERROR')),
+        ],
+        errors=[
+            'dist-tag add issues',
+            'SOME ERROR',
+        ],
+        exit_code=1,
+    ),
+    TCase(
         cmd='m npm clean_tags scope/pkg',
         eval_cmd_side_effects=[
             Good('{"tag1":"","tag2":"","tag3":"v3"}'),
             Good('- tag1'),
-            Bad('some_error_tag2'),
+            Bad(Issue('some_error_tag2')),
         ],
         errors=[
             'dist-tag rm issues',
