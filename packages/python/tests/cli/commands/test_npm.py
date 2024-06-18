@@ -1,7 +1,7 @@
 from typing import Any
 
 import pytest
-from m.core import Bad, Good
+from m.core import Bad, Good, Issue
 from pytest_mock import MockerFixture
 from tests.cli.conftest import TCase as CliTestCase
 from tests.cli.conftest import assert_streams, run_cli
@@ -47,11 +47,22 @@ class TCase(CliTestCase):
         expected='["+ pr12"]',
     ),
     TCase(
+        cmd='m npm add_tags --branch default_branch scope/pkg 0.0.0-pr12.b123',
+        eval_cmd_side_effects=[
+            Bad(Issue('SOME ERROR')),
+        ],
+        errors=[
+            'dist-tag add issues',
+            'SOME ERROR',
+        ],
+        exit_code=1,
+    ),
+    TCase(
         cmd='m npm clean_tags scope/pkg',
         eval_cmd_side_effects=[
             Good('{"tag1":"","tag2":"","tag3":"v3"}'),
             Good('- tag1'),
-            Bad('some_error_tag2'),
+            Bad(Issue('some_error_tag2')),
         ],
         errors=[
             'dist-tag rm issues',

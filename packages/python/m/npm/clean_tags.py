@@ -60,7 +60,7 @@ def remove_tags(pkg: str, tags: Set[str]) -> OneOf[Issue, List[str]]:
             removed.append(cast(str, cmd_result.value))
     if issues:
         return issue('dist-tag rm issues', context={
-            'issues': issues,
+            'issues': [iss.to_dict() for iss in issues],
             'removed': removed,
         })
     return Good(removed)
