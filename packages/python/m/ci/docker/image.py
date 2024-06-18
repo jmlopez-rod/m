@@ -162,6 +162,8 @@ class DockerImage(BaseModel):
             m_tag = '1.1.1'
         registry = m_env.registry
         tags = [m_tag, *docker_tags(m_tag)]
+        if 'latest' in tags:
+            tags.append(m_env.default_branch)
         img_name = f'{registry}/{self.image_name}'
         all_tags = [
             f'  -t {img_name}:{tag} \\'
