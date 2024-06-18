@@ -5429,7 +5429,9 @@
 <span class="normal"><a href="#__codelineno-0-217">217</a></span>
 <span class="normal"><a href="#__codelineno-0-218">218</a></span>
 <span class="normal"><a href="#__codelineno-0-219">219</a></span>
-<span class="normal"><a href="#__codelineno-0-220">220</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="k">class</span> <span class="nc">DockerImage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-220">220</a></span>
+<span class="normal"><a href="#__codelineno-0-221">221</a></span>
+<span class="normal"><a href="#__codelineno-0-222">222</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="k">class</span> <span class="nc">DockerImage</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Information describing how to a docker image.&quot;&quot;&quot;</span>
 <a id="__codelineno-0-41" name="__codelineno-0-41"></a>
 <a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="c1"># String used to describe the step in the workflow.</span>
@@ -5555,62 +5557,64 @@
 <a id="__codelineno-0-162" name="__codelineno-0-162"></a>            <span class="n">m_tag</span> <span class="o">=</span> <span class="s1">&#39;1.1.1&#39;</span>
 <a id="__codelineno-0-163" name="__codelineno-0-163"></a>        <span class="n">registry</span> <span class="o">=</span> <span class="n">m_env</span><span class="o">.</span><span class="n">registry</span>
 <a id="__codelineno-0-164" name="__codelineno-0-164"></a>        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_tag</span><span class="p">,</span> <span class="o">*</span><span class="n">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">)]</span>
-<a id="__codelineno-0-165" name="__codelineno-0-165"></a>        <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-166" name="__codelineno-0-166"></a>        <span class="n">all_tags</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-167" name="__codelineno-0-167"></a>            <span class="sa">f</span><span class="s1">&#39;  -t </span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1"> </span><span class="se">\\</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-168" name="__codelineno-0-168"></a>            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span>
-<a id="__codelineno-0-169" name="__codelineno-0-169"></a>        <span class="p">]</span>
-<a id="__codelineno-0-170" name="__codelineno-0-170"></a>        <span class="n">all_archs_str</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
-<a id="__codelineno-0-171" name="__codelineno-0-171"></a>            <span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-172" name="__codelineno-0-172"></a>            <span class="k">for</span> <span class="n">arch</span> <span class="ow">in</span> <span class="n">m_env</span><span class="o">.</span><span class="n">architectures</span>
-<a id="__codelineno-0-173" name="__codelineno-0-173"></a>        <span class="p">])</span>
-<a id="__codelineno-0-174" name="__codelineno-0-174"></a>        <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-175" name="__codelineno-0-175"></a>            <span class="n">BASH_SHEBANG</span><span class="p">,</span>
-<a id="__codelineno-0-176" name="__codelineno-0-176"></a>            <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
-<a id="__codelineno-0-177" name="__codelineno-0-177"></a>            <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-178" name="__codelineno-0-178"></a>            <span class="s1">&#39;docker buildx imagetools create </span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-179" name="__codelineno-0-179"></a>            <span class="o">*</span><span class="n">all_tags</span><span class="p">,</span>
-<a id="__codelineno-0-180" name="__codelineno-0-180"></a>            <span class="n">all_archs_str</span><span class="p">,</span>
-<a id="__codelineno-0-181" name="__codelineno-0-181"></a>            <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-182" name="__codelineno-0-182"></a>        <span class="p">]</span>
-<a id="__codelineno-0-183" name="__codelineno-0-183"></a>        <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
-<a id="__codelineno-0-184" name="__codelineno-0-184"></a>
-<a id="__codelineno-0-185" name="__codelineno-0-185"></a>    <span class="k">def</span> <span class="nf">local_build</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerImage&#39;</span><span class="p">,</span> <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a shell script to build an image.</span>
-<a id="__codelineno-0-187" name="__codelineno-0-187"></a>
-<a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-189" name="__codelineno-0-189"></a><span class="sd">            m_env: The MEnvDocker instance with the environment variables.</span>
-<a id="__codelineno-0-190" name="__codelineno-0-190"></a>
-<a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-192" name="__codelineno-0-192"></a><span class="sd">            A shell snippet with a docker build command.</span>
-<a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-194" name="__codelineno-0-194"></a>        <span class="n">arch</span> <span class="o">=</span> <span class="n">get_arch</span><span class="p">()</span>
-<a id="__codelineno-0-195" name="__codelineno-0-195"></a>        <span class="n">build_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_build_args</span><span class="p">(</span><span class="n">m_env</span><span class="p">,</span> <span class="n">arch</span><span class="p">)</span>
-<a id="__codelineno-0-196" name="__codelineno-0-196"></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">build_args</span><span class="p">,</span> <span class="n">Bad</span><span class="p">):</span>
-<a id="__codelineno-0-197" name="__codelineno-0-197"></a>            <span class="k">return</span> <span class="n">Bad</span><span class="p">(</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-<a id="__codelineno-0-198" name="__codelineno-0-198"></a>
-<a id="__codelineno-0-199" name="__codelineno-0-199"></a>        <span class="n">docker_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">base_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_file</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-200" name="__codelineno-0-200"></a>        <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-201" name="__codelineno-0-201"></a>        <span class="n">build_cmd</span> <span class="o">=</span> <span class="n">DockerBuild</span><span class="p">(</span>
-<a id="__codelineno-0-202" name="__codelineno-0-202"></a>            <span class="n">progress</span><span class="o">=</span><span class="s1">&#39;plain&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-203" name="__codelineno-0-203"></a>            <span class="n">secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format_env_secrets</span><span class="p">(),</span>
-<a id="__codelineno-0-204" name="__codelineno-0-204"></a>            <span class="n">tag</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-0-205" name="__codelineno-0-205"></a>                <span class="s1">&#39;staged-image:latest&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-206" name="__codelineno-0-206"></a>                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-207" name="__codelineno-0-207"></a>            <span class="p">],</span>
-<a id="__codelineno-0-208" name="__codelineno-0-208"></a>            <span class="n">build_arg</span><span class="o">=</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a id="__codelineno-0-209" name="__codelineno-0-209"></a>            <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_stage</span><span class="p">,</span>
-<a id="__codelineno-0-210" name="__codelineno-0-210"></a>            <span class="n">file</span><span class="o">=</span><span class="n">docker_file</span><span class="p">,</span>
-<a id="__codelineno-0-211" name="__codelineno-0-211"></a>        <span class="p">)</span>
-<a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-213" name="__codelineno-0-213"></a>            <span class="n">BASH_SHEBANG</span><span class="p">,</span>
-<a id="__codelineno-0-214" name="__codelineno-0-214"></a>            <span class="s1">&#39;export DOCKER_BUILDKIT=1&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-215" name="__codelineno-0-215"></a>            <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
-<a id="__codelineno-0-216" name="__codelineno-0-216"></a>            <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-217" name="__codelineno-0-217"></a>            <span class="nb">str</span><span class="p">(</span><span class="n">build_cmd</span><span class="p">),</span>
+<a id="__codelineno-0-165" name="__codelineno-0-165"></a>        <span class="k">if</span> <span class="s1">&#39;latest&#39;</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+<a id="__codelineno-0-166" name="__codelineno-0-166"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_env</span><span class="o">.</span><span class="n">default_branch</span><span class="p">)</span>
+<a id="__codelineno-0-167" name="__codelineno-0-167"></a>        <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-168" name="__codelineno-0-168"></a>        <span class="n">all_tags</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-169" name="__codelineno-0-169"></a>            <span class="sa">f</span><span class="s1">&#39;  -t </span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1"> </span><span class="se">\\</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-170" name="__codelineno-0-170"></a>            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span>
+<a id="__codelineno-0-171" name="__codelineno-0-171"></a>        <span class="p">]</span>
+<a id="__codelineno-0-172" name="__codelineno-0-172"></a>        <span class="n">all_archs_str</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+<a id="__codelineno-0-173" name="__codelineno-0-173"></a>            <span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-174" name="__codelineno-0-174"></a>            <span class="k">for</span> <span class="n">arch</span> <span class="ow">in</span> <span class="n">m_env</span><span class="o">.</span><span class="n">architectures</span>
+<a id="__codelineno-0-175" name="__codelineno-0-175"></a>        <span class="p">])</span>
+<a id="__codelineno-0-176" name="__codelineno-0-176"></a>        <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>            <span class="n">BASH_SHEBANG</span><span class="p">,</span>
+<a id="__codelineno-0-178" name="__codelineno-0-178"></a>            <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
+<a id="__codelineno-0-179" name="__codelineno-0-179"></a>            <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a>            <span class="s1">&#39;docker buildx imagetools create </span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-181" name="__codelineno-0-181"></a>            <span class="o">*</span><span class="n">all_tags</span><span class="p">,</span>
+<a id="__codelineno-0-182" name="__codelineno-0-182"></a>            <span class="n">all_archs_str</span><span class="p">,</span>
+<a id="__codelineno-0-183" name="__codelineno-0-183"></a>            <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a>        <span class="p">]</span>
+<a id="__codelineno-0-185" name="__codelineno-0-185"></a>        <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
+<a id="__codelineno-0-186" name="__codelineno-0-186"></a>
+<a id="__codelineno-0-187" name="__codelineno-0-187"></a>    <span class="k">def</span> <span class="nf">local_build</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerImage&#39;</span><span class="p">,</span> <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a shell script to build an image.</span>
+<a id="__codelineno-0-189" name="__codelineno-0-189"></a>
+<a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="sd">            m_env: The MEnvDocker instance with the environment variables.</span>
+<a id="__codelineno-0-192" name="__codelineno-0-192"></a>
+<a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="sd">            A shell snippet with a docker build command.</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a>        <span class="n">arch</span> <span class="o">=</span> <span class="n">get_arch</span><span class="p">()</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a>        <span class="n">build_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_build_args</span><span class="p">(</span><span class="n">m_env</span><span class="p">,</span> <span class="n">arch</span><span class="p">)</span>
+<a id="__codelineno-0-198" name="__codelineno-0-198"></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">build_args</span><span class="p">,</span> <span class="n">Bad</span><span class="p">):</span>
+<a id="__codelineno-0-199" name="__codelineno-0-199"></a>            <span class="k">return</span> <span class="n">Bad</span><span class="p">(</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<a id="__codelineno-0-200" name="__codelineno-0-200"></a>
+<a id="__codelineno-0-201" name="__codelineno-0-201"></a>        <span class="n">docker_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">base_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_file</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-202" name="__codelineno-0-202"></a>        <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-203" name="__codelineno-0-203"></a>        <span class="n">build_cmd</span> <span class="o">=</span> <span class="n">DockerBuild</span><span class="p">(</span>
+<a id="__codelineno-0-204" name="__codelineno-0-204"></a>            <span class="n">progress</span><span class="o">=</span><span class="s1">&#39;plain&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-205" name="__codelineno-0-205"></a>            <span class="n">secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format_env_secrets</span><span class="p">(),</span>
+<a id="__codelineno-0-206" name="__codelineno-0-206"></a>            <span class="n">tag</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-0-207" name="__codelineno-0-207"></a>                <span class="s1">&#39;staged-image:latest&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-208" name="__codelineno-0-208"></a>                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-209" name="__codelineno-0-209"></a>            <span class="p">],</span>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a>            <span class="n">build_arg</span><span class="o">=</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>            <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_stage</span><span class="p">,</span>
+<a id="__codelineno-0-212" name="__codelineno-0-212"></a>            <span class="n">file</span><span class="o">=</span><span class="n">docker_file</span><span class="p">,</span>
+<a id="__codelineno-0-213" name="__codelineno-0-213"></a>        <span class="p">)</span>
+<a id="__codelineno-0-214" name="__codelineno-0-214"></a>        <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-215" name="__codelineno-0-215"></a>            <span class="n">BASH_SHEBANG</span><span class="p">,</span>
+<a id="__codelineno-0-216" name="__codelineno-0-216"></a>            <span class="s1">&#39;export DOCKER_BUILDKIT=1&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-217" name="__codelineno-0-217"></a>            <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
 <a id="__codelineno-0-218" name="__codelineno-0-218"></a>            <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-219" name="__codelineno-0-219"></a>        <span class="p">]</span>
-<a id="__codelineno-0-220" name="__codelineno-0-220"></a>        <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
+<a id="__codelineno-0-219" name="__codelineno-0-219"></a>            <span class="nb">str</span><span class="p">(</span><span class="n">build_cmd</span><span class="p">),</span>
+<a id="__codelineno-0-220" name="__codelineno-0-220"></a>            <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-221" name="__codelineno-0-221"></a>        <span class="p">]</span>
+<a id="__codelineno-0-222" name="__codelineno-0-222"></a>        <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -5892,7 +5896,9 @@
 <span class="normal"><a href="#__codelineno-0-180">180</a></span>
 <span class="normal"><a href="#__codelineno-0-181">181</a></span>
 <span class="normal"><a href="#__codelineno-0-182">182</a></span>
-<span class="normal"><a href="#__codelineno-0-183">183</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-150" name="__codelineno-0-150"></a><span class="k">def</span> <span class="nf">ci_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerImage&#39;</span><span class="p">,</span> <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal"><a href="#__codelineno-0-183">183</a></span>
+<span class="normal"><a href="#__codelineno-0-184">184</a></span>
+<span class="normal"><a href="#__codelineno-0-185">185</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-150" name="__codelineno-0-150"></a><span class="k">def</span> <span class="nf">ci_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerImage&#39;</span><span class="p">,</span> <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <a id="__codelineno-0-151" name="__codelineno-0-151"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a shell script to handle multi-arch manifests.</span>
 <a id="__codelineno-0-152" name="__codelineno-0-152"></a>
 <a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="sd">    Args:</span>
@@ -5907,25 +5913,27 @@
 <a id="__codelineno-0-162" name="__codelineno-0-162"></a>        <span class="n">m_tag</span> <span class="o">=</span> <span class="s1">&#39;1.1.1&#39;</span>
 <a id="__codelineno-0-163" name="__codelineno-0-163"></a>    <span class="n">registry</span> <span class="o">=</span> <span class="n">m_env</span><span class="o">.</span><span class="n">registry</span>
 <a id="__codelineno-0-164" name="__codelineno-0-164"></a>    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_tag</span><span class="p">,</span> <span class="o">*</span><span class="n">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">)]</span>
-<a id="__codelineno-0-165" name="__codelineno-0-165"></a>    <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-166" name="__codelineno-0-166"></a>    <span class="n">all_tags</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-167" name="__codelineno-0-167"></a>        <span class="sa">f</span><span class="s1">&#39;  -t </span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1"> </span><span class="se">\\</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-168" name="__codelineno-0-168"></a>        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span>
-<a id="__codelineno-0-169" name="__codelineno-0-169"></a>    <span class="p">]</span>
-<a id="__codelineno-0-170" name="__codelineno-0-170"></a>    <span class="n">all_archs_str</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
-<a id="__codelineno-0-171" name="__codelineno-0-171"></a>        <span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-172" name="__codelineno-0-172"></a>        <span class="k">for</span> <span class="n">arch</span> <span class="ow">in</span> <span class="n">m_env</span><span class="o">.</span><span class="n">architectures</span>
-<a id="__codelineno-0-173" name="__codelineno-0-173"></a>    <span class="p">])</span>
-<a id="__codelineno-0-174" name="__codelineno-0-174"></a>    <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-175" name="__codelineno-0-175"></a>        <span class="n">BASH_SHEBANG</span><span class="p">,</span>
-<a id="__codelineno-0-176" name="__codelineno-0-176"></a>        <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
-<a id="__codelineno-0-177" name="__codelineno-0-177"></a>        <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="s1">&#39;docker buildx imagetools create </span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="o">*</span><span class="n">all_tags</span><span class="p">,</span>
-<a id="__codelineno-0-180" name="__codelineno-0-180"></a>        <span class="n">all_archs_str</span><span class="p">,</span>
-<a id="__codelineno-0-181" name="__codelineno-0-181"></a>        <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-182" name="__codelineno-0-182"></a>    <span class="p">]</span>
-<a id="__codelineno-0-183" name="__codelineno-0-183"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
+<a id="__codelineno-0-165" name="__codelineno-0-165"></a>    <span class="k">if</span> <span class="s1">&#39;latest&#39;</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+<a id="__codelineno-0-166" name="__codelineno-0-166"></a>        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_env</span><span class="o">.</span><span class="n">default_branch</span><span class="p">)</span>
+<a id="__codelineno-0-167" name="__codelineno-0-167"></a>    <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-168" name="__codelineno-0-168"></a>    <span class="n">all_tags</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-169" name="__codelineno-0-169"></a>        <span class="sa">f</span><span class="s1">&#39;  -t </span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1"> </span><span class="se">\\</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-170" name="__codelineno-0-170"></a>        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span>
+<a id="__codelineno-0-171" name="__codelineno-0-171"></a>    <span class="p">]</span>
+<a id="__codelineno-0-172" name="__codelineno-0-172"></a>    <span class="n">all_archs_str</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+<a id="__codelineno-0-173" name="__codelineno-0-173"></a>        <span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">arch</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-174" name="__codelineno-0-174"></a>        <span class="k">for</span> <span class="n">arch</span> <span class="ow">in</span> <span class="n">m_env</span><span class="o">.</span><span class="n">architectures</span>
+<a id="__codelineno-0-175" name="__codelineno-0-175"></a>    <span class="p">])</span>
+<a id="__codelineno-0-176" name="__codelineno-0-176"></a>    <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-177" name="__codelineno-0-177"></a>        <span class="n">BASH_SHEBANG</span><span class="p">,</span>
+<a id="__codelineno-0-178" name="__codelineno-0-178"></a>        <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
+<a id="__codelineno-0-179" name="__codelineno-0-179"></a>        <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-180" name="__codelineno-0-180"></a>        <span class="s1">&#39;docker buildx imagetools create </span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-181" name="__codelineno-0-181"></a>        <span class="o">*</span><span class="n">all_tags</span><span class="p">,</span>
+<a id="__codelineno-0-182" name="__codelineno-0-182"></a>        <span class="n">all_archs_str</span><span class="p">,</span>
+<a id="__codelineno-0-183" name="__codelineno-0-183"></a>        <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-184" name="__codelineno-0-184"></a>    <span class="p">]</span>
+<a id="__codelineno-0-185" name="__codelineno-0-185"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -6245,9 +6253,7 @@
 
           <details class="quote">
             <summary>Source code in <code>m/ci/docker/image.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-185">185</a></span>
-<span class="normal"><a href="#__codelineno-0-186">186</a></span>
-<span class="normal"><a href="#__codelineno-0-187">187</a></span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-187">187</a></span>
 <span class="normal"><a href="#__codelineno-0-188">188</a></span>
 <span class="normal"><a href="#__codelineno-0-189">189</a></span>
 <span class="normal"><a href="#__codelineno-0-190">190</a></span>
@@ -6280,42 +6286,44 @@
 <span class="normal"><a href="#__codelineno-0-217">217</a></span>
 <span class="normal"><a href="#__codelineno-0-218">218</a></span>
 <span class="normal"><a href="#__codelineno-0-219">219</a></span>
-<span class="normal"><a href="#__codelineno-0-220">220</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-185" name="__codelineno-0-185"></a><span class="k">def</span> <span class="nf">local_build</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerImage&#39;</span><span class="p">,</span> <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<a id="__codelineno-0-186" name="__codelineno-0-186"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a shell script to build an image.</span>
-<a id="__codelineno-0-187" name="__codelineno-0-187"></a>
-<a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-189" name="__codelineno-0-189"></a><span class="sd">        m_env: The MEnvDocker instance with the environment variables.</span>
-<a id="__codelineno-0-190" name="__codelineno-0-190"></a>
-<a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-192" name="__codelineno-0-192"></a><span class="sd">        A shell snippet with a docker build command.</span>
-<a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-194" name="__codelineno-0-194"></a>    <span class="n">arch</span> <span class="o">=</span> <span class="n">get_arch</span><span class="p">()</span>
-<a id="__codelineno-0-195" name="__codelineno-0-195"></a>    <span class="n">build_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_build_args</span><span class="p">(</span><span class="n">m_env</span><span class="p">,</span> <span class="n">arch</span><span class="p">)</span>
-<a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">build_args</span><span class="p">,</span> <span class="n">Bad</span><span class="p">):</span>
-<a id="__codelineno-0-197" name="__codelineno-0-197"></a>        <span class="k">return</span> <span class="n">Bad</span><span class="p">(</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-<a id="__codelineno-0-198" name="__codelineno-0-198"></a>
-<a id="__codelineno-0-199" name="__codelineno-0-199"></a>    <span class="n">docker_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">base_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_file</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-200" name="__codelineno-0-200"></a>    <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
-<a id="__codelineno-0-201" name="__codelineno-0-201"></a>    <span class="n">build_cmd</span> <span class="o">=</span> <span class="n">DockerBuild</span><span class="p">(</span>
-<a id="__codelineno-0-202" name="__codelineno-0-202"></a>        <span class="n">progress</span><span class="o">=</span><span class="s1">&#39;plain&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-203" name="__codelineno-0-203"></a>        <span class="n">secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format_env_secrets</span><span class="p">(),</span>
-<a id="__codelineno-0-204" name="__codelineno-0-204"></a>        <span class="n">tag</span><span class="o">=</span><span class="p">[</span>
-<a id="__codelineno-0-205" name="__codelineno-0-205"></a>            <span class="s1">&#39;staged-image:latest&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-206" name="__codelineno-0-206"></a>            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-207" name="__codelineno-0-207"></a>        <span class="p">],</span>
-<a id="__codelineno-0-208" name="__codelineno-0-208"></a>        <span class="n">build_arg</span><span class="o">=</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-<a id="__codelineno-0-209" name="__codelineno-0-209"></a>        <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_stage</span><span class="p">,</span>
-<a id="__codelineno-0-210" name="__codelineno-0-210"></a>        <span class="n">file</span><span class="o">=</span><span class="n">docker_file</span><span class="p">,</span>
-<a id="__codelineno-0-211" name="__codelineno-0-211"></a>    <span class="p">)</span>
-<a id="__codelineno-0-212" name="__codelineno-0-212"></a>    <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-213" name="__codelineno-0-213"></a>        <span class="n">BASH_SHEBANG</span><span class="p">,</span>
-<a id="__codelineno-0-214" name="__codelineno-0-214"></a>        <span class="s1">&#39;export DOCKER_BUILDKIT=1&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-215" name="__codelineno-0-215"></a>        <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
-<a id="__codelineno-0-216" name="__codelineno-0-216"></a>        <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-217" name="__codelineno-0-217"></a>        <span class="nb">str</span><span class="p">(</span><span class="n">build_cmd</span><span class="p">),</span>
+<span class="normal"><a href="#__codelineno-0-220">220</a></span>
+<span class="normal"><a href="#__codelineno-0-221">221</a></span>
+<span class="normal"><a href="#__codelineno-0-222">222</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-187" name="__codelineno-0-187"></a><span class="k">def</span> <span class="nf">local_build</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerImage&#39;</span><span class="p">,</span> <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-188" name="__codelineno-0-188"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a shell script to build an image.</span>
+<a id="__codelineno-0-189" name="__codelineno-0-189"></a>
+<a id="__codelineno-0-190" name="__codelineno-0-190"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-191" name="__codelineno-0-191"></a><span class="sd">        m_env: The MEnvDocker instance with the environment variables.</span>
+<a id="__codelineno-0-192" name="__codelineno-0-192"></a>
+<a id="__codelineno-0-193" name="__codelineno-0-193"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-194" name="__codelineno-0-194"></a><span class="sd">        A shell snippet with a docker build command.</span>
+<a id="__codelineno-0-195" name="__codelineno-0-195"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-196" name="__codelineno-0-196"></a>    <span class="n">arch</span> <span class="o">=</span> <span class="n">get_arch</span><span class="p">()</span>
+<a id="__codelineno-0-197" name="__codelineno-0-197"></a>    <span class="n">build_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_build_args</span><span class="p">(</span><span class="n">m_env</span><span class="p">,</span> <span class="n">arch</span><span class="p">)</span>
+<a id="__codelineno-0-198" name="__codelineno-0-198"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">build_args</span><span class="p">,</span> <span class="n">Bad</span><span class="p">):</span>
+<a id="__codelineno-0-199" name="__codelineno-0-199"></a>        <span class="k">return</span> <span class="n">Bad</span><span class="p">(</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<a id="__codelineno-0-200" name="__codelineno-0-200"></a>
+<a id="__codelineno-0-201" name="__codelineno-0-201"></a>    <span class="n">docker_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">base_path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">docker_file</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-202" name="__codelineno-0-202"></a>    <span class="n">img_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">registry</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">image_name</span><span class="si">}</span><span class="s1">&#39;</span>
+<a id="__codelineno-0-203" name="__codelineno-0-203"></a>    <span class="n">build_cmd</span> <span class="o">=</span> <span class="n">DockerBuild</span><span class="p">(</span>
+<a id="__codelineno-0-204" name="__codelineno-0-204"></a>        <span class="n">progress</span><span class="o">=</span><span class="s1">&#39;plain&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-205" name="__codelineno-0-205"></a>        <span class="n">secret</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format_env_secrets</span><span class="p">(),</span>
+<a id="__codelineno-0-206" name="__codelineno-0-206"></a>        <span class="n">tag</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-0-207" name="__codelineno-0-207"></a>            <span class="s1">&#39;staged-image:latest&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-208" name="__codelineno-0-208"></a>            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">m_env</span><span class="o">.</span><span class="n">m_tag</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-209" name="__codelineno-0-209"></a>        <span class="p">],</span>
+<a id="__codelineno-0-210" name="__codelineno-0-210"></a>        <span class="n">build_arg</span><span class="o">=</span><span class="n">build_args</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<a id="__codelineno-0-211" name="__codelineno-0-211"></a>        <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_stage</span><span class="p">,</span>
+<a id="__codelineno-0-212" name="__codelineno-0-212"></a>        <span class="n">file</span><span class="o">=</span><span class="n">docker_file</span><span class="p">,</span>
+<a id="__codelineno-0-213" name="__codelineno-0-213"></a>    <span class="p">)</span>
+<a id="__codelineno-0-214" name="__codelineno-0-214"></a>    <span class="n">script</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-215" name="__codelineno-0-215"></a>        <span class="n">BASH_SHEBANG</span><span class="p">,</span>
+<a id="__codelineno-0-216" name="__codelineno-0-216"></a>        <span class="s1">&#39;export DOCKER_BUILDKIT=1&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-217" name="__codelineno-0-217"></a>        <span class="n">SET_STRICT_BASH</span><span class="p">,</span>
 <a id="__codelineno-0-218" name="__codelineno-0-218"></a>        <span class="s1">&#39;&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-219" name="__codelineno-0-219"></a>    <span class="p">]</span>
-<a id="__codelineno-0-220" name="__codelineno-0-220"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
+<a id="__codelineno-0-219" name="__codelineno-0-219"></a>        <span class="nb">str</span><span class="p">(</span><span class="n">build_cmd</span><span class="p">),</span>
+<a id="__codelineno-0-220" name="__codelineno-0-220"></a>        <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-221" name="__codelineno-0-221"></a>    <span class="p">]</span>
+<a id="__codelineno-0-222" name="__codelineno-0-222"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>

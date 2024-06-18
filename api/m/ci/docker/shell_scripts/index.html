@@ -5312,7 +5312,7 @@
 
 
 <h2 id="m.ci.docker.shell_scripts.create_push_script_tags" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">create_push_script_tags</span><span class="p">(</span><span class="n">docker_registry</span><span class="p">,</span> <span class="n">m_tag</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">create_push_script_tags</span><span class="p">(</span><span class="n">docker_registry</span><span class="p">,</span> <span class="n">m_tag</span><span class="p">,</span> <span class="n">default_branch</span><span class="p">)</span></code>
 
 <a href="#m.ci.docker.shell_scripts.create_push_script_tags" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -5363,6 +5363,20 @@
               <em>required</em>
           </td>
         </tr>
+        <tr>
+          <td><code>default_branch</code></td>
+          <td>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The default branch for the repository.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
     </tbody>
   </table>
 
@@ -5392,30 +5406,33 @@
 
           <details class="quote">
             <summary>Source code in <code>m/ci/docker/shell_scripts.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-76">76</a></span>
-<span class="normal"><a href="#__codelineno-0-77">77</a></span>
-<span class="normal"><a href="#__codelineno-0-78">78</a></span>
-<span class="normal"><a href="#__codelineno-0-79">79</a></span>
-<span class="normal"><a href="#__codelineno-0-80">80</a></span>
-<span class="normal"><a href="#__codelineno-0-81">81</a></span>
-<span class="normal"><a href="#__codelineno-0-82">82</a></span>
-<span class="normal"><a href="#__codelineno-0-83">83</a></span>
-<span class="normal"><a href="#__codelineno-0-84">84</a></span>
-<span class="normal"><a href="#__codelineno-0-85">85</a></span>
-<span class="normal"><a href="#__codelineno-0-86">86</a></span>
-<span class="normal"><a href="#__codelineno-0-87">87</a></span>
-<span class="normal"><a href="#__codelineno-0-88">88</a></span>
-<span class="normal"><a href="#__codelineno-0-89">89</a></span>
-<span class="normal"><a href="#__codelineno-0-90">90</a></span>
-<span class="normal"><a href="#__codelineno-0-91">91</a></span>
-<span class="normal"><a href="#__codelineno-0-92">92</a></span>
-<span class="normal"><a href="#__codelineno-0-93">93</a></span>
-<span class="normal"><a href="#__codelineno-0-94">94</a></span>
-<span class="normal"><a href="#__codelineno-0-95">95</a></span>
-<span class="normal"><a href="#__codelineno-0-96">96</a></span>
-<span class="normal"><a href="#__codelineno-0-97">97</a></span>
-<span class="normal"><a href="#__codelineno-0-98">98</a></span>
-<span class="normal"><a href="#__codelineno-0-99">99</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="k">def</span> <span class="nf">create_push_script_tags</span><span class="p">(</span><span class="n">docker_registry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">m_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-76"> 76</a></span>
+<span class="normal"><a href="#__codelineno-0-77"> 77</a></span>
+<span class="normal"><a href="#__codelineno-0-78"> 78</a></span>
+<span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
+<span class="normal"><a href="#__codelineno-0-80"> 80</a></span>
+<span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
+<span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
+<span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
+<span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
+<span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
+<span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
+<span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
+<span class="normal"><a href="#__codelineno-0-88"> 88</a></span>
+<span class="normal"><a href="#__codelineno-0-89"> 89</a></span>
+<span class="normal"><a href="#__codelineno-0-90"> 90</a></span>
+<span class="normal"><a href="#__codelineno-0-91"> 91</a></span>
+<span class="normal"><a href="#__codelineno-0-92"> 92</a></span>
+<span class="normal"><a href="#__codelineno-0-93"> 93</a></span>
+<span class="normal"><a href="#__codelineno-0-94"> 94</a></span>
+<span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
+<span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="k">def</span> <span class="nf">create_push_script_tags</span><span class="p">(</span><span class="n">docker_registry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">m_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default_branch</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a script to push an image.</span>
 <a id="__codelineno-0-78" name="__codelineno-0-78"></a>
 <a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="sd">    This is meant to be used when building for a single architecture.</span>
@@ -5423,22 +5440,25 @@
 <a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="sd">    Args:</span>
 <a id="__codelineno-0-82" name="__codelineno-0-82"></a><span class="sd">        docker_registry: The docker registry where the images will be pushed.</span>
 <a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="sd">        m_tag: The unique tag for the image.</span>
-<a id="__codelineno-0-84" name="__codelineno-0-84"></a>
-<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="sd">        A script to push an image.</span>
-<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">m_tag</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CI&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
-<a id="__codelineno-0-89" name="__codelineno-0-89"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;M_TAG not found in non-CI environment. Using 1.1.1&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-90" name="__codelineno-0-90"></a>        <span class="n">m_tag</span> <span class="o">=</span> <span class="s1">&#39;1.1.1&#39;</span>
-<a id="__codelineno-0-91" name="__codelineno-0-91"></a>    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_tag</span><span class="p">,</span> <span class="o">*</span><span class="n">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">)]</span>
-<a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="n">tagged_images</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
-<a id="__codelineno-0-93" name="__codelineno-0-93"></a>        <span class="sa">f</span><span class="s1">&#39;docker tag staged-image:latest &quot;</span><span class="si">{</span><span class="n">docker_registry</span><span class="si">}</span><span class="s1">/$imageName:</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
-<a id="__codelineno-0-94" name="__codelineno-0-94"></a>        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span>
-<a id="__codelineno-0-95" name="__codelineno-0-95"></a>    <span class="p">])</span>
-<a id="__codelineno-0-96" name="__codelineno-0-96"></a>    <span class="k">return</span> <span class="n">PUSH_SCRIPT_TAGS</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-<a id="__codelineno-0-97" name="__codelineno-0-97"></a>        <span class="n">docker_registry</span><span class="o">=</span><span class="n">docker_registry</span><span class="p">,</span>
-<a id="__codelineno-0-98" name="__codelineno-0-98"></a>        <span class="n">tag_images</span><span class="o">=</span><span class="n">tagged_images</span><span class="p">,</span>
-<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="p">)</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="sd">        default_branch: The default branch for the repository.</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="sd">        A script to push an image.</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">m_tag</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CI&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;M_TAG not found in non-CI environment. Using 1.1.1&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a>        <span class="n">m_tag</span> <span class="o">=</span> <span class="s1">&#39;1.1.1&#39;</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_tag</span><span class="p">,</span> <span class="o">*</span><span class="n">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">)]</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a>    <span class="k">if</span> <span class="s1">&#39;latest&#39;</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a>        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">default_branch</span><span class="p">)</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a>    <span class="n">tagged_images</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a>        <span class="sa">f</span><span class="s1">&#39;docker tag staged-image:latest &quot;</span><span class="si">{</span><span class="n">docker_registry</span><span class="si">}</span><span class="s1">/$imageName:</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a>    <span class="p">])</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="k">return</span> <span class="n">PUSH_SCRIPT_TAGS</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+<a id="__codelineno-0-100" name="__codelineno-0-100"></a>        <span class="n">docker_registry</span><span class="o">=</span><span class="n">docker_registry</span><span class="p">,</span>
+<a id="__codelineno-0-101" name="__codelineno-0-101"></a>        <span class="n">tag_images</span><span class="o">=</span><span class="n">tagged_images</span><span class="p">,</span>
+<a id="__codelineno-0-102" name="__codelineno-0-102"></a>    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
