@@ -4,6 +4,9 @@ from pydantic import BaseModel
 class MEnvDocker(BaseModel):
     """Values from `MEnv` needed by docker."""
 
+    # The name of the default branch based on the workflow.
+    default_branch: str
+
     # The m tag to build the images.
     m_tag: str
 

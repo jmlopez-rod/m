@@ -22,6 +22,9 @@ The format of this changelog is based on
   also need to provide the name of the branch in which we are building the
   package. The env var `$M_BRANCH` should be passed to the option.
 
+- Fix missing docker tag creation. When creating the `latest` tag we were also
+  missing the default branch tag.
+
 ## [0.35.0] <a name="0.35.0" href="#0.35.0">-</a> June 13, 2024
 
 - Update `npm_tags` to semi-match output with `docker_tags`.

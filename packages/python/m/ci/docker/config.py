@@ -264,6 +264,8 @@ class DockerConfig(BaseModel):
             m_tag = '1.1.1'
         names = [img.image_name for img in self.images]
         tags = [m_tag, *docker_tags(m_tag)]
+        if 'latest' in tags:
+            tags.append(m_env.default_branch)
         names_json = json.dumps(names, separators=(',', ':'))
         tags_json = json.dumps(tags, separators=(',', ':'))
         files_res = [
