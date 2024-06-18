@@ -5609,7 +5609,9 @@
 <span class="normal"><a href="#__codelineno-0-303">303</a></span>
 <span class="normal"><a href="#__codelineno-0-304">304</a></span>
 <span class="normal"><a href="#__codelineno-0-305">305</a></span>
-<span class="normal"><a href="#__codelineno-0-306">306</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="k">class</span> <span class="nc">DockerConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-306">306</a></span>
+<span class="normal"><a href="#__codelineno-0-307">307</a></span>
+<span class="normal"><a href="#__codelineno-0-308">308</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="k">class</span> <span class="nc">DockerConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains information about the docker images to build.&quot;&quot;&quot;</span>
 <a id="__codelineno-0-27" name="__codelineno-0-27"></a>
 <a id="__codelineno-0-28" name="__codelineno-0-28"></a>    <span class="c1"># additional environment variables to inject globally.</span>
@@ -5851,46 +5853,48 @@
 <a id="__codelineno-0-264" name="__codelineno-0-264"></a>            <span class="n">m_tag</span> <span class="o">=</span> <span class="s1">&#39;1.1.1&#39;</span>
 <a id="__codelineno-0-265" name="__codelineno-0-265"></a>        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">img</span><span class="o">.</span><span class="n">image_name</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">]</span>
 <a id="__codelineno-0-266" name="__codelineno-0-266"></a>        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_tag</span><span class="p">,</span> <span class="o">*</span><span class="n">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">)]</span>
-<a id="__codelineno-0-267" name="__codelineno-0-267"></a>        <span class="n">names_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
-<a id="__codelineno-0-268" name="__codelineno-0-268"></a>        <span class="n">tags_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
-<a id="__codelineno-0-269" name="__codelineno-0-269"></a>        <span class="n">files_res</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-270" name="__codelineno-0-270"></a>            <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-names.json&#39;</span><span class="p">,</span> <span class="n">names_json</span><span class="p">),</span>
-<a id="__codelineno-0-271" name="__codelineno-0-271"></a>            <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-tags.json&#39;</span><span class="p">,</span> <span class="n">tags_json</span><span class="p">),</span>
-<a id="__codelineno-0-272" name="__codelineno-0-272"></a>        <span class="p">]</span>
-<a id="__codelineno-0-273" name="__codelineno-0-273"></a>        <span class="n">issues</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-274" name="__codelineno-0-274"></a>        <span class="k">for</span> <span class="n">file_res</span> <span class="ow">in</span> <span class="n">files_res</span><span class="p">:</span>
-<a id="__codelineno-0-275" name="__codelineno-0-275"></a>            <span class="n">_append_issue</span><span class="p">(</span><span class="n">file_res</span><span class="p">,</span> <span class="n">issues</span><span class="p">)</span>
-<a id="__codelineno-0-276" name="__codelineno-0-276"></a>        <span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
-<a id="__codelineno-0-277" name="__codelineno-0-277"></a>            <span class="k">return</span> <span class="n">issue</span><span class="p">(</span>
-<a id="__codelineno-0-278" name="__codelineno-0-278"></a>                <span class="s1">&#39;write_ci_manifest_info_failure&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-279" name="__codelineno-0-279"></a>                <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;issues&#39;</span><span class="p">:</span> <span class="n">issues</span><span class="p">},</span>
-<a id="__codelineno-0-280" name="__codelineno-0-280"></a>            <span class="p">)</span>
-<a id="__codelineno-0-281" name="__codelineno-0-281"></a>        <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<a id="__codelineno-0-282" name="__codelineno-0-282"></a>
-<a id="__codelineno-0-283" name="__codelineno-0-283"></a>    <span class="k">def</span> <span class="nf">write_blueprints</span><span class="p">(</span>
-<a id="__codelineno-0-284" name="__codelineno-0-284"></a>        <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerConfig&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-285" name="__codelineno-0-285"></a>        <span class="n">m_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-0-286" name="__codelineno-0-286"></a>        <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">,</span>
-<a id="__codelineno-0-287" name="__codelineno-0-287"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
-<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Write entry point files.</span>
-<a id="__codelineno-0-289" name="__codelineno-0-289"></a>
-<a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="sd">        Writes shell files for both local and ci. Updates the Makefile and</span>
-<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">        github workflow file.</span>
-<a id="__codelineno-0-292" name="__codelineno-0-292"></a>
-<a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">        Args:</span>
-<a id="__codelineno-0-294" name="__codelineno-0-294"></a><span class="sd">            m_dir: The m directory.</span>
-<a id="__codelineno-0-295" name="__codelineno-0-295"></a><span class="sd">            m_env: The MEnvDocker instance with the environment variables.</span>
-<a id="__codelineno-0-296" name="__codelineno-0-296"></a>
-<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">        Returns:</span>
-<a id="__codelineno-0-298" name="__codelineno-0-298"></a><span class="sd">            None if successful, else an issue.</span>
-<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">        &quot;&quot;&quot;</span>
-<a id="__codelineno-0-300" name="__codelineno-0-300"></a>        <span class="n">files</span> <span class="o">=</span> <span class="n">FileNames</span><span class="o">.</span><span class="n">create_instance</span><span class="p">(</span><span class="n">m_dir</span><span class="p">)</span>
-<a id="__codelineno-0-301" name="__codelineno-0-301"></a>        <span class="k">return</span> <span class="n">one_of</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-0-302" name="__codelineno-0-302"></a>            <span class="kc">None</span>
-<a id="__codelineno-0-303" name="__codelineno-0-303"></a>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_local_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
-<a id="__codelineno-0-304" name="__codelineno-0-304"></a>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
-<a id="__codelineno-0-305" name="__codelineno-0-305"></a>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_manifest_info</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
-<a id="__codelineno-0-306" name="__codelineno-0-306"></a>        <span class="p">])</span>
+<a id="__codelineno-0-267" name="__codelineno-0-267"></a>        <span class="k">if</span> <span class="s1">&#39;latest&#39;</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+<a id="__codelineno-0-268" name="__codelineno-0-268"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_env</span><span class="o">.</span><span class="n">default_branch</span><span class="p">)</span>
+<a id="__codelineno-0-269" name="__codelineno-0-269"></a>        <span class="n">names_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
+<a id="__codelineno-0-270" name="__codelineno-0-270"></a>        <span class="n">tags_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
+<a id="__codelineno-0-271" name="__codelineno-0-271"></a>        <span class="n">files_res</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-272" name="__codelineno-0-272"></a>            <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-names.json&#39;</span><span class="p">,</span> <span class="n">names_json</span><span class="p">),</span>
+<a id="__codelineno-0-273" name="__codelineno-0-273"></a>            <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-tags.json&#39;</span><span class="p">,</span> <span class="n">tags_json</span><span class="p">),</span>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>        <span class="p">]</span>
+<a id="__codelineno-0-275" name="__codelineno-0-275"></a>        <span class="n">issues</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-276" name="__codelineno-0-276"></a>        <span class="k">for</span> <span class="n">file_res</span> <span class="ow">in</span> <span class="n">files_res</span><span class="p">:</span>
+<a id="__codelineno-0-277" name="__codelineno-0-277"></a>            <span class="n">_append_issue</span><span class="p">(</span><span class="n">file_res</span><span class="p">,</span> <span class="n">issues</span><span class="p">)</span>
+<a id="__codelineno-0-278" name="__codelineno-0-278"></a>        <span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
+<a id="__codelineno-0-279" name="__codelineno-0-279"></a>            <span class="k">return</span> <span class="n">issue</span><span class="p">(</span>
+<a id="__codelineno-0-280" name="__codelineno-0-280"></a>                <span class="s1">&#39;write_ci_manifest_info_failure&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-281" name="__codelineno-0-281"></a>                <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;issues&#39;</span><span class="p">:</span> <span class="n">issues</span><span class="p">},</span>
+<a id="__codelineno-0-282" name="__codelineno-0-282"></a>            <span class="p">)</span>
+<a id="__codelineno-0-283" name="__codelineno-0-283"></a>        <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<a id="__codelineno-0-284" name="__codelineno-0-284"></a>
+<a id="__codelineno-0-285" name="__codelineno-0-285"></a>    <span class="k">def</span> <span class="nf">write_blueprints</span><span class="p">(</span>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a>        <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerConfig&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-287" name="__codelineno-0-287"></a>        <span class="n">m_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a>        <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">,</span>
+<a id="__codelineno-0-289" name="__codelineno-0-289"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+<a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Write entry point files.</span>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a>
+<a id="__codelineno-0-292" name="__codelineno-0-292"></a><span class="sd">        Writes shell files for both local and ci. Updates the Makefile and</span>
+<a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">        github workflow file.</span>
+<a id="__codelineno-0-294" name="__codelineno-0-294"></a>
+<a id="__codelineno-0-295" name="__codelineno-0-295"></a><span class="sd">        Args:</span>
+<a id="__codelineno-0-296" name="__codelineno-0-296"></a><span class="sd">            m_dir: The m directory.</span>
+<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">            m_env: The MEnvDocker instance with the environment variables.</span>
+<a id="__codelineno-0-298" name="__codelineno-0-298"></a>
+<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">        Returns:</span>
+<a id="__codelineno-0-300" name="__codelineno-0-300"></a><span class="sd">            None if successful, else an issue.</span>
+<a id="__codelineno-0-301" name="__codelineno-0-301"></a><span class="sd">        &quot;&quot;&quot;</span>
+<a id="__codelineno-0-302" name="__codelineno-0-302"></a>        <span class="n">files</span> <span class="o">=</span> <span class="n">FileNames</span><span class="o">.</span><span class="n">create_instance</span><span class="p">(</span><span class="n">m_dir</span><span class="p">)</span>
+<a id="__codelineno-0-303" name="__codelineno-0-303"></a>        <span class="k">return</span> <span class="n">one_of</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-304" name="__codelineno-0-304"></a>            <span class="kc">None</span>
+<a id="__codelineno-0-305" name="__codelineno-0-305"></a>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_local_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
+<a id="__codelineno-0-306" name="__codelineno-0-306"></a>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
+<a id="__codelineno-0-307" name="__codelineno-0-307"></a>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_manifest_info</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
+<a id="__codelineno-0-308" name="__codelineno-0-308"></a>        <span class="p">])</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -6411,9 +6415,7 @@ github workflow file.</p>
 
           <details class="quote">
             <summary>Source code in <code>m/ci/docker/config.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-283">283</a></span>
-<span class="normal"><a href="#__codelineno-0-284">284</a></span>
-<span class="normal"><a href="#__codelineno-0-285">285</a></span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-285">285</a></span>
 <span class="normal"><a href="#__codelineno-0-286">286</a></span>
 <span class="normal"><a href="#__codelineno-0-287">287</a></span>
 <span class="normal"><a href="#__codelineno-0-288">288</a></span>
@@ -6434,30 +6436,32 @@ github workflow file.</p>
 <span class="normal"><a href="#__codelineno-0-303">303</a></span>
 <span class="normal"><a href="#__codelineno-0-304">304</a></span>
 <span class="normal"><a href="#__codelineno-0-305">305</a></span>
-<span class="normal"><a href="#__codelineno-0-306">306</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-283" name="__codelineno-0-283"></a><span class="k">def</span> <span class="nf">write_blueprints</span><span class="p">(</span>
-<a id="__codelineno-0-284" name="__codelineno-0-284"></a>    <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerConfig&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-285" name="__codelineno-0-285"></a>    <span class="n">m_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<a id="__codelineno-0-286" name="__codelineno-0-286"></a>    <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">,</span>
-<a id="__codelineno-0-287" name="__codelineno-0-287"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
-<a id="__codelineno-0-288" name="__codelineno-0-288"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Write entry point files.</span>
-<a id="__codelineno-0-289" name="__codelineno-0-289"></a>
-<a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="sd">    Writes shell files for both local and ci. Updates the Makefile and</span>
-<a id="__codelineno-0-291" name="__codelineno-0-291"></a><span class="sd">    github workflow file.</span>
-<a id="__codelineno-0-292" name="__codelineno-0-292"></a>
-<a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-294" name="__codelineno-0-294"></a><span class="sd">        m_dir: The m directory.</span>
-<a id="__codelineno-0-295" name="__codelineno-0-295"></a><span class="sd">        m_env: The MEnvDocker instance with the environment variables.</span>
-<a id="__codelineno-0-296" name="__codelineno-0-296"></a>
-<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-298" name="__codelineno-0-298"></a><span class="sd">        None if successful, else an issue.</span>
-<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-300" name="__codelineno-0-300"></a>    <span class="n">files</span> <span class="o">=</span> <span class="n">FileNames</span><span class="o">.</span><span class="n">create_instance</span><span class="p">(</span><span class="n">m_dir</span><span class="p">)</span>
-<a id="__codelineno-0-301" name="__codelineno-0-301"></a>    <span class="k">return</span> <span class="n">one_of</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
-<a id="__codelineno-0-302" name="__codelineno-0-302"></a>        <span class="kc">None</span>
-<a id="__codelineno-0-303" name="__codelineno-0-303"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_local_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
-<a id="__codelineno-0-304" name="__codelineno-0-304"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
-<a id="__codelineno-0-305" name="__codelineno-0-305"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_manifest_info</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
-<a id="__codelineno-0-306" name="__codelineno-0-306"></a>    <span class="p">])</span>
+<span class="normal"><a href="#__codelineno-0-306">306</a></span>
+<span class="normal"><a href="#__codelineno-0-307">307</a></span>
+<span class="normal"><a href="#__codelineno-0-308">308</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-285" name="__codelineno-0-285"></a><span class="k">def</span> <span class="nf">write_blueprints</span><span class="p">(</span>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a>    <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerConfig&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-287" name="__codelineno-0-287"></a>    <span class="n">m_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a>    <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">,</span>
+<a id="__codelineno-0-289" name="__codelineno-0-289"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Res</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+<a id="__codelineno-0-290" name="__codelineno-0-290"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Write entry point files.</span>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a>
+<a id="__codelineno-0-292" name="__codelineno-0-292"></a><span class="sd">    Writes shell files for both local and ci. Updates the Makefile and</span>
+<a id="__codelineno-0-293" name="__codelineno-0-293"></a><span class="sd">    github workflow file.</span>
+<a id="__codelineno-0-294" name="__codelineno-0-294"></a>
+<a id="__codelineno-0-295" name="__codelineno-0-295"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-296" name="__codelineno-0-296"></a><span class="sd">        m_dir: The m directory.</span>
+<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">        m_env: The MEnvDocker instance with the environment variables.</span>
+<a id="__codelineno-0-298" name="__codelineno-0-298"></a>
+<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-300" name="__codelineno-0-300"></a><span class="sd">        None if successful, else an issue.</span>
+<a id="__codelineno-0-301" name="__codelineno-0-301"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-302" name="__codelineno-0-302"></a>    <span class="n">files</span> <span class="o">=</span> <span class="n">FileNames</span><span class="o">.</span><span class="n">create_instance</span><span class="p">(</span><span class="n">m_dir</span><span class="p">)</span>
+<a id="__codelineno-0-303" name="__codelineno-0-303"></a>    <span class="k">return</span> <span class="n">one_of</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
+<a id="__codelineno-0-304" name="__codelineno-0-304"></a>        <span class="kc">None</span>
+<a id="__codelineno-0-305" name="__codelineno-0-305"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_local_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
+<a id="__codelineno-0-306" name="__codelineno-0-306"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_steps</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
+<a id="__codelineno-0-307" name="__codelineno-0-307"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_ci_manifest_info</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
+<a id="__codelineno-0-308" name="__codelineno-0-308"></a>    <span class="p">])</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -6586,7 +6590,9 @@ github workflow file.</p>
 <span class="normal"><a href="#__codelineno-0-278">278</a></span>
 <span class="normal"><a href="#__codelineno-0-279">279</a></span>
 <span class="normal"><a href="#__codelineno-0-280">280</a></span>
-<span class="normal"><a href="#__codelineno-0-281">281</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="k">def</span> <span class="nf">write_ci_manifest_info</span><span class="p">(</span>
+<span class="normal"><a href="#__codelineno-0-281">281</a></span>
+<span class="normal"><a href="#__codelineno-0-282">282</a></span>
+<span class="normal"><a href="#__codelineno-0-283">283</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-245" name="__codelineno-0-245"></a><span class="k">def</span> <span class="nf">write_ci_manifest_info</span><span class="p">(</span>
 <a id="__codelineno-0-246" name="__codelineno-0-246"></a>    <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;DockerConfig&#39;</span><span class="p">,</span>
 <a id="__codelineno-0-247" name="__codelineno-0-247"></a>    <span class="n">files</span><span class="p">:</span> <span class="n">FileNames</span><span class="p">,</span>
 <a id="__codelineno-0-248" name="__codelineno-0-248"></a>    <span class="n">m_env</span><span class="p">:</span> <span class="n">MEnvDocker</span><span class="p">,</span>
@@ -6608,21 +6614,23 @@ github workflow file.</p>
 <a id="__codelineno-0-264" name="__codelineno-0-264"></a>        <span class="n">m_tag</span> <span class="o">=</span> <span class="s1">&#39;1.1.1&#39;</span>
 <a id="__codelineno-0-265" name="__codelineno-0-265"></a>    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">img</span><span class="o">.</span><span class="n">image_name</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">]</span>
 <a id="__codelineno-0-266" name="__codelineno-0-266"></a>    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_tag</span><span class="p">,</span> <span class="o">*</span><span class="n">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">)]</span>
-<a id="__codelineno-0-267" name="__codelineno-0-267"></a>    <span class="n">names_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
-<a id="__codelineno-0-268" name="__codelineno-0-268"></a>    <span class="n">tags_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
-<a id="__codelineno-0-269" name="__codelineno-0-269"></a>    <span class="n">files_res</span> <span class="o">=</span> <span class="p">[</span>
-<a id="__codelineno-0-270" name="__codelineno-0-270"></a>        <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-names.json&#39;</span><span class="p">,</span> <span class="n">names_json</span><span class="p">),</span>
-<a id="__codelineno-0-271" name="__codelineno-0-271"></a>        <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-tags.json&#39;</span><span class="p">,</span> <span class="n">tags_json</span><span class="p">),</span>
-<a id="__codelineno-0-272" name="__codelineno-0-272"></a>    <span class="p">]</span>
-<a id="__codelineno-0-273" name="__codelineno-0-273"></a>    <span class="n">issues</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-274" name="__codelineno-0-274"></a>    <span class="k">for</span> <span class="n">file_res</span> <span class="ow">in</span> <span class="n">files_res</span><span class="p">:</span>
-<a id="__codelineno-0-275" name="__codelineno-0-275"></a>        <span class="n">_append_issue</span><span class="p">(</span><span class="n">file_res</span><span class="p">,</span> <span class="n">issues</span><span class="p">)</span>
-<a id="__codelineno-0-276" name="__codelineno-0-276"></a>    <span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
-<a id="__codelineno-0-277" name="__codelineno-0-277"></a>        <span class="k">return</span> <span class="n">issue</span><span class="p">(</span>
-<a id="__codelineno-0-278" name="__codelineno-0-278"></a>            <span class="s1">&#39;write_ci_manifest_info_failure&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-279" name="__codelineno-0-279"></a>            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;issues&#39;</span><span class="p">:</span> <span class="n">issues</span><span class="p">},</span>
-<a id="__codelineno-0-280" name="__codelineno-0-280"></a>        <span class="p">)</span>
-<a id="__codelineno-0-281" name="__codelineno-0-281"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<a id="__codelineno-0-267" name="__codelineno-0-267"></a>    <span class="k">if</span> <span class="s1">&#39;latest&#39;</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+<a id="__codelineno-0-268" name="__codelineno-0-268"></a>        <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m_env</span><span class="o">.</span><span class="n">default_branch</span><span class="p">)</span>
+<a id="__codelineno-0-269" name="__codelineno-0-269"></a>    <span class="n">names_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
+<a id="__codelineno-0-270" name="__codelineno-0-270"></a>    <span class="n">tags_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span>
+<a id="__codelineno-0-271" name="__codelineno-0-271"></a>    <span class="n">files_res</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-272" name="__codelineno-0-272"></a>        <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-names.json&#39;</span><span class="p">,</span> <span class="n">names_json</span><span class="p">),</span>
+<a id="__codelineno-0-273" name="__codelineno-0-273"></a>        <span class="n">rw</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">files</span><span class="o">.</span><span class="n">ci_dir</span><span class="si">}</span><span class="s1">/_image-tags.json&#39;</span><span class="p">,</span> <span class="n">tags_json</span><span class="p">),</span>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>    <span class="p">]</span>
+<a id="__codelineno-0-275" name="__codelineno-0-275"></a>    <span class="n">issues</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-276" name="__codelineno-0-276"></a>    <span class="k">for</span> <span class="n">file_res</span> <span class="ow">in</span> <span class="n">files_res</span><span class="p">:</span>
+<a id="__codelineno-0-277" name="__codelineno-0-277"></a>        <span class="n">_append_issue</span><span class="p">(</span><span class="n">file_res</span><span class="p">,</span> <span class="n">issues</span><span class="p">)</span>
+<a id="__codelineno-0-278" name="__codelineno-0-278"></a>    <span class="k">if</span> <span class="n">issues</span><span class="p">:</span>
+<a id="__codelineno-0-279" name="__codelineno-0-279"></a>        <span class="k">return</span> <span class="n">issue</span><span class="p">(</span>
+<a id="__codelineno-0-280" name="__codelineno-0-280"></a>            <span class="s1">&#39;write_ci_manifest_info_failure&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-281" name="__codelineno-0-281"></a>            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;issues&#39;</span><span class="p">:</span> <span class="n">issues</span><span class="p">},</span>
+<a id="__codelineno-0-282" name="__codelineno-0-282"></a>        <span class="p">)</span>
+<a id="__codelineno-0-283" name="__codelineno-0-283"></a>    <span class="k">return</span> <span class="n">Good</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>

@@ -2532,6 +2532,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#m.ci.docker.tags.is_semver" class="md-nav__link">
+    is_semver()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5012,6 +5019,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#m.ci.docker.tags.is_semver" class="md-nav__link">
+    is_semver()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5140,20 +5154,7 @@ that have already been published in the past.</p>
 
           <details class="quote">
             <summary>Source code in <code>m/ci/docker/tags.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span>
-<span class="normal"><a href="#__codelineno-0-16">16</a></span>
-<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-17">17</a></span>
 <span class="normal"><a href="#__codelineno-0-18">18</a></span>
 <span class="normal"><a href="#__codelineno-0-19">19</a></span>
 <span class="normal"><a href="#__codelineno-0-20">20</a></span>
@@ -5173,40 +5174,152 @@ that have already been published in the past.</p>
 <span class="normal"><a href="#__codelineno-0-34">34</a></span>
 <span class="normal"><a href="#__codelineno-0-35">35</a></span>
 <span class="normal"><a href="#__codelineno-0-36">36</a></span>
-<span class="normal"><a href="#__codelineno-0-37">37</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">def</span> <span class="nf">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">skip_floating</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an m_tag to docker tags.</span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+<span class="normal"><a href="#__codelineno-0-50">50</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="k">def</span> <span class="nf">docker_tags</span><span class="p">(</span><span class="n">m_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">skip_floating</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an m_tag to docker tags.</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="sd">    Floating tags include `latest` and any `vX` or `vX.Y` tags.</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">    The `skip_floating` argument is intended for use when building packages</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="sd">    that have already been published in the past.</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">        m_tag: A tag/version provided by m.</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">        skip_floating: If true, do not include floating tags.</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">        A tag that can be used by docker during the publishing step.</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\d+.\d+.\d+-(.*)\.(.*)&#39;</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a>    <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">m_tag</span><span class="p">)</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a>    <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a>        <span class="n">tag</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>        <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;rc&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;hotfix&#39;</span><span class="p">):</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;next&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a>            <span class="n">index</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;rc&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">6</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>            <span class="n">pr_num</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[</span><span class="n">index</span><span class="p">:]</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;pr</span><span class="si">{</span><span class="n">pr_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">m_tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_floating</span><span class="p">:</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;latest&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="k">return</span> <span class="n">tags</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="m.ci.docker.tags.is_semver" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">is_semver</span><span class="p">(</span><span class="n">m_tag</span><span class="p">)</span></code>
+
+<a href="#m.ci.docker.tags.is_semver" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Determine if a tag is a semver.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>m_tag</code></td>
+          <td>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>A tag/version provided by m.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>True if the tag is a semver.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>m/ci/docker/tags.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span>
+<span class="normal"><a href="#__codelineno-0-11">11</a></span>
+<span class="normal"><a href="#__codelineno-0-12">12</a></span>
+<span class="normal"><a href="#__codelineno-0-13">13</a></span>
+<span class="normal"><a href="#__codelineno-0-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">def</span> <span class="nf">is_semver</span><span class="p">(</span><span class="n">m_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine if a tag is a semver.</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="sd">    Floating tags include `latest` and any `vX` or `vX.Y` tags.</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="sd">    The `skip_floating` argument is intended for use when building packages</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="sd">    that have already been published in the past.</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">    Args:</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">        m_tag: A tag/version provided by m.</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="sd">        skip_floating: If true, do not include floating tags.</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14"></a>
-<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="sd">    Returns:</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="sd">        A tag that can be used by docker during the publishing step.</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">    &quot;&quot;&quot;</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18"></a>    <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19"></a>    <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\d+.\d+.\d+-(.*)\.(.*)&#39;</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20"></a>    <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">m_tag</span><span class="p">)</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21"></a>    <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22"></a>        <span class="n">tag</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23"></a>        <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;rc&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;hotfix&#39;</span><span class="p">):</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;next&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25"></a>            <span class="n">index</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">tag</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;rc&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">6</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26"></a>            <span class="n">pr_num</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[</span><span class="n">index</span><span class="p">:]</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;pr</span><span class="si">{</span><span class="n">pr_num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28"></a>        <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30"></a>    <span class="k">else</span><span class="p">:</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">m_tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_floating</span><span class="p">:</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;latest&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35"></a>            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;v</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36"></a>
-<a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="k">return</span> <span class="n">tags</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="sd">    Args:</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="sd">        m_tag: A tag/version provided by m.</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="sd">    Returns:</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sd">        True if the tag is a semver.</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\d+.\d+.\d+-(.*)\.(.*)&#39;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a>    <span class="k">return</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">m_tag</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>

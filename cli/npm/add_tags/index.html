@@ -1734,6 +1734,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#required-arguments" class="md-nav__link">
+    Required arguments
+  </a>
+  
+    <nav class="md-nav" aria-label="Required arguments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#branch" class="md-nav__link">
+    --branch
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#positional-arguments" class="md-nav__link">
     Positional arguments
   </a>
@@ -5014,6 +5034,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#required-arguments" class="md-nav__link">
+    Required arguments
+  </a>
+  
+    <nav class="md-nav" aria-label="Required arguments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#branch" class="md-nav__link">
+    --branch
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#positional-arguments" class="md-nav__link">
     Positional arguments
   </a>
@@ -5070,7 +5110,7 @@
 
   
       <p>Add tags to a package version.</p>
-<div class="highlight"><pre><span></span><code>$ m npm add_tags &lt;package-name&gt; &lt;m_tag&gt;
+<div class="highlight"><pre><span></span><code>$ m npm add_tags --branch &quot;$M_BRANCH&quot; &lt;package-name&gt; &lt;m_tag&gt;
 </code></pre></div>
 <p>These tags are the same tags generated from docker.</p>
 
@@ -5094,10 +5134,15 @@
 <span class="normal"><a href="#__codelineno-0-19">19</a></span>
 <span class="normal"><a href="#__codelineno-0-20">20</a></span>
 <span class="normal"><a href="#__codelineno-0-21">21</a></span>
-<span class="normal"><a href="#__codelineno-0-22">22</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">class</span> <span class="nc">Arguments</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="k">class</span> <span class="nc">Arguments</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Add tags to a package version.</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="sd">        $ m npm add_tags &lt;package-name&gt; &lt;m_tag&gt;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="sd">        $ m npm add_tags --branch &quot;$M_BRANCH&quot; &lt;package-name&gt; &lt;m_tag&gt;</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8"></a>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="sd">    These tags are the same tags generated from docker.</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -5113,6 +5158,11 @@
 <a id="__codelineno-0-20" name="__codelineno-0-20"></a>        <span class="n">positional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-21" name="__codelineno-0-21"></a>        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <a id="__codelineno-0-22" name="__codelineno-0-22"></a>    <span class="p">)</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a>    <span class="n">branch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Arg</span><span class="p">(</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a>        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the branch where the build is taking place&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a>        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -5134,7 +5184,11 @@
 
   </div>
 
-</div><h2 id="positional-arguments">Positional arguments<a href="#positional-arguments" class="headerlink" title="Permanent link">&para;</a></h2>
+</div><h2 id="required-arguments">Required arguments<a href="#required-arguments" class="headerlink" title="Permanent link">&para;</a></h2>
+<h3 id="branch"><code>--branch</code><a href="#branch" class="headerlink" title="Permanent link">&para;</a></h3>
+
+<p>the branch where the build is taking place</p>
+<h2 id="positional-arguments">Positional arguments<a href="#positional-arguments" class="headerlink" title="Permanent link">&para;</a></h2>
 <h3 id="package_name"><code>package_name</code><a href="#package_name" class="headerlink" title="Permanent link">&para;</a></h3>
 
 <p>name of the npm package</p>

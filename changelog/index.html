@@ -473,6 +473,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#0.35.1" class="md-nav__link">
+    0.35.1 -  June 17, 2024
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#0.35.0" class="md-nav__link">
     0.35.0 -  June 13, 2024
   </a>
@@ -5489,6 +5496,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#0.35.1" class="md-nav__link">
+    0.35.1 -  June 17, 2024
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#0.35.0" class="md-nav__link">
     0.35.0 -  June 13, 2024
   </a>
@@ -6001,7 +6015,28 @@
 <p>Major version zero (0.y.z) is for initial development. Anything may change at
 any time. The public API should not be considered stable.</p>
 </blockquote>
-<h2 id="unreleased"><a href="https://github.com/jmlopez-rod/m/compare/0.35.0...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h2 id="unreleased"><a href="https://github.com/jmlopez-rod/m/compare/0.35.1...HEAD">Unreleased</a><a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h2 id="0.35.1"><a href="https://github.com/jmlopez-rod/m/compare/0.35.0...0.35.1">0.35.1</a> -  June 17, 2024<a class="headerlink" href="#0.35.1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>m npm add_tags</code> no longer attempts to tag <code>v#.#</code> since these are npm sem
+  versions.</li>
+</ul>
+<blockquote>
+<p>Tags that can be interpreted as valid semver ranges will be rejected. For
+example, v1.4 cannot be used as a tag, because it is interpreted by semver
+as &gt;=1.4.0 &lt;1.5.0. See https://github.com/npm/npm/issues/6082.</p>
+</blockquote>
+<ul>
+<li>
+<p><code>m npm add_tags</code> requires the <code>--branch</code> option. When we tag as <code>latest</code> we
+  also need to provide the name of the branch in which we are building the
+  package. The env var <code>$M_BRANCH</code> should be passed to the option.</p>
+</li>
+<li>
+<p>Fix missing docker tag creation. When creating the <code>latest</code> tag we were also
+  missing the default branch tag.</p>
+</li>
+</ul>
 <h2 id="0.35.0"><a href="https://github.com/jmlopez-rod/m/compare/0.34.3...0.35.0">0.35.0</a> -  June 13, 2024<a class="headerlink" href="#0.35.0" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Update <code>npm_tags</code> to semi-match output with <code>docker_tags</code>.</li>
