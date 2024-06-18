@@ -18,6 +18,10 @@ The format of this changelog is based on
   > example, v1.4 cannot be used as a tag, because it is interpreted by semver
   > as >=1.4.0 <1.5.0. See https://github.com/npm/npm/issues/6082.
 
+- `m npm add_tags` requires the `--branch` option. When we tag as `latest` we
+  also need to provide the name of the branch in which we are building the
+  package. The env var `$M_BRANCH` should be passed to the option.
+
 ## [0.35.0] <a name="0.35.0" href="#0.35.0">-</a> June 13, 2024
 
 - Update `npm_tags` to semi-match output with `docker_tags`.

@@ -24,7 +24,7 @@ class TCase(CliTestCase):
         expected='["- tag1","- tag2"]',
     ),
     TCase(
-        cmd='m npm add_tags scope/pkg 0.0.0-rc123.b123',
+        cmd='m npm add_tags --branch default_branch scope/pkg 0.0.0-rc123.b123',
         eval_cmd_side_effects=[
             Good('+ next'),
             Good('+ pr123'),
@@ -32,14 +32,15 @@ class TCase(CliTestCase):
         expected='["+ next","+ pr123"]',
     ),
     TCase(
-        cmd='m npm add_tags scope/pkg 1.1.1',
+        cmd='m npm add_tags --branch default_branch scope/pkg 1.1.1',
         eval_cmd_side_effects=[
             Good('+ latest'),
+            Good('+ default_branch'),
         ],
-        expected='["+ latest"]',
+        expected='["+ latest","+ default_branch"]',
     ),
     TCase(
-        cmd='m npm add_tags scope/pkg 0.0.0-pr12.b123',
+        cmd='m npm add_tags --branch default_branch scope/pkg 0.0.0-pr12.b123',
         eval_cmd_side_effects=[
             Good('+ pr12'),
         ],

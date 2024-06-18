@@ -5,12 +5,16 @@ from ..core.fp import Bad, Good, OneOf
 from .cli import add_dist_tag
 
 
-def add_tags(pkg: str, version: str) -> OneOf[Issue, list[str]]:
+def add_tags(pkg: str, version: str, branch: str) -> OneOf[Issue, list[str]]:
     """Add tags to a package.
+
+    The branch name will be added to the tags in the event that we have a
+    valid sem-version.
 
     Args:
         pkg: The name of the npm package.
         version: The package version to tag.
+        branch: The current branch where the build is taking place.
 
     Returns:
         A `OneOf` containing a summary of added tags or an Issue.
@@ -18,6 +22,7 @@ def add_tags(pkg: str, version: str) -> OneOf[Issue, list[str]]:
     tags = docker_tags(version, skip_floating=True)
     if is_semver(version):
         tags.append('latest')
+        tags.append(branch)
     issues: list[Issue] = []
     added: list[str] = []
     for tag in tags:

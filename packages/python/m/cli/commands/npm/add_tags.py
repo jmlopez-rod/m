@@ -4,7 +4,7 @@ from m.cli import Arg, BaseModel, command, run_main
 class Arguments(BaseModel):
     """Add tags to a package version.
 
-        $ m npm add_tags <package-name> <m_tag>
+        $ m npm add_tags --branch "$M_BRANCH" <package-name> <m_tag>
 
     These tags are the same tags generated from docker.
     """
@@ -21,6 +21,11 @@ class Arguments(BaseModel):
         required=True,
     )
 
+    branch: str = Arg(
+        help='the branch where the build is taking place',
+        required=True,
+    )
+
 
 @command(
     help='add tags to an npm package version',
@@ -28,4 +33,4 @@ class Arguments(BaseModel):
 )
 def run(arg: Arguments):
     from m.npm.add_tags import add_tags
-    return run_main(lambda: add_tags(arg.package_name, arg.m_tag))
+    return run_main(lambda: add_tags(arg.package_name, arg.m_tag, arg.branch))
