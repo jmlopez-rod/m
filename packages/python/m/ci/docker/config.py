@@ -219,7 +219,7 @@ class DockerConfig(BaseModel):
         push_script = (
             create_push_script(registry)
             if self.architectures
-            else create_push_script_tags(registry, m_env.m_tag)
+            else create_push_script_tags(registry, m_env.m_tag, m_env.default_branch)
         )
         script_results = [
             rw.write_file(f'{files.ci_dir}/_find-cache.sh', cache_script),

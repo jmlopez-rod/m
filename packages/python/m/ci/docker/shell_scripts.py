@@ -73,7 +73,7 @@ def create_push_script(docker_registry: str) -> str:
     return PUSH_SCRIPT.format(docker_registry=docker_registry)
 
 
-def create_push_script_tags(docker_registry: str, m_tag: str) -> str:
+def create_push_script_tags(docker_registry: str, m_tag: str, default_branch: str) -> str:
     """Create a script to push an image.
 
     This is meant to be used when building for a single architecture.
@@ -81,6 +81,7 @@ def create_push_script_tags(docker_registry: str, m_tag: str) -> str:
     Args:
         docker_registry: The docker registry where the images will be pushed.
         m_tag: The unique tag for the image.
+        default_branch: The default branch for the repository.
 
     Returns:
         A script to push an image.
@@ -89,6 +90,8 @@ def create_push_script_tags(docker_registry: str, m_tag: str) -> str:
         logger.warning('M_TAG not found in non-CI environment. Using 1.1.1')
         m_tag = '1.1.1'
     tags = [m_tag, *docker_tags(m_tag)]
+    if 'latest' in tags:
+        tags.append(default_branch)
     tagged_images = '\n'.join([
         f'docker tag staged-image:latest "{docker_registry}/$imageName:{tag}"'
         for tag in tags

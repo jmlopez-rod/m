@@ -9,6 +9,11 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.35.2] <a name="0.35.2" href="#0.35.2">-</a> June 18, 2024
+
+- Add missing docker tag. There was other parts of the code that were missing
+  the default branch tag.
+
 ## [0.35.1] <a name="0.35.1" href="#0.35.1">-</a> June 17, 2024
 
 - `m npm add_tags` no longer attempts to tag `v#.#` since these are npm sem
@@ -594,7 +599,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.35.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.35.2...HEAD
+[0.35.2]: https://github.com/jmlopez-rod/m/compare/0.35.1...0.35.2
 [0.35.1]: https://github.com/jmlopez-rod/m/compare/0.35.0...0.35.1
 [0.35.0]: https://github.com/jmlopez-rod/m/compare/0.34.3...0.35.0
 [0.34.3]: https://github.com/jmlopez-rod/m/compare/0.34.2...0.34.3
