@@ -27,8 +27,8 @@ PUSH_SCRIPT = """\
 #!/bin/bash
 imageName=$1
 set -euxo pipefail
-docker tag staged-image:latest "{docker_registry}/$ARCH-$imageName:$M_TAG"
-docker push "{docker_registry}/$ARCH-$imageName:$M_TAG"
+docker tag staged-image:latest "{docker_registry}/$imageName:$ARCH-$M_TAG"
+docker push "{docker_registry}/$imageName:$ARCH-$M_TAG"
 """
 
 PUSH_SCRIPT_TAGS = """\
