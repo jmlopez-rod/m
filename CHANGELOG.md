@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.36.0] <a name="0.36.0" href="#0.36.0">-</a> August 15, 2024
+
 - Do not create image names with the architecture in it. Instead the
   architecture should be added as a tag.
 
@@ -602,7 +604,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.35.2...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.36.0...HEAD
+[0.36.0]: https://github.com/jmlopez-rod/m/compare/0.35.2...0.36.0
 [0.35.2]: https://github.com/jmlopez-rod/m/compare/0.35.1...0.35.2
 [0.35.1]: https://github.com/jmlopez-rod/m/compare/0.35.0...0.35.1
 [0.35.0]: https://github.com/jmlopez-rod/m/compare/0.34.3...0.35.0
