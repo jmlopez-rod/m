@@ -7,5 +7,5 @@ docker buildx imagetools create \
   -t ghcr.io/repo-owner/m-image1:v1 \
   -t ghcr.io/repo-owner/m-image1:v1.1 \
   -t ghcr.io/repo-owner/m-image1:master \
-  ghcr.io/repo-owner/amd64-m-image1:1.1.1 \
-  ghcr.io/repo-owner/arm64-m-image1:1.1.1
+  ghcr.io/repo-owner/m-image1:amd64-1.1.1 \
+  ghcr.io/repo-owner/m-image1:arm64-1.1.1

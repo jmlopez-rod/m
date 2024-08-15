@@ -9,6 +9,9 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Do not create image names with the architecture in it. Instead the
+  architecture should be added as a tag.
+
 ## [0.35.2] <a name="0.35.2" href="#0.35.2">-</a> June 18, 2024
 
 - Add missing docker tag. There was other parts of the code that were missing

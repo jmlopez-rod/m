@@ -170,7 +170,7 @@ class DockerImage(BaseModel):
             for tag in tags
         ]
         all_archs_str = ' \\\n'.join([
-            f'  {registry}/{arch}-{self.image_name}:{m_tag}'
+            f'  {registry}/{self.image_name}:{arch}-{m_tag}'
             for arch in m_env.architectures
         ])
         script = [
