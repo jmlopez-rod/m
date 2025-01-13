@@ -38,3 +38,6 @@ publishPy311DevContainer: buildPy311DevContainer
 
 publishPy310DevContainer: buildPy310DevContainer
 	PY_VER=310 m/bash/publish.sh
+
+publishUvDevContainer: buildUvDevContainer
+	PY_VER=310-uv m/bash/publish.sh
