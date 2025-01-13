@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from enum import Enum
-from typing import Any
+from typing import Any, cast
 
 import yaml
 
@@ -72,9 +72,10 @@ def dumps(
     Returns:
         A yaml serialized string.
     """
-    return yaml.dump(
+    return cast(str, yaml.dump(
         py_data,
+        stream=None,
         Dumper=_SafeDumper,
         sort_keys=sort_keys,
         default_flow_style=default_flow_style,
-    )
+    ))
