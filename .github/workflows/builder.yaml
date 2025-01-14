@@ -113,6 +113,9 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Install
+        run: uv sync --all-groups
+
       - name: src
         run: |
           mypy ./packages/python/m
@@ -145,7 +148,9 @@ jobs:
         run: uv sync --all-groups
 
       - name: build
-        run: cd packages/web && mkdocs build
+        run: |
+          export PATH=$VIRTUAL_ENV/bin:$PATH
+          cd packages/web && mkdocs build
 
   prettier:
     runs-on: ubuntu-22.04
@@ -181,11 +186,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache uv
-        uses: actions/cache@v4
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: /opt/uv
-          key: uv-py310-uv-${{ hashFiles('**/uv.lock') }}
+          python-version: '3.10'
+
+      - name: Install
+        run: uv sync --all-groups
 
       - name: Build
         id: build
@@ -215,11 +222,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache uv
-        uses: actions/cache@v4
-        with:
-          path: /opt/uv
-          key: uv-py310-uv-${{ hashFiles('**/uv.lock') }}
+      - name: Install
+        run: uv sync --all-groups
 
       - name: Restore build
         uses: actions/cache/restore@v4
