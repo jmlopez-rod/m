@@ -15,6 +15,7 @@ The format of this changelog is based on
 - Remove `poetry`, we are switching to `uv`.
 - Docs are not being generated. Will need to dedicate time to fix since
   libraries have breaking changes.
+- Attempt release
 
 ## [0.36.1] <a name="0.36.1" href="#0.36.1">-</a> January 02, 2025
 
