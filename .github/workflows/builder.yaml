@@ -128,29 +128,29 @@ jobs:
         run: |
           mypy ./packages/web/docs
 
-  docs:
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # docs:
+  #   runs-on: ubuntu-22.04
+  #   container:
+  #     image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
+  #     credentials:
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: setup uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          python-version: '3.10'
+  #     - name: setup uv
+  #       uses: astral-sh/setup-uv@v5
+  #       with:
+  #         python-version: '3.10'
 
-      - name: Install
-        run: uv sync --all-groups
+  #     - name: Install
+  #       run: uv sync --all-groups
 
-      - name: build
-        run: |
-          export PATH="$(pwd)/.venv/bin":$PATH
-          cd packages/web && mkdocs build
+  #     - name: build
+  #       run: |
+  #         export PATH="$(pwd)/.venv/bin":$PATH
+  #         cd packages/web && mkdocs build
 
   prettier:
     runs-on: ubuntu-22.04
