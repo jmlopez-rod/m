@@ -15,34 +15,33 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  setup:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        py-ver: [py310-uv]
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # setup:
+  #   runs-on: ubuntu-22.04
+  #   strategy:
+  #     matrix:
+  #       py-ver: [py310-uv]
+  #   container:
+  #     image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
+  #     credentials:
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Install
-        run: |
-          uv venv /opt/uv/m
-          . "$VIRTUAL_ENV/bin/activate"
-          uv sync
+  #     - name: Install
+  #       run: |
+  #         uv venv /opt/uv/m
+  #         . "$VIRTUAL_ENV/bin/activate"
+  #         uv sync
 
-      - name: Cache uv
-        uses: actions/cache@v4
-        with:
-          path: /opt/uv
-          key: uv-${{ matrix.py-ver }}-${{ hashFiles('**/uv.lock') }}
+  #     - name: Cache uv
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: /opt/uv
+  #         key: uv-${{ matrix.py-ver }}-${{ hashFiles('**/uv.lock') }}
 
   tests:
-    needs: setup
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -57,20 +56,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache uv
-        uses: actions/cache@v4
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: /opt/uv
-          key: uv-${{ matrix.py-ver }}-${{ hashFiles('**/uv.lock') }}
+          python-version: 3.10
 
       - name: run tests
         run: |
-          . "$VIRTUAL_ENV/bin/activate"
           uv sync
           ./packages/python/tests/run.sh
 
   flake8:
-    needs: setup
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
@@ -102,7 +98,6 @@ jobs:
         run: flake8 packages/web/docs
 
   mypy:
-    needs: setup
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
@@ -132,7 +127,6 @@ jobs:
           mypy ./packages/web/docs
 
   docs:
-    needs: setup
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
@@ -176,7 +170,6 @@ jobs:
           pnpm exec prettier -c .
 
   build:
-    needs: setup
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
