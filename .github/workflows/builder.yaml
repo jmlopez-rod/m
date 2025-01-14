@@ -58,7 +58,7 @@ jobs:
       - name: Cache uv
         uses: actions/cache@v4
         with:
-          path: /opt/uv/m
+          path: /opt/uv
           key: uv-${{ matrix.py-ver }}-${{ hashFiles('**/uv.lock') }}
 
       - name: run tests
@@ -79,7 +79,7 @@ jobs:
       - name: Cache uv
         uses: actions/cache@v4
         with:
-          path: /opt/uv/m
+          path: /opt/uv
           key: uv-py310-uv-${{ hashFiles('**/uv.lock') }}
 
       - name: lint src
@@ -111,7 +111,7 @@ jobs:
       - name: Cache uv
         uses: actions/cache@v4
         with:
-          path: /opt/uv/m
+          path: /opt/uv
           key: uv-py310-uv-${{ hashFiles('**/uv.lock') }}
 
       - name: src
@@ -141,7 +141,7 @@ jobs:
       - name: Cache uv
         uses: actions/cache@v4
         with:
-          path: /opt/uv/m
+          path: /opt/uv
           key: uv-py310-uv-${{ hashFiles('**/uv.lock') }}
 
       - name: Install
@@ -188,7 +188,7 @@ jobs:
       - name: Cache uv
         uses: actions/cache@v4
         with:
-          path: /opt/uv/m
+          path: /opt/uv
           key: uv-py310-uv-${{ hashFiles('**/uv.lock') }}
 
       - name: Build
@@ -222,7 +222,7 @@ jobs:
       - name: Cache uv
         uses: actions/cache@v4
         with:
-          path: /opt/uv/m
+          path: /opt/uv
           key: uv-py310-uv-${{ hashFiles('**/uv.lock') }}
 
       - name: Restore build
