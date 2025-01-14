@@ -6,6 +6,7 @@
   "postStartCommand": "/opt/m_helpers/_init.sh",
   "containerEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
+    "UV_PROJECT_ENVIRONMENT": "/opt/uv/m",
     "CONTAINER_WORKSPACE": "${containerWorkspaceFolder}"
   },
   "mounts": [

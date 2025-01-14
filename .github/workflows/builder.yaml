@@ -8,6 +8,7 @@ on:
 
 env:
   VIRTUAL_ENV: /opt/uv/m
+  UV_PROJECT_ENVIRONMENT: /opt/uv/m
   PYTHONPATH: ./packages/python
   FORCE_COLOR: 1
   MYPY_FORCE_COLOR: 1
