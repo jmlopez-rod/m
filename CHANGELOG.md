@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+## [0.37.0] <a name="0.37.0" href="#0.37.0">-</a> January 14, 2025
+
 - Revert changes from 0.36.1.
 - Remove `poetry`, we are switching to `uv`.
 - Docs are not being generated. Will need to dedicate time to fix since
@@ -615,7 +617,8 @@ latest on the `master` branch.
 - Provides basic utilities to create a CI/CD flow via the m cli.
 - As a library, it facilities the creation of clis similar to m.
 
-[unreleased]: https://github.com/jmlopez-rod/m/compare/0.36.1...HEAD
+[unreleased]: https://github.com/jmlopez-rod/m/compare/0.37.0...HEAD
+[0.37.0]: https://github.com/jmlopez-rod/m/compare/0.36.1...0.37.0
 [0.36.1]: https://github.com/jmlopez-rod/m/compare/0.36.0...0.36.1
 [0.36.0]: https://github.com/jmlopez-rod/m/compare/0.35.2...0.36.0
 [0.35.2]: https://github.com/jmlopez-rod/m/compare/0.35.1...0.35.2
