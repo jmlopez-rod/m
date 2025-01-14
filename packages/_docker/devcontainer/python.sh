@@ -1,4 +1,6 @@
 #!/bin/bash
 set -xeuo pipefail
 
-pip install poetry==1.4.2
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+uv python install 3.11

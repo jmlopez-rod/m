@@ -1,18 +1,18 @@
 {
   "name": "M DevContainer",
   // "image": "m-devcontainer",
-  "image": "ghcr.io/jmlopez-rod/m-devcontainer-py311:latest",
+  "image": "ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest",
   "runArgs": ["--rm", "--network=host", "--name=m-devcontainer"],
-  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && /opt/m_helpers/_init.sh",
+  "postStartCommand": "/opt/m_helpers/_init.sh",
   "containerEnv": {
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
+    "UV_PROJECT_ENVIRONMENT": "/opt/uv/m",
     "CONTAINER_WORKSPACE": "${containerWorkspaceFolder}"
   },
   "mounts": [
     "source=opt_pnpm,target=/opt/pnpm,type=volume",
-    "source=opt_venv,target=/opt/venv,type=volume",
-    "source=m-vscode-server-extensions,target=/root/.vscode-server/extensions,type=volume",
-    "source=m-vscode-server-extensions-insiders,target=/root/.vscode-server-insiders/extensions,type=volume"
+    "source=opt_uv,target=/opt/uv,type=volume",
+    "source=m-vscode-server-extensions,target=/root/.vscode-server/extensions,type=volume"
   ],
   "customizations": {
     "vscode": {
@@ -35,7 +35,7 @@
         },
         "editor.minimap.enabled": false,
         "editor.rulers": [80, 120],
-        "python.defaultInterpreterPath": "/opt/venv/m/bin/python",
+        "python.defaultInterpreterPath": "/opt/uv/m/bin/python",
         "python.pythonPath": "/workspaces/m/packages/python",
         "python.languageServer": "Pylance",
         "python.linting.enabled": true,
@@ -54,6 +54,7 @@
         "EditorConfig.EditorConfig",
         "unifiedjs.vscode-mdx",
         "emeraldwalk.RunOnSave",
+        "tamasfe.even-better-toml",
         "streetsidesoftware.code-spell-checker"
       ]
     }

@@ -1,0 +1,38 @@
+FROM ubuntu:latest
+LABEL org.opencontainers.image.source="https://github.com/jmlopez-rod/m"
+
+ENV TZ=Etc/UTC
+WORKDIR /scratch
+
+## PATH setup
+ENV UV_CACHE_DIR=/opt/uv/.cache/uv
+ENV UV_LINK_MODE=symlink
+ENV UV_BIN_DIR=/root/.cargo/bin
+ENV UV_BIN_TOOLS=/root/.local/bin
+ENV PATH=${UV_BIN_DIR}:${UV_BIN_TOOLS}:./packages/bash/lib:/root/.local/share/pnpm:/opt/uv/m/bin:${PATH}
+RUN echo "\n. /root/.bashrc.d/bash_aliases.sh" >>/root/.bashrc
+
+## Base
+RUN --mount=type=bind,source=packages/_docker/devcontainer/basic_deps.sh,target=./basic_deps.sh \
+  ./basic_deps.sh
+
+## Node and PNPM
+RUN --mount=type=bind,source=packages/_docker/devcontainer/node_pnpm.sh,target=./node_pnpm.sh \
+  ./node_pnpm.sh
+RUN /bin/bash -i -c 'pnpm env use --global lts'
+
+## Python
+RUN --mount=type=bind,source=packages/_docker/devcontainer/python.sh,target=./python.sh \
+  ./python.sh
+
+## Python
+RUN --mount=type=bind,source=packages/_docker/devcontainer/taplo.sh,target=./taplo.sh \
+  ./taplo.sh
+
+## Copy Scripts
+COPY packages/_docker/helpers /opt/m_helpers
+COPY packages/_docker/home /root
+
+## Devcontainer info
+ENV DK_CONTAINER_NAME='m-devcontainer'
+ENV DK_CONTAINER_VERSION='uv_py311'

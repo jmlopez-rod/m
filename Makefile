@@ -24,6 +24,9 @@ flake8:
 
 ## Manual docker maintenance
 
+buildUvDevContainer:
+	IMAGE=uv-devcontainer m/bash/build.sh
+
 buildPy311DevContainer:
 	IMAGE=py311-devcontainer m/bash/build.sh
 
@@ -35,3 +38,6 @@ publishPy311DevContainer: buildPy311DevContainer
 
 publishPy310DevContainer: buildPy310DevContainer
 	PY_VER=310 m/bash/publish.sh
+
+publishUvDevContainer: buildUvDevContainer
+	PY_VER=310-uv m/bash/publish.sh

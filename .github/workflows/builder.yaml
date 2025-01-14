@@ -7,45 +7,44 @@ on:
     branches: [master]
 
 env:
-  VIRTUAL_ENV: /opt/venv/m
   PYTHONPATH: ./packages/python
   FORCE_COLOR: 1
   MYPY_FORCE_COLOR: 1
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  setup:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        py-ver: [py310, py311]
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # setup:
+  #   runs-on: ubuntu-22.04
+  #   strategy:
+  #     matrix:
+  #       py-ver: [py310-uv]
+  #   container:
+  #     image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
+  #     credentials:
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Install
-        run: |
-          python3 -m venv /opt/venv/m
-          poetry install
+  #     - name: Install
+  #       run: |
+  #         uv venv /opt/uv/m
+  #         . "$VIRTUAL_ENV/bin/activate"
+  #         uv sync
 
-      - name: Cache venv
-        uses: actions/cache@v4
-        with:
-          path: /opt/venv/m
-          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
+  #     - name: Cache uv
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: /opt/uv
+  #         key: uv-${{ matrix.py-ver }}-${{ hashFiles('**/uv.lock') }}
 
   tests:
-    needs: setup
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        py-ver: [py310, py311]
+        py-ver: [py310-uv]
     container:
       image: ghcr.io/jmlopez-rod/m-devcontainer-${{ matrix.py-ver }}:latest
       credentials:
@@ -55,20 +54,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache venv
-        uses: actions/cache@v4
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: /opt/venv/m
-          key: venv-${{ matrix.py-ver }}-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
 
       - name: run tests
-        run: ./packages/python/tests/run.sh
+        run: |
+          uv sync
+          ./packages/python/tests/run.sh
 
   flake8:
-    needs: setup
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -76,11 +75,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache venv
-        uses: actions/cache@v4
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+
+      - name: Install
+        run: uv sync --all-groups
 
       - name: lint src
         shell: bash
@@ -97,10 +98,9 @@ jobs:
         run: flake8 packages/web/docs
 
   mypy:
-    needs: setup
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -108,11 +108,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache venv
-        uses: actions/cache@v4
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+
+      - name: Install
+        run: uv sync --all-groups
 
       - name: src
         run: |
@@ -126,34 +128,34 @@ jobs:
         run: |
           mypy ./packages/web/docs
 
-  docs:
-    needs: setup
-    runs-on: ubuntu-22.04
-    container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # docs:
+  #   runs-on: ubuntu-22.04
+  #   container:
+  #     image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
+  #     credentials:
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Cache venv
-        uses: actions/cache@v4
-        with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+  #     - name: setup uv
+  #       uses: astral-sh/setup-uv@v5
+  #       with:
+  #         python-version: '3.10'
 
-      - name: Install
-        run: poetry install --with docs
+  #     - name: Install
+  #       run: uv sync --all-groups
 
-      - name: build
-        run: cd packages/web && mkdocs build
+  #     - name: build
+  #       run: |
+  #         export PATH="$(pwd)/.venv/bin":$PATH
+  #         cd packages/web && mkdocs build
 
   prettier:
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -171,10 +173,9 @@ jobs:
           pnpm exec prettier -c .
 
   build:
-    needs: setup
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -185,15 +186,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache venv
-        uses: actions/cache@v4
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+
+      - name: Install
+        run: uv sync --all-groups
 
       - name: Build
         id: build
         run: |
+          export PATH="$(pwd)/.venv/bin":$PATH
           ./m/scripts/build.sh
 
       - name: Save build
@@ -207,7 +211,7 @@ jobs:
     if: ${{ needs.build.outputs.m-is-release == 'True' }}
     runs-on: ubuntu-22.04
     container:
-      image: ghcr.io/jmlopez-rod/m-devcontainer-py311:latest
+      image: ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -219,11 +223,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache venv
-        uses: actions/cache@v4
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          path: /opt/venv/m
-          key: venv-py311-${{ hashFiles('**/poetry.lock') }}
+          python-version: '3.10'
+
+      - name: Install
+        run: uv sync --all-groups
 
       - name: Restore build
         uses: actions/cache/restore@v4
@@ -234,4 +240,5 @@ jobs:
       - name: Release
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          export PATH="$(pwd)/.venv/bin":$PATH
           ./m/scripts/publish.sh

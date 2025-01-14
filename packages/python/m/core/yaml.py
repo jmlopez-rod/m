@@ -74,6 +74,7 @@ def dumps(
     """
     return yaml.dump(
         py_data,
+        stream=None,
         Dumper=_SafeDumper,
         sort_keys=sort_keys,
         default_flow_style=default_flow_style,

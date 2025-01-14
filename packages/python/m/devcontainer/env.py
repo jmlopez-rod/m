@@ -48,6 +48,7 @@ class DevcontainerEnvVars(BaseModel):
     mdc_workspace: str
     mdc_pnpm_workspace: str
     mdc_venv_workspace: str
+    mdc_uv_workspace: str
 
     def to_bash(self: 'DevcontainerEnvVars') -> str:
         """Create a bash code snippet that can be used in a bashrc file.
@@ -84,9 +85,11 @@ def devcontainer_env_vars() -> DevcontainerEnvVars:
     repo_name = workspace.split('/')[-1]
     pnpm_workspace = f'/opt/pnpm/{repo_name}'
     venv_workspace = f'/opt/venv/{repo_name}'
+    uv_workspace = f'/opt/uv/{repo_name}'
     return DevcontainerEnvVars(
         mdc_repo=repo_name,
         mdc_workspace=workspace,
         mdc_pnpm_workspace=pnpm_workspace,
         mdc_venv_workspace=venv_workspace,
+        mdc_uv_workspace=uv_workspace,
     )

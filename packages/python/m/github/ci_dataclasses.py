@@ -59,10 +59,6 @@ class Commit(BaseModel):
         """
         if not release_prefix:
             return False
-        if not self.associated_pull_request:
-            # Remove this if statement once Github graphQL returns to normal
-            message = self.message.lower()
-            return 'release' in message or 'hotfix' in message
         return self.get_pr_branch().startswith(f'{release_prefix}/')
 
 

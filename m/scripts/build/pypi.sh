@@ -25,5 +25,5 @@ sed -i -e "s/0.0.0-PLACEHOLDER/$M_PY_TAG/g" "./$target/src/m/version.py"
 
 (
   cd "$target"
-  python3 -m build
+  python -m build
 )
