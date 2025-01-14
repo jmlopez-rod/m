@@ -197,6 +197,7 @@ jobs:
       - name: Build
         id: build
         run: |
+          export PATH="$(pwd)/.venv/bin":$PATH
           ./m/scripts/build.sh
 
       - name: Save build
@@ -222,6 +223,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.10'
+
       - name: Install
         run: uv sync --all-groups
 
@@ -234,4 +240,5 @@ jobs:
       - name: Release
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          export PATH="$(pwd)/.venv/bin":$PATH
           ./m/scripts/publish.sh
