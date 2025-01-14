@@ -30,7 +30,7 @@ jobs:
 
       - name: Install
         run: |
-          uv uv /opt/uv/m
+          uv venv /opt/uv/m
           uv sync
 
       - name: Cache uv
