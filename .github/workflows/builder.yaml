@@ -66,6 +66,7 @@ jobs:
       - name: run tests
         run: |
           . "$VIRTUAL_ENV/bin/activate"
+          uv sync
           ./packages/python/tests/run.sh
 
   flake8:
