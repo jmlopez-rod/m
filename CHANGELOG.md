@@ -9,6 +9,9 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- Revert changes from 0.36.1.
+- Remove `poetry`, we are switching to `uv`.
+
 ## [0.36.1] <a name="0.36.1" href="#0.36.1">-</a> January 02, 2025
 
 - Github cannot retrieve the associated pull request. For now we'll rely on the
