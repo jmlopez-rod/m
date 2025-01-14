@@ -80,6 +80,9 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: Install
+        run: uv sync --all-groups
+
       - name: lint src
         shell: bash
         run: |
@@ -139,7 +142,7 @@ jobs:
           python-version: '3.10'
 
       - name: Install
-        run: uv sync
+        run: uv sync --all-groups
 
       - name: build
         run: cd packages/web && mkdocs build
