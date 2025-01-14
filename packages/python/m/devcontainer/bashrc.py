@@ -31,6 +31,7 @@ fi
 export VIRTUAL_ENV="$MDC_UV_WORKSPACE"
 if [ ! -d "$VIRTUAL_ENV" ]; then
     echo "NOTICE: creating virtual environment $VIRTUAL_ENV"
+    export UV_PROJECT_ENVIRONMENT="$VIRTUAL_ENV"
     uv venv "$VIRTUAL_ENV"
 fi
 . "$VIRTUAL_ENV/bin/activate"
@@ -58,6 +59,7 @@ _indented_uv_snippet = """\
     export VIRTUAL_ENV="$MDC_UV_WORKSPACE"
     if [ ! -d "$VIRTUAL_ENV" ]; then
         echo "NOTICE: creating virtual environment $VIRTUAL_ENV"
+        export UV_PROJECT_ENVIRONMENT="$VIRTUAL_ENV"
         uv venv "$VIRTUAL_ENV"
     fi
     . "$VIRTUAL_ENV/bin/activate"
