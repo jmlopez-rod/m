@@ -31,6 +31,7 @@ jobs:
       - name: Install
         run: |
           uv venv /opt/uv/m
+          . "$VIRTUAL_ENV/bin/activate"
           uv sync
 
       - name: Cache uv
@@ -62,7 +63,9 @@ jobs:
           key: uv-${{ matrix.py-ver }}-${{ hashFiles('**/uv.lock') }}
 
       - name: run tests
-        run: ./packages/python/tests/run.sh
+        run: |
+          . "$VIRTUAL_ENV/bin/activate"
+          ./packages/python/tests/run.sh
 
   flake8:
     needs: setup
