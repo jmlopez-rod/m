@@ -10,7 +10,7 @@ set -xeuo pipefail
 # this script should only be called by github.
 
 # Release to pypi on releases
-python3 -m twine upload .stage-pypi/dist/*
+python -m twine upload .stage-pypi/dist/*
 
 # Let github know we released
 m github release --owner jmlopez-rod --repo m --version "$M_TAG"

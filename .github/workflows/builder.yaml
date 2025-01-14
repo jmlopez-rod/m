@@ -149,7 +149,7 @@ jobs:
 
       - name: build
         run: |
-          export PATH=$VIRTUAL_ENV/bin:$PATH
+          export PATH="$(pwd)/.venv/bin":$PATH
           cd packages/web && mkdocs build
 
   prettier:
