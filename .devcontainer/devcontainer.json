@@ -1,7 +1,7 @@
 {
   "name": "M DevContainer",
-  "image": "m-devcontainer",
-  // "image": "ghcr.io/jmlopez-rod/m-devcontainer-py311:latest",
+  // "image": "m-devcontainer",
+  "image": "ghcr.io/jmlopez-rod/m-devcontainer-py310-uv:latest",
   "runArgs": ["--rm", "--network=host", "--name=m-devcontainer"],
   "postStartCommand": "/opt/m_helpers/_init.sh",
   "containerEnv": {
