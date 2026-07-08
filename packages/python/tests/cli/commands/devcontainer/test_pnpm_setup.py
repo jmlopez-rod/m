@@ -129,6 +129,7 @@ def _symlink_exists(name: str, tcase: TCase):
                           "node_modules": "/workspaces/repo_test/node_modules -> /opt/pnpm/repo_test/node_modules",
                           "package": "/opt/pnpm/repo_test/package.json -> /workspaces/repo_test/package.json",
                           "npmrc": "/opt/pnpm/repo_test/.npmrc -> /workspaces/repo_test/.npmrc",
+                          "pnpm_workspace": "Skipping pnpm-workspace.yaml",
                           "pnpm_lock": "unlinked symlink /workspaces/repo_test/pnpm-lock.yaml"
                         }
                 """),
@@ -144,11 +145,13 @@ def _symlink_exists(name: str, tcase: TCase):
                 '/workspaces/repo_test/.npmrc',
                 '/workspaces/repo_test/package.json',
                 '/workspaces/repo_test/pnpm-lock.yaml',
+                '/workspaces/repo_test/pnpm-workspace.yaml'
             ],
             symlinks_exists=[
                 '/workspaces/repo_test/node_modules',
                 '/opt/pnpm/repo_test/package.json',
                 '/opt/pnpm/repo_test/.npmrc',
+                '/opt/pnpm/repo_test/pnpm-workspace.yaml',
                 '/opt/pnpm/repo_test/pnpm-lock.yaml',
             ],
             errors=[],
@@ -162,11 +165,12 @@ def _symlink_exists(name: str, tcase: TCase):
                           "node_modules": "/workspaces/repo_test/node_modules -> /opt/pnpm/repo_test/node_modules",
                           "package": "/opt/pnpm/repo_test/package.json -> /workspaces/repo_test/package.json",
                           "npmrc": "/opt/pnpm/repo_test/.npmrc -> /workspaces/repo_test/.npmrc",
+                          "pnpm_workspace": "/opt/pnpm/repo_test/pnpm-workspace.yaml -> /workspaces/repo_test/pnpm-workspace.yaml",
                           "pnpm_lock": null
                         }
                 """),
-            total_unlinks=3,
-            total_symlinks=3,
+            total_unlinks=4,
+            total_symlinks=4,
         ),
         id='right_setup',
     ),

@@ -9,6 +9,8 @@ The format of this changelog is based on
 
 ## [Unreleased]
 
+- (feat) Add support for pnpm-workspace.yaml in pnpm-setup.
+
 ## [0.37.0] <a name="0.37.0" href="#0.37.0">-</a> January 14, 2025
 
 - Revert changes from 0.36.1.
@@ -598,7 +600,6 @@ latest on the `master` branch.
 - Deprecate `call_main`: use `run_main`
 - `run_main` allows us to handle the results and issues.
 - `m ci lint` supports the output of
-
   - eslint
   - pycodestyle
   - pylint
