@@ -14,6 +14,7 @@ PNPM_MOUNTED_COMMANDS = (
     'add',
     'i',
     'install',
+    'exec',
     'ln',
     'link',
     'prune',
