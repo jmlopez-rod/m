@@ -220,7 +220,7 @@ def _get_workspaces(workdir: str) -> Res[tuple[str, str]]:
             'MDC_PNPM_WORKSPACE': pnpm_workspace,
             SUGGESTION: 'are you running this command from a devcontainer?',
         })
-    if not workdir.startswith(workspace):
+    if not workdir.startswith(workspace) and not workdir.startswith(pnpm_workspace):
         return issue('invalid_devcontainer_pnpm_use', context={
             'workdir': workdir,
             'workspace': workspace,
