@@ -10,6 +10,7 @@ The format of this changelog is based on
 ## [Unreleased]
 
 - (feat) Add support for pnpm-workspace.yaml in pnpm-setup.
+- Update workflows to support nodejs 24
 
 ## [0.37.0] <a name="0.37.0" href="#0.37.0">-</a> January 14, 2025
 
