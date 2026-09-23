@@ -35,7 +35,7 @@ jobs:
       image-tags: ${{{{ steps.m-blueprints.outputs.image-tags }}}}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: install-m
         run: pip install jmlopez-m
       - name: m-blueprints
@@ -61,7 +61,7 @@ jobs:
     runs-on: ${{{{ matrix.os }}}}{container}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: restore-m-blueprints
         uses: actions/download-artifact@v4
         with:
@@ -117,7 +117,7 @@ jobs:
       image-tags: ${{{{ steps.m-blueprints.outputs.image-tags }}}}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: install-m
         run: pip install jmlopez-m
       - name: m-blueprints

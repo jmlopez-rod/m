@@ -34,7 +34,7 @@ jobs:
     runs-on: {default_runner}{container}
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: install-m
         run: pip install jmlopez-m
       - name: m-blueprints
@@ -107,7 +107,7 @@ class Workflow(BaseModel):
         """
         login_obj = """\
             name: docker-login
-            uses: docker/login-action@v3
+            uses: docker/login-action@v4
             with:
               registry: ghcr.io
               username: ${{ github.actor }}
