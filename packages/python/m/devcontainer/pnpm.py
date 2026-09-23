@@ -14,6 +14,7 @@ PNPM_MOUNTED_COMMANDS = (
     'add',
     'i',
     'install',
+    'exec',
     'ln',
     'link',
     'prune',
@@ -46,6 +47,7 @@ class PnpmSetupSummary(BaseModel):
     node_modules: str
     package: str
     npmrc: str
+    pnpm_workspace: str
     pnpm_lock: str | None
 
 
@@ -86,6 +88,16 @@ def _setup_package(work_dir: str, pnpm_dir: str) -> Res[str]:
     Path(pnpm_dir).mkdir(parents=True, exist_ok=True)
     create_symlink(pnpm_package, work_package)
     return Good(f'{pnpm_package} -> {work_package}')
+
+
+def _setup_pnpm_workspace(work_dir: str, pnpm_dir: str) -> Good:
+    workspace_pnpm = Path(pnpm_dir) / 'pnpm-workspace.yaml'
+    workspace_work = Path(work_dir) / 'pnpm-workspace.yaml'
+    # Only required for pnpm v10+. We return good and skip if it doesn't exist.
+    if not workspace_work.exists():
+        return Good('Skipping pnpm-workspace.yaml')
+    create_symlink(workspace_pnpm, workspace_work)
+    return Good(f'{workspace_pnpm} -> {workspace_work}')
 
 
 def _setup_npmrc(work_dir: str, pnpm_dir: str) -> Res[str]:
@@ -132,6 +144,9 @@ def pnpm_setup(work_dir: str, pnpm_dir: str) -> Res[None]:
         return Bad(npmrc_res.value)
     npmrc_summary = npmrc_res.value
 
+    pnpm_workspace_res = _setup_pnpm_workspace(work_dir, pnpm_dir)
+    pnpm_workspace_summary = pnpm_workspace_res.value
+
     # perform a few checks with the lock file
     work_lock = Path(work_dir) / 'pnpm-lock.yaml'
     pnpm_lock_summary = None
@@ -150,6 +165,7 @@ def pnpm_setup(work_dir: str, pnpm_dir: str) -> Res[None]:
         package=package_summary,
         npmrc=npmrc_summary,
         pnpm_lock=pnpm_lock_summary,
+        pnpm_workspace=pnpm_workspace_summary,
     )
     logger.debug('pnpm_setup_summary', context=summary.model_dump())
     return Good(None)
@@ -204,7 +220,7 @@ def _get_workspaces(workdir: str) -> Res[tuple[str, str]]:
             'MDC_PNPM_WORKSPACE': pnpm_workspace,
             SUGGESTION: 'are you running this command from a devcontainer?',
         })
-    if not workdir.startswith(workspace):
+    if not workdir.startswith(workspace) and not workdir.startswith(pnpm_workspace):
         return issue('invalid_devcontainer_pnpm_use', context={
             'workdir': workdir,
             'workspace': workspace,
